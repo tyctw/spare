@@ -1,0 +1,828 @@
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>會考落點分析邀請碼</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #3498db;
+      --background-color: #f0f4f8;
+      --text-color: #333333;
+      --card-background: #ffffff;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --accent-color: #e74c3c;
+      --success-color: #2ecc71;
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: var(--background-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-color);
+      line-height: 1.6;
+      background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      background: var(--card-background);
+      padding: 3rem;
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 30px var(--shadow-color);
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      transition: var(--transition);
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    .container:hover::before {
+      opacity: 1;
+      animation: rotateShine 1.5s infinite;
+    }
+
+    @keyframes rotateShine {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    h1, h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1 { font-size: 2.5rem; font-weight: 700; }
+    h2 { font-size: 1.8rem; font-weight: 500; }
+
+    h1::after, h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 2px;
+    }
+
+    .invitation-code-container {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      margin: 2.5rem 0;
+      box-shadow: 0 5px 15px var(--shadow-color);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .invitation-code {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      padding: 1.2rem 1.5rem;
+      background-color: rgba(74, 144, 226, 0.1);
+      display: inline-block;
+      border: 2px solid var(--primary-color);
+      border-right: none;
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .invitation-code::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+      transform: rotate(45deg);
+      transition: all 0.3s;
+      opacity: 0;
+    }
+
+    .invitation-code:hover::after {
+      animation: slideShine 1s ease-in-out;
+      opacity: 1;
+    }
+
+    @keyframes slideShine {
+      0% { left: -50%; opacity: 0; }
+      50% { opacity: 1; }
+      100% { left: 150%; opacity: 0; }
+    }
+
+    .copy-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      font-size: 1.3rem;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .copy-button:hover { background: var(--secondary-color); }
+    .copy-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      transition: all 0.3s;
+    }
+
+    .copy-button:hover::before { left: 100%; }
+
+    .timer {
+      font-size: 1.3rem;
+      margin-bottom: 2.5rem;
+      color: var(--accent-color);
+      background-color: rgba(231,76,60,0.1);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      animation: timerShine 3s infinite;
+    }
+
+    @keyframes timerShine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .progress-container {
+      width: 100%;
+      background: #eee;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 8px;
+      background-color: var(--primary-color);
+      transition: width 1s linear;
+    }
+
+    .last-update {
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0.8;
+      margin-top: 0.5rem;
+    }
+
+    .info {
+      margin-top: 2.5rem;
+      text-align: left;
+      background: var(--background-color);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: 0 5px 15px var(--shadow-color);
+      transition: var(--transition);
+    }
+
+    .info:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px var(--shadow-color);
+    }
+
+    .info p {
+      margin-bottom: 1.2rem;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .icon {
+      position: absolute;
+      left: 0;
+      top: 3px;
+      font-size: 1.2em;
+      color: var(--primary-color);
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--success-color);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      opacity: 0;
+      transition: var(--transition);
+      box-shadow: 0 3px 10px var(--shadow-color);
+    }
+
+    .copyright {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0.7;
+      text-align: center;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    a:hover { color: var(--secondary-color); }
+    a::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: var(--secondary-color);
+      transform: scaleX(0);
+      transform-origin: bottom right;
+      transition: transform 0.3s ease-out;
+    }
+    a:hover::after {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+    }
+
+    .button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      margin: 0.5rem;
+      box-shadow: 0 2px 5px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .button:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px var(--shadow-color);
+    }
+
+    .button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .button:hover::after {
+      opacity: 1;
+      animation: ripple 0.6s linear;
+    }
+
+    @keyframes ripple {
+      0% { transform: scale(0.5); opacity: 0.3; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background-color: var(--card-background);
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 30px var(--shadow-color);
+      animation: modalFadeIn 0.5s;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      transition: var(--transition);
+    }
+    .close:hover,
+    .close:focus {
+      color: var(--text-color);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    #qrCode {
+      background-color: white;
+      padding: 10px;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+    #qrCode:hover { transform: scale(1.05); }
+    .dark-mode #qrCode { box-shadow: 0 0 10px rgba(255,255,255,0.1); }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .container { padding: 1.5rem; width: 95%; }
+      h1 { font-size: 1.8rem; }
+      h2 { font-size: 1.5rem; }
+      .invitation-code-container { flex-direction: column; margin: 1.5rem 0; }
+      .invitation-code {
+        font-size: 1.5rem;
+        padding: 1rem;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        border-right: 2px solid var(--primary-color);
+        border-bottom: none;
+      }
+      .copy-button { font-size: 1.1rem; padding: 0.8rem; border-radius: 0 0 var(--border-radius) var(--border-radius); }
+      .timer { font-size: 1.1rem; margin-bottom: 1.5rem; }
+      .info { padding: 1.5rem; margin-top: 1.5rem; }
+      .info p { font-size: 1rem; margin-bottom: 1rem; }
+      .copyright { font-size: 0.8rem; }
+      .button { font-size: 0.9rem; padding: 0.6rem 1.2rem; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 1rem; width: 100%; border-radius: 0; box-shadow: none; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.3rem; }
+      .invitation-code { font-size: 1.2rem; padding: 0.8rem; }
+      .copy-button { font-size: 1rem; padding: 0.6rem; }
+      .timer { font-size: 1rem; }
+      .info { padding: 1rem; }
+      .info p { font-size: 0.9rem; }
+      .icon { font-size: 1em; }
+      .copyright { font-size: 0.7rem; }
+      .button { font-size: 0.8rem; padding: 0.5rem 1rem; }
+    }
+
+    .dark-mode-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px var(--shadow-color);
+      z-index: 1000;
+    }
+    .dark-mode-toggle:hover {
+      background-color: var(--secondary-color);
+      transform: scale(1.1);
+    }
+    body.dark-mode .dark-mode-toggle {
+      background-color: var(--accent-color);
+    }
+    body.dark-mode .dark-mode-toggle:hover {
+      background-color: var(--secondary-color);
+    }
+    body.dark-mode {
+      --primary-color: #64b5f6;
+      --secondary-color: #90caf9;
+      --background-color: #121212;
+      --text-color: #e0e0e0;
+      --card-background: #1e1e1e;
+      --shadow-color: rgba(255,255,255,0.1);
+      --accent-color: #ff7043;
+      --success-color: #81c784;
+    }
+    .dark-mode .container,
+    .dark-mode .modal-content {
+      background-color: var(--card-background);
+    }
+    .dark-mode .invitation-code {
+      background-color: rgba(100,181,246,0.1);
+    }
+    .dark-mode .info {
+      background-color: var(--background-color);
+    }
+    .dark-mode a { color: var(--secondary-color); }
+    .dark-mode a:hover { color: var(--primary-color); }
+    body.dark-mode {
+      background-image: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    }
+
+    /* 桃子圖標 */
+    .peach-icon {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    /* 跑馬燈樣式 */
+    .marquee {
+      width: 100%;
+      overflow: hidden;
+      background: var(--primary-color);
+      color: white;
+      padding: 10px 0;
+      margin-bottom: 20px;
+    }
+    .marquee-content {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    .marquee-content:hover { animation-play-state: paused; }
+
+    .help-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px var(--shadow-color);
+      z-index: 1000;
+    }
+    .help-button:hover {
+      background-color: var(--secondary-color);
+      transform: scale(1.1);
+    }
+
+    /* 新增的載入動畫：邀請碼 Spinner 及淡入效果 */
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      margin: auto;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="marquee">
+    <div class="marquee-content">
+      歡迎使用會考落點分析系統！如系統有任何問題請使用異常回報系統回報給我們
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>
+      <svg class="peach-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M159.7 237a15 15 0 0 0-15 15c0 8.3 6.7 15 15 15s15-6.7 15-15-6.7-15-15-15zm0 0M394.3 237a15 15 0 0 0-15 15c0 8.3 6.7 15 15 15s15-6.7 15-15-6.7-15-15-15zm0 0" fill="#ff7043"/>
+        <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256 256-114.6 256-256S397.4 0 256 0zm0 472c-119.3 0-216-96.7-216-216S136.7 40 256 40s216 96.7 216 216-96.7 216-216 216zm0 0" fill="#ff7043"/>
+        <path d="M256 128c-70.7 0-128 57.3-128 128s57.3 128 128 128 128-57.3 128-128-57.3-128-128-128zm0 216c-48.5 0-88-39.5-88-88s39.5-88 88-88 88 39.5 88 88-39.5 88-88 88zm0 0" fill="#ff7043"/>
+      </svg>
+      會考落點分析邀請碼
+    </h1>
+    <div class="invitation-code-container">
+      <div class="invitation-code" id="invitationCode"></div>
+      <button class="copy-button" onclick="copyInvitationCode()">
+        <i class="fas fa-copy"></i> 複製
+      </button>
+    </div>
+    <div id="lastUpdate" class="last-update"></div>
+    <div class="timer" id="timer"></div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div>
+      <button class="button" onclick="showQRCode()"><i class="fas fa-qrcode"></i> 顯示QR碼</button>
+      <button class="button" onclick="shareInvitationCode()"><i class="fas fa-share-alt"></i> 分享邀請碼</button>
+      <button class="button" onclick="manualRefresh()"><i class="fas fa-sync-alt"></i> 手動更新</button>
+    </div>
+    <div class="info">
+      <p><i class="fas fa-sync-alt icon"></i>此邀請碼每小時自動更新一次。</p>
+      <p><i class="fas fa-clock icon"></i>請在邀請碼有效期內使用落點分析系統。</p>
+      <p><i class="fas fa-chart-line icon"></i> <a href="https://tyctw.github.io/">返回分析平台</a> 。</p>
+      <p><i class="fas fa-chart-bar icon"></i>查看 <a href="https://tyctw.github.io/analysis/">全國會考統計資料</a> 。</p>
+    </div>
+  </div>
+  <button id="darkModeToggle" class="dark-mode-toggle">
+    <i class="fas fa-moon"></i>
+  </button>
+  <button id="helpButton" class="help-button">
+    <i class="fas fa-question"></i>
+  </button>
+  <div class="copyright">
+    2025 會考落點分析邀請碼. All rights reserved.
+  </div>
+
+  <div class="toast" id="toast">已成功複製邀請碼！</div>
+
+  <div id="qrModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>邀請碼 QR 碼</h2>
+      <div id="qrCode"></div>
+    </div>
+  </div>
+
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <span class="close help-close">&times;</span>
+      <h2>使用說明</h2>
+      <p>1. 此頁面顯示會考落點分析邀請碼，每小時自動更新。</p>
+      <p>2. 點擊「複製」按鈕將邀請碼複製到剪貼簿。</p>
+      <p>3. 點擊「顯示QR碼」生成邀請碼的QR碼。</p>
+      <p>4. 點擊「分享邀請碼」啟動原生分享功能（若瀏覽器支援）。</p>
+      <p>5. 點擊「手動更新」可立即從後端獲取最新邀請碼。</p>
+      <p>6. 進度條顯示距離邀請碼更新的倒數進度。</p>
+      <p>7. 使用深色模式切換按鈕切換頁面主題。</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    // 從後端 Google Apps Script 讀取邀請碼，並加入載入動畫效果
+    function updateInvitationCode() {
+      const codeEl = document.getElementById('invitationCode');
+      // 顯示 loading spinner
+      codeEl.innerHTML = '<div class="spinner"></div>';
+      const backendURL = 'https://script.google.com/macros/s/AKfycbwBUN15_ovfAOyhhgAF1adShWiDc2b4ouibcjZP2y-RY-1qI_IxRndV7o3lZ_WYLhnn/exec';
+      fetch(backendURL)
+        .then(response => response.json())
+        .then(data => {
+          const code = data.invitationCode;
+          codeEl.textContent = code;
+          codeEl.classList.add('fade-in');
+          setTimeout(() => codeEl.classList.remove('fade-in'), 500);
+          document.getElementById('lastUpdate').textContent = "最後更新：" + new Date().toLocaleString();
+        })
+        .catch(error => {
+          console.error('Error fetching invitation code:', error);
+        });
+    }
+
+    // 更新倒數計時與進度條
+    function updateTimer() {
+      const now = new Date();
+      const nextHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 0);
+      const timeLeft = nextHour - now;
+      
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+      const timerElement = document.getElementById('timer');
+      timerElement.innerHTML = `<i class="fas fa-hourglass-half"></i> 更新倒數：${minutes}分${seconds}秒`;
+
+      const hourDuration = 3600000;
+      let progress = ((hourDuration - timeLeft) / hourDuration) * 100;
+      progress = Math.min(100, Math.max(0, progress));
+      document.getElementById('progressBar').style.width = progress + '%';
+
+      if (timeLeft <= 0) {
+        updateInvitationCode();
+      }
+    }
+
+    // 複製邀請碼
+    function copyInvitationCode() {
+      const invitationCode = document.getElementById('invitationCode').textContent;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(invitationCode).then(() => {
+          showToast("已成功複製邀請碼！");
+        }).catch(err => {
+          console.error('無法複製到剪貼簿:', err);
+          alert('複製失敗，請手動複製邀請碼。');
+        });
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = invitationCode;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast("已成功複製邀請碼！");
+        } catch (err) {
+          console.error('無法複製到剪貼簿:', err);
+          alert('複製失敗，請手動複製邀請碼。');
+        }
+        document.body.removeChild(textArea);
+      }
+    }
+
+    // 顯示 Toast 提示
+    function showToast(message = "已成功複製邀請碼！") {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translate(-50%, 0)';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, -20px)';
+      }, 2000);
+    }
+
+    // 顯示 QR 碼模態框
+    function showQRCode() {
+      const modal = document.getElementById("qrModal");
+      const span = document.getElementsByClassName("close")[0];
+      const qrCodeDiv = document.getElementById("qrCode");
+      
+      qrCodeDiv.innerHTML = '';
+      new QRCode(qrCodeDiv, {
+        text: document.getElementById('invitationCode').textContent,
+        width: 128,
+        height: 128,
+        colorDark : "#000000",
+        colorLight : document.body.classList.contains('dark-mode') ? "#ffffff" : "#ffffff"
+      });
+      
+      modal.style.display = "block";
+      
+      span.onclick = function() { modal.style.display = "none"; };
+      
+      window.onclick = function(event) {
+        if (event.target == modal) { modal.style.display = "none"; }
+      }
+    }
+
+    // 分享邀請碼
+    function shareInvitationCode() {
+      const invitationCode = document.getElementById('invitationCode').textContent;
+      if (navigator.share) {
+        navigator.share({
+          title: '會考落點分析邀請碼',
+          text: `我的會考落點分析邀請碼是：${invitationCode}`,
+          url: 'https://tyctw.github.io/'
+        }).then(() => {
+          console.log('邀請碼分享成功');
+        }).catch((error) => {
+          console.log('邀請碼分享失敗', error);
+        });
+      } else {
+        alert(`請複製以下文字進行分享：\n\n我的會考落點分析邀請碼是：${invitationCode}\n\n網站: https://tyctw.github.io/`);
+      }
+    }
+
+    // 手動更新邀請碼
+    function manualRefresh() {
+      updateInvitationCode();
+      showToast("邀請碼已更新！");
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', isDarkMode);
+      updateDarkModeIcon();
+      
+      if (document.getElementById("qrModal").style.display === "block") {
+        showQRCode();
+      }
+    }
+
+    function updateDarkModeIcon() {
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+
+    function initDarkMode() {
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const savedDarkMode = localStorage.getItem('darkMode');
+      if (savedDarkMode === 'true') { document.body.classList.add('dark-mode'); }
+      updateDarkModeIcon();
+      darkModeToggle.addEventListener('click', toggleDarkMode);
+    }
+
+    // 初始化「使用說明」模態框
+    function initHelp() {
+      const helpButton = document.getElementById('helpButton');
+      const helpModal = document.getElementById('helpModal');
+      const helpClose = document.getElementsByClassName('help-close')[0];
+      helpButton.addEventListener('click', function() { helpModal.style.display = "block"; });
+      helpClose.addEventListener('click', function() { helpModal.style.display = "none"; });
+      window.addEventListener('click', function(e) {
+        if (e.target == helpModal) { helpModal.style.display = "none"; }
+      });
+    }
+
+    updateInvitationCode();
+    setInterval(updateTimer, 1000);
+    initDarkMode();
+    initHelp();
+
+    // 防止複製
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    // 防止截圖（僅適用於部分瀏覽器）
+    document.addEventListener('keyup', function(e) {
+      if (e.key == 'PrintScreen') {
+        navigator.clipboard.writeText('');
+        alert('截圖功能已被禁用');
+      }
+    });
+    // 防止右鍵點擊
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    // 防止拖曳選擇文字
+    document.onselectstart = function() { return false; };
+  </script>
+</body>
+</html>
