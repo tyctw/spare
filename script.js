@@ -279,7 +279,7 @@ async function analyzeScores() {
     showInvitationValidationAnimation();
     let validationResponse;
     try {
-      validationResponse = await fetch('https://script.google.com/macros/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
+      validationResponse = await fetch('https://script.google.com/a/macros/jiooq.com/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
         method: 'POST',
         body: JSON.stringify({
           action: 'validateInvitationCode',
@@ -806,6 +806,9 @@ function showExportOptions() {
       <button onclick="exportResults('csv')">
         <i class="fas fa-file-csv"></i> CSV檔 (.csv)
       </button>
+      <button onclick="exportResults('excel')" class="excel-export-btn">
+        <i class="fas fa-file-excel"></i> Excel檔 (.xlsx)
+      </button>
       <button onclick="exportResults('json')">
         <i class="fas fa-file-code"></i> JSON檔 (.json)
       </button>
@@ -873,9 +876,213 @@ async function exportResults(format = 'txt') {
     case 'json':
       exportJson(resultsText);
       break;
+    case 'excel':
+      exportExcel();
+      break;
     case 'print':
       printResults();
       break;
+  }
+}
+
+async function exportExcel() {
+  showLoading();
+  
+  try {
+    // Load required libraries if not already loaded
+    if (!window.XLSX) {
+      await loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js');
+    }
+    
+    // Get the scores and analysis results
+    const scores = {
+      chinese: document.getElementById('chinese').value,
+      english: document.getElementById('english').value,
+      math: document.getElementById('math').value,
+      science: document.getElementById('science').value,
+      social: document.getElementById('social').value,
+      composition: document.getElementById('composition').value
+    };
+    
+    // Create workbook with fancy styling
+    const wb = XLSX.utils.book_new();
+    wb.Props = {
+      Title: "會考落點分析結果",
+      Subject: "落點分析",
+      Author: "會考落點分析系統",
+      CreatedDate: new Date()
+    };
+    
+    // Create summary worksheet
+    const summaryData = [
+      ["會考落點分析結果"],
+      [],
+      ["產生日期", new Date().toLocaleDateString('zh-TW')],
+      ["總積分", document.querySelector('.total-points .result-value')?.textContent || ""],
+      [],
+      ["成績摘要"],
+      ["科目", "成績", "積分"],
+      ["國文", scores.chinese, getScoreValue(scores.chinese)],
+      ["英文", scores.english, getScoreValue(scores.english)],
+      ["數學", scores.math, getScoreValue(scores.math)],
+      ["自然", scores.science, getScoreValue(scores.science)],
+      ["社會", scores.social, getScoreValue(scores.social)],
+      ["作文", `${scores.composition} 級分`, scores.composition]
+    ];
+    
+    const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
+    
+    // Style the summary sheet
+    const summaryRange = XLSX.utils.decode_range(summaryWs['!ref']);
+    applyExcelStyling(summaryWs, summaryRange);
+    
+    // Merge title cell
+    summaryWs['!merges'] = [{ s: {r: 0, c: 0}, e: {r: 0, c: 2} }];
+    
+    // Add the summary worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, summaryWs, "分析摘要");
+    
+    // Create schools worksheet
+    const schoolsData = [["序號", "學校名稱", "類型", "屬性", "最低分數"]];
+    
+    // Get eligible schools
+    const schoolElements = document.querySelectorAll('.school-item');
+    schoolElements.forEach((school, index) => {
+      const schoolName = school.querySelector('.school-name')?.textContent.trim() || "";
+      const schoolType = getSchoolParentType(school);
+      const schoolOwnership = getSchoolOwnership(school);
+      const cutoffScore = school.querySelector('.cutoff-score')?.textContent.trim() || "";
+      
+      schoolsData.push([index + 1, schoolName, schoolType, schoolOwnership, cutoffScore]);
+    });
+    
+    const schoolsWs = XLSX.utils.aoa_to_sheet(schoolsData);
+    
+    // Style the schools sheet
+    const schoolsRange = XLSX.utils.decode_range(schoolsWs['!ref']);
+    applyExcelStyling(schoolsWs, schoolsRange);
+    
+    // Make header row bold
+    for (let C = schoolsRange.s.c; C <= schoolsRange.e.c; ++C) {
+      const cell = XLSX.utils.encode_cell({r: 0, c: C});
+      if(!schoolsWs[cell]) continue;
+      schoolsWs[cell].s = { 
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "2a9d8f" } },
+        alignment: { horizontal: "center", vertical: "center" }
+      };
+    }
+    
+    // Add the schools worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, schoolsWs, "符合學校");
+    
+    // Add recommendations sheet
+    const recommendationsData = [
+      ["會考落點分析建議"],
+      [],
+      ["根據您的成績，以下是一些建議："],
+      [],
+      ["1. 參考多方資訊，不要僅依賴本分析結果"],
+      ["2. 諮詢學校輔導老師或升學顧問的專業意見"],
+      ["3. 密切關注各校的官方網站和招生簡章"],
+      ["4. 考慮學校特色、地理位置等因素"],
+      [],
+      ["重要提醒：本分析結果僅供參考，實際錄取情況可能因多種因素而有所不同"]
+    ];
+    
+    const recWs = XLSX.utils.aoa_to_sheet(recommendationsData);
+    
+    // Style the recommendations sheet
+    const recRange = XLSX.utils.decode_range(recWs['!ref']);
+    applyExcelStyling(recWs, recRange);
+    
+    // Add the recommendations worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, recWs, "建議事項");
+    
+    // Create and download the Excel file
+    XLSX.writeFile(wb, "會考落點分析結果.xlsx");
+    
+    logUserActivity('export_excel_success');
+  } catch (error) {
+    console.error("Excel export error:", error);
+    alert("Excel 匯出失敗，請確認您的瀏覽器支援此功能");
+    logUserActivity('export_excel_error', { error: error.message });
+  } finally {
+    hideLoading();
+  }
+}
+
+function getScoreValue(score) {
+  const scoreValues = { 'A++': 6, 'A+': 6, 'A': 6, 'B++': 4, 'B+': 4, 'B': 4, 'C': 2 };
+  return scoreValues[score] || 0;
+}
+
+function getSchoolParentType(schoolElement) {
+  // Navigate up to find the school-type-card
+  const parentCard = schoolElement.closest('.school-type-card');
+  if (parentCard) {
+    const typeHeader = parentCard.querySelector('.school-type-header h4');
+    if (typeHeader) {
+      return typeHeader.textContent.trim();
+    }
+  }
+  return "";
+}
+
+function getSchoolOwnership(schoolElement) {
+  const ownershipElem = schoolElement.querySelector('.school-ownership');
+  if (ownershipElem) {
+    return ownershipElem.textContent.replace(/[\[\]【】]/g, '').trim();
+  }
+  return "";
+}
+
+function applyExcelStyling(worksheet, range) {
+  // Set column widths
+  const colWidths = [10, 30, 15, 15, 20];
+  for (let i = 0; i <= range.e.c; i++) {
+    worksheet['!cols'] = worksheet['!cols'] || [];
+    worksheet['!cols'][i] = { wch: colWidths[i] || 15 };
+  }
+  
+  // Style all cells
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell = XLSX.utils.encode_cell({r: R, c: C});
+      if(!worksheet[cell]) continue;
+      
+      worksheet[cell].s = worksheet[cell].s || {};
+      
+      // Basic styling for all cells
+      worksheet[cell].s = {
+        font: { name: "Arial", sz: 11 },
+        alignment: { vertical: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "CCCCCC" } },
+          bottom: { style: "thin", color: { rgb: "CCCCCC" } },
+          left: { style: "thin", color: { rgb: "CCCCCC" } },
+          right: { style: "thin", color: { rgb: "CCCCCC" } }
+        }
+      };
+      
+      // Style header rows
+      if (R === 0 || (R === 5 && C === 0)) {
+        worksheet[cell].s.font = { bold: true, sz: 14, color: { rgb: "2a9d8f" } };
+      }
+      
+      // Style subheader rows
+      if (R === 6 && C <= 2) {
+        worksheet[cell].s.font = { bold: true };
+        worksheet[cell].s.fill = { fgColor: { rgb: "E9C46A" } };
+      }
+      
+      // Alternate row colors for data
+      if (R >= 7) {
+        worksheet[cell].s.fill = {
+          fgColor: { rgb: R % 2 ? "F4F1DE" : "FFFFFF" }
+        };
+      }
+    }
   }
 }
 
@@ -969,7 +1176,7 @@ function printResults() {
       </div>
       ${resultContent}
       <footer>
-        <p>© ${new Date().getFullYear()} 會考落點分析系統 | 此分析結果僅供參考</p>
+        <p> 會考落點分析系統 | 此分析結果僅供參考</p>
       </footer>
       <script>
         window.onload = function() {

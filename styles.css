@@ -2301,8 +2301,8 @@ button:disabled {
 .loading-progress {
   width: 200px;
   height: 4px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
+  background-color: #eee;
+  border-radius: 5px;
   overflow: hidden;
   position: relative;
 }
@@ -2310,12 +2310,10 @@ button:disabled {
 .loading-progress::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
   height: 100%;
   width: 30%;
-  background: var(--primary-color);
-  border-radius: 2px;
+  background-color: var(--primary-color);
+  border-radius: 5px;
   animation: progress 2s ease-in-out infinite;
 }
 
@@ -2354,8 +2352,7 @@ button:disabled {
 
 @keyframes progress {
   0% { left: -30%; }
-  50% { left: 100%; }
-  100% { left: -30%; }
+  100% { left: 100%; }
 }
 
 @keyframes popIn {
@@ -2387,7 +2384,7 @@ button:disabled {
 }
 
 .dark-mode .loading-progress {
-  background: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .dark-mode .loading-step {
@@ -2581,264 +2578,138 @@ button:disabled {
   }
 }
 
-.instructions-modal-content {
-  max-width: 800px;
-  max-height: 85vh;
-  overflow-y: auto;
-  background-color: #ffffff;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
-  margin: 5vh auto;
+.excel-export-btn {
+  background: linear-gradient(135deg, #1D6F42, #2EAA5E);
   position: relative;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transform: translateY(30px);
-  opacity: 0;
-  animation: modalSlideIn 0.6s ease-out forwards;
-}
-
-.instructions-modal-content .instruction-item {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  color: white;
+  border: none;
   transition: all 0.3s ease;
-  border-left: 4px solid var(--primary-color);
-  animation: slideInRight 0.5s ease-out forwards;
+}
+
+.excel-export-btn:hover {
+  background: linear-gradient(135deg, #2EAA5E, #1D6F42);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(46, 170, 94, 0.4);
+}
+
+.excel-export-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.excel-export-btn:hover::before {
   opacity: 1;
-  transform: translateX(0);
 }
 
-.dark-mode .instructions-modal-content {
-  background-color: #3a3f5c;
-  color: #edf2f4;
-}
-
-.dark-mode .instructions-modal-content .instruction-item {
-  background: rgba(0, 0, 0, 0.2);
-  border-left-color: var(--accent-color);
-}
-
-@media (max-width: 768px) {
-  .instructions-modal-content {
-    width: 90%;
-    padding: 25px;
-    margin: 5vh auto;
-  }
-}
-
-.instruction-visual {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: rgba(42, 157, 143, 0.05);
-  padding: 20px;
-  border-radius: 10px;
-  margin: 15px 0;
-  text-align: center;
-}
-
-.instruction-visual .icon-large {
-  font-size: 3rem;
-  color: var(--primary-color);
-  margin-bottom: 15px;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
-.instruction-visual div {
-  margin: 5px 0;
-  font-weight: 500;
-}
-
-.grade-table {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 5px;
-  margin-top: 10px;
-  width: 100%;
-  max-width: 300px;
-}
-
-.grade-row {
-  display: grid;
-  grid-template-columns: 60px 1fr 1fr;
-  background: rgba(255, 255, 255, 0.7);
-  padding: 8px;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.grade-row:nth-child(1) {
-  background: rgba(46, 204, 113, 0.2);
-  font-weight: bold;
-}
-
-.grade-row:nth-child(2),
-.grade-row:nth-child(3) {
-  background: rgba(46, 204, 113, 0.1);
-}
-
-.grade-row:nth-child(4),
-.grade-row:nth-child(5),
-.grade-row:nth-child(6) {
-  background: rgba(241, 196, 15, 0.1);
-}
-
-.grade-row:nth-child(7) {
-  background: rgba(231, 76, 60, 0.1);
-}
-
-.instruction-item ul li i {
-  width: 20px;
-  text-align: center;
-  color: var(--primary-color);
+.excel-export-btn i {
+  color: white;
   margin-right: 8px;
+  font-size: 1.1em;
+}
+
+.excel-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+.excel-loading-content {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.excel-loading-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgd2lkdGg9IjQ4cHgiIGhlaWdodD0iNDhweCI+PHBhdGggZmlsbD0iIzJFQUE1RSIgZD0iTTQxLDEwSDI1djI4aDIxVjE1TDQxLDEweiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0yNSAyNUgzN1YyM0gyNVYyNU0yNSAyOUgzN1YyN0gyNVYyOU0yNSAzM0gzN1YzMUgyNVYzM00yNSAyMUgzN1YxOUgyNVYyMSIvPjxwYXRoIGZpbGw9IiNFQ0VDRUMiIGQ9Ik0yNyw0MmgxN3YtMUgyOGMtMC41NTMsMC0xLTAuNDQ3LTEtMVYxNWgtMXYyNUMyNiw0MS41NTMsMjYuNDQ3LDQyLDI3LDQyeiIvPjxwYXRoIGZpbGw9IiMxRDZGNDIiIGQ9Ik00MSwxMGg0djFoLTRWMTB6Ii8+PHBhdGggZmlsbD0iIzFENkY0MiIgZD0iTTQxLDEwSDI1djRoMTZWMTB6Ii8+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTIyLDExdjMwSDdWMTFIMjIiLz48cGF0aCBmaWxsPSIjRDNENUQ2IiBkPSJNMjIsMTZWMTFoLTV2NUgyMnogTTEzLjBN0IEM0yLDExLDE0LjUsMTUuMzgsMTYsMjBjMS43Myw1LjM4LDIuMTY4LDcuMjA2LDQsN2MxLjc5LS4yLDEuOTQtLjAwMiwzLjk2OCwzLjQxOSIvPjxwYXRoIGZpbGw9IiNBNUFBQUIiIGQ9Ik0yMiwxNkg3di0xaDE1VjE2eiIvPjxwYXRoIGZpbGw9IiMyRUFBNUUiIGQ9Ik05LDI2bDIsMmwzLTNsMSwxbC00LDRsLTMtM0w5LDI2eiIvPjwvc3ZnPg==');
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+.excel-loading-message {
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.excel-loading-progress {
+  width: 100%;
+  height: 5px;
+  background-color: #eee;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.excel-loading-progress::after {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 30%;
+  background-color: #2EAA5E;
+  border-radius: 5px;
+  animation: progress 1.5s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% { left: -30%; }
+  100% { left: 100%; }
 }
 
 /* Dark mode adjustments */
-.dark-mode .instructions-modal-content {
-  background-color: #3a3f5c;
-  color: #edf2f4;
+.dark-mode .excel-export-btn {
+  background: linear-gradient(135deg, #1D6F42, #2EAA5E);
 }
 
-.dark-mode .instructions-modal-content .instruction-item {
-  background: rgba(0, 0, 0, 0.2);
-  border-left-color: var(--accent-color);
+.dark-mode .excel-loading-content {
+  background: var(--card-background);
+  color: var(--text-color);
 }
 
-.dark-mode .grade-row {
-  background: rgba(0, 0, 0, 0.2);
-  color: #edf2f4;
+.dark-mode .excel-loading-message {
+  color: var(--text-color);
 }
 
-.dark-mode .grade-row:nth-child(1) {
-  background: rgba(46, 204, 113, 0.3);
+.dark-mode .excel-loading-progress {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.dark-mode .grade-row:nth-child(2),
-.dark-mode .grade-row:nth-child(3) {
-  background: rgba(46, 204, 113, 0.2);
-}
-
-.dark-mode .grade-row:nth-child(4),
-.dark-mode .grade-row:nth-child(5),
-.dark-mode .grade-row:nth-child(6) {
-  background: rgba(241, 196, 15, 0.2);
-}
-
-.dark-mode .grade-row:nth-child(7) {
-  background: rgba(231, 76, 60, 0.2);
-}
-
-.dark-mode .instruction-visual {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* Mobile responsive adjustments */
+/* Mobile responsiveness */
 @media (max-width: 768px) {
-  .instructions-modal-content {
-    width: 90%;
-    padding: 25px;
-    margin: 5vh auto;
+  .excel-loading-content {
+    max-width: 85%;
+    padding: 20px;
   }
   
-  .instruction-visual .icon-large {
-    font-size: 2.5rem;
-  }
-  
-  .grade-table {
-    max-width: 250px;
-  }
-  
-  .grade-row {
-    font-size: 0.8rem;
-  }
-}
-
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  
-  #results, #results * {
-    visibility: visible;
-  }
-  
-  #results {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-  
-  .dark-mode-toggle, 
-  .header,
-  .menu-overlay,
-  .fullscreen-menu,
-  button,
-  form,
-  .form-group,
-  #ratingSection,
-  .copyright {
-    display: none !important;
-  }
-  
-  .results-container {
-    box-shadow: none !important;
-    border: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  
-  .result-card {
-    break-inside: avoid;
-  }
-  
-  /* Better contrast for printing */
-  .results-container {
-    color: black !important;
-    background: white !important;
-  }
-  
-  .result-card, .school-type-card {
-    border: 1px solid #ddd !important;
-    background: white !important;
-    color: black !important;
-    box-shadow: none !important;
-  }
-  
-  .score-item, .school-item {
-    background: white !important;
-    border: 1px solid #eee !important;
-    color: black !important;
-  }
-  
-  .print-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 12px;
-    color: #999;
-    border-top: 1px solid #eee;
-    padding: 10px 0;
-  }
-  
-  /* Add page breaks where appropriate */
-  .school-type-card {
-    page-break-inside: avoid;
-  }
-  
-  h2, h3 {
-    page-break-after: avoid;
+  .excel-loading-icon {
+    width: 60px;
+    height: 60px;
   }
 }
