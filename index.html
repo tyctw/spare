@@ -290,7 +290,6 @@
       <i class="fas fa-moon"></i>
     </button>
 
-    <!-- 美化版免責聲明 Modal -->
     <div id="disclaimerModal" class="modal">
       <div class="modal-content">
         <button class="close" onclick="closeDisclaimer()">&times;</button>
@@ -373,6 +372,24 @@
             <li>學校類型：全部、普通科或職業類科</li>
             <li>職業群別：選擇特定職業群或全部（僅限職業類科）</li>
           </ul>
+          <div class="instruction-visual">
+            <i class="fas fa-sitemap icon-large"></i>
+            <div>依照不同屬性和類型篩選可獲得更精確的分析結果</div>
+          </div>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-user-graduate icon"></i>選擇分析身份與地區
+          </h3>
+          <p>請選擇您的身份和想要分析的區域：</p>
+          <ul>
+            <li><i class="fas fa-user-alt"></i> 分析身份：學生、老師或家長</li>
+            <li><i class="fas fa-map-marker-alt"></i> 分析區域：桃聯區、中投區、高雄區或彰化區</li>
+          </ul>
+          <div class="highlight">
+            <i class="fas fa-info-circle"></i> 不同地區有不同的計分方式，請務必選擇正確的區域。
+          </div>
         </div>
 
         <div class="instruction-item">
@@ -384,13 +401,26 @@
           </div>
           <p>依序選擇各科目的會考等級：</p>
           <ul>
-            <li>國文：A++ 到 C</li>
-            <li>英文：A++ 到 C</li>
-            <li>數學：A++ 到 C</li>
-            <li>自然：A++ 到 C</li>
-            <li>社會：A++ 到 C</li>
-            <li>作文：0 到 6 級分</li>
+            <li><i class="fas fa-book"></i> 國文：A++ 到 C</li>
+            <li><i class="fas fa-language"></i> 英文：A++ 到 C</li>
+            <li><i class="fas fa-calculator"></i> 數學：A++ 到 C</li>
+            <li><i class="fas fa-flask"></i> 自然：A++ 到 C</li>
+            <li><i class="fas fa-globe"></i> 社會：A++ 到 C</li>
+            <li><i class="fas fa-pen-nib"></i> 作文：0 到 6 級分</li>
           </ul>
+          <div class="instruction-visual">
+            <i class="fas fa-award icon-large"></i>
+            <div>會考成績等級表</div>
+            <div class="grade-table">
+              <div class="grade-row"><span>A++</span><span>精熟</span><span>頂標</span></div>
+              <div class="grade-row"><span>A+</span><span>精熟</span><span>前標</span></div>
+              <div class="grade-row"><span>A</span><span>精熟</span><span>均標</span></div>
+              <div class="grade-row"><span>B++</span><span>基礎</span><span>後標</span></div>
+              <div class="grade-row"><span>B+</span><span>基礎</span><span>底標</span></div>
+              <div class="grade-row"><span>B</span><span>基礎</span><span>基礎</span></div>
+              <div class="grade-row"><span>C</span><span>待加強</span><span>待加強</span></div>
+            </div>
+          </div>
         </div>
 
         <div class="instruction-item">
@@ -399,22 +429,27 @@
           </h3>
           <p>系統會根據您的輸入進行分析並顯示：</p>
           <ul>
-            <li>總積分計算結果</li>
-            <li>總積點計算結果</li>
-            <li>符合條件的學校列表</li>
-            <li>各類型學校的數量統計</li>
+            <li><i class="fas fa-star"></i> 總積分計算結果</li>
+            <li><i class="fas fa-award"></i> 總積點計算結果</li>
+            <li><i class="fas fa-school"></i> 符合條件的學校列表</li>
+            <li><i class="fas fa-chart-pie"></i> 各類型學校的數量統計</li>
           </ul>
+          <div class="instruction-visual">
+            <i class="fas fa-search icon-large"></i>
+            <div>系統會自動計算您的總積分，並比對各校最低錄取標準</div>
+          </div>
         </div>
 
         <div class="instruction-item">
           <h3>
             <i class="fas fa-file-export icon"></i>匯出分析結果
           </h3>
-          <p>您可以將分析結果匯出為文字檔案，包含：</p>
+          <p>您可以將分析結果匯出為多種格式，包含：</p>
           <ul>
-            <li>完整的分析結果</li>
-            <li>時間戳記</li>
-            <li>可能estival錄取學校清單</li>
+            <li><i class="fas fa-file-alt"></i> 文字檔 (.txt) - 簡單易讀的純文字格式</li>
+            <li><i class="fas fa-file-pdf"></i> PDF檔 (.pdf) - 適合列印或正式保存</li>
+            <li><i class="fas fa-file-csv"></i> CSV檔 (.csv) - 可匯入Excel等電子表格軟體</li>
+            <li><i class="fas fa-file-code"></i> JSON檔 (.json) - 適合程式開發者使用</li>
           </ul>
           <div class="highlight">
             <i class="fas fa-lightbulb"></i> 建議將結果匯出保存，方便日後參考比較。
@@ -427,12 +462,16 @@
           </h3>
           <p>您可以隨時：</p>
           <ul>
-            <li>修改篩選條件</li>
-            <li>更新 nonatomic 資料</li>
-            <li>重新進行分析</li>
+            <li><i class="fas fa-sliders-h"></i> 修改篩選條件</li>
+            <li><i class="fas fa-edit"></i> 更新會考成績</li>
+            <li><i class="fas fa-sync"></i> 重新進行分析</li>
           </ul>
           <div class="highlight">
-            <i class="fas fa-sync"></i> 系統會即時更新分析結果，讓您掌握不同選擇的可能性.
+            <i class="fas fa-sync"></i> 系統會即時更新分析結果，讓您掌握不同選擇的可能性。
+          </div>
+          <div class="instruction-visual">
+            <i class="fas fa-check-circle icon-large"></i>
+            <div>分析結果僅供參考，請務必與學校招生簡章核對</div>
           </div>
         </div>
         
