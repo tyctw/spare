@@ -61,18 +61,94 @@ function showInvitationValidationAnimation() {
   overlay.className = 'validation-overlay';
   overlay.innerHTML = `
     <div class="validation-spinner"></div>
-    <div class="validation-text">驗證邀請碼中...</div>
+    <div class="validation-text">驗證邀請碼中</div>
+    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-top: 5px; text-align: center;">
+      <span style="display: inline-block; animation: pulse 1.5s infinite;">連接到伺服器...</span>
+    </div>
+    <div class="validation-progress" style="width: 80%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; margin-top: 10px;">
+      <div style="height: 100%; width: 0%; background: white; border-radius: 2px; animation: progressMove 2s cubic-bezier(0.1, 0.42, 0.85, 1) forwards;"></div>
+    </div>
   `;
   invitationGroup.appendChild(overlay);
+  
+  // Add success animation sequence with enhanced visuals
+  setTimeout(() => {
+    if (overlay && overlay.parentNode) {
+      const statusText = overlay.querySelector('.validation-text');
+      const subText = overlay.querySelector('div[style*="font-size: 0.8rem"]');
+      if (statusText) {
+        statusText.innerHTML = '驗證成功 <i class="fas fa-check" style="margin-left: 5px; font-size: 0.8em;"></i>';
+        statusText.style.animation = 'pulse 1s infinite';
+      }
+      if (subText) {
+        subText.innerHTML = '<span style="color: #e9ffc2;">邀請碼有效</span>';
+        subText.style.animation = 'fadeInUp 0.5s ease-out forwards';
+      }
+      
+      const checkmark = document.createElement('div');
+      checkmark.innerHTML = '<i class="fas fa-check-circle" style="color: #e9ffc2; font-size: 3rem; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); animation: popIn 0.5s cubic-bezier(0.26, 1.56, 0.44, 1);"></i>';
+      const spinner = overlay.querySelector('.validation-spinner');
+      if (spinner && spinner.parentNode) {
+        spinner.style.animation = 'fadeOut 0.3s ease forwards';
+        setTimeout(() => {
+          spinner.parentNode.replaceChild(checkmark, spinner);
+          
+          // Add celebration particles effect
+          createParticles(overlay);
+        }, 300);
+      }
+      
+      // Style the progress bar to complete
+      const progressBar = overlay.querySelector('.validation-progress div');
+      if (progressBar) {
+        progressBar.style.width = '100%';
+        progressBar.style.background = '#e9ffc2';
+        progressBar.style.boxShadow = '0 0 8px rgba(233, 255, 194, 0.8)';
+      }
+    }
+  }, 1500);
+}
+
+function createParticles(container) {
+  for (let i = 0; i < 20; i++) {
+    const particle = document.createElement('div');
+    particle.style.cssText = `
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+    `;
+    container.appendChild(particle);
+    
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const duration = 0.5 + Math.random() * 1;
+    const delay = Math.random() * 0.3;
+    
+    particle.animate([
+      { transform: 'translate(-50%, -50%)', opacity: 1 },
+      { transform: `translate(${x - 50}%, ${y - 50}%) scale(0)`, opacity: 0 }
+    ], {
+      duration: duration * 1000,
+      delay: delay * 1000,
+      easing: 'cubic-bezier(0.1, 0.5, 0.9, 0.1)'
+    });
+    
+    // Remove particle after animation
+    setTimeout(() => particle.remove(), (duration + delay) * 1000);
+  }
 }
 
 function hideInvitationValidationAnimation() {
   const overlay = document.getElementById('invitationValidationOverlay');
   if (overlay) {
-    overlay.style.animation = 'fadeOut 0.3s ease';
+    overlay.style.animation = 'fadeOut 0.5s ease';
     setTimeout(() => {
       overlay.remove();
-    }, 300);
+    }, 500);
   }
 }
 
