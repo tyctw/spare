@@ -1263,3 +1263,12 @@ function printResults() {
 }
 
 initRating();
+
+function toggleIdentitySelector() {
+  const identityOptions = document.querySelectorAll('.identity-option .identity-input');
+  identityOptions.forEach(option => {
+    if (option.checked) {
+      document.getElementById('analysisIdentity').value = option.value;
+    }
+  });
+}

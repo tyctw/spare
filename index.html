@@ -147,10 +147,33 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="analysisIdentity">
+        <label>
           <i class="fas fa-user icon"></i> 分析身份：
         </label>
-        <select id="analysisIdentity">
+        <div class="identity-selector">
+          <div class="identity-option">
+            <input type="radio" id="identity-student" name="identitySelector" value="student" class="identity-input" onchange="toggleIdentitySelector()">
+            <label for="identity-student" class="identity-label">
+              <i class="fas fa-user-graduate identity-icon"></i>
+              <div class="identity-name">學生</div>
+            </label>
+          </div>
+          <div class="identity-option">
+            <input type="radio" id="identity-teacher" name="identitySelector" value="teacher" class="identity-input" onchange="toggleIdentitySelector()">
+            <label for="identity-teacher" class="identity-label">
+              <i class="fas fa-chalkboard-teacher identity-icon"></i>
+              <div class="identity-name">老師</div>
+            </label>
+          </div>
+          <div class="identity-option">
+            <input type="radio" id="identity-parent" name="identitySelector" value="parent" class="identity-input" onchange="toggleIdentitySelector()">
+            <label for="identity-parent" class="identity-label">
+              <i class="fas fa-user-friends identity-icon"></i>
+              <div class="identity-name">家長</div>
+            </label>
+          </div>
+        </div>
+        <select id="analysisIdentity" style="display: none;">
           <option value="">請選擇身份</option>
           <option value="student">學生</option>
           <option value="teacher">老師</option>
