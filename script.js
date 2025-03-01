@@ -779,15 +779,7 @@ function displayResults(data) {
 }
 
 function getScoreClass(score) {
-  const scoreClasses = {
-    'A++': 'score-excellent',
-    'A+': 'score-great',
-    'A': 'score-good',
-    'B++': 'score-above-average',
-    'B+': 'score-average',
-    'B': 'score-below-average',
-    'C': 'score-needs-improvement'
-  };
+  const scoreClasses = { 'A++': 'score-excellent', 'A+': 'score-great', 'A': 'score-good', 'B++': 'score-above-average', 'B+': 'score-average', 'B': 'score-below-average', 'C': 'score-needs-improvement' };
   return scoreClasses[score] || '';
 }
 
@@ -802,9 +794,6 @@ function showExportOptions() {
       </button>
       <button onclick="exportResults('pdf')">
         <i class="fas fa-file-pdf"></i> PDF檔 (.pdf)
-      </button>
-      <button onclick="exportResults('csv')">
-        <i class="fas fa-file-csv"></i> CSV檔 (.csv)
       </button>
       <button onclick="exportResults('excel')" class="excel-export-btn">
         <i class="fas fa-file-excel"></i> Excel檔 (.xlsx)
@@ -825,14 +814,6 @@ function showExportOptions() {
   requestAnimationFrame(() => {
     exportMenu.classList.add('show');
   });
-}
-
-function closeExportMenu() {
-  const exportMenu = document.querySelector('.export-menu');
-  if (exportMenu) {
-    exportMenu.classList.remove('show');
-    setTimeout(() => exportMenu.remove(), 300);
-  }
 }
 
 async function exportResults(format = 'txt') {
@@ -870,9 +851,6 @@ async function exportResults(format = 'txt') {
     case 'pdf':
       await exportPdf(contentWithWatermark);
       break;
-    case 'csv':
-      exportCsv(resultsText);
-      break;
     case 'json':
       exportJson(resultsText);
       break;
@@ -882,6 +860,87 @@ async function exportResults(format = 'txt') {
     case 'print':
       printResults();
       break;
+  }
+}
+
+function exportTxt(content) {
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  downloadFile(blob, '會考落點分析結果.txt');
+}
+
+async function exportPdf(content) {
+  if (!window.jsPDF) {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  }
+  
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFont('helvetica');
+  doc.setFontSize(12);
+  
+  const splitText = doc.splitTextToSize(content, 180);
+  let y = 20;
+  
+  splitText.forEach(line => {
+    if (y > 280) {
+      doc.addPage();
+      y = 20;
+    }
+    doc.text(line, 15, y);
+    y += 7;
+  });
+  
+  doc.save('會考落點分析結果.pdf');
+}
+
+function exportJson(content) {
+  const lines = content.split('\n');
+  const jsonData = {
+    title: '會考落點分析結果',
+    generateTime: new Date().toISOString(),
+    content: lines.filter(line => line.trim()),
+    scores: {
+      chinese: document.getElementById('chinese').value,
+      english: document.getElementById('english').value,
+      math: document.getElementById('math').value,
+      science: document.getElementById('science').value,
+      social: document.getElementById('social').value,
+      composition: document.getElementById('composition').value
+    }
+  };
+  
+  const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json;charset=utf-8' });
+  downloadFile(blob, '會考落點分析結果.json');
+}
+
+function downloadFile(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(url);
+  a.remove();
+}
+
+async function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+function closeExportMenu() {
+  const exportMenu = document.querySelector('.export-menu');
+  if (exportMenu) {
+    exportMenu.classList.remove('show');
+    setTimeout(() => exportMenu.remove(), 300);
   }
 }
 
@@ -1189,94 +1248,6 @@ function printResults() {
   `);
   
   printWindow.document.close();
-}
-
-function exportTxt(content) {
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-  downloadFile(blob, '會考落點分析結果.txt');
-}
-
-async function exportPdf(content) {
-  if (!window.jsPDF) {
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-  }
-  
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  
-  doc.setFont('helvetica');
-  doc.setFontSize(12);
-  
-  const splitText = doc.splitTextToSize(content, 180);
-  let y = 20;
-  
-  splitText.forEach(line => {
-    if (y > 280) {
-      doc.addPage();
-      y = 20;
-    }
-    doc.text(line, 15, y);
-    y += 7;
-  });
-  
-  doc.save('會考落點分析結果.pdf');
-}
-
-function exportCsv(content) {
-  const lines = content.split('\n');
-  let csvContent = '';
-  
-  lines.forEach(line => {
-    const cleanLine = line.replace(/[*]/g, '').trim();
-    if (cleanLine) {
-      csvContent += `"${cleanLine}"\n`;
-    }
-  });
-  
-  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8' });
-  downloadFile(blob, '會考落點分析結果.csv');
-}
-
-function exportJson(content) {
-  const lines = content.split('\n');
-  const jsonData = {
-    title: '會考落點分析結果',
-    generateTime: new Date().toISOString(),
-    content: lines.filter(line => line.trim()),
-    scores: {
-      chinese: document.getElementById('chinese').value,
-      english: document.getElementById('english').value,
-      math: document.getElementById('math').value,
-      science: document.getElementById('science').value,
-      social: document.getElementById('social').value,
-      composition: document.getElementById('composition').value
-    }
-  };
-  
-  const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json;charset=utf-8' });
-  downloadFile(blob, '會考落點分析結果.json');
-}
-
-function downloadFile(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.style.display = 'none';
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  URL.revokeObjectURL(url);
-  a.remove();
-}
-
-async function loadScript(url) {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = url;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
 }
 
 initRating();
