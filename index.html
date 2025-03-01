@@ -159,18 +159,52 @@
       </div>
 
       <div class="form-group">
-        <label for="analysisArea">
+        <label>
           <i class="fas fa-map-marker-alt icon"></i> 分析區域：
         </label>
-        <select id="analysisArea">
-          <option value="">請選擇分析地區</option>
-          <option value="taoyuan">桃聯區</option>
-          <option value="central">中投區</option>
-          <option value="kaohsiung">高雄區</option>
-          <option value="changhua">彰化區</option>
-        </select>
+        <div class="region-selector">
+          <div class="region-option">
+            <input type="radio" id="region-taoyuan" name="analysisArea" value="taoyuan" class="region-input">
+            <label for="region-taoyuan" class="region-label">
+              <i class="fas fa-city region-icon"></i>
+              <div class="region-text">
+                <div class="region-name">桃聯區</div>
+                <div class="region-description">桃園聯合分發區考生</div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-central" name="analysisArea" value="central" class="region-input">
+            <label for="region-central" class="region-label">
+              <i class="fas fa-mountain region-icon"></i>
+              <div class="region-text">
+                <div class="region-name">中投區</div>
+                <div class="region-description">中投區考生</div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-kaohsiung" name="analysisArea" value="kaohsiung" class="region-input">
+            <label for="region-kaohsiung" class="region-label">
+              <i class="fas fa-ship region-icon"></i>
+              <div class="region-text">
+                <div class="region-name">高雄區</div>
+                <div class="region-description">高雄區考生</div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-changhua" name="analysisArea" value="changhua" class="region-input">
+            <label for="region-changhua" class="region-label">
+              <i class="fas fa-seedling region-icon"></i>
+              <div class="region-text">
+                <div class="region-name">彰化區</div>
+                <div class="region-description">彰化區考生</div>
+              </div>
+            </label>
+          </div>
+        </div>
       </div>
-
       <div class="form-group">
         <label for="chinese">
           <i class="fas fa-book icon"></i>國文：

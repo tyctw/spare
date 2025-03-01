@@ -311,9 +311,13 @@ async function analyzeScores() {
     const schoolType = document.getElementById('schoolType').value;
     const vocationalGroup = document.getElementById('vocationalGroup').value;
     const analysisIdentity = document.getElementById('analysisIdentity').value;
-    const analysisArea = document.getElementById('analysisArea').value;
+    
+    // Get selected region from radio buttons
+    const analysisAreaRadio = document.querySelector('input[name="analysisArea"]:checked');
+    const analysisArea = analysisAreaRadio ? analysisAreaRadio.value : '';
 
-    const fields = ['analysisArea','analysisIdentity','chinese', 'english', 'math', 'science', 'social', 'composition' , ];
+    // Updated fields to check
+    const fields = ['analysisIdentity', 'chinese', 'english', 'math', 'science', 'social', 'composition'];
     let isAllFieldsFilled = true;
     let emptyFields = [];
 
@@ -324,6 +328,12 @@ async function analyzeScores() {
         emptyFields.push(field);
       }
     });
+    
+    // Check if a region is selected
+    if (!analysisArea) {
+      isAllFieldsFilled = false;
+      emptyFields.push('analysisArea');
+    }
 
     if (!isAllFieldsFilled) {
       let errorMessage = '請填寫以下欄位會考成績：\n';
@@ -336,7 +346,6 @@ async function analyzeScores() {
         'science': '自然',
         'social': '社會',
         'composition': '作文'
-        
       };
       emptyFields.forEach(field => {
         errorMessage += `- ${fieldNames[field]}\n`;
@@ -344,7 +353,7 @@ async function analyzeScores() {
       alert(errorMessage);
       return;
     }
-
+    
     await logUserActivity('analyze_scores', {
       scores: {
         chinese: document.getElementById('chinese').value,
