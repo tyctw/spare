@@ -565,11 +565,13 @@ function displayResults(data) {
             <div class="result-value">${totalPoints}</div>
             <div class="result-label">總積分</div>
           </div>
+          ${totalCredits !== null ? `
           <div class="result-card total-credits">
             <i class="fas fa-award icon"></i>
             <div class="result-value">${totalCredits}</div>
             <div class="result-label">總積點</div>
           </div>
+          ` : ''}
           <div class="result-card schools-count">
             <i class="fas fa-school icon"></i>
             <div class="result-value">${eligibleSchools ? eligibleSchools.length : 0}</div>

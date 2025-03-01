@@ -1104,12 +1104,31 @@ button:disabled {
   padding: 2rem;
   margin-top: 2rem;
   box-shadow: 0 10px 30px var(--shadow-color);
-  animation: slideInUp 0.5s ease-out;
+  animation: fadeIn 0.5s ease-out;
+  transition: all 0.3s ease;
+}
+
+.results-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px var(--shadow-color);
 }
 
 .results-header {
   text-align: center;
   margin-bottom: 2rem;
+  position: relative;
+}
+
+.results-header:after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  border-radius: 3px;
 }
 
 .results-summary {
@@ -1127,36 +1146,67 @@ button:disabled {
   border-radius: 15px;
   text-align: center;
   flex: 1;
-  min-width: 200px;
+  min-width: 150px;
   box-shadow: 0 5px 15px var(--shadow-color);
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-card:before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .result-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.result-card:hover:before {
+  opacity: 1;
 }
 
 .result-card .icon {
   font-size: 2rem;
   margin-bottom: 1rem;
+  display: block;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
 .result-value {
   font-size: 2.5rem;
   font-weight: bold;
   margin: 0.5rem 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 1;
 }
 
 .result-label {
   font-size: 1.1rem;
   opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
 }
 
 .scores-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .score-item {
@@ -1166,29 +1216,88 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.score-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(5px);
+  border-left-color: var(--primary-color);
+}
+
+.score-label {
+  font-weight: 500;
 }
 
 .score-value {
   font-weight: bold;
   padding: 0.5rem 1rem;
   border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  min-width: 60px;
+  text-align: center;
 }
 
-.score-excellent { background: #2ecc71; color: white; }
-.score-great { background: #3498db; color: white; }
-.score-good { background: #9b59b6; color: white; }
-.score-above-average { background: #f1c40f; color: black; }
-.score-average { background: #e67e22; color: white; }
-.score-below-average { background: #e74c3c; color: white; }
-.score-needs-improvement { background: #c0392b; color: white; }
+.score-excellent { 
+  background: linear-gradient(135deg, #2ecc71, #27ae60); 
+  color: white; 
+}
+.score-great { 
+  background: linear-gradient(135deg, #3498db, #2980b9); 
+  color: white; 
+}
+.score-good { 
+  background: linear-gradient(135deg, #9b59b6, #8e44ad); 
+  color: white; 
+}
+.score-above-average { 
+  background: linear-gradient(135deg, #f1c40f, #f39c12); 
+  color: black; 
+}
+.score-average { 
+  background: linear-gradient(135deg, #e67e22, #d35400); 
+  color: white; 
+}
+.score-below-average { 
+  background: linear-gradient(135deg, #e74c3c, #c0392b); 
+  color: white; 
+}
+.score-needs-improvement { 
+  background: linear-gradient(135deg, #c0392b, #922b21); 
+  color: white; 
+}
+
+.composition-score {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+}
 
 .schools-analysis {
   margin: 2rem 0;
 }
 
+.schools-analysis h3 {
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+}
+
+.schools-analysis h3:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), transparent);
+  border-radius: 3px;
+}
+
 .school-type-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   margin: 1.5rem 0;
 }
@@ -1198,6 +1307,13 @@ button:disabled {
   border-radius: 15px;
   padding: 1.5rem;
   box-shadow: 0 5px 15px var(--shadow-color);
+  transition: all 0.3s ease;
+  border-top: 3px solid var(--primary-color);
+}
+
+.school-type-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px var(--shadow-color);
 }
 
 .school-type-header {
@@ -1206,7 +1322,14 @@ button:disabled {
   gap: 1rem;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid var(--primary-color);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.school-type-header h4 {
+  margin: 0;
+  flex-grow: 1;
+  color: var(--primary-color);
+  font-size: 1.3rem;
 }
 
 .school-count {
@@ -1215,12 +1338,30 @@ button:disabled {
   padding: 0.3rem 0.8rem;
   border-radius: 20px;
   font-size: 0.9rem;
+  font-weight: bold;
 }
 
 .school-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.school-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.school-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.school-list::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 3px;
 }
 
 .school-item {
@@ -1228,16 +1369,25 @@ button:disabled {
   padding: 1rem;
   border-radius: 10px;
   transition: all 0.3s ease;
-  border-left: 2px solid var(--primary-color);
+  border-left: 3px solid transparent;
 }
 
 .school-item:hover {
   transform: translateX(5px);
+  background: rgba(255, 255, 255, 0.1);
+  border-left-color: var(--accent-color);
 }
 
 .school-name {
   font-weight: bold;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.school-name .icon {
+  color: var(--accent-color);
 }
 
 .school-details {
@@ -1245,12 +1395,30 @@ button:disabled {
   justify-content: space-between;
   font-size: 0.9rem;
   color: var(--text-color);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.high-chance,
-.medium-chance,
-.low-chance {
-  border-left: 2px solid var(--primary-color);
+.cutoff-score {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cutoff-score .icon {
+  color: var(--secondary-color);
+}
+
+.school-ownership {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  margin-left: 5px;
+  border-radius: 20px;
+  font-weight: normal;
 }
 
 .analysis-notes {
@@ -1258,6 +1426,14 @@ button:disabled {
   padding: 1.5rem;
   border-radius: 15px;
   margin: 2rem 0;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.analysis-notes h3 {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .analysis-notes ul {
@@ -1268,35 +1444,85 @@ button:disabled {
 .analysis-notes li {
   margin: 1rem 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
+  padding-left: 5px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.analysis-notes li:hover {
+  transform: translateX(5px);
+}
+
+.analysis-notes li .icon {
+  color: var(--accent-color);
+  font-size: 1.1rem;
 }
 
 .no-results {
   text-align: center;
   padding: 3rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  margin: 2rem 0;
 }
 
 .no-results .icon {
   font-size: 4rem;
   color: var(--primary-color);
   margin-bottom: 1.5rem;
+  opacity: 0.7;
+}
+
+.no-results p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
 }
 
 .suggestions {
   list-style: none;
   padding: 0;
-  margin: 1.5rem 0;
+  margin: 1.5rem auto;
+  max-width: 80%;
+  text-align: left;
 }
 
 .suggestions li {
-  margin: 0.5rem 0;
+  margin: 0.8rem 0;
   color: var(--text-color);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.suggestions li:before {
+  content: "\f0da";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+}
+
+.data-update-time {
+  text-align: right;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  font-style: italic;
+  opacity: 0.7;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
 /* Dark mode adjustments */
 .dark-mode .result-card {
   background: linear-gradient(135deg, #2c3e50, #2980b9);
+}
+
+.dark-mode .school-type-card {
+  border-top-color: var(--accent-color);
 }
 
 .dark-mode .school-item {
@@ -1309,16 +1535,22 @@ button:disabled {
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+  .results-container {
+    padding: 1.5rem;
+  }
+  
   .results-summary {
     flex-direction: column;
   }
 
   .result-card {
     min-width: 100%;
+    margin-bottom: 1rem;
   }
 
   .scores-summary {
     grid-template-columns: 1fr;
+    padding: 1rem;
   }
 
   .school-type-summary {
@@ -1329,16 +1561,9 @@ button:disabled {
     flex-direction: column;
     gap: 0.5rem;
   }
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .school-list {
+    max-height: 250px;
   }
 }
 
@@ -1392,17 +1617,21 @@ button:disabled {
   font-size: 0.9rem;
   color: var(--text-color);
   font-style: italic;
+  opacity: 0.7;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
 /* 新增顯示公私立的樣式 */
 .school-ownership {
   display: inline-block;
-  background-color: #f0f0f0;
-  color: #555;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
   font-size: 0.8rem;
-  padding: 2px 6px;
+  padding: 2px 8px;
   margin-left: 5px;
-  border-radius: 3px;
+  border-radius: 20px;
+  font-weight: normal;
 }
 
 .dark-mode .school-ownership {
@@ -1553,7 +1782,130 @@ button:disabled {
 
 @media (max-width: 768px) {
   .fullscreen-menu {
-    width: 85%;
+    width: 85%; 
+    right: -85%;
+    left: auto;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .fullscreen-menu.show {
+    right: 0;
+  }
+
+  /* Adjust form elements for mobile */
+  .form-group {
+    margin: 0 0 1rem 0;
+    width: 100%;
+  }
+
+  select, 
+  input[type="text"] {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    max-width: none;
+  }
+
+  /* Adjust buttons for mobile */
+  button,
+  .instruction-toggle,
+  .disclaimer-toggle,
+  .invite-link {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+  }
+
+  /* Adjust QR options for mobile */
+  .qr-options {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .file-input-label,
+  #scanQRCode {
+    width: 100%;
+    margin: 0;
+  }
+
+  /* Adjust results section for mobile */
+  #results {
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: hidden;
+  }
+
+  .result-item {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.8rem;
+  }
+
+  /* Adjust instructions section for mobile */
+  #instructions {
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .instruction-item {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.8rem;
+  }
+
+  /* Fix horizontal scrolling issues */
+  html, 
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Adjust modal content for mobile */
+  .modal-content {
+    width: 90%;
+    margin: 10% auto;
+    padding: 1.2rem;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  /* Adjust copyright section for mobile */
+  .copyright {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+}
+
+/* Additional adjustments for very small screens */
+@media (max-width: 320px) {
+  .container {
+    width: 95%;
+    padding: 1rem 0.8rem;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  select, 
+  input[type="text"],
+  button {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .instruction-item,
+  .result-item {
+    padding: 0.6rem;
   }
 }
 
