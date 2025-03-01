@@ -2,14 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 
 :root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --background-color: #ecf0f1;
-  --text-color: #34495e;
+  --primary-color: #2a9d8f;
+  --secondary-color: #e9c46a;
+  --background-color: #f4f1de;
+  --text-color: #264653;
   --card-background: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.1);
-  --accent-color: #e74c3c;
-  --menu-background: rgba(52, 152, 219, 0.95);
+  --accent-color: #f4a261;
+  --menu-background: rgba(42, 157, 143, 0.95);
 }
 
 body {
@@ -105,7 +105,7 @@ select, input[type="text"] {
 select:focus, input[type="text"]:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
   background-color: #fff;
 }
 
@@ -122,7 +122,7 @@ button {
 }
 
 button:hover {
-  background-color: #2980b9;
+  background-color: #239687;
   transform: translateY(-2px);
   box-shadow: 0 6px 8px var(--shadow-color);
 }
@@ -175,7 +175,7 @@ button:hover {
 }
 
 .instruction-toggle:hover, .disclaimer-toggle:hover {
-  background-color: #27ae60;
+  background-color: #ffcb6e;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px var(--shadow-color);
 }
@@ -349,7 +349,7 @@ button:hover {
 }
 
 .file-input-label:hover, #scanQRCode:hover {
-  background-color: #27ae60;
+  background-color: #ffcb6e;
   transform: translateY(-2px);
   box-shadow: 0 6px 8px var(--shadow-color);
 }
@@ -384,7 +384,7 @@ button:hover {
 }
 
 .invite-link:hover {
-  background-color: #c0392b;
+  background-color: #da8c5c;
   transform: translateY(-2px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
@@ -491,7 +491,7 @@ button:hover {
 }
 
 .confirm-button:hover {
-  background-color: #2980b9;
+  background-color: #239687;
 }
 
 /* 匯出選單樣式 */
@@ -576,7 +576,7 @@ button:hover {
 }
 
 .export-menu .cancel-button:hover {
-  background: #c0392b;
+  background: #da8c5c;
 }
 
 /* Dark mode adjustments */
@@ -610,12 +610,12 @@ button:hover {
 
 /* Dark mode樣式 */
 .dark-mode {
-  --background-color: #1a1a2e;
-  --text-color: #e6e6e6;
-  --card-background: #162447;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --input-background: #1f4068;
-  --border-color: #1f4068;
+  --background-color: #2b2d42;
+  --text-color: #edf2f4;
+  --card-background: #3a3f5c;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --input-background: #4a4e69;
+  --border-color: #4a4e69;
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
@@ -643,9 +643,9 @@ button:hover {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  background: linear-gradient(145deg, #f4f1de, #e9c46a);
   border: none;
-  color: #2c3e50;
+  color: #264653;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -653,10 +653,10 @@ button:hover {
   font-size: 1.5em;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 
-    -8px -8px 15px rgba(255, 255, 255, 0.7),
-    8px 8px 15px rgba(0, 0, 0, 0.08),
-    inset 0 0 0 rgba(255, 255, 255, 0.7),
-    inset 0 0 0 rgba(0, 0, 0, 0.08);
+    -8px -8px 15px rgba(244, 241, 222, 0.7),
+    8px 8px 15px rgba(38, 70, 83, 0.08),
+    inset 0 0 0 rgba(244, 241, 222, 0.7),
+    inset 0 0 0 rgba(38, 70, 83, 0.08);
   z-index: 1000;
   overflow: hidden;
   padding: 0;
@@ -708,57 +708,13 @@ button:hover {
 }
 
 .dark-mode .dark-mode-toggle {
-  background: linear-gradient(145deg, #2c3e50, #1a1a2e);
-  color: #ffd700;
+  background: linear-gradient(145deg, #3a3f5c, #2b2d42);
+  color: #edf2f4;
   box-shadow: 
-    -8px -8px 15px rgba(255, 255, 255, 0.1),
+    -8px -8px 15px rgba(52, 58, 64, 0.1),
     8px 8px 15px rgba(0, 0, 0, 0.3),
-    inset 0 0 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 0 rgba(52, 58, 64, 0.1),
     inset 0 0 0 rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .dark-mode-toggle:hover {
-  box-shadow: 
-    -12px -12px 20px rgba(255, 255, 255, 0.15),
-    12px 12px 20px rgba(0, 0, 0, 0.4);
-}
-
-.dark-mode .dark-mode-toggle:active {
-  box-shadow: 
-    0 0 0 rgba(255, 255, 255, 0.1),
-    0 0 0 rgba(0, 0, 0, 0.3),
-    inset -8px -8px 15px rgba(255, 255, 255, 0.1),
-    inset 8px 8px 15px rgba(0, 0, 0, 0.3);
-}
-
-@media (max-width: 768px) {
-  .dark-mode-toggle {
-    width: 48px;
-    height: 48px;
-    bottom: 20px;
-    right: 20px;
-    font-size: 1.3em;
-  }
-}
-
-@media (max-width: 480px) {
-  .dark-mode-toggle {
-    width: 42px;
-    height: 42px;
-    bottom: 15px;
-    right: 15px;
-    font-size: 1.2em;
-  }
-}
-
-@keyframes iconTransition {
-  0% { transform: rotate(0) scale(1); }
-  50% { transform: rotate(180deg) scale(0.5); }
-  100% { transform: rotate(360deg) scale(1); }
-}
-
-.dark-mode-toggle i.transitioning {
-  animation: iconTransition 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Dark mode hover effects */
@@ -777,7 +733,7 @@ button:hover {
 .dark-mode select:focus,
 .dark-mode input[type="text"]:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.3);
 }
 
 /* Smooth transition for all elements */
@@ -1568,7 +1524,7 @@ button:hover {
 }
 
 #submitRating.rating-button {
-  background: linear-gradient(135deg, #3498db, #2980b9);
+  background: linear-gradient(135deg, #2a9d8f, #239687);
   color: white;
   border: none;
   padding: 15px 30px;
@@ -1576,7 +1532,7 @@ button:hover {
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1594,7 +1550,7 @@ button:hover {
   left: -2px;
   right: -2px;
   bottom: -2px;
-  background: linear-gradient(270deg, #3498db, #2ecc71, #3498db);
+  background: linear-gradient(270deg, #2a9d8f, #e9c46a, #2a9d8f);
   background-size: 200% 200%;
   animation: borderGradient 3s ease infinite;
   z-index: -1;
@@ -1609,7 +1565,7 @@ button:hover {
 
 #submitRating.rating-button:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 7px 20px rgba(52, 152, 219, 0.4);
+  box-shadow: 0 7px 20px rgba(42, 157, 143, 0.4);
 }
 
 #submitRating.rating-button:active {
@@ -1749,7 +1705,7 @@ button:hover {
 }
 
 .instruction-item .highlight {
-  background: rgba(52, 152, 219, 0.1);
+  background: rgba(42, 157, 143, 0.1);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   margin: 1rem 0;
@@ -1768,7 +1724,7 @@ button:hover {
 }
 
 .dark-mode .instruction-item .highlight {
-  background: rgba(52, 152, 219, 0.2);
+  background: rgba(42, 157, 143, 0.2);
   color: #3498db;
 }
 
