@@ -70,107 +70,12 @@
       >
         <i class="fas fa-envelope-open-text icon"></i>填寫表單獲取邀請碼
       </a>
-      <button class="instruction-toggle" onclick="toggleInstructions()">
+      <button class="instruction-toggle" onclick="showInstructions()">
         <i class="fas fa-info-circle icon"></i>使用說明
       </button>
       <button class="disclaimer-toggle" onclick="showDisclaimer()">
         <i class="fas fa-exclamation-triangle icon"></i>免責聲明
       </button>
-      <div id="instructions" style="display: none;">
-        <h2>
-          <i class="fas fa-book icon"></i>使用說明
-        </h2>
-        
-        <div class="instruction-item">
-          <h3>
-            <i class="fas fa-key icon"></i>獲取並輸入邀請碼
-          </h3>
-          <div class="highlight">
-            <i class="fas fa-info-circle"></i> 邀請碼每小時更新一次，請確保使用最新的邀請碼。
-          </div>
-          <p>您可以通過以下方式獲取邀請碼：</p>
-          <ul>
-            <li>填寫我們的序位回報表單</li>
-            <li>掃描 QR 碼</li>
-            <li>上傳 QR 碼圖片</li>
-          </ul>
-          <p>將獲得的邀請碼輸入到"邀請碼"欄位中即可開始使用。</p>
-        </div>
-
-        <div class="instruction-item">
-          <h3>
-            <i class="fas fa-filter icon"></i>選擇學校屬性和類型
-          </h3>
-          <p>根據您的需求，選擇以下篩選條件：</p>
-          <ul>
-            <li>學校屬性：全部、公立或私立</li>
-            <li>學校類型：全部、普通科或職業類科</li>
-            <li>職業群別：選擇特定職業群或全部（僅限職業類科）</li>
-          </ul>
-        </div>
-
-        <div class="instruction-item">
-          <h3>
-            <i class="fas fa-pencil-alt icon"></i>輸入會考成績
-          </h3>
-          <div class="highlight">
-            <i class="fas fa-exclamation-circle"></i> 請確保填寫所有科目的成績，否則無法進行分析。
-          </div>
-          <p>依序選擇各科目的會考等級：</p>
-          <ul>
-            <li>國文：A++ 到 C</li>
-            <li>英文：A++ 到 C</li>
-            <li>數學：A++ 到 C</li>
-            <li>自然：A++ 到 C</li>
-            <li>社會：A++ 到 C</li>
-            <li>作文：0 到 6 級分</li>
-          </ul>
-        </div>
-
-        <div class="instruction-item">
-          <h3>
-            <i class="fas fa-chart-line icon"></i>分析落點結果
-          </h3>
-          <p>系統會根據您的輸入進行分析並顯示：</p>
-          <ul>
-            <li>總積分計算結果</li>
-            <li>總積點計算結果</li>
-            <li>符合條件的學校列表</li>
-            <li>各類型學校的數量統計</li>
-          </ul>
-        </div>
-
-        <div class="instruction-item">
-          <h3>
-            <i class="fas fa-file-export icon"></i>匯出分析結果
-          </h3>
-          <p>您可以將分析結果匯出為文字檔案，包含：</p>
-          <ul>
-            <li>完整的分析結果</li>
-            <li>時間戳記</li>
-            <li>可能estival錄取學校清單</li>
-          </ul>
-          <div class="highlight">
-            <i class="fas fa-lightbulb"></i> 建議將結果匯出保存，方便日後參考比較。
-          </div>
-        </div>
-
-        <div class="instruction-item">
-          <h3>
-            <i class="fas fa-redo icon"></i>重新分析
-          </h3>
-          <p>您可以隨時：</p>
-          <ul>
-            <li>修改篩選條件</li>
-            <li>更新 nonatomic 資料</li>
-            <li>重新進行分析</li>
-          </ul>
-          <div class="highlight">
-            <i class="fas fa-sync"></i> 系統會即時更新分析結果，讓您掌握不同選擇的可能性.
-          </div>
-        </div>
-      </div>
-
       <form id="analysisForm">
         <div class="form-group">
           <label for="invitationCode">
@@ -431,6 +336,108 @@
         </p>
         <button class="confirm-button" onclick="closeDisclaimer()">
           <i class="fas fa-check-circle icon"></i> 我已了解並同意
+        </button>
+      </div>
+    </div>
+
+    <div id="instructionsModal" class="modal">
+      <div class="modal-content instructions-modal-content">
+        <button class="close" onclick="closeInstructions()">&times;</button>
+        <h2>
+          <i class="fas fa-book icon"></i>使用說明
+        </h2>
+        
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-key icon"></i>獲取並輸入邀請碼
+          </h3>
+          <div class="highlight">
+            <i class="fas fa-info-circle"></i> 邀請碼每小時更新一次，請確保使用最新的邀請碼。
+          </div>
+          <p>您可以通過以下方式獲取邀請碼：</p>
+          <ul>
+            <li>填寫我們的序位回報表單</li>
+            <li>掃描 QR 碼</li>
+            <li>上傳 QR 碼圖片</li>
+          </ul>
+          <p>將獲得的邀請碼輸入到"邀請碼"欄位中即可開始使用。</p>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-filter icon"></i>選擇學校屬性和類型
+          </h3>
+          <p>根據您的需求，選擇以下篩選條件：</p>
+          <ul>
+            <li>學校屬性：全部、公立或私立</li>
+            <li>學校類型：全部、普通科或職業類科</li>
+            <li>職業群別：選擇特定職業群或全部（僅限職業類科）</li>
+          </ul>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-pencil-alt icon"></i>輸入會考成績
+          </h3>
+          <div class="highlight">
+            <i class="fas fa-exclamation-circle"></i> 請確保填寫所有科目的成績，否則無法進行分析。
+          </div>
+          <p>依序選擇各科目的會考等級：</p>
+          <ul>
+            <li>國文：A++ 到 C</li>
+            <li>英文：A++ 到 C</li>
+            <li>數學：A++ 到 C</li>
+            <li>自然：A++ 到 C</li>
+            <li>社會：A++ 到 C</li>
+            <li>作文：0 到 6 級分</li>
+          </ul>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-chart-line icon"></i>分析落點結果
+          </h3>
+          <p>系統會根據您的輸入進行分析並顯示：</p>
+          <ul>
+            <li>總積分計算結果</li>
+            <li>總積點計算結果</li>
+            <li>符合條件的學校列表</li>
+            <li>各類型學校的數量統計</li>
+          </ul>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-file-export icon"></i>匯出分析結果
+          </h3>
+          <p>您可以將分析結果匯出為文字檔案，包含：</p>
+          <ul>
+            <li>完整的分析結果</li>
+            <li>時間戳記</li>
+            <li>可能estival錄取學校清單</li>
+          </ul>
+          <div class="highlight">
+            <i class="fas fa-lightbulb"></i> 建議將結果匯出保存，方便日後參考比較。
+          </div>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-redo icon"></i>重新分析
+          </h3>
+          <p>您可以隨時：</p>
+          <ul>
+            <li>修改篩選條件</li>
+            <li>更新 nonatomic 資料</li>
+            <li>重新進行分析</li>
+          </ul>
+          <div class="highlight">
+            <i class="fas fa-sync"></i> 系統會即時更新分析結果，讓您掌握不同選擇的可能性.
+          </div>
+        </div>
+        
+        <button class="confirm-button" onclick="closeInstructions()">
+          <i class="fas fa-check-circle icon"></i> 我已了解
         </button>
       </div>
     </div>

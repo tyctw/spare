@@ -2457,3 +2457,51 @@ button:disabled {
     padding: 0.6rem;
   }
 }
+
+.instructions-modal-content {
+  max-width: 800px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+  margin: 5vh auto;
+  position: relative;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transform: translateY(30px);
+  opacity: 0;
+  animation: modalSlideIn 0.6s ease-out forwards;
+}
+
+.instructions-modal-content .instruction-item {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border-left: 4px solid var(--primary-color);
+  animation: slideInRight 0.5s ease-out forwards;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.dark-mode .instructions-modal-content {
+  background-color: #3a3f5c;
+  color: #edf2f4;
+}
+
+.dark-mode .instructions-modal-content .instruction-item {
+  background: rgba(0, 0, 0, 0.2);
+  border-left-color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  .instructions-modal-content {
+    width: 90%;
+    padding: 25px;
+    margin: 5vh auto;
+  }
+}

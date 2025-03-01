@@ -30,16 +30,17 @@ function toggleVocationalGroup() {
 }
 
 function toggleInstructions() {
-  var instructions = document.getElementById('instructions');
-  if (instructions.style.display === 'none' || instructions.style.display === '') {
-    instructions.style.display = 'block';
-    instructions.style.animation = 'fadeIn 0.5s ease-out';
-  } else {
-    instructions.style.animation = 'fadeOut 0.5s ease-out';
-    setTimeout(() => {
-      instructions.style.display = 'none';
-    }, 500);
-  }
+  showInstructions();
+}
+
+function showInstructions() {
+  var modal = document.getElementById('instructionsModal');
+  modal.style.display = 'block';
+}
+
+function closeInstructions() {
+  var modal = document.getElementById('instructionsModal');
+  modal.style.display = 'none';
 }
 
 function showDisclaimer() {
