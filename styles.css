@@ -2763,3 +2763,82 @@ button:disabled {
     font-size: 0.8rem;
   }
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  #results, #results * {
+    visibility: visible;
+  }
+  
+  #results {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  
+  .dark-mode-toggle, 
+  .header,
+  .menu-overlay,
+  .fullscreen-menu,
+  button,
+  form,
+  .form-group,
+  #ratingSection,
+  .copyright {
+    display: none !important;
+  }
+  
+  .results-container {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .result-card {
+    break-inside: avoid;
+  }
+  
+  /* Better contrast for printing */
+  .results-container {
+    color: black !important;
+    background: white !important;
+  }
+  
+  .result-card, .school-type-card {
+    border: 1px solid #ddd !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+  
+  .score-item, .school-item {
+    background: white !important;
+    border: 1px solid #eee !important;
+    color: black !important;
+  }
+  
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    border-top: 1px solid #eee;
+    padding: 10px 0;
+  }
+  
+  /* Add page breaks where appropriate */
+  .school-type-card {
+    page-break-inside: avoid;
+  }
+  
+  h2, h3 {
+    page-break-after: avoid;
+  }
+}

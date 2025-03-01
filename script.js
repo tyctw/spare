@@ -809,6 +809,9 @@ function showExportOptions() {
       <button onclick="exportResults('json')">
         <i class="fas fa-file-code"></i> JSON檔 (.json)
       </button>
+      <button onclick="exportResults('print')">
+        <i class="fas fa-print"></i> 直接列印
+      </button>
       <button onclick="closeExportMenu()" class="cancel-button">
         <i class="fas fa-times"></i> 取消
       </button>
@@ -870,7 +873,115 @@ async function exportResults(format = 'txt') {
     case 'json':
       exportJson(resultsText);
       break;
+    case 'print':
+      printResults();
+      break;
   }
+}
+
+function printResults() {
+  logUserActivity('print_results');
+  
+  const resultContent = document.getElementById('results').innerHTML;
+  const originalTitle = document.title;
+  const printStyles = `
+    <style>
+      @media print {
+        body { 
+          font-family: 'Noto Sans TC', sans-serif;
+          color: #264653;
+          background: white;
+        }
+        .results-container {
+          background: white;
+          box-shadow: none;
+          padding: 10px;
+          margin: 0;
+        }
+        .result-card {
+          border: 1px solid #ddd;
+          page-break-inside: avoid;
+        }
+        .school-type-card {
+          page-break-inside: avoid;
+          border: 1px solid #ddd;
+          margin-bottom: 15px;
+        }
+        .school-item {
+          page-break-inside: avoid;
+        }
+        .no-print {
+          display: none !important;
+        }
+        @page {
+          size: A4;
+          margin: 1.5cm;
+        }
+        footer {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 0.8rem;
+          color: #777;
+          padding: 10px 0;
+          border-top: 1px solid #ddd;
+        }
+        .watermark {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-45deg);
+          font-size: 4rem;
+          color: rgba(0,0,0,0.05);
+          font-weight: bold;
+          z-index: -1;
+          pointer-events: none;
+        }
+      }
+    </style>`;
+  
+  const printWindow = window.open('', '_blank');
+  
+  if (!printWindow) {
+    alert('請允許開啟彈出視窗以啟用列印功能');
+    return;
+  }
+  
+  const now = new Date();
+  const formattedDate = now.toLocaleString('zh-TW');
+  
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>會考落點分析結果</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+      ${printStyles}
+    </head>
+    <body>
+      <div class="watermark">會考落點分析</div>
+      <h1 style="text-align: center; color: #2a9d8f;">會考落點分析結果</h1>
+      <div style="text-align: right; font-size: 0.9rem; color: #666; margin-bottom: 20px;">
+        產生時間: ${formattedDate}
+      </div>
+      ${resultContent}
+      <footer>
+        <p>© ${new Date().getFullYear()} 會考落點分析系統 | 此分析結果僅供參考</p>
+      </footer>
+      <script>
+        window.onload = function() {
+          window.print();
+          window.onfocus = function() { window.close(); }
+        }
+      </script>
+    </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
 }
 
 function exportTxt(content) {
