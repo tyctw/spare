@@ -261,7 +261,14 @@ button:hover {
   text-align: left;
   opacity: 0;
   transform: translateX(20px);
+  animation: slideIn 0.5s ease-out;
+  animation-fill-mode: backwards;
 }
+
+.fullscreen-menu a:nth-child(1) { animation-delay: 0.1s; }
+.fullscreen-menu a:nth-child(2) { animation-delay: 0.2s; }
+.fullscreen-menu a:nth-child(3) { animation-delay: 0.3s; }
+.fullscreen-menu a:nth-child(4) { animation-delay: 0.4s; }
 
 .fullscreen-menu.show a {
   opacity: 1;

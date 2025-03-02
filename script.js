@@ -876,7 +876,8 @@ async function exportResults(format = 'txt') {
 }
 
 function exportTxt(content) {
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const watermarkUrl = "\n\n網站: https://tyctw.github.io/spare/";
+  const blob = new Blob([content + watermarkUrl], { type: 'text/plain;charset=utf-8' });
   downloadFile(blob, '會考落點分析結果.txt');
 }
 
@@ -903,6 +904,15 @@ async function exportPdf(content) {
     y += 7;
   });
   
+  // Add watermark URL to each page
+  const pageCount = doc.internal.getNumberOfPages();
+  doc.setFontSize(10);
+  doc.setTextColor(150);
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.text('網站: https://tyctw.github.io/spare/', 15, 285);
+  }
+  
   doc.save('會考落點分析結果.pdf');
 }
 
@@ -919,7 +929,8 @@ function exportJson(content) {
       science: document.getElementById('science').value,
       social: document.getElementById('social').value,
       composition: document.getElementById('composition').value
-    }
+    },
+    watermark: "https://tyctw.github.io/spare/"
   };
   
   const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json;charset=utf-8' });
@@ -1069,6 +1080,15 @@ async function exportExcel() {
     
     // Add the recommendations worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, recWs, "建議事項");
+    
+    // Add watermark worksheet
+    const watermarkData = [
+      ["會考落點分析系統 - https://tyctw.github.io/spare/"],
+      ["產生日期: " + new Date().toLocaleDateString('zh-TW')]
+    ];
+    
+    const watermarkWs = XLSX.utils.aoa_to_sheet(watermarkData);
+    XLSX.utils.book_append_sheet(wb, watermarkWs, "關於系統");
     
     // Create and download the Excel file
     XLSX.writeFile(wb, "會考落點分析結果.xlsx");
@@ -1248,6 +1268,7 @@ function printResults() {
       ${resultContent}
       <footer>
         <p> 會考落點分析系統 | 此分析結果僅供參考</p>
+        <p style="color: #555; font-size: 0.85rem;">網站: https://tyctw.github.io/spare/</p>
       </footer>
       <script>
         window.onload = function() {
