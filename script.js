@@ -889,74 +889,706 @@ async function exportPdf(content) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
-  doc.setFont('helvetica');
+  // Add PDF header with logo and styled title
+  doc.setFillColor(42, 157, 143);
+  doc.rect(0, 0, 210, 20, 'F');
+  doc.setTextColor(255);
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('會考落點分析結果', 105, 12, { align: 'center' });
+  
+  // Add generation timestamp
+  const timestamp = new Date().toLocaleString('zh-TW');
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'italic');
+  doc.text(`產生時間: ${timestamp}`, 105, 20, { align: 'center' });
+  
+  // Add main content with improved styling
+  doc.setTextColor(0);
   doc.setFontSize(12);
+  doc.setFont('helvetica', 'normal');
   
   const splitText = doc.splitTextToSize(content, 180);
-  let y = 20;
+  let y = 30;
+  
+  // Add decorative element
+  doc.setDrawColor(233, 196, 106);
+  doc.setLineWidth(0.5);
+  doc.line(15, 25, 195, 25);
   
   splitText.forEach(line => {
+    // Check if line is a heading (like "分析結果總覽")
+    if (line.includes('總覽') || line.includes('分析') || line.includes('符合條件')) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFillColor(244, 241, 222);
+      doc.rect(15, y-5, 180, 8, 'F');
+      doc.setTextColor(42, 157, 143);
+      y += 2;
+    } else {
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(0);
+    }
+    
     if (y > 280) {
       doc.addPage();
-      y = 20;
+      // Add header to new page
+      doc.setFillColor(42, 157, 143);
+      doc.rect(0, 0, 210, 20, 'F');
+      doc.setTextColor(255);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('會考落點分析結果', 105, 12, { align: 'center' });
+      doc.setTextColor(0);
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      // Add decorative element to new page
+      doc.setDrawColor(233, 196, 106);
+      doc.setLineWidth(0.5);
+      doc.line(15, 25, 195, 25);
+      y = 30;
     }
     doc.text(line, 15, y);
     y += 7;
   });
   
-  // Add watermark URL to each page
+  // Add watermark URL and QR code to each page
   const pageCount = doc.internal.getNumberOfPages();
   doc.setFontSize(10);
   doc.setTextColor(150);
+  
+  // Generate QR code for the site URL
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=https://tyctw.github.io/spare/`;
+  
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.text('網站: https://tyctw.github.io/spare/', 15, 285);
+    // Add footer with styled URL
+    doc.setDrawColor(42, 157, 143);
+    doc.setLineWidth(0.5);
+    doc.line(15, 280, 195, 280);
+    
+    // Add styled page numbers
+    doc.setFillColor(42, 157, 143);
+    doc.circle(195, 285, 5, 'F');
+    doc.setTextColor(255);
+    doc.setFont('helvetica', 'bold');
+    doc.text(i.toString(), 195, 287, { align: 'center' });
+    
+    // Add watermark text
+    doc.setTextColor(100);
+    doc.setFont('helvetica', 'italic');
+    doc.text('網站: https://tyctw.github.io/spare/', 105, 285, { align: 'center' });
+    
+    // Add footer design element
+    doc.setDrawColor(233, 196, 106);
+    doc.setLineWidth(0.3);
+    doc.line(15, 282, 195, 282);
   }
+  
+  // Using image is optional but make it more aesthetic - QR code on the first page
+  await loadQRCodeToPDF(doc, qrUrl, 1);
   
   doc.save('會考落點分析結果.pdf');
 }
 
-function exportJson(content) {
-  const lines = content.split('\n');
-  const jsonData = {
-    title: '會考落點分析結果',
-    generateTime: new Date().toISOString(),
-    content: lines.filter(line => line.trim()),
-    scores: {
-      chinese: document.getElementById('chinese').value,
-      english: document.getElementById('english').value,
-      math: document.getElementById('math').value,
-      science: document.getElementById('science').value,
-      social: document.getElementById('social').value,
-      composition: document.getElementById('composition').value
-    },
-    watermark: "https://tyctw.github.io/spare/"
+// Helper function to load QR code to PDF
+async function loadQRCodeToPDF(doc, qrUrl, page) {
+  try {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = function() {
+        try {
+          doc.setPage(page);
+          doc.addImage(img, 'PNG', 20, 260, 20, 20);
+          resolve();
+        } catch (e) {
+          console.error('Error adding image to PDF:', e);
+          resolve(); // Still resolve to allow PDF generation
+        }
+      };
+      img.onerror = function() {
+        console.error('Failed to load QR code image');
+        resolve(); // Still resolve to allow PDF generation
+      };
+      img.src = qrUrl;
+    });
+  } catch (e) {
+    console.error('Error in QR code loading:', e);
+    return Promise.resolve(); // Continue without the QR code
+  }
+}
+
+function printResults() {
+  logUserActivity('print_results');
+  
+  const resultContent = document.getElementById('results').innerHTML;
+  const originalTitle = document.title;
+  const printStyles = `
+    <style>
+      @media print {
+        body { 
+          font-family: 'Noto Sans TC', sans-serif;
+          color: #264653;
+          background: white;
+          margin: 0;
+          padding: 0;
+        }
+        .results-container {
+          background: white;
+          box-shadow: none;
+          padding: 20px;
+          margin: 0;
+        }
+        .result-card {
+          border: 1px solid #ddd;
+          page-break-inside: avoid;
+          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+          color: #264653;
+          box-shadow: none;
+          transform: none !important;
+        }
+        .school-type-card {
+          page-break-inside: avoid;
+          border: 1px solid #ddd;
+          margin-bottom: 20px;
+          background: white;
+          box-shadow: none;
+          transform: none !important;
+        }
+        .school-item {
+          page-break-inside: avoid;
+          border-left: 3px solid #2a9d8f;
+          background: #f9f9f9;
+          margin: 8px 0;
+          transition: none;
+        }
+        .school-name {
+          font-weight: bold;
+          color: #2a9d8f;
+        }
+        .no-print {
+          display: none !important;
+        }
+        h1, h2, h3 {
+          color: #2a9d8f;
+        }
+        @page {
+          size: A4;
+          margin: 2cm;
+        }
+        footer {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 0.8rem;
+          color: #777;
+          padding: 10px 0;
+          border-top: 1px solid #ddd;
+        }
+        .watermark {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-45deg);
+          font-size: 4rem;
+          color: rgba(0,0,0,0.03);
+          font-weight: bold;
+          z-index: -1;
+          pointer-events: none;
+          width: 100%;
+          text-align: center;
+        }
+        
+        /* Enhanced print styling */
+        .print-header {
+          text-align: center;
+          border-bottom: 3px solid #2a9d8f;
+          padding-bottom: 20px;
+          margin-bottom: 30px;
+          position: relative;
+        }
+        .print-header:after {
+          content: '';
+          position: absolute;
+          bottom: -6px;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background: #e9c46a;
+        }
+        .print-logo {
+          font-size: 3rem;
+          color: #2a9d8f;
+          margin-bottom: 10px;
+          display: block;
+        }
+        .print-title {
+          font-size: 2.2rem;
+          color: #2a9d8f;
+          margin: 0;
+          letter-spacing: 2px;
+        }
+        .print-subtitle {
+          font-size: 1rem;
+          color: #666;
+          margin: 8px 0 0 0;
+          font-style: italic;
+        }
+        .print-timestamp {
+          text-align: right;
+          font-style: italic;
+          color: #666;
+          margin-bottom: 30px;
+          border-bottom: 1px dashed #ddd;
+          padding-bottom: 15px;
+        }
+        .print-section {
+          margin-bottom: 30px;
+          position: relative;
+        }
+        .print-section:after {
+          content: '';
+          position: absolute;
+          bottom: -15px;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background: #f0f0f0;
+        }
+        .print-section-title {
+          font-size: 1.4rem;
+          color: #2a9d8f;
+          border-left: 5px solid #2a9d8f;
+          padding-left: 15px;
+          margin-bottom: 20px;
+          background: #f9f9f9;
+          padding: 10px 15px;
+          border-radius: 0 5px 5px 0;
+        }
+        .print-footer-page {
+          font-size: 0.8rem;
+          text-align: right;
+          color: #999;
+          position: fixed;
+          bottom: 5mm;
+          right: 5mm;
+        }
+        .print-qr {
+          text-align: center;
+          margin: 40px 0 30px;
+          padding-top: 20px;
+          border-top: 1px dashed #eee;
+        }
+        .print-qr img {
+          width: 120px;
+          height: 120px;
+          border: 1px solid #eee;
+          padding: 5px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .print-qr-text {
+          font-size: 0.9rem;
+          color: #666;
+          margin-top: 10px;
+          font-style: italic;
+        }
+        .print-decoration {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 150px;
+          height: 150px;
+          background: linear-gradient(135deg, transparent 75%, rgba(42, 157, 143, 0.1) 75%);
+          z-index: -1;
+        }
+        
+        .print-school-list {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 15px;
+        }
+        
+        .print-scores {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+          margin: 20px 0;
+        }
+        
+        .print-score-item {
+          background: #f9f9f9;
+          padding: 10px;
+          border-radius: 5px;
+          text-align: center;
+          border: 1px solid #eee;
+        }
+        
+        .print-score-label {
+          font-weight: 500;
+          color: #666;
+        }
+        
+        .print-score-value {
+          font-size: 1.2rem;
+          font-weight: bold;
+          color: #2a9d8f;
+          margin-top: 5px;
+        }
+        
+        /* Print watermark on each page */
+        .print-page-watermark {
+          position: fixed;
+          bottom: 5mm;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          font-size: 0.75rem;
+          color: #999;
+        }
+        
+        /* Gentle page break decorations */
+        .page-break-after {
+          page-break-after: always;
+          position: relative;
+        }
+        
+        .page-break-after::after {
+          content: '';
+          display: block;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #ddd, transparent);
+          width: 80%;
+          margin: 30px auto 0;
+        }
+      }
+    </style>`;
+  
+  const printWindow = window.open('', '_blank');
+  
+  if (!printWindow) {
+    alert('請允許開啟彈出視窗以啟用列印功能');
+    return;
+  }
+  
+  const now = new Date();
+  const formattedDate = now.toLocaleString('zh-TW');
+  
+  // Generate QR code for the site URL
+  const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://tyctw.github.io/spare/`;
+  
+  // Enhanced score presentation
+  const scores = {
+    chinese: document.getElementById('chinese').value,
+    english: document.getElementById('english').value,
+    math: document.getElementById('math').value,
+    science: document.getElementById('science').value,
+    social: document.getElementById('social').value,
+    composition: document.getElementById('composition').value
   };
   
-  const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json;charset=utf-8' });
-  downloadFile(blob, '會考落點分析結果.json');
-}
-
-function downloadFile(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.style.display = 'none';
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  URL.revokeObjectURL(url);
-  a.remove();
-}
-
-async function loadScript(url) {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = url;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
+  // Get total scores
+  const totalPoints = document.querySelector('.total-points .result-value')?.textContent || "";
+  const totalCredits = document.querySelector('.total-credits .result-value')?.textContent || "";
+  
+  // Process schools for better printing
+  const schools = Array.from(document.querySelectorAll('.school-item')).map(school => {
+    return {
+      name: school.querySelector('.school-name')?.textContent.trim() || "",
+      type: getSchoolParentType(school),
+      ownership: getSchoolOwnership(school),
+      cutoff: school.querySelector('.cutoff-score')?.textContent.trim() || ""
+    };
   });
+  
+  // Group schools by type for better organization
+  const schoolsByType = {};
+  schools.forEach(school => {
+    if (!schoolsByType[school.type]) {
+      schoolsByType[school.type] = [];
+    }
+    schoolsByType[school.type].push(school);
+  });
+  
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>會考落點分析結果</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+      ${printStyles}
+    </head>
+    <body>
+      <div class="print-decoration"></div>
+      <div class="watermark">會考落點分析系統</div>
+      
+      <div class="print-header">
+        <span class="print-logo"><i class="fas fa-chart-line"></i></span>
+        <h1 class="print-title">會考落點分析結果</h1>
+        <p class="print-subtitle">本分析結果僅供參考，請以各校最新招生簡章為準</p>
+      </div>
+      
+      <div class="print-timestamp">
+        分析時間: ${formattedDate}
+      </div>
+      
+      <div class="print-section">
+        <h2 class="print-section-title"><i class="fas fa-star"></i> 成績總覽</h2>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+          <div style="background: #f4f1de; padding: 15px; border-radius: 10px; width: 30%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="font-size: 0.9rem; color: #666;">總積分</div>
+            <div style="font-size: 2rem; font-weight: bold; color: #2a9d8f;">${totalPoints}</div>
+          </div>
+          
+          ${totalCredits ? `
+          <div style="background: #f4f1de; padding: 15px; border-radius: 10px; width: 30%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="font-size: 0.9rem; color: #666;">總積點</div>
+            <div style="font-size: 2rem; font-weight: bold; color: #2a9d8f;">${totalCredits}</div>
+          </div>
+          ` : ''}
+          
+          <div style="background: #f4f1de; padding: 15px; border-radius: 10px; width: 30%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="font-size: 0.9rem; color: #666;">符合學校數</div>
+            <div style="font-size: 2rem; font-weight: bold; color: #2a9d8f;">${schools.length}</div>
+          </div>
+        </div>
+        
+        <h3 style="margin-top: 25px; color: #264653; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+          <i class="fas fa-graduation-cap"></i> 各科成績
+        </h3>
+        
+        <div class="print-scores">
+          <div class="print-score-item">
+            <div class="print-score-label">國文</div>
+            <div class="print-score-value">${scores.chinese}</div>
+          </div>
+          <div class="print-score-item">
+            <div class="print-score-label">英文</div>
+            <div class="print-score-value">${scores.english}</div>
+          </div>
+          <div class="print-score-item">
+            <div class="print-score-label">數學</div>
+            <div class="print-score-value">${scores.math}</div>
+          </div>
+          <div class="print-score-item">
+            <div class="print-score-label">自然</div>
+            <div class="print-score-value">${scores.science}</div>
+          </div>
+          <div class="print-score-item">
+            <div class="print-score-label">社會</div>
+            <div class="print-score-value">${scores.social}</div>
+          </div>
+          <div class="print-score-item">
+            <div class="print-score-label">作文</div>
+            <div class="print-score-value">${scores.composition} 級分</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="page-break-after"></div>
+      
+      <div class="print-section">
+        <h2 class="print-section-title"><i class="fas fa-school"></i> 符合條件的學校</h2>
+        
+        ${Object.entries(schoolsByType).map(([type, typeSchools]) => `
+          <div style="margin-bottom: 30px;">
+            <h3 style="color: #264653; font-size: 1.2rem; background: #e9f4f3; padding: 8px 15px; border-radius: 5px; display: flex; align-items: center; justify-content: space-between;">
+              <span><i class="fas fa-building"></i> ${type}</span>
+              <span style="font-size: 0.9rem; background: #2a9d8f; color: white; padding: 3px 10px; border-radius: 15px;">${typeSchools.length}所</span>
+            </h3>
+            
+            <div class="print-school-list">
+              ${typeSchools.map(school => `
+                <div style="border: 1px solid #eee; border-left: 3px solid #2a9d8f; padding: 10px; border-radius: 5px; background: #f9f9f9; margin-bottom: 10px;">
+                  <div style="font-weight: bold; color: #264653; margin-bottom: 5px;">
+                    <i class="fas fa-graduation-cap" style="color: #2a9d8f; margin-right: 5px;"></i>
+                    ${school.name}
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #666; margin-top: 5px;">
+                    <span>${school.ownership}</span>
+                    <span>${school.cutoff}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="print-qr">
+        <img src="${qrCodeURL}" alt="網站 QR 碼">
+        <div class="print-qr-text">掃描 QR 碼訪問會考落點分析系統</div>
+      </div>
+      
+      <div class="print-page-watermark">
+        會考落點分析系統 | https://tyctw.github.io/spare/
+      </div>
+      
+      <div class="print-footer-page">頁 <span class="pageNumber"></span></div>
+      
+      <script>
+        window.onload = function() {
+          // Add page numbers
+          const style = document.createElement('style');
+          style.innerHTML = '@page { counter-increment: page; }';
+          document.head.appendChild(style);
+          
+          const pageNumbers = document.querySelectorAll('.pageNumber');
+          pageNumbers.forEach(el => {
+            el.textContent = '1';
+          });
+          
+          window.print();
+          setTimeout(() => {
+            window.close();
+          }, 1000);
+        }
+      </script>
+    </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+}
+
+function toggleIdentitySelector() {
+  const identityOptions = document.querySelectorAll('.identity-option .identity-input');
+  identityOptions.forEach(option => {
+    if (option.checked) {
+      document.getElementById('analysisIdentity').value = option.value;
+    }
+  });
+}
+
+function applyExcelStyling(worksheet, range) {
+  // Prettier column widths based on expected content
+  const colWidths = [8, 35, 15, 15, 20, 15];
+  worksheet['!cols'] = [];
+  for (let i = 0; i <= range.e.c; i++) {
+    worksheet['!cols'][i] = { wch: colWidths[i] || 15 };
+  }
+  
+  // Enhanced styling for title
+  const titleCell = XLSX.utils.encode_cell({r: 0, c: 0});
+  if(worksheet[titleCell]) {
+    worksheet[titleCell].s = {
+      font: { bold: true, sz: 18, color: { rgb: "2A9D8F" } },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        bottom: { style: "medium", color: { rgb: "E9C46A" } }
+      },
+      fill: { patternType: "solid", fgColor: { rgb: "F4F1DE" } }
+    };
+  }
+  
+  // Style all cells with more aesthetically pleasing designs
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell = XLSX.utils.encode_cell({r: R, c: C});
+      if(!worksheet[cell]) continue;
+      
+      if (R !== 0 || C !== 0) { // Skip title cell as we styled it already
+        // Base style for all cells
+        worksheet[cell].s = {
+          font: { name: "Arial", sz: 11 },
+          alignment: { vertical: "center", wrapText: true },
+          border: {
+            top: { style: "thin", color: { rgb: "DDDDDD" } },
+            bottom: { style: "thin", color: { rgb: "DDDDDD" } },
+            left: { style: "thin", color: { rgb: "DDDDDD" } },
+            right: { style: "thin", color: { rgb: "DDDDDD" } }
+          }
+        };
+        
+        // Style section headers (in summary sheet)
+        if (R === 6 || (R === 7 && C === 0)) {
+          worksheet[cell].s.font = { bold: true, sz: 12, color: { rgb: "FFFFFF" } };
+          worksheet[cell].s.fill = { patternType: "solid", fgColor: { rgb: "2A9D8F" } };
+          worksheet[cell].s.alignment = { horizontal: "center", vertical: "center" };
+          worksheet[cell].s.border = {
+            top: { style: "medium", color: { rgb: "264653" } },
+            bottom: { style: "medium", color: { rgb: "264653" } },
+            left: { style: "medium", color: { rgb: "264653" } },
+            right: { style: "medium", color: { rgb: "264653" } }
+          };
+        }
+        
+        // Style column headers in data section
+        if (R === 7 && C > 0) {
+          worksheet[cell].s.font = { bold: true, color: { rgb: "264653" } };
+          worksheet[cell].s.fill = { patternType: "solid", fgColor: { rgb: "E9C46A" } };
+          worksheet[cell].s.alignment = { horizontal: "center" };
+        }
+        
+        // Style date and total score rows with accent colors
+        if (R >= 2 && R <= 4) {
+          if (C === 0) {
+            worksheet[cell].s.font = { bold: true, color: { rgb: "264653" } };
+            worksheet[cell].s.fill = { patternType: "solid", fgColor: { rgb: "F4F1DE" } };
+          } else if (C === 1) {
+            worksheet[cell].s.font = { bold: true, sz: 12, color: { rgb: "2A9D8F" } };
+            worksheet[cell].s.alignment = { horizontal: "center" };
+          }
+        }
+        
+        // Style the score data with alternate row colors and better alignment
+        if (R >= 8) {
+          // Set text alignment based on column type
+          if (C === 0) { // Serial number
+            worksheet[cell].s.alignment.horizontal = "center";
+          } else if (C === 1) { // School name
+            worksheet[cell].s.alignment.horizontal = "left";
+            worksheet[cell].s.font.bold = true;
+          } else { // Other data columns
+            worksheet[cell].s.alignment.horizontal = "center";
+          }
+          
+          // Alternate row background colors
+          worksheet[cell].s.fill = {
+            patternType: "solid",
+            fgColor: { rgb: R % 2 ? "F8F9FA" : "FFFFFF" }
+          };
+          
+          // Special formatting for match status column
+          if (C === 5) { // Match status column
+            const cellValue = worksheet[cell].v;
+            if (cellValue && cellValue.toString().includes('★★★')) {
+              worksheet[cell].s.font.color = { rgb: "107C10" }; // Green for very suitable
+              worksheet[cell].s.fill.fgColor = { rgb: "E8F5E9" };
+            } else if (cellValue && cellValue.toString().includes('★★')) {
+              worksheet[cell].s.font.color = { rgb: "0078D7" }; // Blue for suitable
+              worksheet[cell].s.fill.fgColor = { rgb: "E3F2FD" };
+            } else if (cellValue && cellValue.toString().includes('★')) {
+              worksheet[cell].s.font.color = { rgb: "D83B01" }; // Orange for just suitable
+              worksheet[cell].s.fill.fgColor = { rgb: "FFF3E0" };
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Add thin border to the entire table
+  const borderStyle = { style: "thin", color: { rgb: "BBBBBB" } };
+  if (range.e.r > 0 && range.e.c > 0) {
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cell = XLSX.utils.encode_cell({r: R, c: C});
+        if (!worksheet[cell]) continue;
+        
+        worksheet[cell].s = worksheet[cell].s || {};
+        
+        // Only set borders that haven't been styled yet
+        if (!worksheet[cell].s.border.top) worksheet[cell].s.border.top = borderStyle;
+        if (!worksheet[cell].s.border.bottom) worksheet[cell].s.border.bottom = borderStyle;
+        if (!worksheet[cell].s.border.left) worksheet[cell].s.border.left = borderStyle;
+        if (!worksheet[cell].s.border.right) worksheet[cell].s.border.right = borderStyle;
+      }
+    }
+  }
 }
 
 function closeExportMenu() {
@@ -995,12 +1627,13 @@ async function exportExcel() {
       CreatedDate: new Date()
     };
     
-    // Create summary worksheet
+    // Create summary worksheet with enhanced styling
     const summaryData = [
       ["會考落點分析結果"],
       [],
       ["產生日期", new Date().toLocaleDateString('zh-TW')],
       ["總積分", document.querySelector('.total-points .result-value')?.textContent || ""],
+      ["總積點", document.querySelector('.total-credits .result-value')?.textContent || ""],
       [],
       ["成績摘要"],
       ["科目", "成績", "積分"],
@@ -1024,8 +1657,10 @@ async function exportExcel() {
     // Add the summary worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, summaryWs, "分析摘要");
     
-    // Create schools worksheet
-    const schoolsData = [["序號", "學校名稱", "類型", "屬性", "最低分數"]];
+    // Create schools worksheet with enhanced styling
+    const schoolsData = [
+      ["序號", "學校名稱", "類型", "屬性", "最低分數", "符合度"]
+    ];
     
     // Get eligible schools
     const schoolElements = document.querySelectorAll('.school-item');
@@ -1035,7 +1670,18 @@ async function exportExcel() {
       const schoolOwnership = getSchoolOwnership(school);
       const cutoffScore = school.querySelector('.cutoff-score')?.textContent.trim() || "";
       
-      schoolsData.push([index + 1, schoolName, schoolType, schoolOwnership, cutoffScore]);
+      // Add score match indicator (new column)
+      const totalScore = parseInt(document.querySelector('.total-points .result-value')?.textContent || "0");
+      const cutoffValue = parseInt(cutoffScore.replace(/[^0-9]/g, '') || "0");
+      const scoreGap = totalScore - cutoffValue;
+      let matchStatus = "適合";
+      
+      if (scoreGap >= 5) matchStatus = "非常適合 ★★★";
+      else if (scoreGap >= 3) matchStatus = "很適合 ★★";
+      else if (scoreGap >= 1) matchStatus = "適合 ★";
+      else matchStatus = "剛好符合";
+      
+      schoolsData.push([index + 1, schoolName, schoolType, schoolOwnership, cutoffScore, matchStatus]);
     });
     
     const schoolsWs = XLSX.utils.aoa_to_sheet(schoolsData);
@@ -1044,21 +1690,37 @@ async function exportExcel() {
     const schoolsRange = XLSX.utils.decode_range(schoolsWs['!ref']);
     applyExcelStyling(schoolsWs, schoolsRange);
     
-    // Make header row bold
+    // Make header row bold with enhanced styling
     for (let C = schoolsRange.s.c; C <= schoolsRange.e.c; ++C) {
       const cell = XLSX.utils.encode_cell({r: 0, c: C});
       if(!schoolsWs[cell]) continue;
       schoolsWs[cell].s = { 
         font: { bold: true, color: { rgb: "FFFFFF" } },
-        fill: { fgColor: { rgb: "2a9d8f" } },
-        alignment: { horizontal: "center", vertical: "center" }
+        fill: { patternType: "solid", fgColor: { rgb: "2a9d8f" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: {
+          top: { style: "medium", color: { auto: 1 } },
+          bottom: { style: "medium", color: { auto: 1 } },
+          left: { style: "medium", color: { auto: 1 } },
+          right: { style: "medium", color: { auto: 1 } }
+        }
       };
     }
+    
+    // Set custom column widths
+    schoolsWs['!cols'] = [
+      { wch: 6 },  // 序號
+      { wch: 30 }, // 學校名稱
+      { wch: 15 }, // 類型
+      { wch: 12 }, // 屬性
+      { wch: 20 }, // 最低分數
+      { wch: 18 }  // 符合度
+    ];
     
     // Add the schools worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, schoolsWs, "符合學校");
     
-    // Add recommendations sheet
+    // Add recommendations sheet with enhanced styling
     const recommendationsData = [
       ["會考落點分析建議"],
       [],
@@ -1081,13 +1743,35 @@ async function exportExcel() {
     // Add the recommendations worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, recWs, "建議事項");
     
-    // Add watermark worksheet
+    // Add watermark worksheet with enhanced styling
     const watermarkData = [
       ["會考落點分析系統 - https://tyctw.github.io/spare/"],
-      ["產生日期: " + new Date().toLocaleDateString('zh-TW')]
+      ["產生日期: " + new Date().toLocaleDateString('zh-TW')],
+      ["  會考落點分析系統. All rights reserved."],
+      ["此分析結果僅供參考，請依各校最新招生簡章為準"]
     ];
     
     const watermarkWs = XLSX.utils.aoa_to_sheet(watermarkData);
+    
+    // Apply special styling to watermark sheet
+    const watermarkRange = XLSX.utils.decode_range(watermarkWs['!ref']);
+    for (let R = watermarkRange.s.r; R <= watermarkRange.e.r; ++R) {
+      for (let C = watermarkRange.s.c; C <= watermarkRange.e.c; ++C) {
+        const cell = XLSX.utils.encode_cell({r: R, c: C});
+        if(!watermarkWs[cell]) continue;
+        
+        watermarkWs[cell].s = {
+          font: R === 0 ? 
+            { bold: true, sz: 14, color: { rgb: "2a9d8f" } } : 
+            { italic: true, sz: 11, color: { rgb: "777777" } },
+          alignment: { horizontal: "center", vertical: "center" }
+        };
+      }
+    }
+    
+    // Set watermark sheet column width
+    watermarkWs['!cols'] = [{ wch: 100 }];
+    
     XLSX.utils.book_append_sheet(wb, watermarkWs, "關於系統");
     
     // Create and download the Excel file
@@ -1128,168 +1812,24 @@ function getSchoolOwnership(schoolElement) {
   return "";
 }
 
-function applyExcelStyling(worksheet, range) {
-  // Set column widths
-  const colWidths = [10, 30, 15, 15, 20];
-  for (let i = 0; i <= range.e.c; i++) {
-    worksheet['!cols'] = worksheet['!cols'] || [];
-    worksheet['!cols'][i] = { wch: colWidths[i] || 15 };
-  }
-  
-  // Style all cells
-  for (let R = range.s.r; R <= range.e.r; ++R) {
-    for (let C = range.s.c; C <= range.e.c; ++C) {
-      const cell = XLSX.utils.encode_cell({r: R, c: C});
-      if(!worksheet[cell]) continue;
-      
-      worksheet[cell].s = worksheet[cell].s || {};
-      
-      // Basic styling for all cells
-      worksheet[cell].s = {
-        font: { name: "Arial", sz: 11 },
-        alignment: { vertical: "center" },
-        border: {
-          top: { style: "thin", color: { rgb: "CCCCCC" } },
-          bottom: { style: "thin", color: { rgb: "CCCCCC" } },
-          left: { style: "thin", color: { rgb: "CCCCCC" } },
-          right: { style: "thin", color: { rgb: "CCCCCC" } }
-        }
-      };
-      
-      // Style header rows
-      if (R === 0 || (R === 5 && C === 0)) {
-        worksheet[cell].s.font = { bold: true, sz: 14, color: { rgb: "2a9d8f" } };
-      }
-      
-      // Style subheader rows
-      if (R === 6 && C <= 2) {
-        worksheet[cell].s.font = { bold: true };
-        worksheet[cell].s.fill = { fgColor: { rgb: "E9C46A" } };
-      }
-      
-      // Alternate row colors for data
-      if (R >= 7) {
-        worksheet[cell].s.fill = {
-          fgColor: { rgb: R % 2 ? "F4F1DE" : "FFFFFF" }
-        };
-      }
-    }
-  }
+function downloadFile(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(url);
+  a.remove();
 }
 
-function printResults() {
-  logUserActivity('print_results');
-  
-  const resultContent = document.getElementById('results').innerHTML;
-  const originalTitle = document.title;
-  const printStyles = `
-    <style>
-      @media print {
-        body { 
-          font-family: 'Noto Sans TC', sans-serif;
-          color: #264653;
-          background: white;
-        }
-        .results-container {
-          background: white;
-          box-shadow: none;
-          padding: 10px;
-          margin: 0;
-        }
-        .result-card {
-          border: 1px solid #ddd;
-          page-break-inside: avoid;
-        }
-        .school-type-card {
-          page-break-inside: avoid;
-          border: 1px solid #ddd;
-          margin-bottom: 15px;
-        }
-        .school-item {
-          page-break-inside: avoid;
-        }
-        .no-print {
-          display: none !important;
-        }
-        @page {
-          size: A4;
-          margin: 1.5cm;
-        }
-        footer {
-          position: fixed;
-          bottom: 0;
-          width: 100%;
-          text-align: center;
-          font-size: 0.8rem;
-          color: #777;
-          padding: 10px 0;
-          border-top: 1px solid #ddd;
-        }
-        .watermark {
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) rotate(-45deg);
-          font-size: 4rem;
-          color: rgba(0,0,0,0.05);
-          font-weight: bold;
-          z-index: -1;
-          pointer-events: none;
-        }
-      }
-    </style>`;
-  
-  const printWindow = window.open('', '_blank');
-  
-  if (!printWindow) {
-    alert('請允許開啟彈出視窗以啟用列印功能');
-    return;
-  }
-  
-  const now = new Date();
-  const formattedDate = now.toLocaleString('zh-TW');
-  
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>會考落點分析結果</title>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-      ${printStyles}
-    </head>
-    <body>
-      <div class="watermark">會考落點分析</div>
-      <h1 style="text-align: center; color: #2a9d8f;">會考落點分析結果</h1>
-      <div style="text-align: right; font-size: 0.9rem; color: #666; margin-bottom: 20px;">
-        產生時間: ${formattedDate}
-      </div>
-      ${resultContent}
-      <footer>
-        <p> 會考落點分析系統 | 此分析結果僅供參考</p>
-        <p style="color: #555; font-size: 0.85rem;">網站: https://tyctw.github.io/spare/</p>
-      </footer>
-      <script>
-        window.onload = function() {
-          window.print();
-          window.onfocus = function() { window.close(); }
-        }
-      </script>
-    </body>
-    </html>
-  `);
-  
-  printWindow.document.close();
-}
-
-initRating();
-
-function toggleIdentitySelector() {
-  const identityOptions = document.querySelectorAll('.identity-option .identity-input');
-  identityOptions.forEach(option => {
-    if (option.checked) {
-      document.getElementById('analysisIdentity').value = option.value;
-    }
+async function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
   });
 }
