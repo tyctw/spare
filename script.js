@@ -734,38 +734,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 根據五科成績和作文級分估算約略總分
     function calculateApproximateScore() {
-        const scoreValues = {
-            'A++': 7, 'A+': 6, 'A': 5, 'B++': 4, 'B+': 3, 'B': 2, 'C': 1
-        };
+        const compositionPoints = { 0: 0, 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3 };
+        const scorePoints = { 'A++': 6, 'A+': 6, 'A': 6, 'B++': 4, 'B+': 4, 'B': 4, 'C': 2 };
         
-        const chinese = scoreValues[document.getElementById('chinese').value] || 0;
-        const english = scoreValues[document.getElementById('english').value] || 0;
-        const math = scoreValues[document.getElementById('math').value] || 0;
-        const science = scoreValues[document.getElementById('science').value] || 0;
-        const social = scoreValues[document.getElementById('social').value] || 0;
+        const chinese = document.getElementById('chinese').value;
+        const english = document.getElementById('english').value;
+        const math = document.getElementById('math').value;
+        const science = document.getElementById('science').value;
+        const social = document.getElementById('social').value;
         const composition = parseInt(document.getElementById('composition').value) || 0;
         
-        // 簡單估算，實際錄取分數計算方式可能更複雜
-        const subjectScore = (chinese + english + math + science + social) * 3;
-        const compositionScore = composition * 2;
-        const approximateScore = subjectScore + compositionScore;
-        return approximateScore.toFixed(1);
+        // 使用新的計算公式
+        const totalPoints = scorePoints[chinese] + scorePoints[english] +
+                           scorePoints[math] + scorePoints[science] +
+                           scorePoints[social] + compositionPoints[composition];
+        
+        return totalPoints.toString();
     }
     
     // 計算總積點 (新增)
     function calculateTotalPoints() {
-        const pointValues = {
-            'A++': 7, 'A+': 6, 'A': 5, 'B++': 4, 'B+': 3, 'B': 2, 'C': 1
-        };
+        const creditPoints = { 'A++': 7, 'A+': 6, 'A': 5, 'B++': 4, 'B+': 3, 'B': 2, 'C': 1 };
         
-        const chinese = pointValues[document.getElementById('chinese').value] || 0;
-        const english = pointValues[document.getElementById('english').value] || 0;
-        const math = pointValues[document.getElementById('math').value] || 0;
-        const science = pointValues[document.getElementById('science').value] || 0;
-        const social = pointValues[document.getElementById('social').value] || 0;
+        const chinese = document.getElementById('chinese').value;
+        const english = document.getElementById('english').value;
+        const math = document.getElementById('math').value;
+        const science = document.getElementById('science').value;
+        const social = document.getElementById('social').value;
         
         // 總積點為五科的積點總和
-        return (chinese + english + math + science + social).toString();
+        const totalCredits = creditPoints[chinese] + creditPoints[english] +
+                            creditPoints[math] + creditPoints[science] +
+                            creditPoints[social];
+        
+        return totalCredits.toString();
     }
     
     // 自動更新總積分和總積點
