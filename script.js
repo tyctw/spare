@@ -1833,3 +1833,4 @@ async function loadScript(url) {
     document.head.appendChild(script);
   });
 }
+initRating();
