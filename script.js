@@ -1277,32 +1277,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const cardRow = document.createElement('div');
                     cardRow.className = 'mobile-row' + (rowCount % 2 === 0 ? ' even-row' : ' odd-row');
                     
-                    // 格式化分數顯示
-                    const scoreDisplay = Object.entries(entry.scores).map(([subject, grade]) => {
-                        const subjectNames = {
-                            chinese: '國文',
-                            english: '英文',
-                            math: '數學',
-                            science: '自然',
-                            social: '社會'
-                        };
-                        
-                        const subjectIcons = {
-                            chinese: '<i class="bi bi-book"></i>',
-                            english: '<i class="bi bi-translate"></i>',
-                            math: '<i class="bi bi-calculator"></i>',
-                            science: '<i class="bi bi-moisture"></i>',
-                            social: '<i class="bi bi-globe"></i>'
-                        };
-                        
-                        return `<span class="score-badge score-${grade}" title="${getSubjectName(subject)}">${subjectIcons[subject]} ${subjectNames[subject]}: ${grade}</span>`;
-                    }).join('');
-                    
-                    // 添加作文級分顯示
-                    const compositionDisplay = entry.composition ? 
-                        `<span class="composition-badge composition-${entry.composition}" title="作文級分">
-                            <i class="bi bi-pencil-square"></i> 作文: ${entry.composition}級
-                        </span>` : '';
+                    // 使用新的格式化函數
+                    const scoreDisplay = formatScoreDisplay(entry.scores, entry.composition);
                     
                     cardRow.innerHTML = `
                         <div class="mobile-cell">
@@ -1311,7 +1287,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="mobile-cell">
                             <span class="mobile-label">會考成績:</span>
-                            <div>${scoreDisplay} ${compositionDisplay}</div>
+                            <div>${scoreDisplay}</div>
                         </div>
                         <div class="mobile-cell">
                             <span class="mobile-label">總分:</span>
@@ -1358,38 +1334,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     const row = document.createElement('tr');
                     row.className = rowCount % 2 === 0 ? 'even-row' : 'odd-row';
                     
-                    // 格式化分數顯示
-                    const scoreDisplay = Object.entries(entry.scores).map(([subject, grade]) => {
-                        const subjectNames = {
-                            chinese: '國文',
-                            english: '英文',
-                            math: '數學',
-                            science: '自然',
-                            social: '社會'
-                        };
-                        
-                        const subjectIcons = {
-                            chinese: '<i class="bi bi-book"></i>',
-                            english: '<i class="bi bi-translate"></i>',
-                            math: '<i class="bi bi-calculator"></i>',
-                            science: '<i class="bi bi-moisture"></i>',
-                            social: '<i class="bi bi-globe"></i>'
-                        };
-                        
-                        return `<span class="score-badge score-${grade}" title="${getSubjectName(subject)}">${subjectIcons[subject]} ${subjectNames[subject]}: ${grade}</span>`;
-                    }).join('');
-                    
-                    // 添加作文級分顯示
-                    const compositionDisplay = entry.composition ? 
-                        `<span class="composition-badge composition-${entry.composition}" title="作文級分">
-                            <i class="bi bi-pencil-square"></i> 作文: ${entry.composition}級
-                        </span>` : '';
+                    // 使用新的格式化函數
+                    const scoreDisplay = formatScoreDisplay(entry.scores, entry.composition);
                     
                     row.innerHTML = `
                         <td>
                             <div class="fw-bold text-truncate">${entry.department}</div>
                         </td>
-                        <td>${scoreDisplay} ${compositionDisplay}</td>
+                        <td>${scoreDisplay}</td>
                         <td>
                             <div class="fw-bold">積分: ${entry.total || "未提供"}</div>
                             <div>積點: ${entry.totalPoints || "未提供"}</div>
@@ -1420,6 +1372,77 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.style.transform = 'translateY(0)';
             }, 50);
         });
+    }
+    
+    // 新增：更好地顯示成績的函數
+    function formatScoreDisplay(scores, composition) {
+        // 將成績按科目分組顯示
+        const scoreGroups = {
+            languages: {
+                chinese: scores.chinese,
+                english: scores.english
+            },
+            math: {
+                math: scores.math
+            },
+            sciences: {
+                science: scores.science,
+                social: scores.social
+            }
+        };
+        
+        // 科目顯示名稱和圖標
+        const subjectNames = {
+            chinese: '國文',
+            english: '英文',
+            math: '數學',
+            science: '自然',
+            social: '社會'
+        };
+        
+        const subjectIcons = {
+            chinese: '<i class="bi bi-book"></i>',
+            english: '<i class="bi bi-translate"></i>',
+            math: '<i class="bi bi-calculator"></i>',
+            science: '<i class="bi bi-moisture"></i>',
+            social: '<i class="bi bi-globe"></i>'
+        };
+        
+        // 生成HTML
+        let html = '<div class="score-display">';
+        
+        // 語文類
+        html += '<div class="score-group languages">';
+        Object.entries(scoreGroups.languages).forEach(([subject, grade]) => {
+            html += `<span class="score-badge score-${grade}" title="${subjectNames[subject]}">${subjectIcons[subject]} ${subjectNames[subject]}: ${grade}</span>`;
+        });
+        html += '</div>';
+        
+        // 數學
+        html += '<div class="score-group math">';
+        Object.entries(scoreGroups.math).forEach(([subject, grade]) => {
+            html += `<span class="score-badge score-${grade}" title="${subjectNames[subject]}">${subjectIcons[subject]} ${subjectNames[subject]}: ${grade}</span>`;
+        });
+        html += '</div>';
+        
+        // 自然社會
+        html += '<div class="score-group sciences">';
+        Object.entries(scoreGroups.sciences).forEach(([subject, grade]) => {
+            html += `<span class="score-badge score-${grade}" title="${subjectNames[subject]}">${subjectIcons[subject]} ${subjectNames[subject]}: ${grade}</span>`;
+        });
+        html += '</div>';
+        
+        // 作文
+        if (composition) {
+            html += `<div class="score-group composition">
+                <span class="composition-badge composition-${composition}" title="作文級分">
+                    <i class="bi bi-pencil-square"></i> 作文: ${composition}級
+                </span>
+            </div>`;
+        }
+        
+        html += '</div>';
+        return html;
     }
     
     // 填入科系群組資料

@@ -200,13 +200,12 @@ body::before {
 }
 
 .score-badge {
-  font-size: 0.85rem;
-  padding: 6px 12px;
-  margin-right: 5px;
+  font-size: 0.8rem;
+  padding: 4px 8px;
   border-radius: 30px;
   font-weight: 600;
   display: inline-block;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
   white-space: nowrap;
@@ -253,17 +252,14 @@ body::before {
 }
 
 .composition-badge {
-  font-size: 0.85rem;
-  padding: 6px 12px;
-  margin-left: 5px;
+  font-size: 0.8rem;
+  padding: 4px 8px;
   border-radius: 30px;
   font-weight: 600;
   display: inline-block;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
-  background: linear-gradient(120deg, #9c27b0, #673ab7);
-  color: white;
   white-space: nowrap;
 }
 
@@ -298,6 +294,34 @@ body::before {
 
 .composition-6 {
   background: linear-gradient(120deg, #9c27b0, #8e24aa);
+}
+
+.score-display {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.score-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.score-group.languages .score-badge {
+  background: linear-gradient(120deg, #ff5722, #e64a19);
+  color: white;
+}
+
+.score-group.math .score-badge {
+  background: linear-gradient(120deg, #2196f3, #1976d2);
+  color: white;
+}
+
+.score-group.sciences .score-badge {
+  background: linear-gradient(120deg, #4caf50, #388e3c);
+  color: white;
 }
 
 #stats-chart rect {
@@ -814,7 +838,7 @@ footer {
 
 .user-guide-tooltip.top::after {
   bottom: -7px;
-  left:! 50%;
+  left: 50%;
   margin-left: -7px;
 }
 
@@ -1075,13 +1099,16 @@ footer {
   
   .score-badge, .composition-badge {
     font-size: 0.75rem;
-    padding: 5px 10px;
-    margin-bottom: 3px;
+    padding: 3px 6px;
   }
   
   .mobile-row .score-badge, .mobile-row .composition-badge {
     display: inline-flex;
     align-items: center;
+  }
+  
+  .score-display {
+    gap: 3px;
   }
 }
 
