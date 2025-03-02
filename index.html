@@ -1,825 +1,564 @@
 <html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高中錄取分數分享平台</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-    <style>
-      /* 頁面載入動畫 */
-      body {
-        opacity: 0;
-        transition: opacity 0.8s;
-      }
-      
-      body.page-loaded {
-        opacity: 1;
-      }
-      
-      /* 滾動動畫效果 */
-      .card, .school-tag, .btn, header h1, header p {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.8s, transform 0.8s;
-      }
-      
-      .card.in-view, .school-tag.in-view, .btn.in-view, header h1.in-view, header p.in-view {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      
-      /* 提交動畫 */
-      @keyframes formShake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-      }
-      
-      #score-form.submitting {
-        animation: formShake 0.4s ease-in-out;
-      }
-      
-      /* Add additional styling for enhanced visual appeal */
-      .card {
-        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                    box-shadow 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      }
-      
-      .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-      }
-      
-      header h1 {
-        background: linear-gradient(120deg, #0d6efd, #6610f2);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        font-weight: 800;
-        text-shadow: none;
-      }
-      
-      .score-badge, .composition-badge {
-        backdrop-filter: blur(4px);
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
-      }
-      
-      .score-badge:hover, .composition-badge:hover {
-        transform: translateY(-5px) scale(1.05);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-      }
-      
-      .floating-element {
-        animation: float-animation 3s ease-in-out infinite;
-      }
-      
-      @keyframes float-animation {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-        100% { transform: translateY(0px); }
-      }
-      
-      .btn {
-        overflow: hidden;
-        position: relative;
-      }
-      
-      .btn::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: -100%;
-        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
-        transition: all 0.6s;
-      }
-      
-      .btn:hover::after {
-        left: 100%;
-      }
-    </style>
-</head>
-<body>
-    <!-- 頁首導航菜單 -->
-    <nav class="navbar navbar-expand-lg sticky-top" id="main-navbar">
-        <div class="container">
-            <a class="navbar-brand" href="#"><i class="bi bi-journal-check"></i>高中分數分享</a>
-            <button class="navbar-toggler d-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="bi bi-list fs-3"></i>
-            </button>
-            
-            <!-- 漢堡選單按鈕 -->
-            <button id="menu-toggle-btn" class="menu-toggle-btn">
-                <i class="bi bi-list d-block fs-3" style="display: block;"></i>
-            </button>
+  <head>
+    <meta charset="UTF-8" />
+    <title>會考落點分析</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-adsense-account" content="ca-pub-3350304014189563" />
+    <meta
+      name="description"
+      content="會考落點分析，幫助使用者分析會考成績，提供學校落點參考。"
+    />
+    <meta
+      name="keywords"
+      content="桃聯區, 會考, 落點分析, 教育, 學校,武陵高中,中壢高中,內壢高中,平鎮高中,大園高中,永豐高中,南崁高中,振聲高中,楊梅高中,治平高中,新興高中,關西高中,大溪高中"
+    />
+    <meta name="author" content="桃聯區教育局" />
+    <!-- External JS Libraries -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.3.1/dist/jsQR.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-container">
+        <div class="header-logo">
+          <i class="fas fa-chart-line"></i>
+          <span>會考落點分析</span>
         </div>
-    </nav>
-    
-    <!-- 右側彈出菜單 -->
-    <div id="sidebar-menu" class="sidebar-menu">
-        <button id="close-menu-btn" class="close-btn">
-            <i class="bi bi-x-lg"></i>
-        </button>
-        <div class="pt-4 pb-2 text-center">
-            <h5 class="fw-bold text-primary mb-0"><i class="bi bi-journal-check me-2"></i>選單</h5>
+        <div class="menu-icon" onclick="toggleMenu()">
+          <i class="fas fa-bars"></i>
         </div>
-        <div class="pt-2">
-            <a href="https://sites.google.com/view/tyctw/" class="menu-item active">
-                <i class="bi bi-house-door"></i>首頁
-            </a>
-            <a href="https://tyctw.github.io/" class="menu-item">
-                <i class="bi bi-share"></i>落點分析
-            </a>
-            <a href="https://tyctw.github.io/report_form" class="menu-item">
-                <i class="bi bi-search"></i>異常回報
-            </a>
-            <a href="#results-section" class="menu-item">
-                <i class="bi bi-list-stars"></i>錄取資料
-            </a>
-            <a href="https://tyctw.github.io/Navigation/n" class="menu-item">
-                <i class="bi bi-bar-chart"></i>更多資訊
-            </a>
-            <div class="border-top my-3"></div>
-            <a href="javascript:void(0)" class="btn btn-primary menu-btn help-btn">
-                <i class="bi bi-lightbulb me-2"></i>使用說明
-            </a>
-        </div>
+      </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+    <div class="fullscreen-menu" id="fullscreenMenu">
+      <div class="close-menu" onclick="closeMenu()">
+        <i class="fas fa-times"></i>
+      </div>
+      <a href="https://sites.google.com/view/tyctw/" target="_blank">
+        <i class="fas fa-school"></i> 回到主網頁
+      </a>
+      <a href="https://tyctw.github.io/sequence/" target="_blank">
+        <i class="fas fa-pencil-alt"></i>! 各校序位推估 
+      </a>
+      <a href="https://tyctw.github.io/report_form" target="_blank">
+        <i class="fas fa-exclamation-triangle"></i> 系統異常回報
+      </a>
+      <a href="https://tyctw.github.io/Navigation/">
+        <i class="fas fa-university"></i> 查看更多資訊
+      </a>
     </div>
-    
-    <!-- 側邊欄背景遮罩 -->
-    <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
     <div class="container">
-        <header class="mb-4 mt-3 text-center">
-            <h1 class="floating-element"><i class="bi bi-journal-check me-2"></i>高中錄取分數分享平台</h1>
-            <p class="lead">分享你的會考成績與錄取高中，幫助學弟妹了解各校錄取分數區間</p>
-        </header>
-
-        <!-- 右上角使用說明按鈕 -->
-        <div class="position-fixed top-0 end-0 m-3 mt-5 d-none d-lg-block" style="z-index: 1030;">
-            <button class="btn btn-primary rounded-circle shadow help-btn" style="width: 45px; height: 45px;" data-bs-toggle="tooltip" data-bs-placement="left" title="使用說明">
-                <i class="bi bi-question-lg"></i>
-            </button>
+      <h1>
+        <i class="fas fa-chart-line icon"></i>會考落點分析系統
+      </h1>
+      <a
+        href="https://forms.gle/e5tHU1haqpHRU7nJ9"
+        target="_blank"
+        class="invite-link"
+      >
+        <i class="fas fa-envelope-open-text icon"></i>填寫表單獲取邀請碼
+      </a>
+      <button class="instruction-toggle" onclick="showInstructions()">
+        <i class="fas fa-info-circle icon"></i>使用說明
+      </button>
+      <button class="disclaimer-toggle" onclick="showDisclaimer()">
+        <i class="fas fa-exclamation-triangle icon"></i>免責聲明
+      </button>
+      <form id="analysisForm">
+        <div class="form-group">
+          <label for="invitationCode">
+            <i class="fas fa-key icon"></i>邀請碼：
+          </label>
+          <input
+            type="text"
+            id="invitationCode"
+            required
+            placeholder="請輸入邀請碼"
+          />
         </div>
 
-        <div class="row">
-            <div class="col-lg-6 mb-4" id="share-section">
-                <div class="card mb-4 glass-card card-3d">
-                    <div class="card-header gradient-card-header">
-                        <h3 class="mb-0"><i class="bi bi-share me-2"></i>分享你的錄取資訊</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="score-form">
-                            <div class="mb-3">
-                                <label for="year" class="form-label"><i class="bi bi-calendar-event me-1"></i>會考年份</label>
-                                <select class="form-select" id="year" required data-bs-toggle="tooltip" data-bs-placement="right" title="請選擇您參加會考的年份">
-                                    <option value="" selected disabled>請選擇年份</option>
-                                    <option value="114">114年 (2025)</option>
-                                    <option value="113">113年 (2024)</option>
-                                    <option value="112">112年 (2023)</option>
-                                    <option value="111">111年 (2022)</option>
-                                    <option value="110">110年 (2021)</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="school" class="form-label"><i class="bi bi-building me-1"></i>錄取學校</label>
-                                <input type="text" class="form-control" id="school" placeholder="例：建國中學" required data-bs-toggle="tooltip" data-bs-placement="right" title="請輸入您錄取的學校全名">
-                            </div>
-                            <div class="mb-3">
-                                <label for="department" class="form-label"><i class="bi bi-book me-1"></i>科系/班別</label>
-                                <select class="form-select" id="department" data-bs-toggle="tooltip" data-bs-placement="right" title="請選擇您錄取的科系或班別，普通高中可選擇「普通班」">
-                                    <option value="" selected disabled>請選擇科系或班別</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="region" class="form-label"><i class="bi bi-geo-alt me-1"></i>所屬區域</label>
-                                <select class="form-select" id="region" required data-bs-toggle="tooltip" data-bs-placement="right" title="請選擇學校所在的免試入學區域">
-                                    <option value="" selected disabled>請選擇區域</option>
-                                    <option value="基北區">基北區</option>
-                                    <option value="桃連區">桃連區</option>
-                                    <option value="竹苗區">竹苗區</option>
-                                    <option value="中投區">中投區</option>
-                                    <option value="雲林區">雲林區</option>
-                                    <option value="彰化區">彰化區</option>
-                                    <option value="嘉義區">嘉義區</option>
-                                    <option value="台南區">台南區</option>
-                                    <option value="高雄區">高雄區</option>
-                                    <option value="屏東區">屏東區</option>
-                                    <option value="宜蘭區">宜蘭區</option>
-                                    <option value="花蓮區">花蓮區</option>
-                                    <option value="澎湖區">澎湖區</option>
-                                    <option value="金門區">金門區</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"><i class="bi bi-award me-1"></i>會考成績</label>
-                                <div class="row g-2">
-                                    <div class="col">
-                                        <label for="chinese" class="form-label">國文</label>
-                                        <select class="form-select" id="chinese" required data-bs-toggle="tooltip" data-bs-placement="top" title="選擇您國文科的會考成績">
-                                            <option value="" selected disabled>請選擇</option>
-                                            <option value="A++">A++</option>
-                                            <option value="A+">A+</option>
-                                            <option value="A">A</option>
-                                            <option value="B++">B++</option>
-                                            <option value="B+">B+</option>
-                                            <option value="B">B</option>
-                                            <option value="C">C</option>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <label for="english" class="form-label">英文</label>
-                                        <select class="form-select" id="english" required data-bs-toggle="tooltip" data-bs-placement="top" title="選擇您英文科的會考成績">
-                                            <option value="" selected disabled>請選擇</option>
-                                            <option value="A++">A++</option>
-                                            <option value="A+">A+</option>
-                                            <option value="A">A</option>
-                                            <option value="B++">B++</option>
-                                            <option value="B+">B+</option>
-                                            <option value="B">B</option>
-                                            <option value="C">C</option>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <label for="math" class="form-label">數學</label>
-                                        <select class="form-select" id="math" required data-bs-toggle="tooltip" data-bs-placement="top" title="選擇您數學科的會考成績">
-                                            <option value="" selected disabled>請選擇</option>
-                                            <option value="A++">A++</option>
-                                            <option value="A+">A+</option>
-                                            <option value="A">A</option>
-                                            <option value="B++">B++</option>
-                                            <option value="B+">B+</option>
-                                            <option value="B">B</option>
-                                            <option value="C">C</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row g-2 mt-2">
-                                    <div class="col">
-                                        <label for="science" class="form-label">自然</label>
-                                        <select class="form-select" id="science" required data-bs-toggle="tooltip" data-bs-placement="bottom" title="選擇您自然科的會考成績">
-                                            <option value="" selected disabled>請選擇</option>
-                                            <option value="A++">A++</option>
-                                            <option value="A+">A+</option>
-                                            <option value="A">A</option>
-                                            <option value="B++">B++</option>
-                                            <option value="B+">B+</option>
-                                            <option value="B">B</option>
-                                            <option value="C">C</option>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <label for="social" class="form-label">社會</label>
-                                        <select class="form-select" id="social" required data-bs-toggle="tooltip" data-bs-placement="bottom" title="選擇您社會科的會考成績">
-                                            <option value="" selected disabled>請選擇</option>
-                                            <option value="A++">A++</option>
-                                            <option value="A+">A+</option>
-                                            <option value="A">A</option>
-                                            <option value="B++">B++</option>
-                                            <option value="B+">B+</option>
-                                            <option value="B">B</option>
-                                            <option value="C">C</option>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <label for="composition" class="form-label">作文</label>
-                                        <select class="form-select" id="composition" required data-bs-toggle="tooltip" data-bs-placement="bottom" title="選擇您國文寫作測驗的級分">
-                                            <option value="" selected disabled>級分</option>
-                                            <option value="0">0級</option>
-                                            <option value="1">1級</option>
-                                            <option value="2">2級</option>
-                                            <option value="3">3級</option>
-                                            <option value="4">4級</option>
-                                            <option value="5">5級</option>
-                                            <option value="6">6級</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-2 mb-3">
-                                <div class="col-md-6">
-                                    <label for="total" class="form-label"><i class="bi bi-calculator me-1"></i>總積分</label>
-                                    <input type="number" class="form-control" id="total" min="0" max="100" step="0.01" placeholder="例：97.5" data-bs-toggle="tooltip" data-bs-placement="top" title="依各校計算方式得出的總積分，如不確定可留空由系統估算">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="totalPoints" class="form-label"><i class="bi bi-award me-1"></i>總積點</label>
-                                    <input type="number" class="form-control" id="totalPoints" min="0" max="35" step="1" placeholder="例：28" data-bs-toggle="tooltip" data-bs-placement="top" title="五科成績換算的總積點，如不確定可留空由系統估算">
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="comment" class="form-label"><i class="bi bi-chat-square-text me-1"></i>附加說明 (選填)</label>
-                                <textarea class="form-control" id="comment" rows="2" placeholder="例：加分條件、特殊管道錄取、心得..." data-bs-toggle="tooltip" data-bs-placement="top" title="可填寫其他補充說明，如特殊管道錄取、多元學習表現加分等"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <div class="h-captcha" data-sitekey="87f06f80-1ea2-4a22-95e2-93f08616a8e4" data-theme="light"></div>
-                                <div id="captcha-error" class="text-danger small mt-1" style="display: none;">
-                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>請完成人機驗證
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-send me-1"></i>分享我的成績</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6">
-                <div class="card mb-4" id="search-section">
-                    <div class="card-header success-gradient-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h3 class="mb-0"><i class="bi bi-search me-2"></i>搜尋錄取資訊</h3>
-                            <a href="#" class="text-white" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
-                                <i class="bi bi-funnel"></i> 進階篩選
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form id="search-form" class="mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" id="search-input" placeholder="輸入學校或科系關鍵字...">
-                                <button class="btn btn-success" type="submit">搜尋</button>
-                            </div>
-                        </form>
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-geo-alt me-1"></i>選擇區域</label>
-                            <div class="region-filter" id="region-filter">
-                                <button class="region-btn active" data-region="all" id="region-all"><i class="bi bi-globe-asia-australia me-1"></i>全部區域</button>
-                                <button class="region-btn" data-region="基北區"><i class="bi bi-geo me-1"></i>基北區</button>
-                                <button class="region-btn" data-region="桃連區"><i class="bi bi-geo me-1"></i>桃連區</button>
-                                <button class="region-btn" data-region="竹苗區"><i class="bi bi-geo me-1"></i>竹苗區</button>
-                                <button class="region-btn" data-region="中投區"><i class="bi bi-geo me-1"></i>中投區</button>
-                                <button class="region-btn" data-region="雲林區"><i class="bi bi-geo me-1"></i>雲林區</button>
-                                <button class="region-btn" data-region="彰化區"><i class="bi bi-geo me-1"></i>彰化區</button>
-                                <button class="region-btn" data-region="嘉義區"><i class="bi bi-geo me-1"></i>嘉義區</button>
-                                <button class="region-btn" data-region="台南區"><i class="bi bi-geo me-1"></i>台南區</button>
-                                <button class="region-btn" data-region="高雄區"><i class="bi bi-geo me-1"></i>高雄區</button>
-                                <button class="region-btn" data-region="屏東區"><i class="bi bi-geo me-1"></i>屏東區</button>
-                                <button class="region-btn" data-region="宜蘭區"><i class="bi bi-geo me-1"></i>宜蘭區</button>
-                                <button class="region-btn" data-region="花蓮區"><i class="bi bi-geo me-1"></i>花蓮區</button>
-                                <button class="region-btn" data-region="澎湖區"><i class="bi bi-geo me-1"></i>澎湖區</button>
-                                <button class="region-btn" data-region="金門區"><i class="bi bi-geo me-1"></i>金門區</button>
-                            </div>
-                        </div>
-                        
-                        <!-- 進階篩選區塊 -->
-                        <div id="advancedFilters" class="collapse mt-3">
-                            <div class="filter-container">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 class="filter-title mb-0"><i class="bi bi-funnel"></i> 進階篩選條件</h5>
-                                    <span id="clear-filters" class="clear-filters">
-                                        <i class="bi bi-x-circle"></i> 清除所有篩選
-                                    </span>
-                                </div>
-                                
-                                <!-- 年份篩選 -->
-                                <div class="filter-group" id="year-filter">
-                                    <div class="filter-title fs-6">會考年份：</div>
-                                    <div class="filter-chip" data-year="114"><i class="bi bi-calendar"></i> 114年</div>
-                                    <div class="filter-chip" data-year="113"><i class="bi bi-calendar"></i> 113年</div>
-                                    <div class="filter-chip" data-year="112"><i class="bi bi-calendar"></i> 112年</div>
-                                    <div class="filter-chip" data-year="111"><i class="bi bi-calendar"></i> 111年</div>
-                                    <div class="filter-chip" data-year="110"><i class="bi bi-calendar"></i> 110年</div>
-                                </div>
-                                
-                                <!-- 積分範圍篩選 -->
-                                <div class="filter-title fs-6">積分區間：</div>
-                                <div class="score-filter" id="score-range-filter">
-                                    <div class="score-filter-btn" data-min="90" data-max="117">90分以上</div>
-                                    <div class="score-filter-btn" data-min="80" data-max="90">80-90分</div>
-                                    <div class="score-filter-btn" data-min="70" data-max="80">70-80分</div>
-                                    <div class="score-filter-btn" data-min="60" data-max="70">60-70分</div>
-                                    <div class="score-filter-btn" data-min="0" data-max="60">60分以下</div>
-                                </div>
-                                
-                                <!-- 科目篩選 -->
-                                <div class="filter-title fs-6 mt-3">國文成績：</div>
-                                <div class="filter-group subject-filter" data-subject="chinese">
-                                    <div class="filter-chip" data-grade="A++">A++</div>
-                                    <div class="filter-chip" data-grade="A+">A+</div>
-                                    <div class="filter-chip" data-grade="A">A</div>
-                                    <div class="filter-chip" data-grade="B++">B++</div>
-                                    <div class="filter-chip" data-grade="B+">B+</div>
-                                </div>
-                                
-                                <div class="filter-title fs-6 mt-3">英文成績：</div>
-                                <div class="filter-group subject-filter" data-subject="english">
-                                    <div class="filter-chip" data-grade="A++">A++</div>
-                                    <div class="filter-chip" data-grade="A+">A+</div>
-                                    <div class="filter-chip" data-grade="A">A</div>
-                                    <div class="filter-chip" data-grade="B++">B++</div>
-                                    <div class="filter-chip" data-grade="B+">B+</div>
-                                </div>
-                                
-                                <div class="filter-title fs-6 mt-3">數學成績：</div>
-                                <div class="filter-group subject-filter" data-subject="math">
-                                    <div class="filter-chip" data-grade="A++">A++</div>
-                                    <div class="filter-chip" data-grade="A+">A+</div>
-                                    <div class="filter-chip" data-grade="A">A</div>
-                                    <div class="filter-chip" data-grade="B++">B++</div>
-                                    <div class="filter-chip" data-grade="B+">B+</div>
-                                </div>
-                                
-                                <!-- 作文級分篩選 -->
-                                <div class="filter-title fs-6 mt-3">作文級分：</div>
-                                <div class="filter-group" id="composition-filter">
-                                    <div class="filter-chip" data-level="6"><i class="bi bi-pencil"></i> 6級</div>
-                                    <div class="filter-chip" data-level="5"><i class="bi bi-pencil"></i> 5級</div>
-                                    <div class="filter-chip" data-level="4"><i class="bi bi-pencil"></i> 4級</div>
-                                    <div class="filter-chip" data-level="3"><i class="bi bi-pencil"></i> 3級</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 篩選結果計數 -->
-                        <div class="mt-3 text-muted fs-6">
-                            目前顯示 <span id="filter-result-count">0</span> 筆符合條件的資料
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-bookmark-star me-1"></i>學校快速選擇</label>
-                            <div class="d-flex flex-wrap gap-1">
-                                <button class="btn btn-sm btn-outline-secondary school-tag">建國中學</button>
-                                <button class="btn btn-sm btn-outline-secondary school-tag">師大附中</button>
-                                <button class="btn btn-sm btn-outline-secondary school-tag">北一女中</button>
-                                <button class="btn btn-sm btn-outline-secondary school-tag">中山女高</button>
-                                <button class="btn btn-sm btn-outline-secondary school-tag">成功高中</button>
-                                <button class="btn btn-sm btn-outline-secondary school-tag">台中一中</button>
-                                <button class="btn btn-sm btn-outline-secondary school-tag">台中女中</button>
-                                <button class="btn btn-sm btn-outline-secondary school-tag">高雄中學</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="stats-section" class="card mb-4">
-                    <div class="card-header info-gradient-header">
-                        <h3 class="mb-0"><i class="bi bi-bar-chart me-2"></i>統計資訊</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="p-3 bg-light rounded-circle me-3">
-                                <i class="bi bi-file-earmark-text" style="font-size: 1.5rem; color: #0d6efd;"></i>
-                            </div>
-                            <div>
-                                <div class="text-muted">累計分享資料</div>
-                                <div class="fs-4 fw-bold" id="total-entries">0</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="p-3 bg-light rounded-circle me-3">
-                                <i class="bi bi-building" style="font-size: 1.5rem; color: #fd7e14;"></i>
-                            </div>
-                            <div>
-                                <div class="text-muted">最熱門學校</div>
-                                <div class="fs-5 fw-bold" id="popular-school">暫無資料</div>
-                            </div>
-                        </div>
-                        <div id="chart-container" style="height: 220px;">
-                            <svg id="stats-chart" width="100%" height="100%"></svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="qr-options">
+          <button type="button" id="scanQRCode">
+            <i class="fas fa-camera icon"></i>掃描 QR 碼
+          </button>
+          <label for="fileInput" class="file-input-label">
+            <i class="fas fa-image icon"></i>上傳 QR 碼
+          </label>
+          <input type="file" id="fileInput" accept="image/*" />
         </div>
+        <div id="qr-reader" style="display: none;"></div>
+        <div id="qr-result"></div>
+      </form>
 
-        <div class="card mb-4" id="results-section">
-            <div class="card-header warning-gradient-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0"><i class="bi bi-list-stars me-2"></i>最新分享資訊</h3>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-light dropdown-toggle" id="sort-dropdown" data-bs-toggle="dropdown">
-                            <i class="bi bi-sort-down me-1"></i>排序方式
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item sort-option" data-sort="newest" href="#"><i class="bi bi-clock me-2"></i>最新分享</a></li>
-                            <li><a class="dropdown-item sort-option" data-sort="highest" href="#"><i class="bi bi-arrow-down-up me-2"></i>積分高至低</a></li>
-                            <li><a class="dropdown-item sort-option" data-sort="lowest" href="#"><i class="bi bi-arrow-up-down me-2"></i>積分低至高</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-header">
-                            <tr>
-                                <th>學校 / 科系</th>
-                                <th>會考成績</th>
-                                <th>總分</th>
-                                <th>年份</th>
-                                <th>說明</th>
-                            </tr>
-                        </thead>
-                        <tbody id="results-table">
-                            <!-- 分享資料會顯示在這裡 -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <div class="form-group">
+        <label for="schoolOwnership">
+          <i class="fas fa-building icon"></i>學校屬性：
+        </label>
+        <select id="schoolOwnership">
+          <option value="all">全部</option>
+          <option value="public">公立</option>
+          <option value="private">私立</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="schoolType">
+          <i class="fas fa-graduation-cap icon"></i>學校類型：
+        </label>
+        <select id="schoolType" onchange="toggleVocationalGroup()">
+          <option value="all">全部</option>
+          <option value="普通科">普通科</option>
+          <option value="職業類科">職業類科</option>
+        </select>
+      </div>
+      <div class="form-group" id="vocationalGroupContainer" style="display: none;">
+        <label for="vocationalGroup">
+          <i class="fas fa-tools icon"></i>職業群別：
+        </label>
+        <select id="vocationalGroup">
+          <option value="all">全部</option>
+          <option value="機械群">機械群</option>
+          <option value="動力機械群">動力機械群</option>
+          <option value="電機與電子群">電機與電子群</option>
+          <option value="化工群">化工群</option>
+          <option value="土木與建築群">土木與建築群</option>
+          <option value="商業與管理群">商業與管理群</option>
+          <option value="外語群">外語群</option>
+          <option value="設計群">設計群</option>
+          <option value="農業群">農業群</option>
+          <option value="食品群">食品群</option>
+          <option value="家政群">家政群</option>
+          <option value="餐旅群">餐旅群</option>
+          <option value="水產群">水產群</option>
+          <option value="海事群">海事群</option>
+          <option value="藝術群">藝術群</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>
+          <i class="fas fa-user icon"></i> 分析身份：
+        </label>
+        <div class="identity-selector">
+          <div class="identity-option">
+            <input type="radio" id="identity-student" name="identitySelector" value="student" class="identity-input" onchange="toggleIdentitySelector()">
+            <label for="identity-student" class="identity-label">
+              <i class="fas fa-user-graduate identity-icon"></i>
+              <div class="identity-name">學生</div>
+            </label>
+          </div>
+          <div class="identity-option">
+            <input type="radio" id="identity-teacher" name="identitySelector" value="teacher" class="identity-input" onchange="toggleIdentitySelector()">
+            <label for="identity-teacher" class="identity-label">
+              <i class="fas fa-chalkboard-teacher identity-icon"></i>
+              <div class="identity-name">老師</div>
+            </label>
+          </div>
+          <div class="identity-option">
+            <input type="radio" id="identity-parent" name="identitySelector" value="parent" class="identity-input" onchange="toggleIdentitySelector()">
+            <label for="identity-parent" class="identity-label">
+              <i class="fas fa-user-friends identity-icon"></i>
+              <div class="identity-name">家長</div>
+            </label>
+          </div>
         </div>
+        <select id="analysisIdentity" style="display: none;">
+          <option value="">請選擇身份</option>
+          <option value="student">學生</option>
+          <option value="teacher">老師</option>
+          <option value="parent">家長</option>
+        </select>
+      </div>
 
-        <footer class="text-center text-muted mb-3">
-            <p><i class="bi bi-heart-fill me-1 text-danger"></i> 2025 高中錄取分數分享平台 | 本平台僅供參考，錄取標準依各高中公告為準</p>
-            <p class="mb-0">
-                <button class="btn btn-sm btn-outline-primary animated-btn help-btn">
-                    <i class="bi bi-info-circle me-1"></i>使用說明
-                </button>
-            </p>
-        </footer>
-    </div>
-
-    <!-- 使用說明模態框 -->
-    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="helpModalLabel"><i class="bi bi-lightbulb"></i>平台使用說明</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="guide-steps">
-                        <div class="guide-step-btn active" data-step="intro">
-                            <i class="bi bi-info-circle"></i>
-                            <span>平台介紹</span>
-                        </div>
-                        <div class="guide-step-btn" data-step="share">
-                            <i class="bi bi-share"></i>
-                            <span>分享資訊</span>
-                        </div>
-                        <div class="guide-step-btn" data-step="search">
-                            <i class="bi bi-search"></i>
-                            <span>搜尋資訊</span>
-                        </div>
-                        <div class="guide-step-btn" data-step="score">
-                            <i class="bi bi-calculator"></i>
-                            <span>積分計算</span>
-                        </div>
-                        <div class="guide-step-btn" data-step="faq">
-                            <i class="bi bi-question-circle"></i>
-                            <span>常見問題</span>
-                        </div>
-                    </div>
-                    
-                    <div class="guide-step-content active" id="intro-content">
-                        <h5><i class="bi bi-info-circle"></i>平台介紹</h5>
-                        <p>高中錄取分數分享平台是一個讓會考生分享錄取資訊的網站，幫助學弟妹了解各校錄取分數區間，做出更好的志願選擇。</p>
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-6 mb-3">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-share"></i>
-                                    </div>
-                                    <h6 class="fw-bold">分享錄取資訊</h6>
-                                    <p class="mb-0 small text-muted">分享你的會考成績與錄取高中，幫助更多學弟妹。</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-search"></i>
-                                    </div>
-                                    <h6 class="fw-bold">查詢學校分數</h6>
-                                    <p class="mb-0 small text-muted">搜尋特定學校的錄取分數，了解錄取趨勢。</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-bar-chart"></i>
-                                    </div>
-                                    <h6 class="fw-bold">統計分析</h6>
-                                    <p class="mb-0 small text-muted">查看熱門學校統計數據，了解整體趨勢。</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-shield-check"></i>
-                                    </div>
-                                    <h6 class="fw-bold">資料安全</h6>
-                                    <p class="mb-0 small text-muted">所有資料僅用於統計分析，不會收集個人隱私。</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="guide-tip mt-4">
-                            <i class="bi bi-lightbulb me-2"></i> <strong>使用建議：</strong> 瀏覽各學校資料時，請記得不同年份的錄取標準可能有所不同，僅供參考。最終錄取標準請以各校公告為準。
-                        </div>
-                    </div>
-                    
-                    <div class="guide-step-content" id="share-content">
-                        <h5><i class="bi bi-share"></i>如何分享錄取資訊</h5>
-                        <p>分享你的會考成績與錄取學校，可以幫助更多學弟妹了解各校錄取情況，做出更好的選擇。</p>
-                        
-                        <ol class="mt-3">
-                            <li class="mb-3">前往「分享你的錄取資訊」區塊</li>
-                            <li class="mb-3">填寫會考年份、錄取學校和科系班別</li>
-                            <li class="mb-3">選擇學校所屬區域（如基北區、中投區等）</li>
-                            <li class="mb-3">選擇您的會考五科成績 (A++、A+、A、B++、B+、B、C)</li>
-                            <li class="mb-3">選擇作文級分 (0-6級)</li>
-                            <li class="mb-3">填寫總積分和總積點 (如果不確定，系統會自動估算)</li>
-                            <li class="mb-3">可填寫附加說明 (選填，例如特殊條件或心得)</li>
-                            <li>點擊「分享我的成績」按鈕提交資料</li>
-                        </ol>
-                        
-                        <div class="guide-tip mt-3">
-                            <i class="bi bi-info-circle me-2"></i> <strong>提示：</strong> 總積分和總積點會根據您選擇的成績自動計算，但您也可以手動修改為實際錄取分數。
-                        </div>
-                        
-                        <div class="guide-tip warning mt-3">
-                            <i class="bi bi-exclamation-triangle me-2"></i> <strong>注意：</strong> 請填寫真實資訊，以確保平台資料的準確性和參考價值。
-                        </div>
-                    </div>
-                    
-                    <div class="guide-step-content" id="search-content">
-                        <h5><i class="bi bi-search"></i>如何搜尋錄取資訊</h5>
-                        <p>您可以搜尋特定學校或科系的錄取資訊，了解不同成績區間的學生獲錄取的情況。</p>
-                        
-                        <h6 class="mt-4 mb-3">搜尋方式：</h6>
-                        <ol>
-                            <li class="mb-2">使用搜尋框輸入學校或科系名稱關鍵字</li>
-                            <li class="mb-2">點擊「搜尋」按鈕</li>
-                            <li class="mb-2">或直接點擊快速選擇區的學校標籤</li>
-                            <li class="mb-2">您也可以通過選擇特定區域（如基北區、高雄區）來過濾學校</li>
-                        </ol>
-                        
-                        <h6 class="mt-4 mb-3">排序結果：</h6>
-                        <p>搜尋結果可依照以下方式排序：</p>
-                        <ul>
-                            <li class="mb-2">最新分享 (預設) - 顯示最新分享的資料</li>
-                            <li class="mb-2">積分高至低 - 依總積分從高到低排序</li>
-                            <li class="mb-2">積分低至高 - 依總積分從低到高排序</li>
-                        </ul>
-                        
-                        <div class="guide-tip mt-3">
-                            <i class="bi bi-lightbulb me-2"></i> <strong>搜尋技巧：</strong> 您可以輸入部分學校名稱(如「建中」、「北一」)或是科系關鍵字(如「資訊」、「數理」)來尋找相關資料。
-                        </div>
-                    </div>
-                    
-                    <div class="guide-step-content" id="score-content">
-                        <h5><i class="bi bi-calculator"></i>積分與積點計算說明</h5>
-                        <p>了解會考成績如何轉換為積分和積點，以及各高中如何使用這些數據進行錄取。</p>
-                        
-                        <h6 class="mt-4">積點計算方式：</h6>
-                        <p>會考各科成績轉換為積點：</p>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-sm text-center">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>成績</th>
-                                        <th>A++</th>
-                                        <th>A+</th>
-                                        <th>A</th>
-                                        <th>B++</th>
-                                        <th>B+</th>
-                                        <th>B</th>
-                                        <th>C</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>積點</td>
-                                        <td>7</td>
-                                        <td>6</td>
-                                        <td>5</td>
-                                        <td>4</td>
-                                        <td>3</td>
-                                        <td>2</td>
-                                        <td>1</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <p class="small text-muted mt-2">總積點 = 五科積點總和 (最高35點)</p>
-                        
-                        <h6 class="mt-4">積分計算方式：</h6>
-                        <p>積分通常包含多種加權方式，一般來說：</p>
-                        <ul>
-                            <li class="mb-2">五科會考成績轉積點後乘以3 (105分)</li>
-                            <li class="mb-2">作文級分乘以2 (12分)</li>
-                            <li class="mb-2">部分學校會有特別加權科目</li>
-                        </ul>
-                        <p class="small text-muted">總積分 = (五科積點總和×3) + (作文級分×2) + 其他加分項目</p>
-                        
-                        <div class="guide-tip mt-3">
-                            <i class="bi bi-info-circle me-2"></i> <strong>注意：</strong> 各校計算方式可能有差異，本系統提供的是一般計算方式的估算值，實際分數請參考各校公告。
-                        </div>
-                        
-                        <div class="guide-tip warning mt-3">
-                            <i class="bi bi-exclamation-triangle me-2"></i> <strong>重要提醒：</strong> 若您知道確切的積分計算結果，建議在分享時手動修改為實際數值。
-                        </div>
-                    </div>
-                    
-                    <div class="guide-step-content" id="faq-content">
-                        <h5><i class="bi bi-question-circle"></i>常見問題</h5>
-                        
-                        <div class="accordion mt-3" id="faqAccordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        分享的資料會被用於什麼用途？
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        您分享的資料僅用於統計分析和提供其他學生參考，不會被用於商業用途，也不會收集個人隱私資訊。
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        我應該填寫什麼科系/班別？
-                                    </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        請填寫您所錄取的科系或班別名稱，例如「普通班」、「資訊班」、「數理班」等。若學校沒有特別區分，可填寫「普通班」或留空。
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                        如果我是透過特殊管道錄取，應該如何標註？
-                                    </button>
-                                </h2>
-                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        請在「附加說明」欄位註明您是透過什麼特殊管道錄取，例如「特色招生」、「體育績優」、「音樂班」、「政策傾斜」等，這樣能提供更完整的參考資訊。
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFour">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                        資料有誤時可以修改或刪除嗎？
-                                    </button>
-                                </h2>
-                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        目前平台暫不支持個人修改或刪除已提交的資料。如發現資料有誤，請通過平台下方的聯絡方式告知管理員，我們會盡快協助處理。
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingFive">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                        平台的資料來源可靠嗎？
-                                    </button>
-                                </h2>
-                                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body">
-                                        平台的資料由使用者自行分享，雖然我們鼓勵提供真實資訊，但無法百分百驗證每筆資料的準確性。因此，資料僅供參考，最終錄取標準請以各學校官方公告為準。
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
-                    <button type="button" class="btn btn-primary animated-btn" data-bs-dismiss="modal">我了解了</button>
-                </div>
-            </div>
+      <div class="form-group">
+        <label>
+          <i class="fas fa-map-marker-alt icon"></i> 分析區域：
+        </label>
+        <div class="region-selector">
+          <div class="region-option">
+            <input type="radio" id="region-taoyuan" name="analysisArea" value="taoyuan" class="region-input">
+            <label for="region-taoyuan" class="region-label">
+              <i class="fas fa-city region-icon"></i>
+              <div class="region-text">
+                <div class="region-name">桃聯區</div>
+                <div class="region-description">桃園聯合分發區考生</div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-central" name="analysisArea" value="central" class="region-input">
+            <label for="region-central" class="region-label">
+              <i class="fas fa-mountain region-icon"></i>
+              <div class="region-text">
+                <div class="region-name">中投區</div>
+                <div class="region-description">中投區考生</div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-kaohsiung" name="analysisArea" value="kaohsiung" class="region-input">
+            <label for="region-kaohsiung" class="region-label">
+              <i class="fas fa-ship region-icon"></i>
+              <div class="region-text">
+                <div class="region-name">高雄區</div>
+                <div class="region-description">高雄區考生</div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-changhua" name="analysisArea" value="changhua" class="region-input">
+            <label for="region-changhua" class="region-label">
+              <i class="fas fa-seedling region-icon"></i>
+              <div class="region-text">
+                <div class="region-name">彰化區</div>
+                <div class="region-description">彰化區考生</div>
+              </div>
+            </label>
+          </div>
         </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
-    <script src="script.js"></script>
-    
-    <!-- 加載動畫 -->
-    <div id="loading-overlay" style="display: none;">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    
-    <script>
-      // 確保Apps Script已正確設置為網路應用程式
-      // 1. 確認已部署為網路應用程式(Web App)
-      // 2. 確認權限設置為"所有人，甚至匿名使用者"
-      // 3. 確認在部署後已執行新網址
-    </script>
-    <script>
-      // 頁面載入完成後去除載入動畫
-      window.addEventListener('load', function() {
-        document.body.classList.add('page-loaded');
-      });
+      </div>
+      <div class="form-group">
+        <label for="chinese">
+          <i class="fas fa-book icon"></i>國文：
+        </label>
+        <select id="chinese">
+          <option value="">請選擇您的國文會考分數</option>
+          <option value="A++">A++</option>
+          <option value="A+">A+</option>
+          <option value="A">A</option>
+          <option value="B++">B++</option>
+          <option value="B+">B+</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="english">
+          <i class="fas fa-language icon"></i>英文：
+        </label>
+        <select id="english">
+          <option value="">請選擇您的英文會考分數</option>
+          <option value="A++">A++</option>
+          <option value="A+">A+</option>
+          <option value="A">A</option>
+          <option value="B++">B++</option>
+          <option value="B+">B+</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="math">
+          <i class="fas fa-calculator icon"></i>數學：
+        </label>
+        <select id="math">
+          <option value="">請選擇您的數學會考分數</option>
+          <option value="A++">A++</option>
+          <option value="A+">A+</option>
+          <option value="A">A</option>
+          <option value="B++">B++</option>
+          <option value="B+">B+</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="science">
+          <i class="fas fa-flask icon"></i>自然：
+        </label>
+        <select id="science">
+          <option value="">請選擇您的自然會考分數</option>
+          <option value="A++">A++</option>
+          <option value="A+">A+</option>
+          <option value="A">A</option>
+          <option value="B++">B++</option>
+          <option value="B+">B+</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="social">
+          <i class="fas fa-globe icon"></i>社會：
+        </label>
+        <select id="social">
+          <option value="">請選擇您的社會會考分數</option>
+          <option value="A++">A++</option>
+          <option value="A+">A+</option>
+          <option value="A">A</option>
+          <option value="B++">B++</option>
+          <option value="B+">B+</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="composition">
+          <i class="fas fa-pen-nib icon"></i>作文：
+        </label>
+        <select id="composition">
+          <option value="">請選擇您的作文會考分數</option>
+          <option value="0">0 級分</option>
+          <option value="1">1 級分</option>
+          <option value="2">2 級分</option>
+          <option value="3">3 級分</option>
+          <option value="4">4 級分</option>
+          <option value="5">5 級分</option>
+          <option value="6">6 級分</option>
+        </select>
+      </div>
+      <button type="button" id="analyzeButton" onclick="analyzeScores()">
+        <i class="fas fa-search icon"></i>分析落點
+      </button>
       
-      // 給頁面元素添加動畫類
-      document.querySelectorAll('.card, .school-tag, .btn, header h1, header p').forEach((element, index) => {
-        setTimeout(() => {
-          element.classList.add('in-view');
-        }, index * 100 + 200);
-      });
+      <!-- Cloudflare Turnstile widget -->
+      <div class="turnstile-container">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAA_QR12XmlA1DIMn" data-callback="turnstileCallback"></div>
+      </div>
+      
+      <button id="exportResults" style="display: none;" onclick="exportResults()">
+        <i class="fas fa-file-export icon"></i>匯出結果
+      </button>
+      <div id="results"></div>
+
+      <div id="ratingSection">
+        <h2><i class="fas fa-star icon"></i> 為我們評分</h2>
+        <div id="starsContainer">
+          <span class="star" data-value="1">&#9733;</span>
+          <span class="star" data-value="2">&#9733;</span>
+          <span class="star" data-value="3">&#9733;</span>
+          <span class="star" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
+        <button id="submitRating" class="rating-button">
+          <i class="fas fa-paper-plane icon"></i> 提交評分
+        </button>
+        <div id="ratingMessage" style="display: none; margin-top: 10px;"></div>
+      </div>
+
+      <div class="copyright">
+        &copy; <span id="currentYear"></span> 會考落點分析系統. All rights reserved.
+        <p>本網站由會考落點分析平台開發維護。未經授權，禁止複製或轉載。</p>
+      </div>
+    </div>
+
+    <button id="darkModeToggle" class="dark-mode-toggle" aria-label="切換深色模式">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <div id="disclaimerModal" class="modal">
+      <div class="modal-content">
+        <button class="close" onclick="closeDisclaimer()">&times;</button>
+        <h2>
+          <i class="fas fa-balance-scale icon"></i> 免責聲明
+        </h2>
+        <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank">
+          <i class="fas fa-link icon"></i> 填寫表單獲取邀請碼
+        </a>
+        <p>
+          <i class="fas fa-info-circle icon"></i> 親愛的使用者，我們誠摯地提醒您：本網站提供的落點分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因多種因素而有所不同，包括但不限於：
+        </p>
+        <ul>
+          <li>
+            <i class="fas fa-university icon"></i> 各校的招生政策變化
+          </li>
+          <li>
+            <i class="fas fa-users icon"></i> 當年度考生整體表現
+          </li>
+          <li>
+            <i class="fas fa-star icon"></i> 特殊才能或其他加分項目
+          </li>
+          <li>
+            <i class="fas fa-clipboard-list icon"></i> 各校的實際招生名額調整
+          </li>
+        </ul>
+        <p>
+          <i class="fas fa-exclamation-triangle icon"></i> 為了確保您做出最佳的決定，我們強烈建議您：
+        </p>
+        <ul>
+          <li>
+            <i class="fas fa-search icon"></i> 參考多方資訊，不要僅依賴本網站的分析結果
+          </li>
+          <li>
+            <i class="fas fa-comments icon"></i> 諮詢學校輔導老師或升學顧問的專業意見
+          </li>
+          <li>
+            <i class="fas fa-globe icon"></i> 密切關注各校的官方網站和招生簡章，以獲取最新和最準確的資訊
+          </li>
+        </ul>
+        <p>
+          <i class="fas fa-shield-alt icon"></i> 本網站不對因使用本服務而產生的任何直接或間接損失負責。使用本服務即表示您同意本免責聲明的所有條款。祝您升學順利！
+        </p>
+        <button class="confirm-button" onclick="closeDisclaimer()">
+          <i class="fas fa-check-circle icon"></i> 我已了解並同意
+        </button>
+      </div>
+    </div>
+
+    <div id="instructionsModal" class="modal">
+      <div class="modal-content instructions-modal-content">
+        <button class="close" onclick="closeInstructions()">&times;</button>
+        <h2>
+          <i class="fas fa-book icon"></i>使用說明
+        </h2>
+        
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-key icon"></i>獲取並輸入邀請碼
+          </h3>
+          <div class="highlight">
+            <i class="fas fa-info-circle"></i> 邀請碼每小時更新一次，請確保使用最新的邀請碼。
+          </div>
+          <p>您可以通過以下方式獲取邀請碼：</p>
+          <ul>
+            <li>填寫我們的序位回報表單</li>
+            <li>掃描 QR 碼</li>
+            <li>上傳 QR 碼圖片</li>
+          </ul>
+          <p>將獲得的邀請碼輸入到"邀請碼"欄位中即可開始使用。</p>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-filter icon"></i>選擇學校屬性和類型
+          </h3>
+          <p>根據您的需求，選擇以下篩選條件：</p>
+          <ul>
+            <li>學校屬性：全部、公立或私立</li>
+            <li>學校類型：全部、普通科或職業類科</li>
+            <li>職業群別：選擇特定職業群或全部（僅限職業類科）</li>
+          </ul>
+          <div class="instruction-visual">
+            <i class="fas fa-sitemap icon-large"></i>
+            <div>依照不同屬性和類型篩選可獲得更精確的分析結果</div>
+          </div>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-user-graduate icon"></i>選擇分析身份與地區
+          </h3>
+          <p>請選擇您的身份和想要分析的區域：</p>
+          <ul>
+            <li><i class="fas fa-user-alt"></i> 分析身份：學生、老師或家長</li>
+            <li><i class="fas fa-map-marker-alt"></i> 分析區域：桃聯區、中投區、高雄區或彰化區</li>
+          </ul>
+          <div class="highlight">
+            <i class="fas fa-info-circle"></i> 不同地區有不同的計分方式，請務必選擇正確的區域。
+          </div>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-pencil-alt icon"></i>輸入會考成績
+          </h3>
+          <div class="highlight">
+            <i class="fas fa-exclamation-circle"></i> 請確保填寫所有科目的成績，否則無法進行分析。
+          </div>
+          <p>依序選擇各科目的會考等級：</p>
+          <ul>
+            <li><i class="fas fa-book"></i> 國文：A++ 到 C</li>
+            <li><i class="fas fa-language"></i> 英文：A++ 到 C</li>
+            <li><i class="fas fa-calculator"></i> 數學：A++ 到 C</li>
+            <li><i class="fas fa-flask"></i> 自然：A++ 到 C</li>
+            <li><i class="fas fa-globe"></i> 社會：A++ 到 C</li>
+            <li><i class="fas fa-pen-nib"></i> 作文：0 到 6 級分</li>
+          </ul>
+          <div class="instruction-visual">
+            <i class="fas fa-award icon-large"></i>
+            <div>會考成績等級表</div>
+            <div class="grade-table">
+              <div class="grade-row"><span>&#160;&#160;A++&#160;&#160;</span><span>精熟</span><span>頂標</span></div>
+              <div class="grade-row"><span>&#160;&#160;A+&#160;&#160;</span><span>精熟</span><span>前標</span></div>
+              <div class="grade-row"><span>&#160;&#160;A&#160;&#160;</span><span>精熟</span><span>均標</span></div>
+              <div class="grade-row"><span>&#160;&#160;B++&#160;&#160;</span><span>基礎</span><span>後標</span></div>
+              <div class="grade-row"><span>&#160;&#160;B+&#160;&#160;</span><span>基礎</span><span>底標</span></div>
+              <div class="grade-row"><span>&#160;&#160;B&#160;&#160;</span><span>基礎</span><span>基礎</span></div>
+              <div class="grade-row"><span>&#160;&#160;C&#160;&#160;</span><span>待加強</span><span>待加強</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-chart-line icon"></i>分析落點結果
+          </h3>
+          <p>系統會根據您的輸入進行分析並顯示：</p>
+          <ul>
+            <li><i class="fas fa-star"></i> 總積分計算結果</li>
+            <li><i class="fas fa-award"></i> 總積點計算結果</li>
+            <li><i class="fas fa-school"></i> 符合條件的學校列表</li>
+            <li><i class="fas fa-chart-pie"></i> 各類型學校的數量統計</li>
+          </ul>
+          <div class="instruction-visual">
+            <i class="fas fa-search icon-large"></i>
+            <div>系統會自動計算您的總積分，並比對各校最低錄取標準</div>
+          </div>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-file-export icon"></i>匯出和列印分析結果
+          </h3>
+          <p>您可以將分析結果匯出為多種格式，或直接列印：</p>
+          <ul>
+            <li><i class="fas fa-file-alt"></i> 文字檔 (.txt) - 簡單易讀的純文字格式</li>
+            <li><i class="fas fa-file-pdf"></i> PDF檔 (.pdf) - 適合列印或正式保存</li>
+            <li><i class="fas fa-file-excel"></i> Excel檔 (.xlsx) - 可在電子表格軟體中開啟</li>
+            <li><i class="fas fa-file-code"></i> JSON檔 (.json) - 適合程式開發者使用</li>
+            <li><i class="fas fa-print"></i> 直接列印 - 使用瀏覽器列印功能輸出結果</li>
+          </ul>
+          <div class="highlight">
+            <i class="fas fa-lightbulb"></i> 建議將結果匯出保存或列印，方便日後參考比較。
+          </div>
+        </div>
+
+        <div class="instruction-item">
+          <h3>
+            <i class="fas fa-redo icon"></i>重新分析
+          </h3>
+          <p>您可以隨時：</p>
+          <ul>
+            <li><i class="fas fa-sliders-h"></i> 修改篩選條件</li>
+            <li><i class="fas fa-edit"></i> 更新會考成績</li>
+            <li><i class="fas fa-sync"></i> 重新進行分析</li>
+          </ul>
+          <div class="highlight">
+            <i class="fas fa-sync"></i> 系統會即時更新分析結果，讓您掌握不同選擇的可能性。
+          </div>
+          <div class="instruction-visual">
+            <i class="fas fa-check-circle icon-large"></i>
+            <div>分析結果僅供參考，請務必與學校招生簡章核對</div>
+          </div>
+        </div>
+        
+        <button class="confirm-button" onclick="closeInstructions()">
+          <i class="fas fa-check-circle icon"></i> 我已了解
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- Google Tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VKP55N96DC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VKP55N96DC');
     </script>
-</body>
+  </body>
 </html>
