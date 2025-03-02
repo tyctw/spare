@@ -533,12 +533,10 @@ function toggleMenu() {
   }
 }
 
-function closeMenu() {
-  var menu = document.getElementById("fullscreenMenu");
-  var overlay = document.getElementById("menuOverlay");
-  menu.classList.remove("show");
-  overlay.classList.remove("show");
-}
+document.addEventListener('DOMContentLoaded', function() {
+  initRating();
+  toggleVocationalGroup();
+});
 
 document.addEventListener('click', function(event) {
   var menu = document.getElementById("fullscreenMenu");
@@ -1833,4 +1831,3 @@ async function loadScript(url) {
     document.head.appendChild(script);
   });
 }
-initRating();
