@@ -709,6 +709,11 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 function displayResults(data) {
   const { totalPoints, totalCredits, eligibleSchools } = data;
 
+  // Get the selected region name from radio button
+  const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
+  const regionId = selectedRegionRadio ? selectedRegionRadio.value : '';
+  const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
+
   let results = `
     <div class="results-container">
       <div class="results-header">
@@ -730,6 +735,11 @@ function displayResults(data) {
             <i class="fas fa-school icon"></i>
             <div class="result-value">${eligibleSchools ? eligibleSchools.length : 0}</div>
             <div class="result-label">符合條件學校數</div>
+          </div>
+          <div class="result-card region-info">
+            <i class="fas fa-map-marker-alt icon"></i>
+            <div class="result-value">${regionName}</div>
+            <div class="result-label">分析區域</div>
           </div>
         </div>
       </div>
@@ -963,7 +973,10 @@ async function exportResults(format = 'txt') {
 }
 
 function exportTxt(content) {
-  const watermarkUrl = "\n\n網站: https://tyctw.github.io/spare/";
+  const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
+  const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
+  
+  const watermarkUrl = `\n\n網站: https://tyctw.github.io/spare/\n分析區域: ${regionName}`;
   const blob = new Blob([content + watermarkUrl], { type: 'text/plain;charset=utf-8' });
   downloadFile(blob, '會考落點分析結果.txt');
 }
@@ -976,6 +989,10 @@ async function exportPdf(content) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
+  // Get region info
+  const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
+  const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
+  
   // Add PDF header with logo and styled title
   doc.setFillColor(42, 157, 143);
   doc.rect(0, 0, 210, 20, 'F');
@@ -984,11 +1001,11 @@ async function exportPdf(content) {
   doc.setFont('helvetica', 'bold');
   doc.text('會考落點分析結果', 105, 12, { align: 'center' });
   
-  // Add generation timestamp
+  // Add generation timestamp and region
   const timestamp = new Date().toLocaleString('zh-TW');
   doc.setFontSize(10);
   doc.setFont('helvetica', 'italic');
-  doc.text(`產生時間: ${timestamp}`, 105, 20, { align: 'center' });
+  doc.text(`分析區域: ${regionName} | 產生時間: ${timestamp}`, 105, 20, { align: 'center' });
   
   // Add main content with improved styling
   doc.setTextColor(0);
@@ -1063,7 +1080,7 @@ async function exportPdf(content) {
     // Add watermark text
     doc.setTextColor(100);
     doc.setFont('helvetica', 'italic');
-    doc.text('網站: https://tyctw.github.io/spare/', 105, 285, { align: 'center' });
+    doc.text(`網站: https://tyctw.github.io/spare/`, 105, 285, { align: 'center' });
     
     // Add footer design element
     doc.setDrawColor(233, 196, 106);
@@ -1110,259 +1127,10 @@ function printResults() {
   
   const resultContent = document.getElementById('results').innerHTML;
   const originalTitle = document.title;
-  const printStyles = `
-    <style>
-      @media print {
-        body { 
-          font-family: 'Noto Sans TC', sans-serif;
-          color: #264653;
-          background: white;
-          margin: 0;
-          padding: 0;
-        }
-        .results-container {
-          background: white;
-          box-shadow: none;
-          padding: 20px;
-          margin: 0;
-        }
-        .result-card {
-          border: 1px solid #ddd;
-          page-break-inside: avoid;
-          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-          color: #264653;
-          box-shadow: none;
-          transform: none !important;
-        }
-        .school-type-card {
-          page-break-inside: avoid;
-          border: 1px solid #ddd;
-          margin-bottom: 20px;
-          background: white;
-          box-shadow: none;
-          transform: none !important;
-        }
-        .school-item {
-          page-break-inside: avoid;
-          border-left: 3px solid #2a9d8f;
-          background: #f9f9f9;
-          margin: 8px 0;
-          transition: none;
-        }
-        .school-name {
-          font-weight: bold;
-          color: #2a9d8f;
-        }
-        .no-print {
-          display: none !important;
-        }
-        h1, h2, h3 {
-          color: #2a9d8f;
-        }
-        @page {
-          size: A4;
-          margin: 2cm;
-        }
-        footer {
-          position: fixed;
-          bottom: 0;
-          width: 100%;
-          text-align: center;
-          font-size: 0.8rem;
-          color: #777;
-          padding: 10px 0;
-          border-top: 1px solid #ddd;
-        }
-        .watermark {
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) rotate(-45deg);
-          font-size: 4rem;
-          color: rgba(0,0,0,0.03);
-          font-weight: bold;
-          z-index: -1;
-          pointer-events: none;
-          width: 100%;
-          text-align: center;
-        }
-        
-        /* Enhanced print styling */
-        .print-header {
-          text-align: center;
-          border-bottom: 3px solid #2a9d8f;
-          padding-bottom: 20px;
-          margin-bottom: 30px;
-          position: relative;
-        }
-        .print-header:after {
-          content: '';
-          position: absolute;
-          bottom: -6px;
-          left: 0;
-          width: 100%;
-          height: 1px;
-          background: #e9c46a;
-        }
-        .print-logo {
-          font-size: 3rem;
-          color: #2a9d8f;
-          margin-bottom: 10px;
-          display: block;
-        }
-        .print-title {
-          font-size: 2.2rem;
-          color: #2a9d8f;
-          margin: 0;
-          letter-spacing: 2px;
-        }
-        .print-subtitle {
-          font-size: 1rem;
-          color: #666;
-          margin: 8px 0 0 0;
-          font-style: italic;
-        }
-        .print-timestamp {
-          text-align: right;
-          font-style: italic;
-          color: #666;
-          margin-bottom: 30px;
-          border-bottom: 1px dashed #ddd;
-          padding-bottom: 15px;
-        }
-        .print-section {
-          margin-bottom: 30px;
-          position: relative;
-        }
-        .print-section:after {
-          content: '';
-          position: absolute;
-          bottom: -15px;
-          left: 0;
-          width: 100%;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, #ddd, transparent);
-          width: 80%;
-          margin: 30px auto 0;
-        }
-        .print-section-title {
-          font-size: 1.4rem;
-          color: #2a9d8f;
-          border-left: 5px solid #2a9d8f;
-          padding-left: 15px;
-          margin-bottom: 20px;
-          background: #f9f9f9;
-          padding: 10px 15px;
-          border-radius: 0 5px 5px 0;
-        }
-        .print-footer-page {
-          font-size: 0.8rem;
-          text-align: right;
-          color: #999;
-          position: fixed;
-          bottom: 5mm;
-          right: 5mm;
-        }
-        .print-qr {
-          text-align: center;
-          margin: 40px 0 30px;
-          padding-top: 20px;
-          border-top: 1px dashed #eee;
-        }
-        .print-qr img {
-          width: 120px;
-          height: 120px;
-          border: 1px solid #eee;
-          padding: 5px;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .print-qr-text {
-          font-size: 0.9rem;
-          color: #666;
-          margin-top: 10px;
-          font-style: italic;
-        }
-        .print-decoration {
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: 150px;
-          height: 150px;
-          background: linear-gradient(135deg, transparent 75%, rgba(42, 157, 143, 0.1) 75%);
-          z-index: -1;
-        }
-        
-        /* Enhanced print styling for school list */
-        .print-school-list {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 15px;
-        }
-        
-        .print-scores {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 10px;
-          margin: 20px 0;
-        }
-        
-        .print-score-item {
-          background: #f9f9f9;
-          padding: 10px;
-          border-radius: 5px;
-          text-align: center;
-          border: 1px solid #eee;
-        }
-        
-        .print-score-label {
-          font-weight: 500;
-          color: #666;
-        }
-        
-        .print-score-value {
-          font-size: 1.2rem;
-          font-weight: bold;
-          color: #2a9d8f;
-          margin-top: 5px;
-        }
-        
-        /* Print watermark on each page */
-        .print-page-watermark {
-          position: fixed;
-          bottom: 5mm;
-          left: 0;
-          width: 100%;
-          text-align: center;
-          font-size: 0.75rem;
-          color: #999;
-        }
-        
-        /* Gentle page break decorations */
-        .page-break-after {
-          page-break-after: always;
-          position: relative;
-        }
-        
-        .page-break-after::after {
-          content: '';
-          position: absolute;
-          bottom: -15px;
-          left: 0;
-          width: 100%;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, #ddd, transparent);
-          width: 80%;
-          margin: 30px auto 0;
-        }
-      }
-    </style>`;
   
-  const printWindow = window.open('', '_blank');
-  
-  if (!printWindow) {
-    alert('請允許開啟彈出視窗以啟用列印功能');
-    return;
-  }
+  // Get region info
+  const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
+  const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
   
   const now = new Date();
   const formattedDate = now.toLocaleString('zh-TW');
@@ -1404,6 +1172,13 @@ function printResults() {
     schoolsByType[school.type].push(school);
   });
   
+  printWindow = window.open('', '_blank');
+  
+  if (!printWindow) {
+    alert('請允許開啟彈出視窗以啟用列印功能');
+    return;
+  }
+  
   printWindow.document.write(`
     <!DOCTYPE html>
     <html>
@@ -1412,7 +1187,251 @@ function printResults() {
       <title>會考落點分析結果</title>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
       <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-      ${printStyles}
+      <style>
+        @media print {
+          body { 
+            font-family: 'Noto Sans TC', sans-serif;
+            color: #264653;
+            background: white;
+            margin: 0;
+            padding: 0;
+          }
+          .results-container {
+            background: white;
+            box-shadow: none;
+            padding: 20px;
+            margin: 0;
+          }
+          .result-card {
+            border: 1px solid #ddd;
+            page-break-inside: avoid;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #264653;
+            box-shadow: none;
+            transform: none !important;
+          }
+          .school-type-card {
+            page-break-inside: avoid;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: none;
+            transform: none !important;
+          }
+          .school-item {
+            page-break-inside: avoid;
+            border-left: 3px solid #2a9d8f;
+            background: #f9f9f9;
+            margin: 8px 0;
+            transition: none;
+          }
+          .school-name {
+            font-weight: bold;
+            color: #2a9d8f;
+          }
+          .no-print {
+            display: none !important;
+          }
+          h1, h2, h3 {
+            color: #2a9d8f;
+          }
+          @page {
+            size: A4;
+            margin: 2cm;
+          }
+          footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #777;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+          }
+          .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 4rem;
+            color: rgba(0,0,0,0.03);
+            font-weight: bold;
+            z-index: -1;
+            pointer-events: none;
+            width: 100%;
+            text-align: center;
+          }
+          
+          /* Enhanced print styling */
+          .print-header {
+            text-align: center;
+            border-bottom: 3px solid #2a9d8f;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            position: relative;
+          }
+          .print-header:after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #e9c46a;
+          }
+          .print-logo {
+            font-size: 3rem;
+            color: #2a9d8f;
+            margin-bottom: 10px;
+            display: block;
+          }
+          .print-title {
+            font-size: 2.2rem;
+            color: #2a9d8f;
+            margin: 0;
+            letter-spacing: 2px;
+          }
+          .print-subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin: 8px 0 0 0;
+            font-style: italic;
+          }
+          .print-timestamp {
+            text-align: right;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 15px;
+          }
+          .print-section {
+            margin-bottom: 30px;
+            position: relative;
+          }
+          .print-section:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ddd, transparent);
+            width: 80%;
+            margin: 30px auto 0;
+          }
+          .print-section-title {
+            font-size: 1.4rem;
+            color: #2a9d8f;
+            border-left: 5px solid #2a9d8f;
+            padding-left: 15px;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+            padding: 10px 15px;
+            border-radius: 0 5px 5px 0;
+          }
+          .print-footer-page {
+            font-size: 0.8rem;
+            text-align: right;
+            color: #999;
+            position: fixed;
+            bottom: 5mm;
+            right: 5mm;
+          }
+          .print-qr {
+            text-align: center;
+            margin: 40px 0 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #eee;
+          }
+          .print-qr img {
+            width: 120px;
+            height: 120px;
+            border: 1px solid #eee;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+          }
+          .print-qr-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+          }
+          .print-decoration {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, transparent 75%, rgba(42, 157, 143, 0.1) 75%);
+            z-index: -1;
+          }
+          
+          /* Enhanced print styling for school list */
+          .print-school-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+          }
+          
+          .print-scores {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+          }
+          
+          .print-score-item {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            border: 1px solid #eee;
+          }
+          
+          .print-score-label {
+            font-weight: 500;
+            color: #666;
+          }
+          
+          .print-score-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2a9d8f;
+            margin-top: 5px;
+          }
+          
+          /* Print watermark on each page */
+          .print-page-watermark {
+            position: fixed;
+            bottom: 5mm;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #999;
+          }
+          
+          /* Gentle page break decorations */
+          .page-break-after {
+            page-break-after: always;
+            position: relative;
+          }
+          
+          .page-break-after::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ddd, transparent);
+            width: 80%;
+            margin: 30px auto 0;
+          }
+        }
+      </style>
     </head>
     <body>
       <div class="print-decoration"></div>
@@ -1543,7 +1562,7 @@ function printResults() {
         }
       </script>
     </body>
-    </html>
+  </html>
   `);
   
   printWindow.document.close();
@@ -1601,7 +1620,7 @@ function applyExcelStyling(worksheet, range) {
         // Style section headers (in summary sheet)
         if (R === 6 || (R === 7 && C === 0)) {
           worksheet[cell].s.font = { bold: true, sz: 12, color: { rgb: "FFFFFF" } };
-          worksheet[cell].s.fill = { patternType: "solid", fgColor: { rgb: "2A9D8F" } };
+          worksheet[cell].s.fill = { patternType: "solid", fgColor: { rgb: "2a9d8f" } };
           worksheet[cell].s.alignment = { horizontal: "center", vertical: "center" };
           worksheet[cell].s.border = {
             top: { style: "medium", color: { auto: 1 } },
