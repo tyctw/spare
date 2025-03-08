@@ -1444,7 +1444,7 @@ function printResults() {
       </div>
       
       <div class="print-timestamp">
-        分析時間: ${formattedDate}
+        分析時間: ${formattedDate} | 分析區域: ${regionName}
       </div>
       
       <div class="print-section">
@@ -1714,6 +1714,10 @@ async function exportExcel() {
       await loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js');
     }
     
+    // Get region info
+    const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
+    const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
+    
     // Get the scores and analysis results
     const scores = {
       chinese: document.getElementById('chinese').value,
@@ -1738,6 +1742,7 @@ async function exportExcel() {
       ["會考落點分析結果"],
       [],
       ["產生日期", new Date().toLocaleDateString('zh-TW')],
+      ["分析區域", regionName],
       ["總積分", document.querySelector('.total-points .result-value')?.textContent || ""],
       ["總積點", document.querySelector('.total-credits .result-value')?.textContent || ""],
       [],
@@ -1958,6 +1963,10 @@ function exportJson(resultsText) {
   const now = new Date();
   const dateTime = now.toLocaleString('zh-TW');
   
+  // Get region info
+  const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
+  const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
+  
   // Get detailed results data
   const totalPoints = document.querySelector('.total-points .result-value')?.textContent || "";
   const totalCredits = document.querySelector('.total-credits .result-value')?.textContent || "";
@@ -1995,6 +2004,7 @@ function exportJson(resultsText) {
   // Create final JSON object
   const jsonData = {
     timestamp: dateTime,
+    region: regionName,
     analysis: {
       totalPoints: totalPoints,
       totalCredits: totalCredits,
