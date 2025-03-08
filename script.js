@@ -709,16 +709,6 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 function displayResults(data) {
   const { totalPoints, totalCredits, eligibleSchools } = data;
 
-  // Get selected region and show proper region name
-  const selectedRegionValue = document.querySelector('input[name="analysisArea"]:checked')?.value || '';
-  const regionNames = {
-    'taoyuan': '桃聯區',
-    'kaohsiung': '高雄區',
-    'central': '中投區',
-    'changhua': '彰化區'
-  };
-  const selectedRegionName = regionNames[selectedRegionValue] || '未指定區域';
-
   let results = `
     <div class="results-container">
       <div class="results-header">
@@ -740,11 +730,6 @@ function displayResults(data) {
             <i class="fas fa-school icon"></i>
             <div class="result-value">${eligibleSchools ? eligibleSchools.length : 0}</div>
             <div class="result-label">符合條件學校數</div>
-          </div>
-          <div class="result-card analysis-region">
-            <i class="fas fa-map-marker-alt icon"></i>
-            <div class="result-value">${selectedRegionName}</div>
-            <div class="result-label">分析區域</div>
           </div>
         </div>
       </div>
@@ -816,9 +801,14 @@ function displayResults(data) {
                     <div class="school-name">
                       <i class="fas fa-graduation-cap icon"></i>
                       ${school.name}
-                      ${school.ownership ? `<span class="school-ownership">【${school.ownership}】</span>` : ''}
                     </div>
                     <div class="school-details">
+                      ${school.ownership ? `
+                        <span class="school-ownership">
+                          <i class="fas fa-university icon"></i>
+                          ${school.ownership}
+                        </span>
+                      ` : ''}
                       ${school.group ? `
                         <span class="school-group">
                           <i class="fas fa-layer-group icon"></i>
