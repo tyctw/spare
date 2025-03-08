@@ -22,14 +22,79 @@ const vocationalGroups = {
 function toggleVocationalGroup() {
   const schoolType = document.getElementById('schoolType').value;
   const vocationalGroupContainer = document.getElementById('vocationalGroupContainer');
-  const vocationalGroup = document.getElementById('vocationalGroup');
-
+  
   if (schoolType === '職業類科') {
     vocationalGroupContainer.style.display = 'block';
+    // Add small delay before adding visible class for smooth animation
+    setTimeout(() => {
+      vocationalGroupContainer.classList.add('visible');
+    }, 10);
   } else {
-    vocationalGroupContainer.style.display = 'none';
-    vocationalGroup.value = 'all';
+    vocationalGroupContainer.classList.remove('visible');
+    // Hide after animation completes
+    setTimeout(() => {
+      vocationalGroupContainer.style.display = 'none';
+      // Uncheck all checkboxes when hiding
+      document.querySelectorAll('.vocational-group-input').forEach(input => {
+        input.checked = false;
+      });
+      // Ensure "All" option is checked by default
+      document.getElementById('groupAll').checked = true;
+    }, 300);
   }
+}
+
+function getSelectedVocationalGroups() {
+  const selected = [];
+  document.querySelectorAll('.vocational-group-input:checked').forEach(input => {
+    selected.push(input.value);
+  });
+  return selected.length > 0 ? selected : ['all'];
+}
+
+// Add vocational group validation with enhanced feedback
+function handleVocationalGroupSelection(event) {
+  const checkbox = event.target;
+  const allCheckbox = document.getElementById('groupAll');
+  const checkboxLabel = checkbox.nextElementSibling;
+  
+  // Add visual feedback with animation
+  if (checkbox.checked) {
+    checkboxLabel.classList.add('pulse-animation');
+    setTimeout(() => {
+      checkboxLabel.classList.remove('pulse-animation');
+    }, 500);
+  }
+  
+  // If "All" option is checked, uncheck all other options
+  if (checkbox.id === 'groupAll' && checkbox.checked) {
+    document.querySelectorAll('.vocational-group-input:not(#groupAll)').forEach(input => {
+      input.checked = false;
+      input.nextElementSibling.classList.remove('pulse-animation');
+    });
+  } 
+  // If a specific option is checked, uncheck "All" option
+  else if (checkbox.id !== 'groupAll' && checkbox.checked) {
+    allCheckbox.checked = false;
+    allCheckbox.nextElementSibling.classList.remove('pulse-animation');
+  }
+  
+  // If no option is checked, automatically check "All" option
+  const anyChecked = Array.from(document.querySelectorAll('.vocational-group-input:not(#groupAll)')).some(input => input.checked);
+  if (!anyChecked) {
+    allCheckbox.checked = true;
+    allCheckbox.nextElementSibling.classList.add('pulse-animation');
+    setTimeout(() => {
+      allCheckbox.nextElementSibling.classList.remove('pulse-animation');
+    }, 500);
+  }
+}
+
+// Apply event listeners to vocational group checkboxes
+function initVocationalGroupValidation() {
+  document.querySelectorAll('.vocational-group-input').forEach(checkbox => {
+    checkbox.addEventListener('change', handleVocationalGroupSelection);
+  });
 }
 
 function toggleInstructions() {
@@ -309,7 +374,7 @@ async function analyzeScores() {
 
     const schoolOwnership = document.getElementById('schoolOwnership').value;
     const schoolType = document.getElementById('schoolType').value;
-    const vocationalGroup = document.getElementById('vocationalGroup').value;
+    const vocationalGroups = getSelectedVocationalGroups();
     const analysisIdentity = document.getElementById('analysisIdentity').value;
     
     // Get selected region from radio buttons
@@ -366,7 +431,7 @@ async function analyzeScores() {
       filters: {
         schoolOwnership,
         schoolType,
-        vocationalGroup,
+        vocationalGroups,
         analysisIdentity
       },
       region: analysisArea
@@ -381,14 +446,14 @@ async function analyzeScores() {
       composition: parseInt(document.getElementById('composition').value)
     };
 
-    const response = await fetch('https://script.google.com/macros/s/AKfycbxQD0ENt4twxvuThmgRZ2dbvjKbt38IjRYMCFuPmNXGxXNWyY7VVOGH_vZZFBHlZOaV/exec', {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbwyCrdfpk5Lmw-ifJR4E_hkMiolZx4LitVt14gIP5CDeiZYSWjhEtD4K1hW6BFYkQIqsA/exec', {
       method: 'POST',
       body: JSON.stringify({
         scores,
         filters: {
           schoolOwnership,
           schoolType,
-          vocationalGroup,
+          vocationalGroups,
           analysisIdentity
         },
         region: analysisArea
@@ -644,6 +709,16 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 function displayResults(data) {
   const { totalPoints, totalCredits, eligibleSchools } = data;
 
+  // Get selected region and show proper region name
+  const selectedRegionValue = document.querySelector('input[name="analysisArea"]:checked')?.value || '';
+  const regionNames = {
+    'taoyuan': '桃聯區',
+    'kaohsiung': '高雄區',
+    'central': '中投區',
+    'changhua': '彰化區'
+  };
+  const selectedRegionName = regionNames[selectedRegionValue] || '未指定區域';
+
   let results = `
     <div class="results-container">
       <div class="results-header">
@@ -665,6 +740,11 @@ function displayResults(data) {
             <i class="fas fa-school icon"></i>
             <div class="result-value">${eligibleSchools ? eligibleSchools.length : 0}</div>
             <div class="result-label">符合條件學校數</div>
+          </div>
+          <div class="result-card analysis-region">
+            <i class="fas fa-map-marker-alt icon"></i>
+            <div class="result-value">${selectedRegionName}</div>
+            <div class="result-label">分析區域</div>
           </div>
         </div>
       </div>
@@ -739,6 +819,12 @@ function displayResults(data) {
                       ${school.ownership ? `<span class="school-ownership">【${school.ownership}】</span>` : ''}
                     </div>
                     <div class="school-details">
+                      ${school.group ? `
+                        <span class="school-group">
+                          <i class="fas fa-layer-group icon"></i>
+                          ${school.group}
+                        </span>
+                      ` : ''}
                       ${school.lastYearCutoff ? `
                         <span class="cutoff-score">
                           <i class="fas fa-chart-line icon"></i>
@@ -826,6 +912,17 @@ function showExportOptions() {
   requestAnimationFrame(() => {
     exportMenu.classList.add('show');
   });
+}
+
+function closeExportMenu() {
+  const exportMenu = document.querySelector('.export-menu');
+  if (exportMenu) {
+    exportMenu.classList.remove('show');
+    
+    setTimeout(() => {
+      exportMenu.remove();
+    }, 300);
+  }
 }
 
 async function exportResults(format = 'txt') {
@@ -1154,7 +1251,9 @@ function printResults() {
           left: 0;
           width: 100%;
           height: 1px;
-          background: #f0f0f0;
+          background: linear-gradient(90deg, transparent, #ddd, transparent);
+          width: 80%;
+          margin: 30px auto 0;
         }
         .print-section-title {
           font-size: 1.4rem;
@@ -1203,6 +1302,7 @@ function printResults() {
           z-index: -1;
         }
         
+        /* Enhanced print styling for school list */
         .print-school-list {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -1255,7 +1355,10 @@ function printResults() {
         
         .page-break-after::after {
           content: '';
-          display: block;
+          position: absolute;
+          bottom: -15px;
+          left: 0;
+          width: 100%;
           height: 1px;
           background: linear-gradient(90deg, transparent, #ddd, transparent);
           width: 80%;
@@ -1297,6 +1400,7 @@ function printResults() {
       name: school.querySelector('.school-name')?.textContent.trim() || "",
       type: getSchoolParentType(school),
       ownership: getSchoolOwnership(school),
+      group: getSchoolGroup(school),
       cutoff: school.querySelector('.cutoff-score')?.textContent.trim() || ""
     };
   });
@@ -1409,6 +1513,7 @@ function printResults() {
                   </div>
                   <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #666; margin-top: 5px;">
                     <span>${school.ownership}</span>
+                    ${school.group ? `<span><i class="fas fa-layer-group" style="margin-right: 5px;"></i>${school.group}</span>` : ''}
                     <span>${school.cutoff}</span>
                   </div>
                 </div>
@@ -1492,7 +1597,7 @@ function applyExcelStyling(worksheet, range) {
       
       if (R !== 0 || C !== 0) { // Skip title cell as we styled it already
         // Base style for all cells
-        worksheet[cell].s = {
+        worksheet[cell].s = { 
           font: { name: "Arial", sz: 11 },
           alignment: { vertical: "center", wrapText: true },
           border: {
@@ -1509,10 +1614,10 @@ function applyExcelStyling(worksheet, range) {
           worksheet[cell].s.fill = { patternType: "solid", fgColor: { rgb: "2A9D8F" } };
           worksheet[cell].s.alignment = { horizontal: "center", vertical: "center" };
           worksheet[cell].s.border = {
-            top: { style: "medium", color: { rgb: "264653" } },
-            bottom: { style: "medium", color: { rgb: "264653" } },
-            left: { style: "medium", color: { rgb: "264653" } },
-            right: { style: "medium", color: { rgb: "264653" } }
+            top: { style: "medium", color: { auto: 1 } },
+            bottom: { style: "medium", color: { auto: 1 } },
+            left: { style: "medium", color: { auto: 1 } },
+            right: { style: "medium", color: { auto: 1 } }
           };
         }
         
@@ -1588,14 +1693,6 @@ function applyExcelStyling(worksheet, range) {
         if (!worksheet[cell].s.border.right) worksheet[cell].s.border.right = borderStyle;
       }
     }
-  }
-}
-
-function closeExportMenu() {
-  const exportMenu = document.querySelector('.export-menu');
-  if (exportMenu) {
-    exportMenu.classList.remove('show');
-    setTimeout(() => exportMenu.remove(), 300);
   }
 }
 
@@ -1812,6 +1909,14 @@ function getSchoolOwnership(schoolElement) {
   return "";
 }
 
+function getSchoolGroup(schoolElement) {
+  const groupElem = schoolElement.querySelector('.school-group');
+  if (groupElem) {
+    return groupElem.textContent.trim();
+  }
+  return "";
+}
+
 function downloadFile(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1833,4 +1938,74 @@ async function loadScript(url) {
     document.head.appendChild(script);
   });
 }
-initRating();
+
+document.addEventListener('DOMContentLoaded', function() {
+  initVocationalGroupValidation();
+  initRating();
+});
+
+function exportJson(resultsText) {
+  // Create a structured JSON object from the analysis data
+  const now = new Date();
+  const dateTime = now.toLocaleString('zh-TW');
+  
+  // Get detailed results data
+  const totalPoints = document.querySelector('.total-points .result-value')?.textContent || "";
+  const totalCredits = document.querySelector('.total-credits .result-value')?.textContent || "";
+  
+  // Get scores
+  const scores = {
+    chinese: document.getElementById('chinese').value,
+    english: document.getElementById('english').value,
+    math: document.getElementById('math').value,
+    science: document.getElementById('science').value,
+    social: document.getElementById('social').value,
+    composition: document.getElementById('composition').value
+  };
+  
+  // Get schools
+  const schools = Array.from(document.querySelectorAll('.school-item')).map(school => {
+    return {
+      name: school.querySelector('.school-name')?.textContent.trim() || "",
+      type: getSchoolParentType(school),
+      ownership: getSchoolOwnership(school),
+      group: school.querySelector('.school-group')?.textContent.trim() || "",
+      cutoffScore: school.querySelector('.cutoff-score')?.textContent.trim() || ""
+    };
+  });
+  
+  // Organize schools by type
+  const schoolsByType = {};
+  schools.forEach(school => {
+    if (!schoolsByType[school.type]) {
+      schoolsByType[school.type] = [];
+    }
+    schoolsByType[school.type].push(school);
+  });
+  
+  // Create final JSON object
+  const jsonData = {
+    timestamp: dateTime,
+    analysis: {
+      totalPoints: totalPoints,
+      totalCredits: totalCredits,
+      scores: scores
+    },
+    results: {
+      totalEligibleSchools: schools.length,
+      schoolsByType: schoolsByType
+    },
+    metadata: {
+      version: "1.0",
+      generator: "會考落點分析系統",
+      url: "https://tyctw.github.io/spare/"
+    }
+  };
+  
+  // Convert to formatted JSON string
+  const jsonString = JSON.stringify(jsonData, null, 2);
+  
+  // Download as file
+  const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+  downloadFile(blob, '會考落點分析結果.json');
+}

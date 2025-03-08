@@ -125,25 +125,124 @@
       </div>
       <div class="form-group" id="vocationalGroupContainer" style="display: none;">
         <label for="vocationalGroup">
-          <i class="fas fa-tools icon"></i>職業群別：
+          <i class="fas fa-tools icon"></i>職業群別 (可複選)：
         </label>
-        <select id="vocationalGroup">
+        <div class="vocational-group-container">
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupAll" class="vocational-group-input" value="all" checked>
+            <label for="groupAll" class="vocational-group-label">
+              <i class="fas fa-check-circle"></i>
+              <span>全部選擇</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupMechanical" class="vocational-group-input" value="機械群">
+            <label for="groupMechanical" class="vocational-group-label">
+              <i class="fas fa-cogs"></i>
+              <span>機械群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupPower" class="vocational-group-input" value="動力機械群">
+            <label for="groupPower" class="vocational-group-label">
+              <i class="fas fa-car"></i>
+              <span>動力機械群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupElectrical" class="vocational-group-input" value="電機與電子群">
+            <label for="groupElectrical" class="vocational-group-label">
+              <i class="fas fa-bolt"></i>
+              <span>電機與電子群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupChemical" class="vocational-group-input" value="化工群">
+            <label for="groupChemical" class="vocational-group-label">
+              <i class="fas fa-flask"></i>
+              <span>化工群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupCivil" class="vocational-group-input" value="土木與建築群">
+            <label for="groupCivil" class="vocational-group-label">
+              <i class="fas fa-building"></i>
+              <span>土木與建築群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupBusiness" class="vocational-group-input" value="商業與管理群">
+            <label for="groupBusiness" class="vocational-group-label">
+              <i class="fas fa-briefcase"></i>
+              <span>商業與管理群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupForeign" class="vocational-group-input" value="外語群">
+            <label for="groupForeign" class="vocational-group-label">
+              <i class="fas fa-language"></i>
+              <span>外語群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupDesign" class="vocational-group-input" value="設計群">
+            <label for="groupDesign" class="vocational-group-label">
+              <i class="fas fa-palette"></i>
+              <span>設計群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupAgriculture" class="vocational-group-input" value="農業群">
+            <label for="groupAgriculture" class="vocational-group-label">
+              <i class="fas fa-leaf"></i>
+              <span>農業群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupFood" class="vocational-group-input" value="食品群">
+            <label for="groupFood" class="vocational-group-label">
+              <i class="fas fa-utensils"></i>
+              <span>食品群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupHomEc" class="vocational-group-input" value="家政群">
+            <label for="groupHomEc" class="vocational-group-label">
+              <i class="fas fa-home"></i>
+              <span>家政群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupHospitality" class="vocational-group-input" value="餐旅群">
+            <label for="groupHospitality" class="vocational-group-label">
+              <i class="fas fa-concierge-bell"></i>
+              <span>餐旅群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupAquaFishery" class="vocational-group-input" value="水產群">
+            <label for="groupAquaFishery" class="vocational-group-label">
+              <i class="fas fa-fish"></i>
+              <span>水產群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupMarine" class="vocational-group-input" value="海事群">
+            <label for="groupMarine" class="vocational-group-label">
+              <i class="fas fa-ship"></i>
+              <span>海事群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupArt" class="vocational-group-input" value="藝術群">
+            <label for="groupArt" class="vocational-group-label">
+              <i class="fas fa-paint-brush"></i>
+              <span>藝術群</span>
+            </label>
+          </div>
+        </div>
+        <select id="vocationalGroup" style="display: none;">
           <option value="all">全部</option>
-          <option value="機械群">機械群</option>
-          <option value="動力機械群">動力機械群</option>
-          <option value="電機與電子群">電機與電子群</option>
-          <option value="化工群">化工群</option>
-          <option value="土木與建築群">土木與建築群</option>
-          <option value="商業與管理群">商業與管理群</option>
-          <option value="外語群">外語群</option>
-          <option value="設計群">設計群</option>
-          <option value="農業群">農業群</option>
-          <option value="食品群">食品群</option>
-          <option value="家政群">家政群</option>
-          <option value="餐旅群">餐旅群</option>
-          <option value="水產群">水產群</option>
-          <option value="海事群">海事群</option>
-          <option value="藝術群">藝術群</option>
         </select>
       </div>
       <div class="form-group">
