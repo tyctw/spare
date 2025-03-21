@@ -709,7 +709,7 @@ document.getElementById('currentYear').textContent = new Date().getFullYear();
 function displayResults(data) {
   const { totalPoints, totalCredits, eligibleSchools } = data;
 
-  // Get the selected region name from radio button
+  // Get region info
   const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
   const regionId = selectedRegionRadio ? selectedRegionRadio.value : '';
   const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
@@ -797,6 +797,12 @@ function displayResults(data) {
     results += `
       <div class="schools-analysis">
         <h3><i class="fas fa-university icon"></i>學校分析</h3>
+        <div class="comparison-actions">
+          <button id="compareSchoolsBtn" class="comparison-button" onclick="showSchoolComparison()">
+            <i class="fas fa-exchange-alt"></i> 查看學校比較
+            <span id="comparisonBadge" class="comparison-badge">0</span>
+          </button>
+        </div>
         <div class="school-type-summary">
           ${Object.entries(groupedSchools).map(([type, schools]) => `
             <div class="school-type-card">
@@ -831,6 +837,11 @@ function displayResults(data) {
                           去年最低錄取: ${school.lastYearCutoff}
                         </span>
                       ` : ''}
+                    </div>
+                    <div class="school-actions">
+                      <button class="add-comparison-btn" onclick="addSchoolToComparison('${school.name}', '${school.type}', ${JSON.stringify(school).replace(/"/g, '&quot;')})">
+                        <i class="fas fa-plus-circle"></i> 加入比較
+                      </button>
                     </div>
                   </div>
                 `).join('')}
@@ -873,6 +884,9 @@ function displayResults(data) {
     resultsElement.style.display = 'block';
     resultsElement.style.animation = 'fadeIn 0.5s ease-out';
     document.getElementById('exportResults').style.display = 'inline-block';
+    
+    // Initialize comparison badge
+    updateComparisonBadge();
   }, 100);
 }
 
@@ -1956,7 +1970,334 @@ async function loadScript(url) {
 document.addEventListener('DOMContentLoaded', function() {
   initVocationalGroupValidation();
   initRating();
+  updateComparisonBadge();
 });
+
+// Add school comparison functionality
+function addSchoolToComparison(schoolName, schoolType, schoolDetails) {
+  let comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  
+  // Check if school already exists in comparison
+  if (comparisonList.some(school => school.name === schoolName)) {
+    showNotification('此學校已在比較清單中', 'warning');
+    return;
+  }
+  
+  // Limit to maximum 4 schools
+  if (comparisonList.length >= 4) {
+    showNotification('比較清單最多只能加入4所學校', 'warning');
+    return;
+  }
+  
+  // Add school to comparison list with enhanced details
+  comparisonList.push({
+    name: schoolName,
+    type: schoolType,
+    details: {
+      ...schoolDetails,
+      addedOn: new Date().toISOString()
+    }
+  });
+  
+  localStorage.setItem('schoolComparison', JSON.stringify(comparisonList));
+  updateComparisonBadge();
+  
+  // Add visual feedback with animation to the button
+  const button = event.target.closest('.add-comparison-btn');
+  if (button) {
+    button.innerHTML = '<i class="fas fa-check"></i> 已加入';
+    button.classList.add('added');
+    button.disabled = true;
+    
+    setTimeout(() => {
+      button.innerHTML = '<i class="fas fa-check"></i> 已加入比較';
+    }, 1000);
+  }
+  
+  showNotification(`已新增 ${schoolName} 到比較清單`, 'success');
+}
+
+function removeSchoolFromComparison(schoolName) {
+  let comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  
+  // Find the column to animate before removal
+  const columnIndex = comparisonList.findIndex(school => school.name === schoolName);
+  if (columnIndex > -1) {
+    const columns = document.querySelectorAll(`.school-column`);
+    if (columns[columnIndex]) {
+      columns[columnIndex].classList.add('removing');
+      // Add animation to all cells in this column
+      const table = document.querySelector('.comparison-table');
+      if (table) {
+        const rows = table.querySelectorAll('tr');
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td, th');
+          if (cells[columnIndex + 1]) { // +1 because first column is for labels
+            cells[columnIndex + 1].classList.add('removing');
+          }
+        });
+      }
+    }
+  }
+  
+  // Remove after animation completes
+  setTimeout(() => {
+    comparisonList = comparisonList.filter(school => school.name !== schoolName);
+    localStorage.setItem('schoolComparison', JSON.stringify(comparisonList));
+    updateComparisonBadge();
+    
+    // Update the comparison display after removal
+    if (document.getElementById('comparisonContainer')) {
+      showSchoolComparison();
+    }
+    
+    showNotification(`已從比較清單中移除 ${schoolName}`, 'info');
+  }, 300);
+}
+
+function showSchoolComparison() {
+  const comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  const comparisonContainer = document.getElementById('comparisonContainer');
+  
+  if (!comparisonContainer) {
+    // Create comparison modal if it doesn't exist
+    const modal = document.createElement('div');
+    modal.id = 'schoolComparisonModal';
+    modal.className = 'modal';
+    
+    modal.innerHTML = `
+      <div class="modal-content comparison-modal-content">
+        <span class="close" onclick="closeComparisonModal()">&times;</span>
+        <h2><i class="fas fa-balance-scale icon"></i> 學校比較</h2>
+        <div id="comparisonContainer"></div>
+        <button class="confirm-button" onclick="closeComparisonModal()">
+          <i class="fas fa-check-circle icon"></i> 關閉
+        </button>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.style.display = 'block';
+    
+    setTimeout(() => {
+      document.querySelector('.comparison-modal-content').classList.add('show');
+    }, 10);
+  }
+  
+  const container = document.getElementById('comparisonContainer');
+  
+  if (comparisonList.length === 0) {
+    container.innerHTML = `
+      <div class="empty-comparison">
+        <i class="fas fa-info-circle icon-large"></i>
+        <p>您尚未新增任何學校到比較清單</p>
+        <p>請在分析結果中點擊「加入比較」按鈕新增學校</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Generate comparison table
+  let comparisonHTML = `
+    <div class="comparison-controls">
+      <button onclick="clearComparison()" class="clear-button">
+        <i class="fas fa-trash-alt"></i> 清空比較清單
+      </button>
+      <button onclick="exportComparison()" class="export-button">
+        <i class="fas fa-file-export"></i> 匯出比較結果
+      </button>
+    </div>
+    <div class="comparison-table-container">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>比較項目</th>
+            ${comparisonList.map(school => `
+              <th class="school-column">
+                ${school.name}
+                <button class="remove-school-btn" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
+                  <i class="fas fa-times"></i>
+                </button>
+              </th>
+            `).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>學校類型</td>
+            ${comparisonList.map(school => `<td>${school.type || '未知'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>學校屬性</td>
+            ${comparisonList.map(school => `<td>${school.details?.ownership || '未知'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>去年最低錄取分數</td>
+            ${comparisonList.map(school => `<td>${school.details?.lastYearCutoff || '未知'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>入學管道</td>
+            ${comparisonList.map(school => `<td>${school.details?.admissionMethod || '一般入學'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>地理位置</td>
+            ${comparisonList.map(school => `<td>${school.details?.location || '未知'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>學校網站</td>
+            ${comparisonList.map(school => 
+              school.details?.website ? 
+              `<td><a href="${school.details.website}" target="_blank" class="school-link"><i class="fas fa-external-link-alt"></i> 前往網站</a></td>` : 
+              `<td>未提供</td>`
+            ).join('')}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="comparison-summary">
+      <h3><i class="fas fa-info-circle"></i> 比較總結</h3>
+      <p>您正在比較 <strong>${comparisonList.length}</strong> 所學校的資訊。選擇最符合您需求的學校時，請考慮以下因素：</p>
+      <ul class="comparison-tips">
+        <li><i class="fas fa-star"></i> 分數符合情況：根據您的總分和學校錄取分數進行評估</li>
+        <li><i class="fas fa-map-marker-alt"></i> 地理位置：考慮通勤時間和交通便利性</li>
+        <li><i class="fas fa-graduation-cap"></i> 學校特色和課程：更多資訊請訪問學校官網</li>
+      </ul>
+    </div>
+  `;
+  
+  container.innerHTML = comparisonHTML;
+  
+  // Add hover effects to table rows
+  setTimeout(() => {
+    const rows = document.querySelectorAll('.comparison-table tr');
+    rows.forEach(row => {
+      row.addEventListener('mouseenter', () => {
+        row.classList.add('highlight-hover');
+      });
+      row.addEventListener('mouseleave', () => {
+        row.classList.remove('highlight-hover');
+      });
+    });
+  }, 100);
+}
+
+function closeComparisonModal() {
+  const modal = document.getElementById('schoolComparisonModal');
+  if (modal) {
+    const modalContent = document.querySelector('.comparison-modal-content');
+    modalContent.classList.remove('show');
+    modalContent.classList.add('hide');
+    
+    setTimeout(() => {
+      modal.style.display = 'none';
+      modal.remove();
+    }, 300);
+  }
+}
+
+function clearComparison() {
+  if (confirm('確定要清空所有比較的學校嗎？')) {
+    // Add fade-out animation to comparison table
+    const table = document.querySelector('.comparison-table');
+    if (table) {
+      table.classList.add('fade-out');
+    }
+    
+    setTimeout(() => {
+      localStorage.setItem('schoolComparison', '[]');
+      updateComparisonBadge();
+      showSchoolComparison();
+      showNotification('已清空比較清單', 'info');
+    }, 300);
+  }
+}
+
+function exportComparison() {
+  const comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  if (comparisonList.length === 0) {
+    showNotification('沒有可匯出的比較資料', 'warning');
+    return;
+  }
+  
+  // Create more detailed comparison text
+  let comparisonText = '學校比較結果\n';
+  comparisonText += '====================\n\n';
+  comparisonText += `產生時間: ${new Date().toLocaleString('zh-TW')}\n`;
+  comparisonText += `比較學校數量: ${comparisonList.length}所\n\n`;
+  
+  comparisonText += '比較項目\t' + comparisonList.map(s => s.name).join('\t') + '\n';
+  comparisonText += '學校類型\t' + comparisonList.map(s => s.type || '未知').join('\t') + '\n';
+  comparisonText += '學校屬性\t' + comparisonList.map(s => s.details?.ownership || '未知').join('\t') + '\n';
+  comparisonText += '最低錄取\t' + comparisonList.map(s => s.details?.lastYearCutoff || '未知').join('\t') + '\n';
+  comparisonText += '入學管道\t' + comparisonList.map(s => s.details?.admissionMethod || '一般入學').join('\t') + '\n';
+  comparisonText += '地理位置\t' + comparisonList.map(s => s.details?.location || '未知').join('\t') + '\n\n';
+  
+  comparisonText += '備註: 此比較結果僅供參考，請以各校最新招生簡章為準。\n';
+  comparisonText += '資料來源: 會考落點分析系統 https://tyctw.github.io/spare/';
+  
+  const blob = new Blob([comparisonText], { type: 'text/plain;charset=utf-8' });
+  downloadFile(blob, '學校比較結果.txt');
+  
+  logUserActivity('export_comparison', { schools: comparisonList.map(s => s.name) });
+  showNotification('比較資料已成功匯出', 'success');
+}
+
+function showNotification(message, type = 'info') {
+  // Remove existing notification if any
+  const existingNotification = document.querySelector('.notification');
+  if (existingNotification) {
+    existingNotification.remove();
+  }
+  
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  
+  const iconMap = {
+    'success': 'fas fa-check-circle',
+    'warning': 'fas fa-exclamation-triangle',
+    'error': 'fas fa-times-circle',
+    'info': 'fas fa-info-circle'
+  };
+  
+  notification.innerHTML = `
+    <i class="${iconMap[type] || iconMap.info}"></i>
+    <span>${message}</span>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => {
+    notification.classList.add('show');
+  }, 10);
+  
+  // Auto remove after 3 seconds
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
+  }, 3000);
+}
+
+function updateComparisonBadge() {
+  const comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  const badge = document.getElementById('comparisonBadge');
+  if (badge) {
+    // Previous count for animation
+    const prevCount = parseInt(badge.textContent || '0');
+    const newCount = comparisonList.length;
+    
+    // Update count with animation
+    badge.textContent = newCount;
+    badge.style.display = newCount > 0 ? 'flex' : 'none';
+    
+    if (newCount > prevCount) {
+      badge.classList.add('pulse-animation');
+      setTimeout(() => badge.classList.remove('pulse-animation'), 500);
+    }
+  }
+}
 
 function exportJson(resultsText) {
   // Create a structured JSON object from the analysis data
