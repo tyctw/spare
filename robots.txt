@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tyctw.github.io/spare/sitemap.xml
+
+# Allow all bots to index the content
+User-agent: Googlebot
+Allow: /
+User-agent: Bingbot
+Allow: /
+User-agent: Slurp
+Allow: /
+User-agent: DuckDuckBot
+Allow: /
+User-agent: Baiduspider
+Allow: /
+User-agent: YandexBot
+Allow: /
+
+# Crawl delay for specific bots to prevent server overload
+User-agent: Googlebot
+Crawl-delay: 1
+User-agent: Bingbot
+Crawl-delay: 2
+

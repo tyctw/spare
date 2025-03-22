@@ -1,7 +1,7 @@
 <html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
-    <title>會考落點分析</title>
+    <title>會考落點分析 | 免費高中落點分析工具</title>
     <link rel="stylesheet" href="styles.css" />
     <link
       rel="stylesheet"
@@ -15,13 +15,26 @@
     <meta name="google-adsense-account" content="ca-pub-3350304014189563" />
     <meta
       name="description"
-      content="會考落點分析，幫助使用者分析會考成績，提供學校落點參考。"
+      content="免費會考落點分析系統，幫助您快速分析國中會考成績對應的高中落點，提供精確的學校錄取機率評估及分析報告。提供匯出功能及學校比較工具。"
     />
     <meta
       name="keywords"
-      content="桃聯區, 會考, 落點分析, 教育, 學校,武陵高中,中壢高中,內壢高中,平鎮高中,大園高中,永豐高中,南崁高中,振聲高中,楊梅高中,治平高中,新興高中,關西高中,大溪高中"
+      content="會考落點分析,會考成績分析,高中落點分析,免費落點分析,桃聯區,中投區,高雄區,彰化區,國中會考,高中錄取,學校比較,大學升學,升學分析,國中升高中,會考分數,武陵高中,中壢高中,內壢高中,平鎮高中,大園高中,永豐高中,南崁高中,振聲高中,楊梅高中,治平高中,新興高中,關西高中,大溪高中"
     />
-    <meta name="author" content="桃聯區教育局" />
+    <meta name="author" content="落點分析研究團隊" />
+    <meta property="og:title" content="會考落點分析 | 免費高中落點分析工具" />
+    <meta property="og:description" content="免費會考落點分析系統，幫助您快速分析國中會考成績對應的高中落點，提供精確的學校錄取機率評估及分析報告。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tyctw.github.io/spare/" />
+    <meta property="og:image" content="https://tyctw.github.io/spare/og-image.jpg" />
+    <meta property="og:site_name" content="會考落點分析系統" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="會考落點分析 | 免費高中落點分析工具" />
+    <meta name="twitter:description" content="免費會考落點分析系統，幫助您快速分析國中會考成績對應的高中落點，提供精確的學校錄取機率評估及分析報告。" />
+    <meta name="twitter:image" content="https://tyctw.github.io/spare/og-image.jpg" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://tyctw.github.io/spare/" />
     <!-- External JS Libraries -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.3.1/dist/jsQR.min.js"></script>
@@ -35,6 +48,14 @@
           <i class="fas fa-chart-line"></i>
           <span>會考落點分析</span>
         </div>
+        <div class="header-actions">
+          <button class="header-button" onclick="showInstructions()">
+            <i class="fas fa-info-circle"></i> 使用說明
+          </button>
+          <button class="header-button" onclick="showDisclaimer()">
+            <i class="fas fa-shield-alt"></i> 免責聲明
+          </button>
+        </div>
         <div class="menu-icon" onclick="toggleMenu()">
           <i class="fas fa-bars"></i>
         </div>
@@ -46,18 +67,47 @@
       <div class="close-menu" onclick="closeMenu()">
         <i class="fas fa-times"></i>
       </div>
+      
+      <div class="menu-category">主要功能</div>
+      <a href="#" onclick="closeMenu(); window.scrollTo(0, 0);">
+        <i class="fas fa-home"></i> 首頁
+      </a>
+      <a href="#" onclick="closeMenu(); showInstructions();">
+        <i class="fas fa-book"></i> 使用說明
+      </a>
+      <a href="#" onclick="closeMenu(); showDisclaimer();">
+        <i class="fas fa-shield-alt"></i> 免責聲明
+      </a>
+      
+      <div class="menu-category">關聯系統</div>
       <a href="https://sites.google.com/view/tyctw/" target="_blank">
         <i class="fas fa-school"></i> 回到主網頁
       </a>
       <a href="https://tyctw.github.io/sequence/" target="_blank">
-        <i class="fas fa-pencil-alt"></i>! 各校序位推估 
+        <i class="fas fa-pencil-alt"></i> 各校序位推估
+      </a>
+      <a href="https://tyctw.github.io/Navigation/">
+        <i class="fas fa-university"></i> 學校導航系統
+      </a>
+      
+      <div class="menu-category">支援與回饋</div>
+      <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank">
+        <i class="fas fa-envelope-open-text"></i> 獲取邀請碼
       </a>
       <a href="https://tyctw.github.io/report_form" target="_blank">
         <i class="fas fa-exclamation-triangle"></i> 系統異常回報
       </a>
-      <a href="https://tyctw.github.io/Navigation/">
-        <i class="fas fa-university"></i> 查看更多資訊
-      </a>
+      
+      <div class="menu-footer">
+        <div class="menu-social">
+          <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+        <div class="menu-version">
+          版本: 2.0 <span id="menuVersionYear">2023</span>
+        </div>
+      </div>
     </div>
 
     <div class="container">

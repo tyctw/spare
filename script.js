@@ -1007,11 +1007,7 @@ async function exportPdf(content) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
-  // Get region info
-  const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
-  const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
-  
-  // Add PDF header with logo and styled title
+  // Add header
   doc.setFillColor(42, 157, 143);
   doc.rect(0, 0, 210, 20, 'F');
   doc.setTextColor(255);
@@ -1019,11 +1015,11 @@ async function exportPdf(content) {
   doc.setFont('helvetica', 'bold');
   doc.text('會考落點分析結果', 105, 12, { align: 'center' });
   
-  // Add generation timestamp and region
+  // Add timestamp
   const timestamp = new Date().toLocaleString('zh-TW');
   doc.setFontSize(10);
   doc.setFont('helvetica', 'italic');
-  doc.text(`分析區域: ${regionName} | 產生時間: ${timestamp}`, 105, 20, { align: 'center' });
+  doc.text(`產生時間: ${timestamp} | 分析區域: ${document.querySelector('input[name="analysisArea"]:checked').parentElement.querySelector('.region-name').textContent}`, 105, 20, { align: 'center' });
   
   // Add main content with improved styling
   doc.setTextColor(0);
@@ -1788,30 +1784,22 @@ async function exportExcel() {
     
     // Create schools worksheet with enhanced styling
     const schoolsData = [
-      ["序號", "學校名稱", "類型", "屬性", "最低分數", "符合度"]
+      ["符合條件學校"],
+      [],
+      ["學校名稱", "類型", "屬性", "最低錄取分數", "入學管道", "地理位置", "特色課程數", "學校網站"],
+      ...Array.from(document.querySelectorAll('.school-item')).map(school => {
+        return [
+          school.querySelector('.school-name')?.textContent.trim() || "",
+          getSchoolParentType(school),
+          getSchoolOwnership(school),
+          school.querySelector('.cutoff-score')?.textContent.trim() || "",
+          getSchoolGroup(school),
+          getSchoolLocation(school),
+          school.querySelector('.school-group')?.textContent.trim() || "",
+          school.querySelector('.school-link')?.href || ""
+        ];
+      })
     ];
-    
-    // Get eligible schools
-    const schoolElements = document.querySelectorAll('.school-item');
-    schoolElements.forEach((school, index) => {
-      const schoolName = school.querySelector('.school-name')?.textContent.trim() || "";
-      const schoolType = getSchoolParentType(school);
-      const schoolOwnership = getSchoolOwnership(school);
-      const cutoffScore = school.querySelector('.cutoff-score')?.textContent.trim() || "";
-      
-      // Add score match indicator (new column)
-      const totalScore = parseInt(document.querySelector('.total-points .result-value')?.textContent || "0");
-      const cutoffValue = parseInt(cutoffScore.replace(/[^0-9]/g, '') || "0");
-      const scoreGap = totalScore - cutoffValue;
-      let matchStatus = "適合";
-      
-      if (scoreGap >= 5) matchStatus = "非常適合 ★★★";
-      else if (scoreGap >= 3) matchStatus = "很適合 ★★";
-      else if (scoreGap >= 1) matchStatus = "適合 ★";
-      else matchStatus = "剛好符合";
-      
-      schoolsData.push([index + 1, schoolName, schoolType, schoolOwnership, cutoffScore, matchStatus]);
-    });
     
     const schoolsWs = XLSX.utils.aoa_to_sheet(schoolsData);
     
@@ -1839,12 +1827,14 @@ async function exportExcel() {
     
     // Set custom column widths
     schoolsWs['!cols'] = [
-      { wch: 6 },  // 序號
-      { wch: 30 }, // 學校名稱
+      { wch: 30 },  // 學校名稱
       { wch: 15 }, // 類型
       { wch: 12 }, // 屬性
-      { wch: 20 }, // 最低分數
-      { wch: 18 }  // 符合度
+      { wch: 20 }, // 最低錄取分數
+      { wch: 18 },  // 入學管道
+      { wch: 15 }, // 地理位置
+      { wch: 18 },  // 特色課程數
+      { wch: 35 }   // 學校網站
     ];
     
     // Add the schools worksheet to the workbook
@@ -1877,8 +1867,10 @@ async function exportExcel() {
     const watermarkData = [
       ["會考落點分析系統 - https://tyctw.github.io/spare/"],
       ["產生日期: " + new Date().toLocaleDateString('zh-TW')],
-      ["  會考落點分析系統. All rights reserved."],
-      ["此分析結果僅供參考，請依各校最新招生簡章為準"]
+      [""],
+      ["此分析結果僅供參考，請依各校最新招生簡章為準"],
+      [""],
+      ["資料來源: https://tyctw.github.io/spare/"]
     ];
     
     const watermarkWs = XLSX.utils.aoa_to_sheet(watermarkData);
@@ -1950,6 +1942,14 @@ function getSchoolGroup(schoolElement) {
   return "";
 }
 
+function getSchoolLocation(schoolElement) {
+  const locationElem = schoolElement.querySelector('.school-location');
+  if (locationElem) {
+    return locationElem.textContent.trim();
+  }
+  return "";
+}
+
 function downloadFile(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1976,6 +1976,15 @@ document.addEventListener('DOMContentLoaded', function() {
   initVocationalGroupValidation();
   initRating();
   updateComparisonBadge();
+  addStructuredData();
+  generateSitemap();
+  
+  // Track page visits for analytics
+  logUserActivity('page_view', {
+    path: window.location.pathname,
+    referrer: document.referrer,
+    screenSize: `${window.innerWidth}x${window.innerHeight}`
+  });
 });
 
 // Add school comparison functionality
@@ -2938,9 +2947,7 @@ function showSchoolDetails(schoolName) {
             <div class="info-label"><i class="fas fa-globe"></i> 學校網站</div>
             <div class="info-value">
               ${school.details?.website ? 
-                `<a href="${school.details.website}" target="_blank" class="school-link">
-                  <i class="fas fa-external-link-alt"></i> 前往網站
-                </a>` : 
+                `<a href="${school.details.website}" target="_blank" class="school-link"><i class="fas fa-external-link-alt"></i> 前往網站</a>` : 
                 '未提供'}
             </div>
           </div>
@@ -3735,4 +3742,122 @@ function exportJson(resultsText) {
   // Download as file
   const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
   downloadFile(blob, '會考落點分析結果.json');
+}
+
+// Add structured data for rich results in search engines
+function addStructuredData() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "會考落點分析系統",
+    "description": "免費會考落點分析系統，幫助您快速分析國中會考成績對應的高中落點，提供精確的學校錄取機率評估及分析報告。",
+    "url": "https://tyctw.github.io/spare/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "TWD"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "落點分析研究團隊"
+    }
+  };
+
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.textContent = JSON.stringify(structuredData);
+  document.head.appendChild(script);
+}
+
+// Generate dynamic sitemap for better SEO
+async function generateSitemap() {
+  try {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbwyCrdfpk5Lmw-ifJR4E_hkMiolZx4LitVt14gIP5CDeiZYSWjhEtD4K1hW6BFYkQIqsA/exec', {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'getSitemapData'
+      })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.sitemap) {
+        const sitemapLink = document.createElement('link');
+        sitemapLink.rel = 'sitemap';
+        sitemapLink.type = 'application/xml';
+        sitemapLink.href = data.sitemap;
+        document.head.appendChild(sitemapLink);
+      }
+    }
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+  }
+}
+
+// Add header scroll effect
+window.addEventListener('scroll', function() {
+  const header = document.querySelector('.header');
+  if (window.scrollY > 50) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+});
+
+// Show current year in versions
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('menuVersionYear')) {
+    document.getElementById('menuVersionYear').textContent = new Date().getFullYear();
+  }
+});
+
+// Toggle menu
+function toggleMenu() {
+  var menu = document.getElementById("fullscreenMenu");
+  var overlay = document.getElementById("menuOverlay");
+  menu.classList.toggle("show");
+  overlay.classList.toggle("show");
+  
+  var links = menu.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    links[i].style.animationDelay = (i * 0.1) + 's';
+  }
+}
+
+function closeMenu() {
+  var menu = document.getElementById("fullscreenMenu");
+  var overlay = document.getElementById("menuOverlay");
+  menu.classList.remove("show");
+  overlay.classList.remove("show");
+}
+
+document.addEventListener('click', function(event) {
+  var menu = document.getElementById("fullscreenMenu");
+  var menuIcon = document.querySelector(".menu-icon");
+  if (menu.classList.contains('show') && !menu.contains(event.target) && !menuIcon.contains(event.target)) {
+    closeMenu();
+  }
+});
+
+function closeMenu() {
+  var menu = document.getElementById("fullscreenMenu");
+  var overlay = document.getElementById("menuOverlay");
+  
+  // Add a small delay to prevent accidental clicks when menu is closing
+  const links = menu.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    links[i].style.pointerEvents = 'none';
+  }
+  
+  menu.classList.remove("show");
+  overlay.classList.remove("show");
+  
+  // Re-enable links after animation completes
+  setTimeout(() => {
+    for (var i = 0; i < links.length; i++) {
+      links[i].style.pointerEvents = 'auto';
+    }
+  }, 300);
 }
