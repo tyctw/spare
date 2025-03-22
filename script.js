@@ -659,6 +659,10 @@ function handleQRCodeImage(file) {
     };
     img.src = e.target.result;
   };
+  reader.onerror = function() {
+    console.error('Failed to load QR code image');
+    document.getElementById('qr-result').textContent = '無法識別 QR 碼，請嘗試其他圖片';
+  };
   reader.readAsDataURL(file);
 }
 
@@ -1819,6 +1823,7 @@ async function exportExcel() {
     for (let C = schoolsRange.s.c; C <= schoolsRange.e.c; ++C) {
       const cell = XLSX.utils.encode_cell({r: 0, c: C});
       if(!schoolsWs[cell]) continue;
+      
       schoolsWs[cell].s = { 
         font: { bold: true, color: { rgb: "FFFFFF" } },
         fill: { patternType: "solid", fgColor: { rgb: "2a9d8f" } },
@@ -2133,7 +2138,7 @@ function showSchoolComparison() {
           </tr>
           <tr>
             <td>去年最低錄取分數</td>
-            ${comparisonList.map(school => `<td>${school.details?.lastYearCutoff || '未知'}</td>`).join('')}
+            ${comparisonList.map(school => `<td class="score-cell">${school.details?.lastYearCutoff || '未知'}</td>`).join('')}
           </tr>
           <tr>
             <td>入學管道</td>
@@ -2144,6 +2149,10 @@ function showSchoolComparison() {
             ${comparisonList.map(school => `<td>${school.details?.location || '未知'}</td>`).join('')}
           </tr>
           <tr>
+            <td>特色課程數</td>
+            ${comparisonList.map(school => `<td>${school.details?.specialPrograms?.length || '未知'}</td>`).join('')}
+          </tr>
+          <tr>
             <td>學校網站</td>
             ${comparisonList.map(school => 
               school.details?.website ? 
@@ -2151,17 +2160,16 @@ function showSchoolComparison() {
               `<td>未提供</td>`
             ).join('')}
           </tr>
+          <tr>
+            <td>查看詳情</td>
+            ${comparisonList.map(school => `
+              <td><button class="add-comparison-btn" onclick="showSchoolDetails('${school.name.replace(/'/g, "\\'")}')">
+                <i class="fas fa-search"></i> 學校詳情
+              </button></td>
+            `).join('')}
+          </tr>
         </tbody>
       </table>
-    </div>
-    <div class="comparison-summary">
-      <h3><i class="fas fa-info-circle"></i> 比較總結</h3>
-      <p>您正在比較 <strong>${comparisonList.length}</strong> 所學校的資訊。選擇最符合您需求的學校時，請考慮以下因素：</p>
-      <ul class="comparison-tips">
-        <li><i class="fas fa-star"></i> 分數符合情況：根據您的總分和學校錄取分數進行評估</li>
-        <li><i class="fas fa-map-marker-alt"></i> 地理位置：考慮通勤時間和交通便利性</li>
-        <li><i class="fas fa-graduation-cap"></i> 學校特色和課程：更多資訊請訪問學校官網</li>
-      </ul>
     </div>
   `;
   
@@ -2184,14 +2192,8 @@ function showSchoolComparison() {
 function closeComparisonModal() {
   const modal = document.getElementById('schoolComparisonModal');
   if (modal) {
-    const modalContent = document.querySelector('.comparison-modal-content');
-    modalContent.classList.remove('show');
-    modalContent.classList.add('hide');
-    
-    setTimeout(() => {
-      modal.style.display = 'none';
-      modal.remove();
-    }, 300);
+    modal.style.display = 'none';
+    modal.remove();
   }
 }
 
@@ -2219,27 +2221,1392 @@ function exportComparison() {
     return;
   }
   
+  showExportComparisonOptions();
+  
+  logUserActivity('export_comparison', { schools: comparisonList.map(s => s.name) });
+}
+
+function showExportComparisonOptions() {
+  const exportMenu = document.createElement('div');
+  exportMenu.className = 'export-menu';
+  exportMenu.innerHTML = `
+    <div class="export-menu-content">
+      <h3><i class="fas fa-file-export"></i> 選擇比較結果匯出格式</h3>
+      <button onclick="exportComparisonFormat('txt')">
+        <i class="fas fa-file-alt"></i> 文字檔 (.txt)
+      </button>
+      <button onclick="exportComparisonFormat('pdf')">
+        <i class="fas fa-file-pdf"></i> PDF檔 (.pdf)
+      </button>
+      <button onclick="exportComparisonFormat('excel')">
+        <i class="fas fa-file-excel"></i> Excel檔 (.xlsx)
+      </button>
+      <button onclick="exportComparisonFormat('image')">
+        <i class="fas fa-image"></i> 圖片檔 (.png)
+      </button>
+      <button onclick="exportComparisonFormat('print')">
+        <i class="fas fa-print"></i> 直接列印
+      </button>
+      <button onclick="closeExportMenu()" class="cancel-button">
+        <i class="fas fa-times"></i> 取消
+      </button>
+    </div>
+  `;
+  document.body.appendChild(exportMenu);
+  
+  requestAnimationFrame(() => {
+    exportMenu.classList.add('show');
+  });
+}
+
+function exportComparisonFormat(format) {
+  const comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  
+  closeExportMenu();
+  showLoading();
+  
+  setTimeout(async () => {
+    try {
+      switch (format) {
+        case 'txt':
+          exportComparisonToText(comparisonList);
+          break;
+        case 'pdf':
+          await exportComparisonToPdf(comparisonList);
+          break;
+        case 'excel':
+          await exportComparisonToExcel(comparisonList);
+          break;
+        case 'image':
+          await exportComparisonToImage();
+          break;
+        case 'print':
+          printComparisonResults(comparisonList);
+          break;
+      }
+      showNotification('比較資料已成功匯出', 'success');
+    } catch (error) {
+      console.error('Export error:', error);
+      showNotification('匯出失敗，請稍後再試', 'error');
+    } finally {
+      hideLoading();
+    }
+  }, 500);
+}
+
+function exportComparisonToText(comparisonList) {
   // Create more detailed comparison text
   let comparisonText = '學校比較結果\n';
   comparisonText += '====================\n\n';
   comparisonText += `產生時間: ${new Date().toLocaleString('zh-TW')}\n`;
   comparisonText += `比較學校數量: ${comparisonList.length}所\n\n`;
   
-  comparisonText += '比較項目\t' + comparisonList.map(s => s.name).join('\t') + '\n';
-  comparisonText += '學校類型\t' + comparisonList.map(s => s.type || '未知').join('\t') + '\n';
-  comparisonText += '學校屬性\t' + comparisonList.map(s => s.details?.ownership || '未知').join('\t') + '\n';
-  comparisonText += '最低錄取\t' + comparisonList.map(s => s.details?.lastYearCutoff || '未知').join('\t') + '\n';
-  comparisonText += '入學管道\t' + comparisonList.map(s => s.details?.admissionMethod || '一般入學').join('\t') + '\n';
-  comparisonText += '地理位置\t' + comparisonList.map(s => s.details?.location || '未知').join('\t') + '\n\n';
+  comparisonText += '比較項目\t' + comparisonList.map(school => school.name).join('\t') + '\n';
+  comparisonText += '學校類型\t' + comparisonList.map(school => school.type || '未知').join('\t') + '\n';
+  comparisonText += '學校屬性\t' + comparisonList.map(school => school.details?.ownership || '未知').join('\t') + '\n';
+  comparisonText += '最低錄取\t' + comparisonList.map(school => school.details?.lastYearCutoff || '未知').join('\t') + '\n';
+  comparisonText += '入學管道\t' + comparisonList.map(school => school.details?.admissionMethod || '一般入學').join('\t') + '\n';
+  comparisonText += '地理位置\t' + comparisonList.map(school => school.details?.location || '未知').join('\t') + '\n\n';
   
   comparisonText += '備註: 此比較結果僅供參考，請以各校最新招生簡章為準。\n';
   comparisonText += '資料來源: 會考落點分析系統 https://tyctw.github.io/spare/';
   
   const blob = new Blob([comparisonText], { type: 'text/plain;charset=utf-8' });
   downloadFile(blob, '學校比較結果.txt');
+}
+
+async function exportComparisonToPdf(comparisonList) {
+  if (!window.jsPDF) {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  }
   
-  logUserActivity('export_comparison', { schools: comparisonList.map(s => s.name) });
-  showNotification('比較資料已成功匯出', 'success');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  // Add header
+  doc.setFillColor(42, 157, 143);
+  doc.rect(0, 0, 210, 20, 'F');
+  doc.setTextColor(255);
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('學校比較結果', 105, 12, { align: 'center' });
+  
+  // Add timestamp
+  const timestamp = new Date().toLocaleString('zh-TW');
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'italic');
+  doc.text(`產生時間: ${timestamp} | 比較學校數量: ${comparisonList.length}所`, 105, 20, { align: 'center' });
+  
+  // Add schools table
+  doc.setTextColor(0);
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'bold');
+  
+  // Set up table headers
+  const headers = ['比較項目'];
+  comparisonList.forEach(school => {
+    headers.push(school.name);
+  });
+  
+  // Set up table rows
+  const tableData = [
+    headers,
+    ['學校類型', ...comparisonList.map(school => school.type || '未知')],
+    ['學校屬性', ...comparisonList.map(school => school.details?.ownership || '未知')],
+    ['最低錄取', ...comparisonList.map(school => school.details?.lastYearCutoff || '未知')],
+    ['入學管道', ...comparisonList.map(school => school.details?.admissionMethod || '一般入學')],
+    ['地理位置', ...comparisonList.map(school => school.details?.location || '未知')]
+  ];
+  
+  // Calculate column widths
+  const columnCount = headers.length;
+  const columnWidth = 190 / columnCount;
+  
+  // Draw table
+  let y = 40;
+  tableData.forEach((row, rowIndex) => {
+    // Set background color for headers
+    if (rowIndex === 0) {
+      doc.setFillColor(230, 230, 230);
+      doc.rect(10, y - 5, 190, 10, 'F');
+    } else if (rowIndex % 2 === 1) {
+      doc.setFillColor(245, 245, 245);
+      doc.rect(10, y - 5, 190, 10, 'F');
+    }
+    
+    // Draw cells
+    row.forEach((cell, cellIndex) => {
+      const x = 10 + (cellIndex * columnWidth);
+      // First column bold
+      if (cellIndex === 0) {
+        doc.setFont('helvetica', 'bold');
+      } else {
+        doc.setFont('helvetica', 'normal');
+      }
+      
+      // Special formatting for header row
+      if (rowIndex === 0) {
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(42, 157, 143);
+      } else {
+        doc.setTextColor(0);
+      }
+      
+      // Handle long text
+      const cellText = cell.toString();
+      if (cellText.length > 15) {
+        doc.setFontSize(8);
+      } else {
+        doc.setFontSize(10);
+      }
+      
+      doc.text(cellText, x + (columnWidth / 2), y, { align: 'center' });
+    });
+    
+    y += 10;
+  });
+  
+  // Add footer
+  y += 10;
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(10);
+  doc.setTextColor(100);
+  doc.text('此比較結果僅供參考，請以各校最新招生簡章為準。', 105, y, { align: 'center' });
+  
+  y += 5;
+  doc.text('資料來源: 會考落點分析系統 https://tyctw.github.io/spare/', 105, y, { align: 'center' });
+  
+  // Add watermark to each page
+  const pageCount = doc.internal.getNumberOfPages();
+  doc.setFontSize(8);
+  doc.setTextColor(150);
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.text(`會考落點分析系統 - 第 ${i} 頁，共 ${pageCount} 頁`, 105, 295, { align: 'center' });
+  }
+  
+  doc.save('學校比較結果.pdf');
+}
+
+async function exportComparisonToExcel(comparisonList) {
+  if (!window.XLSX) {
+    await loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js');
+  }
+  
+  // Create workbook
+  const wb = XLSX.utils.book_new();
+  wb.Props = {
+    Title: "學校比較結果",
+    Subject: "會考落點分析",
+    Author: "會考落點分析系統",
+    CreatedDate: new Date()
+  };
+  
+  // Prepare data for the comparison sheet
+  const comparisonData = [
+    ["學校比較結果"],
+    [],
+    ["產生時間", new Date().toLocaleDateString('zh-TW')],
+    ["比較學校數量", comparisonList.length + "所"],
+    [],
+    ["比較項目", ...comparisonList.map(s => s.name)],
+    ["學校類型", ...comparisonList.map(s => s.type || '未知')],
+    ["學校屬性", ...comparisonList.map(s => s.details?.ownership || '未知')],
+    ["最低錄取", ...comparisonList.map(s => s.details?.lastYearCutoff || '未知')],
+    ["入學管道", ...comparisonList.map(s => s.details?.admissionMethod || '一般入學')],
+    ["地理位置", ...comparisonList.map(s => s.details?.location || '未知')]
+  ];
+  
+  // Create the worksheet
+  const ws = XLSX.utils.aoa_to_sheet(comparisonData);
+  
+  // Style the worksheet
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell = XLSX.utils.encode_cell({r: R, c: C});
+      if(!ws[cell]) continue;
+      
+      ws[cell].s = {
+        font: { name: "Arial", sz: 11 },
+        alignment: { vertical: "center", wrapText: true },
+        border: {
+          top: { style: "thin", color: { rgb: "DDDDDD" } },
+          bottom: { style: "thin", color: { rgb: "DDDDDD" } },
+          left: { style: "thin", color: { rgb: "DDDDDD" } },
+          right: { style: "thin", color: { rgb: "DDDDDD" } }
+        }
+      };
+      
+      if (R === 0) {
+        ws[cell].s.font = { bold: true, sz: 14, color: { rgb: "2A9D8F" } };
+      } else if (R === 5) {
+        ws[cell].s.font = { bold: true, color: { rgb: "FFFFFF" } };
+        ws[cell].s.fill = { patternType: "solid", fgColor: { rgb: "2A9D8F" } };
+      } else if (C === 0 && R > 5) {
+        ws[cell].s.font = { bold: true };
+        ws[cell].s.fill = { patternType: "solid", fgColor: { rgb: "F4F1DE" } };
+      } else if (R % 2 === 0 && R > 5) {
+        ws[cell].s.fill = { patternType: "solid", fgColor: { rgb: "F9F9F9" } };
+      }
+    }
+  }
+  
+  // Set column widths
+  ws['!cols'] = [
+    { wch: 15 }, // 比較項目
+    ...comparisonList.map(() => ({ wch: 20 })) // School columns
+  ];
+  
+  // Merge title cell
+  ws['!merges'] = [
+    { s: {r: 0, c: 0}, e: {r: 0, c: Math.min(comparisonList.length, 3)} }
+  ];
+  
+  // Add the worksheet to the workbook
+  XLSX.utils.book_append_sheet(wb, ws, "學校比較");
+  
+  // Create detail sheets for each school
+  comparisonList.forEach(school => {
+    // Prepare data for individual school
+    const schoolData = [
+      [school.name + " 詳細資料"],
+      [],
+      ["類型", school.type || "未知"],
+      ["屬性", school.details?.ownership || "未知"],
+      ["最低錄取分數", school.details?.lastYearCutoff || "未知"],
+      ["入學管道", school.details?.admissionMethod || "一般入學"],
+      ["地理位置", school.details?.location || "未知"],
+      ["學校網站", school.details?.website || "未提供"]
+    ];
+    
+    // Create the worksheet
+    const schoolWs = XLSX.utils.aoa_to_sheet(schoolData);
+    
+    // Style the worksheet
+    const schoolRange = XLSX.utils.decode_range(schoolWs['!ref']);
+    for (let R = schoolRange.s.r; R <= schoolRange.e.r; ++R) {
+      for (let C = schoolRange.s.c; C <= schoolRange.e.c; ++C) {
+        const cell = XLSX.utils.encode_cell({r: R, c: C});
+        if(!schoolWs[cell]) continue;
+        
+        schoolWs[cell].s = {
+          font: { name: "Arial", sz: 11 },
+          alignment: { vertical: "center", wrapText: true }
+        };
+        
+        if (R === 0) {
+          schoolWs[cell].s.font = { bold: true, sz: 14, color: { rgb: "2A9D8F" } };
+        } else if (C === 0 && R > 1) {
+          schoolWs[cell].s.font = { bold: true };
+          schoolWs[cell].s.fill = { patternType: "solid", fgColor: { rgb: "F4F1DE" } };
+        }
+      }
+    }
+    
+    // Set column widths
+    schoolWs['!cols'] = [{ wch: 15 }, { wch: 30 }];
+    
+    // Merge title cell
+    schoolWs['!merges'] = [
+      { s: {r: 0, c: 0}, e: {r: 0, c: 1} }
+    ];
+    
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, schoolWs, school.name.slice(0, 20)); // Limit sheet name length
+  });
+  
+  // Add watermark sheet
+  const watermarkData = [
+    ["會考落點分析系統 - 學校比較結果"],
+    ["產生時間: " + new Date().toLocaleDateString('zh-TW')],
+    [""],
+    ["此比較結果僅供參考，請以各校最新招生簡章為準"],
+    [""],
+    ["資料來源: https://tyctw.github.io/spare/"]
+  ];
+  
+  const watermarkWs = XLSX.utils.aoa_to_sheet(watermarkData);
+  XLSX.utils.book_append_sheet(wb, watermarkWs, "關於");
+  
+  // Create and download the Excel file
+  XLSX.writeFile(wb, "學校比較結果.xlsx");
+}
+
+async function exportComparisonToImage() {
+  try {
+    if (!window.html2canvas) {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    }
+    
+    const comparisonTable = document.querySelector('.comparison-table-container');
+    if (!comparisonTable) {
+      throw new Error('比較表格不存在');
+    }
+    
+    // Create a temporary container with styled header
+    const container = document.createElement('div');
+    container.style.cssText = 'background: white; padding: 20px; font-family: Arial, sans-serif;';
+    
+    // Add header
+    const header = document.createElement('div');
+    header.style.cssText = 'text-align: center; margin-bottom: 20px;';
+    header.innerHTML = `
+      <h2 style="color: #2a9d8f; margin: 0;">學校比較結果</h2>
+      <p style="color: #666; margin: 5px 0;">產生時間: ${new Date().toLocaleString('zh-TW')}</p>
+    `;
+    container.appendChild(header);
+    
+    // Clone the comparison table
+    const tableClone = comparisonTable.cloneNode(true);
+    // Remove action buttons
+    tableClone.querySelectorAll('.remove-school-btn').forEach(btn => btn.remove());
+    container.appendChild(tableClone);
+    
+    // Add footer
+    const footer = document.createElement('div');
+    footer.style.cssText = 'text-align: center; margin-top: 20px; font-style: italic; color: #666; font-size: 12px;';
+    footer.innerHTML = '資料來源: 會考落點分析系統 https://tyctw.github.io/spare/';
+    container.appendChild(footer);
+    
+    // Append to body temporarily but hide it
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    document.body.appendChild(container);
+    
+    // Render to canvas
+    const canvas = await html2canvas(container, {
+      scale: 2, // Higher resolution
+      backgroundColor: 'white',
+      logging: false
+    });
+    
+    // Clean up
+    document.body.removeChild(container);
+    
+    // Convert canvas to image and download
+    const imageUrl = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = '學校比較結果.png';
+    link.href = imageUrl;
+    link.click();
+    
+  } catch (error) {
+    console.error('Image export error:', error);
+    showNotification('圖片匯出失敗', 'error');
+    throw error;
+  }
+}
+
+function printComparisonResults(comparisonList) {
+  const printWindow = window.open('', '_blank');
+  
+  if (!printWindow) {
+    alert('請允許開啟彈出視窗以啟用列印功能');
+    return;
+  }
+  
+  // Get current date/time
+  const timestamp = new Date().toLocaleString('zh-TW');
+  
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>學校比較結果</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+      <style>
+        @media print {
+          body { 
+            font-family: 'Noto Sans TC', sans-serif;
+            color: #264653;
+            background: white;
+            margin: 0;
+            padding: 20px;
+          }
+          
+          .print-header {
+            text-align: center;
+            border-bottom: 3px solid #2a9d8f;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+          }
+          
+          .print-logo {
+            font-size: 3rem;
+            color: #2a9d8f;
+            margin-bottom: 10px;
+          }
+          
+          .print-title {
+            font-size: 2rem;
+            color: #2a9d8f;
+            margin: 0;
+          }
+          
+          .print-subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin: 8px 0 0 0;
+          }
+          
+          .print-timestamp {
+            text-align: right;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 20px;
+          }
+          
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+          }
+          
+          th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+          }
+          
+          th {
+            background-color: #2a9d8f;
+            color: white;
+            font-weight: bold;
+          }
+          
+          tr:nth-child(even) {
+            background-color: #f9f9f9;
+          }
+          
+          td:first-child {
+            background-color: #f4f1de;
+            font-weight: bold;
+            text-align: left;
+          }
+          
+          .print-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-style: italic;
+            color: #666;
+            font-size: 0.9rem;
+            padding-top: 10px;
+            border-top: 1px dashed #ddd;
+          }
+          
+          .print-page-number {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 20px;
+          }
+          
+          .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: #ccc;
+            z-index: -1;
+          }
+          
+          .school-details {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 3px solid #2a9d8f;
+            page-break-inside: avoid;
+          }
+          
+          .school-details h3 {
+            color: #2a9d8f;
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+          }
+          
+          @page {
+            size: A4;
+            margin: 2cm;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="watermark">會考落點分析系統</div>
+      
+      <div class="print-header">
+        <div class="print-logo"><i class="fas fa-exchange-alt"></i></div>
+        <h1 class="print-title">學校比較結果</h1>
+        <p class="print-subtitle">本比較結果僅供參考，請以各校最新招生簡章為準</p>
+      </div>
+      
+      <div class="print-timestamp">
+        產生時間: ${timestamp} | 共比較 ${comparisonList.length} 所學校
+      </div>
+      
+      <table>
+        <thead>
+          <tr>
+            <th style="min-width: 100px;">比較項目</th>
+            ${comparisonList.map(school => `<th>${school.name}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>學校類型</td>
+            ${comparisonList.map(school => `<td>${school.type || '未知'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>學校屬性</td>
+            ${comparisonList.map(school => `<td>${school.details?.ownership || '未知'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>最低錄取分數</td>
+            ${comparisonList.map(school => `<td>${school.details?.lastYearCutoff || '未知'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>入學管道</td>
+            ${comparisonList.map(school => `<td>${school.details?.admissionMethod || '一般入學'}</td>`).join('')}
+          </tr>
+          <tr>
+            <td>地理位置</td>
+            ${comparisonList.map(school => `<td>${school.details?.location || '未知'}</td>`).join('')}
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="school-details-section">
+        <h2 style="color: #2a9d8f; border-bottom: 2px solid #e9c46a; padding-bottom: 10px;">
+          學校詳細資訊
+        </h2>
+        
+        ${comparisonList.map(school => `
+          <div class="school-details">
+            <h3>${school.name}</h3>
+            <div class="detail-row">
+              <div class="detail-label">學校類型：</div>
+              <div>${school.type || '未知'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">學校屬性：</div>
+              <div>${school.details?.ownership || '未知'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">最低錄取分數：</div>
+              <div>${school.details?.lastYearCutoff || '未知'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">入學管道：</div>
+              <div>${school.details?.admissionMethod || '一般入學'}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">地理位置：</div>
+              <div>${school.details?.location || '未知'}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="print-footer">
+        此比較結果僅供參考，請以各校最新招生簡章為準。<br>
+        資料來源: 會考落點分析系統 https://tyctw.github.io/spare/
+      </div>
+      
+      <div class="print-page-number">頁 <span class="pageNumber"></span></div>
+      
+      <script>
+        window.onload = function() {
+          window.print();
+          setTimeout(() => {
+            window.close();
+          }, 1000);
+        }
+      </script>
+    </body>
+  </html>
+  `);
+  
+  printWindow.document.close();
+}
+
+function showSchoolDetails(schoolName) {
+  const comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  const school = comparisonList.find(s => s.name === schoolName);
+  
+  if (!school) {
+    showNotification('無法顯示學校詳細資訊', 'error');
+    return;
+  }
+  
+  // Create modal for school details
+  const modal = document.createElement('div');
+  modal.id = 'schoolDetailsModal';
+  modal.className = 'modal';
+  
+  // Enhanced school details with more information and visualization
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 800px;">
+      <span class="close" onclick="closeSchoolDetailsModal()">&times;</span>
+      <h2 style="color: var(--primary-color); display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-school"></i> ${school.name} 詳細資訊
+      </h2>
+      
+      <div class="school-detail-tabs">
+        <button class="school-detail-tab active" onclick="switchSchoolTab(event, 'basic-info')">
+          <i class="fas fa-info-circle"></i> 基本資訊
+        </button>
+        <button class="school-detail-tab" onclick="switchSchoolTab(event, 'admission-info')">
+          <i class="fas fa-user-graduate"></i> 入學資訊
+        </button>
+        <button class="school-detail-tab" onclick="switchSchoolTab(event, 'program-info')">
+          <i class="fas fa-book"></i> 課程特色
+        </button>
+        <button class="school-detail-tab" onclick="switchSchoolTab(event, 'facilities')">
+          <i class="fas fa-building"></i> 校園設施
+        </button>
+      </div>
+      
+      <div class="school-detail-content active" id="basic-info">
+        <div class="school-info-grid">
+          <div class="school-info-item">
+            <div class="info-label"><i class="fas fa-graduation-cap"></i> 學校類型</div>
+            <div class="info-value">${school.type || '未知'}</div>
+          </div>
+          <div class="school-info-item">
+            <div class="info-label"><i class="fas fa-university"></i> 學校屬性</div>
+            <div class="info-value">${school.details?.ownership || '未知'}</div>
+          </div>
+          <div class="school-info-item">
+            <div class="info-label"><i class="fas fa-map-marker-alt"></i> 地理位置</div>
+            <div class="info-value">${school.details?.location || '未提供'}</div>
+          </div>
+          <div class="school-info-item">
+            <div class="info-label"><i class="fas fa-phone"></i> 聯絡電話</div>
+            <div class="info-value">${school.details?.phone || '未提供'}</div>
+          </div>
+          <div class="school-info-item">
+            <div class="info-label"><i class="fas fa-envelope"></i> 聯絡信箱</div>
+            <div class="info-value">${school.details?.email || '未提供'}</div>
+          </div>
+          <div class="school-info-item">
+            <div class="info-label"><i class="fas fa-globe"></i> 學校網站</div>
+            <div class="info-value">
+              ${school.details?.website ? 
+                `<a href="${school.details.website}" target="_blank" class="school-link">
+                  <i class="fas fa-external-link-alt"></i> 前往網站
+                </a>` : 
+                '未提供'}
+            </div>
+          </div>
+        </div>
+        
+        <div class="school-description">
+          <h3><i class="fas fa-info-circle"></i> 學校簡介</h3>
+          <p>${school.details?.description || '暫無學校簡介資訊。'}</p>
+        </div>
+      </div>
+      
+      <div class="school-detail-content" id="admission-info">
+        <div class="admission-info-container">
+          <div class="admission-stats">
+            <h3><i class="fas fa-chart-line"></i> 入學統計</h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">${school.details?.lastYearCutoff || '未知'}</div>
+                <div class="stat-label">去年最低錄取分數</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${school.details?.applicantsCount || '未知'}</div>
+                <div class="stat-label">去年報名人數</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${school.details?.acceptedCount || '未知'}</div>
+                <div class="stat-label">去年錄取人數</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${school.details?.acceptanceRate || '未知'}</div>
+                <div class="stat-label">錄取率</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="admission-requirements">
+            <h3><i class="fas fa-clipboard-list"></i> 入學要求</h3>
+            <ul>
+              ${school.details?.admissionRequirements ? 
+                school.details.admissionRequirements.map(req => `<li>${req}</li>`).join('') : 
+                '<li>暫無詳細入學要求資訊。</li>'}
+            </ul>
+          </div>
+          
+          <div class="admission-timeline">
+            <h3><i class="fas fa-calendar-alt"></i> 入學時程</h3>
+            <div class="timeline">
+              ${school.details?.admissionTimeline ? 
+                generateTimelineHTML(school.details.admissionTimeline) : 
+                '<p>暫無入學時程資訊。</p>'}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="school-detail-content" id="program-info">
+        <div class="program-info-container">
+          <h3><i class="fas fa-star"></i> 特色課程</h3>
+          <div class="program-list">
+            ${school.details?.specialPrograms ? 
+              school.details.specialPrograms.map(program => `
+                <div class="program-item">
+                  <div class="program-title">${program.title}</div>
+                  <div class="program-description">${program.description}</div>
+                </div>
+              `).join('') : 
+              '<p>暫無特色課程資訊。</p>'}
+          </div>
+          
+          <h3><i class="fas fa-trophy"></i> 學生成就</h3>
+          <div class="achievements">
+            ${school.details?.achievements ? 
+              school.details.achievements.map(achievement => `
+                <div class="achievement-item">
+                  <i class="fas fa-award"></i>
+                  <div>${achievement}</div>
+                </div>
+              `).join('') : 
+              '<p>暫無學生成就資訊。</p>'}
+          </div>
+        </div>
+      </div>
+      
+      <div class="school-detail-content" id="facilities">
+        <div class="facilities-container">
+          <h3><i class="fas fa-building"></i> 校園設施</h3>
+          <div class="facilities-grid">
+            ${school.details?.facilities ? 
+              school.details.facilities.map(facility => `
+                <div class="facility-item">
+                  <i class="${getFacilityIcon(facility.type)}"></i>
+                  <div class="facility-name">${facility.name}</div>
+                  <div class="facility-description">${facility.description}</div>
+                </div>
+              `).join('') : 
+              '<p>暫無校園設施資訊。</p>'}
+          </div>
+        </div>
+      </div>
+      
+      <div class="school-actions">
+        <button class="confirm-button" onclick="closeSchoolDetailsModal()">
+          <i class="fas fa-check-circle"></i> 關閉
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  modal.style.display = 'block';
+  
+  // Add styles for school details modal
+  const style = document.createElement('style');
+  style.textContent = `
+    .school-detail-tabs {
+      display: flex;
+      overflow-x: auto;
+      border-bottom: 1px solid #ddd;
+      margin: 20px 0;
+    }
+    
+    .school-detail-tab {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    
+    .school-detail-tab:hover {
+      color: var(--primary-color);
+    }
+    
+    .school-detail-tab.active {
+      color: var(--primary-color);
+      border-bottom: 3px solid var(--primary-color);
+    }
+    
+    .school-detail-content {
+      display: none;
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    .school-detail-content.active {
+      display: block;
+    }
+    
+    .school-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .school-info-item {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .info-label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .info-value {
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+    
+    .school-description {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border-left: 3px solid var(--primary-color);
+    }
+    
+    .admission-stats {
+      margin-bottom: 20px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .stat-item {
+      background: linear-gradient(135deg, var(--primary-color), #239687);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    
+    .admission-requirements ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    
+    .admission-requirements li {
+      padding: 8px 0 8px 25px;
+      position: relative;
+    }
+    
+    .admission-requirements li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    
+    .timeline {
+      position: relative;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+    
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      background-color: #e9c46a;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -3px;
+      border-radius: 3px;
+    }
+    
+    .timeline-item {
+      padding: 10px 40px;
+      position: relative;
+      width: 50%;
+      box-sizing: border-box;
+    }
+    
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border: 4px solid var(--primary-color);
+      border-radius: 50%;
+      top: 15px;
+      z-index: 1;
+    }
+    
+    .timeline-left {
+      left: 0;
+    }
+    
+    .timeline-right {
+      left: 50%;
+    }
+    
+    .timeline-left::after {
+      right: -10px;
+    }
+    
+    .timeline-right::after {
+      left: -10px;
+    }
+    
+    .timeline-content {
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    
+    .timeline-date {
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+    
+    .program-item {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      border-left: 3px solid var(--accent-color);
+    }
+    
+    .program-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: var(--accent-color);
+    }
+    
+    .program-description {
+      font-size: 0.95rem;
+      color: #666;
+    }
+    
+    .achievements {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .achievement-item {
+      background: #f9f9f9;
+      padding: 10px 15px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .achievement-item i {
+      color: #f1c40f;
+      font-size: 1.2rem;
+    }
+    
+    .facilities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .facility-item {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .facility-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .facility-item i {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    
+    .facility-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .facility-description {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    /* Dark mode adjustments */
+    .dark-mode .school-info-item,
+    .dark-mode .school-description,
+    .dark-mode .program-item,
+    .dark-mode .timeline-content,
+    .dark-mode .achievement-item,
+    .dark-mode .facility-item {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+      .school-detail-tabs {
+        flex-wrap: wrap;
+      }
+      
+      .school-detail-tab {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+      }
+      
+      .timeline::after {
+        left: 31px;
+      }
+      
+      .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+      
+      .timeline-right {
+        left: 0;
+      }
+      
+      .timeline-left::after, .timeline-right::after {
+        left: 20px;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function closeSchoolDetailsModal() {
+  const modal = document.getElementById('schoolDetailsModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.remove();
+  }
+}
+
+function switchSchoolTab(event, tabId) {
+  // Hide all content sections
+  document.querySelectorAll('.school-detail-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  
+  // Remove active class from all tabs
+  document.querySelectorAll('.school-detail-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  // Add active class to clicked tab
+  event.currentTarget.classList.add('active');
+  
+  // Show selected content
+  document.getElementById(tabId).classList.add('active');
+}
+
+function generateTimelineHTML(timeline) {
+  if (!timeline || !Array.isArray(timeline) || timeline.length === 0) {
+    return '<p>暫無入學時程資訊。</p>';
+  }
+  
+  let html = '';
+  timeline.forEach((item, index) => {
+    const position = index % 2 === 0 ? 'timeline-left' : 'timeline-right';
+    html += `
+      <div class="timeline-item ${position}">
+        <div class="timeline-content">
+          <div class="timeline-date">${item.date}</div>
+          <div class="timeline-event">${item.event}</div>
+        </div>
+      </div>
+    `;
+  });
+  
+  return html;
+}
+
+function getFacilityIcon(facilityType) {
+  const iconMap = {
+    'library': 'fas fa-book',
+    'laboratory': 'fas fa-flask',
+    'sports': 'fas fa-running',
+    'auditorium': 'fas fa-theater-masks',
+    'cafe': 'fas fa-utensils',
+    'dorm': 'fas fa-bed',
+    'computer': 'fas fa-desktop',
+    'art': 'fas fa-palette',
+    'music': 'fas fa-music',
+    'pool': 'fas fa-swimming-pool',
+    'garden': 'fas fa-leaf'
+  };
+  
+  return iconMap[facilityType] || 'fas fa-building';
+}
+
+// Function to add school visualization with enhanced data display
+function showAdvancedComparisonView() {
+  const comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  
+  if (comparisonList.length === 0) {
+    showNotification('請先加入學校到比較清單', 'warning');
+    return;
+  }
+  
+  closeComparisonModal();
+  
+  // Create advanced comparison modal
+  const modal = document.createElement('div');
+  modal.id = 'advancedComparisonModal';
+  modal.className = 'modal';
+  
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 90%; width: 1000px; max-height: 85vh; overflow-y: auto;">
+      <span class="close" onclick="closeAdvancedComparisonModal()">&times;</span>
+      <h2 style="color: var(--primary-color); display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-chart-bar"></i> 進階學校比較分析
+      </h2>
+      
+      <div class="comparison-view-tabs">
+        <div class="comparison-tab active" onclick="switchComparisonTab(event, 'table-view')">
+          <i class="fas fa-table"></i> 表格視圖
+        </div>
+        <div class="comparison-tab" onclick="switchComparisonTab(event, 'card-view')">
+          <i class="fas fa-id-card"></i> 卡片視圖
+        </div>
+      </div>
+      
+      <div class="comparison-view-content active" id="table-view">
+        <div class="comparison-table-container">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>比較項目</th>
+                ${comparisonList.map(school => `
+                  <th class="school-column">
+                    ${school.name}
+                    <button class="remove-school-btn" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>學校類型</td>
+                ${comparisonList.map(school => `<td>${school.type || '未知'}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>學校屬性</td>
+                ${comparisonList.map(school => `<td>${school.details?.ownership || '未知'}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>去年最低錄取分數</td>
+                ${comparisonList.map(school => `<td class="score-cell">${school.details?.lastYearCutoff || '未知'}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>入學管道</td>
+                ${comparisonList.map(school => `<td>${school.details?.admissionMethod || '一般入學'}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>地理位置</td>
+                ${comparisonList.map(school => `<td>${school.details?.location || '未知'}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>特色課程數</td>
+                ${comparisonList.map(school => `<td>${school.details?.specialPrograms?.length || '未知'}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>學校網站</td>
+                ${comparisonList.map(school => 
+                  school.details?.website ? 
+                  `<td><a href="${school.details.website}" target="_blank" class="school-link"><i class="fas fa-external-link-alt"></i> 前往網站</a></td>` : 
+                  `<td>未提供</td>`
+                ).join('')}
+              </tr>
+              <tr>
+                <td>查看詳情</td>
+                ${comparisonList.map(school => `
+                  <td><button class="add-comparison-btn" onclick="showSchoolDetails('${school.name.replace(/'/g, "\\'")}')">
+                    <i class="fas fa-search"></i> 學校詳情
+                  </button></td>
+                `).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="comparison-view-content" id="card-view">
+        <div class="school-cards-container">
+          ${comparisonList.map(school => `
+            <div class="school-card">
+              <div class="school-card-header">
+                <div class="school-card-title">${school.name}</div>
+                <div class="school-card-badge">${school.type || '未知'}</div>
+              </div>
+              <div class="school-card-content">
+                <div class="school-card-item">
+                  <div class="school-card-label">學校屬性</div>
+                  <div class="school-card-value">${school.details?.ownership || '未知'}</div>
+                </div>
+                <div class="school-card-item">
+                  <div class="school-card-label">最低錄取分數</div>
+                  <div class="school-card-value">${school.details?.lastYearCutoff || '未知'}</div>
+                </div>
+                <div class="school-card-item">
+                  <div class="school-card-label">入學管道</div>
+                  <div class="school-card-value">${school.details?.admissionMethod || '一般入學'}</div>
+                </div>
+                <div class="school-card-item">
+                  <div class="school-card-label">地理位置</div>
+                  <div class="school-card-value">${school.details?.location || '未知'}</div>
+                </div>
+              </div>
+              <div class="school-card-actions">
+                <button class="school-card-button" onclick="showSchoolDetails('${school.name.replace(/'/g, "\\'")}')">
+                  <i class="fas fa-search"></i> 查看詳情
+                </button>
+                <button class="school-card-button" style="margin-left: 10px; background: #e74c3c;" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
+                  <i class="fas fa-trash-alt"></i> 移除
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="confirm-button" onclick="exportComparison()">
+          <i class="fas fa-file-export"></i> 匯出比較結果
+        </button>
+        <button class="confirm-button" style="margin-left: 10px; background: #e74c3c;" onclick="clearComparison()">
+          <i class="fas fa-trash-alt"></i> 清空比較
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  modal.style.display = 'block';
+}
+
+function closeAdvancedComparisonModal() {
+  const modal = document.getElementById('advancedComparisonModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.remove();
+  }
+}
+
+function switchComparisonTab(event, tabId) {
+  // Hide all content
+  document.querySelectorAll('.comparison-view-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  
+  // Remove active class from all tabs
+  document.querySelectorAll('.comparison-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  // Add active class to clicked tab
+  event.currentTarget.classList.add('active');
+  
+  // Show selected content
+  document.getElementById(tabId).classList.add('active');
+}
+
+function showSchoolComparison() {
+  // Use the advanced comparison view instead
+  showAdvancedComparisonView();
 }
 
 function showNotification(message, type = 'info') {

@@ -3371,7 +3371,6 @@ button:hover {
 
 .comparison-tips li i {
   color: var(--accent-color);
-  margin-top: 3px;
 }
 
 .empty-comparison {
@@ -3574,4 +3573,266 @@ button:hover {
     padding: 10px 15px;
     font-size: 0.9rem;
   }
+}
+
+.advanced-comparison-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.comparison-view-tabs {
+  display: flex;
+  gap: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.comparison-tab {
+  padding: 10px 20px;
+  background: #f4f1de;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.comparison-tab:hover {
+  background: #e9c46a;
+  color: #264653;
+}
+
+.comparison-tab.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.comparison-view-content {
+  display: none;
+  padding: 20px;
+  background: #fff;
+  border-radius: 0 5px 5px 5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.comparison-view-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.school-card {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  border-left: 4px solid var(--primary-color);
+}
+
+.school-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.school-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.school-card-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.school-card-badge {
+  background: var(--secondary-color);
+  color: #264653;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.school-card-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.school-card-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.school-card-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 3px;
+}
+
+.school-card-value {
+  font-weight: 500;
+}
+
+.school-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.school-card-button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.school-card-button:hover {
+  background: #da8c5c;
+  transform: translateY(-2px);
+}
+
+.comparison-visualizations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.visualization-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.visualization-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.visualization-title {
+  font-weight: 500;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.visualization-canvas {
+  height: 250px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.comparison-loading {
+  text-align: center;
+  padding: 30px;
+  color: var(--text-color);
+}
+
+.comparison-loading i {
+  font-size: 2rem;
+  color: var(--primary-color);
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Dark mode adjustments */
+.dark-mode .comparison-view-content {
+  background: var(--card-background);
+}
+
+.dark-mode .school-card {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .school-card-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .school-card-actions {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .comparison-tab {
+  background: var(--card-background);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .comparison-tab:hover {
+  background: rgba(233, 196, 106, 0.2);
+}
+
+.dark-mode .comparison-tab.active {
+  background: var(--primary-color);
+}
+
+.dark-mode .visualization-card {
+  background: var(--card-background);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .comparison-view-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .comparison-tab {
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+  
+  .school-card-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .comparison-visualizations {
+    grid-template-columns: 1fr;
+  }
+  
+  .visualization-card {
+    padding: 15px;
+  }
+  
+  .visualization-canvas {
+    height: 200px;
+  }
+}
+
+.comparison-visualizations {
+  display: none; /* Hide the visualizations section */
+}
+
+.visualization-card {
+  display: none; /* Hide visualization cards */
 }
