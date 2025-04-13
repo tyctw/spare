@@ -34,6 +34,14 @@
       line-height: 1.6;
       background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
       background-attachment: fixed;
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .container {
@@ -50,6 +58,7 @@
       overflow: hidden;
       backdrop-filter: blur(10px);
       animation: slideInFromTop 0.8s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.18);
     }
 
     @keyframes slideInFromTop {
@@ -77,7 +86,21 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-top: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+    }
+
     h2 { font-size: 1.8rem; font-weight: 500; }
 
     .code-card {
@@ -88,6 +111,12 @@
       margin: 2rem 0;
       position: relative;
       overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .code-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
     }
 
     .code-card::before {
@@ -125,6 +154,44 @@
       position: relative;
       overflow: hidden;
       letter-spacing: 2px;
+      text-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* 動態邀請碼效果 */
+    .digit-container {
+      display: inline-block;
+      position: relative;
+      margin: 0 2px;
+      width: 1.2ch;
+      height: 1.2em;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .digit {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .digit-animation {
+      animation: digit-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .digit-animation-glow {
+      animation: digit-glow 2s ease-in-out;
+    }
+
+    @keyframes digit-pop {
+      0% { transform: scale(0.8); opacity: 0.2; }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes digit-glow {
+      0%, 100% { text-shadow: 0 0 5px rgba(67, 97, 238, 0); }
+      50% { text-shadow: 0 0 20px rgba(67, 97, 238, 0.8); color: var(--secondary-color); }
     }
 
     .copy-button {
@@ -138,11 +205,28 @@
       transition: var(--transition);
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
     }
 
     .copy-button:hover { 
       transform: translateY(-3px);
       box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .copy-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .copy-button:hover::before {
+      transform: translateX(100%);
     }
 
     .timer {
@@ -156,6 +240,13 @@
       position: relative;
       overflow: hidden;
       box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 71, 111, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 71, 111, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 71, 111, 0); }
     }
 
     .progress-container {
@@ -174,6 +265,27 @@
       background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
       border-radius: 30px;
       transition: width 1s linear;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, 
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.3) 50%,
+        rgba(255,255,255,0) 100%);
+      animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     .last-update {
@@ -204,13 +316,42 @@
       align-items: center;
       gap: 8px;
       box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      z-index: -1;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      transition: transform 0.5s ease;
+      border-radius: 28px;
+    }
+
+    .button:hover::before {
+      transform: scaleX(1);
     }
 
     .button:hover {
-      background-color: var(--primary-color);
       color: white;
       transform: translateY(-2px);
       box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .button i {
+      transition: transform 0.3s ease;
+    }
+
+    .button:hover i {
+      transform: scale(1.2);
     }
 
     .info-section {
@@ -220,6 +361,13 @@
       margin-top: 2rem;
       text-align: left;
       box-shadow: 0 5px 15px var(--shadow-color);
+      border-left: 4px solid var(--primary-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .info-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px var(--shadow-color);
     }
 
     .info-section h3 {
@@ -228,12 +376,33 @@
       border-bottom: 2px solid var(--primary-color);
       padding-bottom: 0.5rem;
       display: inline-block;
+      position: relative;
+    }
+
+    .info-section h3::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--secondary-color);
+      transition: width 0.3s ease;
+    }
+
+    .info-section:hover h3::after {
+      width: 100%;
     }
 
     .info-section p {
       margin-bottom: 1rem;
       position: relative;
       padding-left: 30px;
+      transition: transform 0.3s ease;
+    }
+
+    .info-section p:hover {
+      transform: translateX(5px);
     }
 
     .icon {
@@ -242,6 +411,12 @@
       top: 3px;
       font-size: 1.2em;
       color: var(--primary-color);
+      transition: transform 0.3s ease;
+    }
+
+    .info-section p:hover .icon {
+      transform: scale(1.2);
+      color: var(--secondary-color);
     }
 
     .toast {
@@ -270,6 +445,61 @@
       width: 100%;
       background-color: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(5px);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .footer-logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      position: relative;
+      display: inline-block;
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      background-color: rgba(67, 97, 238, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .footer-copyright {
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding-top: 1rem;
+      font-size: 0.8rem;
+    }
+
+    body.dark-mode .footer {
+      background-color: rgba(30, 30, 30, 0.7);
+    }
+
+    body.dark-mode .footer-links a:hover {
+      background-color: rgba(76, 201, 240, 0.1);
+    }
+
+    body.dark-mode .footer-copyright {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     a {
@@ -322,6 +552,24 @@
       transition: var(--transition);
       border: none;
       font-size: 1.2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .floating-button::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
+      transform: scale(0);
+      opacity: 0;
+      transition: transform 0.5s, opacity 0.5s;
+    }
+
+    .floating-button:hover::before {
+      transform: scale(2);
+      opacity: 1;
     }
 
     .floating-button:hover {
@@ -391,12 +639,30 @@
       padding: 12px 0;
       margin-bottom: 20px;
       box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+      position: relative;
     }
+
+    .marquee::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, 
+        rgba(255,255,255,0.1) 0%,
+        rgba(255,255,255,0.3) 50%,
+        rgba(255,255,255,0.1) 100%);
+      animation: shine 3s infinite;
+    }
+
     .marquee-content {
       display: inline-block;
       white-space: nowrap;
       animation: marquee 30s linear infinite;
+      padding: 0 20px;
     }
+
     @keyframes marquee {
       0% { transform: translateX(100%); }
       100% { transform: translateX(-100%); }
@@ -437,6 +703,7 @@
       --shadow-color: rgba(0,0,0,0.3);
       --accent-color: #f72585;
       --success-color: #06d6a0;
+      background-image: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);
     }
 
     body.dark-mode {
@@ -476,6 +743,13 @@
       .copy-button { font-size: 1.1rem; padding: 0.8rem; }
       .action-buttons { flex-direction: column; align-items: stretch; }
       .button { width: 100%; justify-content: center; }
+      .footer-content {
+        gap: 0.8rem;
+      }
+      
+      .footer-links {
+        gap: 1rem;
+      }
     }
 
     @media (max-width: 480px) {
@@ -578,9 +852,98 @@
         font-size: 0.9rem;
       }
     }
+
+    /* 添加新的粒子效果 */
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+      25% { opacity: 0.5; }
+      50% { transform: translateY(-20px) rotate(5deg); opacity: 0.3; }
+      75% { opacity: 0.5; }
+      100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: float 10s infinite;
+    }
+
+    /* 添加滑入動畫效果 */
+    .slide-in {
+      animation: slideIn 0.5s forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 添加打字機效果 */
+    .typewriter {
+      overflow: hidden;
+      border-right: 3px solid var(--primary-color);
+      white-space: nowrap;
+      margin: 0 auto;
+      animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: var(--primary-color) }
+    }
+
+    /* 改進的懸停動畫 */
+    .hover-glow {
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .hover-glow::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      box-shadow: 0 0 0 0 var(--primary-color);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .hover-glow:hover::after {
+      box-shadow: 0 0 15px 3px var(--primary-color);
+      opacity: 0.4;
+    }
   </style>
 </head>
 <body>
+  <!-- 添加粒子效果容器 -->
+  <div class="particles" id="particles"></div>
+  
   <div class="marquee">
     <div class="marquee-content">
       歡迎使用會考落點分析系統！如系統有任何問題請使用異常回報系統回報給我們
@@ -610,7 +973,7 @@
       <button class="button" onclick="manualRefresh()"><i class="fas fa-sync-alt"></i> 手動更新</button>
     </div>
     
-    <div class="info-section">
+    <div class="info-section slide-in">
       <h3>使用須知</h3>
       <p><i class="fas fa-sync-alt icon"></i>此邀請碼每小時自動更新一次。</p>
       <p><i class="fas fa-clock icon"></i>請在邀請碼有效期內使用落點分析系統。</p>
@@ -629,7 +992,17 @@
   </div>
 
   <div class="footer">
-    &copy; 2025 會考落點分析邀請碼. All rights reserved.
+    <div class="footer-content">
+      <div class="footer-logo hover-glow">📚 會考落點分析</div>
+      <div class="footer-links">
+        <a href="https://ctttw.github.io/spare/" class="hover-glow">分析平台</a>
+        <a href="https://tyctw.github.io/analysis/" class="hover-glow">統計資料</a>
+        <a href="#" class="hover-glow">聯絡我們</a>
+      </div>
+      <div class="footer-copyright">
+        &copy; 2025 會考落點分析邀請碼. All rights reserved.
+      </div>
+    </div>
   </div>
 
   <div class="toast" id="toast">已成功複製邀請碼！</div>
@@ -691,14 +1064,45 @@
         .then(response => response.json())
         .then(data => {
           const code = data.invitationCode;
-          codeEl.textContent = code;
-          codeEl.classList.add('fade-in');
-          setTimeout(() => codeEl.classList.remove('fade-in'), 500);
+          displayAnimatedCode(code);
           document.getElementById('lastUpdate').textContent = "最後更新：" + new Date().toLocaleString();
         })
         .catch(error => {
           console.error('Error fetching invitation code:', error);
         });
+    }
+
+    // 顯示動畫邀請碼
+    function displayAnimatedCode(code) {
+      const codeEl = document.getElementById('invitationCode');
+      codeEl.innerHTML = '';
+      
+      // 先創建所有的digit容器，但不顯示內容
+      for (let i = 0; i < code.length; i++) {
+        const digitContainer = document.createElement('div');
+        digitContainer.className = 'digit-container';
+        digitContainer.innerHTML = '<span class="digit">&nbsp;</span>';
+        codeEl.appendChild(digitContainer);
+      }
+      
+      // 逐個顯示數字，產生動畫效果
+      for (let i = 0; i < code.length; i++) {
+        (function(index) {
+          setTimeout(() => {
+            const containers = codeEl.querySelectorAll('.digit-container');
+            if (containers[index]) {
+              const digitSpan = containers[index].querySelector('.digit');
+              digitSpan.textContent = code[index];
+              digitSpan.classList.add('digit-animation');
+              
+              // 數字顯示後添加發光效果
+              setTimeout(() => {
+                digitSpan.classList.add('digit-animation-glow');
+              }, 500);
+            }
+          }, 100 * index);
+        })(i);
+      }
     }
 
     // 更新倒數計時與進度條
@@ -725,7 +1129,18 @@
 
     // 複製邀請碼
     function copyInvitationCode() {
-      const invitationCode = document.getElementById('invitationCode').textContent;
+      // 獲取實際的邀請碼值，忽略HTML標籤
+      const digitSpans = document.querySelectorAll('.digit');
+      let invitationCode = '';
+      digitSpans.forEach(span => {
+        invitationCode += span.textContent;
+      });
+      
+      // 如果還沒有完全載入，從元素中獲取純文本
+      if (!invitationCode) {
+        invitationCode = document.getElementById('invitationCode').textContent;
+      }
+      
       if (navigator.clipboard) {
         navigator.clipboard.writeText(invitationCode).then(() => {
           showToast("已成功複製邀請碼！");
@@ -767,9 +1182,21 @@
       const span = document.getElementsByClassName("close")[0];
       const qrCodeDiv = document.getElementById("qrCode");
       
+      // 獲取實際的邀請碼值，忽略HTML標籤
+      const digitSpans = document.querySelectorAll('.digit');
+      let invitationCode = '';
+      digitSpans.forEach(span => {
+        invitationCode += span.textContent;
+      });
+      
+      // 如果還沒有完全載入，從元素中獲取純文本
+      if (!invitationCode) {
+        invitationCode = document.getElementById('invitationCode').textContent;
+      }
+      
       qrCodeDiv.innerHTML = '';
       new QRCode(qrCodeDiv, {
-        text: document.getElementById('invitationCode').textContent,
+        text: invitationCode,
         width: 128,
         height: 128,
         colorDark : "#000000",
@@ -787,7 +1214,18 @@
 
     // 分享邀請碼
     function shareInvitationCode() {
-      const invitationCode = document.getElementById('invitationCode').textContent;
+      // 獲取實際的邀請碼值，忽略HTML標籤
+      const digitSpans = document.querySelectorAll('.digit');
+      let invitationCode = '';
+      digitSpans.forEach(span => {
+        invitationCode += span.textContent;
+      });
+      
+      // 如果還沒有完全載入，從元素中獲取純文本
+      if (!invitationCode) {
+        invitationCode = document.getElementById('invitationCode').textContent;
+      }
+      
       if (navigator.share) {
         navigator.share({
           title: '會考落點分析邀請碼',
@@ -846,10 +1284,62 @@
       });
     }
 
+    // 為元素添加滑入動畫
+    function addSlideInAnimations() {
+      const elements = document.querySelectorAll('.code-card, .action-buttons, .info-section');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('slide-in');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      elements.forEach(el => {
+        el.style.opacity = "0";
+        observer.observe(el);
+      });
+    }
+
+    // 創建漂浮粒子效果
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particlesCount = 20;
+      
+      for (let i = 0; i < particlesCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // 隨機設置粒子大小
+        const size = Math.random() * 15 + 5;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // 隨機設置粒子位置
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        
+        // 隨機設置透明度
+        particle.style.opacity = Math.random() * 0.5 + 0.1;
+        
+        // 隨機設置動畫延遲和持續時間
+        const animationDelay = Math.random() * 10;
+        const animationDuration = Math.random() * 10 + 10;
+        particle.style.animationDelay = `${animationDelay}s`;
+        particle.style.animationDuration = `${animationDuration}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
     updateInvitationCode();
     setInterval(updateTimer, 1000);
     initDarkMode();
     initHelp();
+    createParticles();
+    addSlideInAnimations();
 
     // 防止複製
     document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
