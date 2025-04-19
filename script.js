@@ -123,98 +123,182 @@ function closeDisclaimer() {
 
 function showInvitationValidationAnimation() {
   const invitationGroup = document.getElementById('invitationCode').closest('.form-group');
+  const invitationInput = document.getElementById('invitationCode');
+  const invitationCode = invitationInput.value;
+  
   if (!invitationGroup) return;
+  
+  // 儲存邀請碼供動畫使用
+  const codeDigits = invitationCode.split('');
+  
   invitationGroup.style.position = 'relative';
+  
+  // 創建覆蓋層
   const overlay = document.createElement('div');
   overlay.id = 'invitationValidationOverlay';
   overlay.className = 'validation-overlay';
+  
+  // 創建更精美的動畫內容
   overlay.innerHTML = `
-    <div class="validation-spinner"></div>
-    <div class="validation-text">驗證邀請碼中</div>
-    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-top: 5px; text-align: center;">
-      <span style="display: inline-block; animation: pulse 1.5s infinite;">連接到伺服器...</span>
-    </div>
-    <div class="validation-progress" style="width: 80%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; margin-top: 10px;">
-      <div style="height: 100%; width: 0%; background: white; border-radius: 2px; animation: progressMove 2s cubic-bezier(0.1, 0.42, 0.85, 1) forwards;"></div>
+    <div class="validation-content">
+      <div class="validation-header">
+        <div class="validation-step active" data-step="1">
+          <div class="step-indicator">1</div>
+          <div class="step-label">初始化</div>
+        </div>
+        <div class="validation-step" data-step="2">
+          <div class="step-indicator">2</div>
+          <div class="step-label">驗證中</div>
+        </div>
+        <div class="validation-step" data-step="3"> 
+          <div class="step-indicator">3</div>
+          <div class="step-label">完成</div>
+        </div>
+        <div class="validation-progress-bar">
+          <div class="validation-progress-inner"></div>
+        </div>
+      </div>
+      
+      <div class="validation-body">
+        <div class="scanner-container">
+          <div class="scanner-light"></div>
+          <div class="code-display"></div>
+        </div>
+        
+        <div class="validation-message">正在連接伺服器...</div>
+        <div class="validation-details">驗證邀請碼格式</div>
+      </div>
+      
+      <div class="validation-spinner-container">
+        <div class="validation-spinner"></div>
+      </div>
     </div>
   `;
+  
   invitationGroup.appendChild(overlay);
   
-  // Add success animation sequence with enhanced visuals
+  // 創建掃描動畫效果
   setTimeout(() => {
-    if (overlay && overlay.parentNode) {
-      const statusText = overlay.querySelector('.validation-text');
-      const subText = overlay.querySelector('div[style*="font-size: 0.8rem"]');
-      if (statusText) {
-        statusText.innerHTML = '驗證成功 <i class="fas fa-check" style="margin-left: 5px; font-size: 0.8em;"></i>';
-        statusText.style.animation = 'pulse 1s infinite';
-      }
-      if (subText) {
-        subText.innerHTML = '<span style="color: #e9ffc2;">邀請碼有效</span>';
-        subText.style.animation = 'fadeInUp 0.5s ease-out forwards';
-      }
+    const codeDisplay = overlay.querySelector('.code-display');
+    if (codeDisplay) {
+      // 建立字符動畫效果
+      let html = '';
+      codeDigits.forEach((digit, index) => {
+        html += `<span class="code-char" style="animation-delay: ${index * 100}ms">${digit}</span>`;
+      });
+      codeDisplay.innerHTML = html;
       
-      const checkmark = document.createElement('div');
-      checkmark.innerHTML = '<i class="fas fa-check-circle" style="color: #e9ffc2; font-size: 3rem; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); animation: popIn 0.5s cubic-bezier(0.26, 1.56, 0.44, 1);"></i>';
-      const spinner = overlay.querySelector('.validation-spinner');
-      if (spinner && spinner.parentNode) {
-        spinner.style.animation = 'fadeOut 0.3s ease forwards';
-        setTimeout(() => {
-          spinner.parentNode.replaceChild(checkmark, spinner);
-          
-          // Add celebration particles effect
-          createParticles(overlay);
-        }, 300);
-      }
+      // 啟動掃描動畫
+      overlay.querySelector('.scanner-light').classList.add('scanning');
       
-      // Style the progress bar to complete
-      const progressBar = overlay.querySelector('.validation-progress div');
-      if (progressBar) {
-        progressBar.style.width = '100%';
-        progressBar.style.background = '#e9ffc2';
-        progressBar.style.boxShadow = '0 0 8px rgba(233, 255, 194, 0.8)';
-      }
+      // 更新訊息
+      overlay.querySelector('.validation-message').textContent = '驗證邀請碼中...';
+      overlay.querySelector('.validation-details').textContent = '正在檢查邀請碼有效性';
+      
+      // 啟動第二階段
+      overlay.querySelector('.validation-step[data-step="2"]').classList.add('active');
+      overlay.querySelector('.validation-progress-inner').style.width = '66%';
     }
-  }, 1500);
-}
-
-function createParticles(container) {
-  for (let i = 0; i < 20; i++) {
-    const particle = document.createElement('div');
-    particle.style.cssText = `
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0;
-    `;
-    container.appendChild(particle);
-    
-    const x = Math.random() * 100;
-    const y = Math.random() * 100;
-    const duration = 0.5 + Math.random() * 1;
-    const delay = Math.random() * 0.3;
-    
-    particle.animate([
-      { transform: 'translate(-50%, -50%)', opacity: 1 },
-      { transform: `translate(${x - 50}%, ${y - 50}%) scale(0)`, opacity: 0 }
-    ], {
-      duration: duration * 1000,
-      delay: delay * 1000,
-      easing: 'cubic-bezier(0.1, 0.5, 0.9, 0.1)'
+  }, 800);
+  
+  // 模擬驗證過程
+  setTimeout(() => {
+    // 讓字符一個個變綠色，表示驗證進行中
+    const codeChars = overlay.querySelectorAll('.code-char');
+    codeChars.forEach((char, index) => {
+      setTimeout(() => {
+        char.classList.add('verified');
+      }, index * 200);
     });
     
-    // Remove particle after animation
-    setTimeout(() => particle.remove(), (duration + delay) * 1000);
+    // 最後一個字符變綠後，顯示成功
+    setTimeout(() => {
+      // 停止掃描動畫
+      overlay.querySelector('.scanner-light').classList.remove('scanning');
+      overlay.querySelector('.scanner-light').classList.add('complete');
+      
+      // 更新訊息
+      overlay.querySelector('.validation-message').innerHTML = '<i class="fas fa-check-circle"></i> 驗證成功';
+      overlay.querySelector('.validation-details').textContent = '邀請碼有效，授權成功';
+      
+      // 啟動第三階段
+      overlay.querySelector('.validation-step[data-step="3"]').classList.add('active');
+      overlay.querySelector('.validation-progress-inner').style.width = '100%';
+      
+      // 移除spinner，添加成功動畫
+      const spinnerContainer = overlay.querySelector('.validation-spinner-container');
+      spinnerContainer.innerHTML = '<div class="success-checkmark"><div class="check-icon"><span class="icon-line line-tip"></span><span class="icon-line line-long"></span></div></div>';
+      
+      // 創建煙花效果
+      createVerificationFireworks(overlay);
+      
+    }, codeChars.length * 200 + 300);
+  }, 1500);
+  
+  // 等待一段時間後隱藏動畫
+  setTimeout(() => {
+    hideInvitationValidationAnimation();
+  }, 5000);
+}
+
+// 創建驗證成功的煙花效果
+function createVerificationFireworks(container) {
+  for (let i = 0; i < 30; i++) {
+    const firework = document.createElement('div');
+    firework.className = 'verification-firework';
+    
+    // 隨機位置和顏色
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const size = 3 + Math.random() * 5;
+    const colors = ['#2ecc71', '#3498db', '#e9c46a', '#f4a261', '#ffffff'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    
+    firework.style.cssText = `
+      position: absolute;
+      width: ${size}px;
+      height: ${size}px;
+      background: ${color};
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      opacity: 0;
+      z-index: 200;
+    `;
+    
+    container.appendChild(firework);
+    
+    // 創建動畫
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 20 + Math.random() * 80;
+    const destinationX = Math.cos(angle) * distance;
+    const destinationY = Math.sin(angle) * distance;
+    
+    // 使用Web Animation API
+    firework.animate(
+      [
+        { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
+        { transform: `translate(calc(-50% + ${destinationX}px), calc(-50% + ${destinationY}px)) scale(1)`, opacity: 1, offset: 0.7 },
+        { transform: `translate(calc(-50% + ${destinationX}px), calc(-50% + ${destinationY}px)) scale(0)`, opacity: 0 }
+      ], 
+      {
+        duration: 1000 + Math.random() * 1000,
+        easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+        delay: Math.random() * 300
+      }
+    );
+    
+    // 自動移除元素
+    setTimeout(() => {
+      firework.remove();
+    }, 2000 + Math.random() * 1000);
   }
 }
 
 function hideInvitationValidationAnimation() {
   const overlay = document.getElementById('invitationValidationOverlay');
   if (overlay) {
-    overlay.style.animation = 'fadeOut 0.5s ease';
+    overlay.classList.add('fade-out');
     setTimeout(() => {
       overlay.remove();
     }, 500);
@@ -586,31 +670,117 @@ function updateStarDisplay(rating) {
   });
 }
 
+// Toggle menu
 function toggleMenu() {
   var menu = document.getElementById("fullscreenMenu");
   var overlay = document.getElementById("menuOverlay");
+  
+  // Toggle the menu and overlay visibility
   menu.classList.toggle("show");
   overlay.classList.toggle("show");
   
-  var links = menu.getElementsByTagName('a');
+  // Add animation to menu items with proper delays
+  var links = menu.querySelectorAll('a');
   for (var i = 0; i < links.length; i++) {
-    links[i].style.animationDelay = (i * 0.1) + 's';
+    // Reset any previous styles first
+    links[i].style.transitionDelay = '0s';
+    
+    // Apply new delay if opening menu
+    if (menu.classList.contains('show')) {
+      links[i].style.transitionDelay = (0.1 + i * 0.05) + 's';
+    }
+  }
+  
+  // Prevent body scrolling when menu is open
+  if (menu.classList.contains('show')) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
   }
 }
 
 function closeMenu() {
   var menu = document.getElementById("fullscreenMenu");
   var overlay = document.getElementById("menuOverlay");
-  menu.classList.remove("show");
-  overlay.classList.remove("show");
+  
+  // If menu is not open, don't do anything
+  if (!menu.classList.contains('show')) return;
+  
+  // Reverse the animation for links
+  var links = menu.querySelectorAll('a');
+  for (var i = 0; i < links.length; i++) {
+    links[i].style.transitionDelay = (0.05 * (links.length - i - 1)) + 's';
+    links[i].style.transform = 'translateX(40px)';
+    links[i].style.opacity = '0';
+    links[i].style.pointerEvents = 'none';
+  }
+  
+  // Delay the menu hiding to allow for animations
+  setTimeout(() => {
+    menu.classList.remove("show");
+    overlay.classList.remove("show");
+    document.body.style.overflow = '';
+    
+    // Reset styles after animation completes
+    setTimeout(() => {
+      links.forEach(link => {
+        link.style.transform = '';
+        link.style.opacity = '';
+        link.style.pointerEvents = 'auto';
+        link.style.transitionDelay = '0s';
+      });
+    }, 300);
+  }, 300);
 }
 
+// Close menu when clicking outside
 document.addEventListener('click', function(event) {
   var menu = document.getElementById("fullscreenMenu");
   var menuIcon = document.querySelector(".menu-icon");
-  if (menu.classList.contains('show') && !menu.contains(event.target) && !menuIcon.contains(event.target)) {
+  
+  if (menu.classList.contains('show') && 
+      !menu.contains(event.target) && 
+      !menuIcon.contains(event.target)) {
     closeMenu();
   }
+});
+
+// Add scroll event to change header appearance
+window.addEventListener('scroll', function() {
+  var header = document.querySelector('.header');
+  if (window.scrollY > 50) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+});
+
+// Add menu hover effects for better interaction
+document.addEventListener('DOMContentLoaded', function() {
+  // Set menu year
+  if (document.getElementById('menuVersionYear')) {
+    document.getElementById('menuVersionYear').textContent = new Date().getFullYear();
+  }
+  
+  // Add hover effect to menu items
+  var menuItems = document.querySelectorAll('.fullscreen-menu a');
+  menuItems.forEach(function(item) {
+    item.addEventListener('mouseenter', function() {
+      // Reduce opacity of other items
+      menuItems.forEach(function(otherItem) {
+        if (otherItem !== item) {
+          otherItem.style.opacity = '0.7';
+        }
+      });
+    });
+    
+    item.addEventListener('mouseleave', function() {
+      // Restore opacity
+      menuItems.forEach(function(otherItem) {
+        otherItem.style.opacity = '';
+      });
+    });
+  });
 });
 
 const html5QrCode = new Html5Qrcode("qr-reader");
@@ -3826,17 +3996,13 @@ function toggleMenu() {
   }
 }
 
-function closeMenu() {
-  var menu = document.getElementById("fullscreenMenu");
-  var overlay = document.getElementById("menuOverlay");
-  menu.classList.remove("show");
-  overlay.classList.remove("show");
-}
-
 document.addEventListener('click', function(event) {
   var menu = document.getElementById("fullscreenMenu");
   var menuIcon = document.querySelector(".menu-icon");
-  if (menu.classList.contains('show') && !menu.contains(event.target) && !menuIcon.contains(event.target)) {
+  
+  if (menu.classList.contains('show') && 
+      !menu.contains(event.target) && 
+      !menuIcon.contains(event.target)) {
     closeMenu();
   }
 });
