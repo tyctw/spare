@@ -1057,7 +1057,11 @@ function displayResults(data) {
   setTimeout(() => {
     resultsElement.style.display = 'block';
     resultsElement.style.animation = 'fadeIn 0.5s ease-out';
-    document.getElementById('exportResults').style.display = 'inline-block';
+    const exportButton = document.getElementById('exportResults');
+    if (exportButton) {
+      exportButton.style.display = 'inline-block';
+      exportButton.onclick = showExportOptions;
+    }
     
     // Initialize comparison badge
     updateComparisonBadge();
@@ -1077,9 +1081,6 @@ function showExportOptions() {
       <h3><i class="fas fa-file-export"></i> 選擇匯出格式</h3>
       <button onclick="exportResults('txt')">
         <i class="fas fa-file-alt"></i> 文字檔 (.txt)
-      </button>
-      <button onclick="exportResults('pdf')">
-        <i class="fas fa-file-pdf"></i> PDF檔 (.pdf)
       </button>
       <button onclick="exportResults('excel')" class="excel-export-btn">
         <i class="fas fa-file-excel"></i> Excel檔 (.xlsx)
@@ -1129,24 +1130,23 @@ async function exportResults(format = 'txt') {
     hour12: false
   });
   
-  const watermark =
-    "********************************\n" +
-    "*                              *\n" +
-    "*  會考落點分析系統  *\n" +
-    "*       以下資料僅供參考      *\n" +
-    "*                              *\n" +
-    `*   產生時間: ${dateTime}   *\n` +
-    "*                              *\n" +
-    "********************************\n\n";
+  // 使用與TXT匯出相同的水印格式
+  const horizontalLine = "===============================================\n";
+  const titleLine = "               會考落點分析結果                \n";
+  
+  const watermark = 
+    horizontalLine +
+    titleLine +
+    horizontalLine + "\n" +
+    "【系統提示】\n" +
+    "  以下資料僅供參考，請以各校最新招生簡章為準\n" +
+    `  產生時間: ${dateTime}\n\n`;
   
   const contentWithWatermark = watermark + resultsText;
   
   switch (format) {
     case 'txt':
       exportTxt(contentWithWatermark);
-      break;
-    case 'pdf':
-      await exportPdf(contentWithWatermark);
       break;
     case 'json':
       exportJson(resultsText);
@@ -1164,9 +1164,59 @@ function exportTxt(content) {
   const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
   const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '未指定區域';
   
-  const watermarkUrl = `\n\n網站: https://tyctw.github.io/spare/\n分析區域: ${regionName}`;
-  const blob = new Blob([content + watermarkUrl], { type: 'text/plain;charset=utf-8' });
-  downloadFile(blob, '會考落點分析結果.txt');
+  // 使用身份識別代替學生名稱
+  const identitySelector = document.querySelector('input[name="identitySelector"]:checked');
+  const studentType = identitySelector ? identitySelector.value : '使用者';
+  
+  // 創建更美觀的文本格式
+  const horizontalLine = "===============================================\n";
+  const titleLine = "               會考落點分析結果                \n";
+  const now = new Date();
+  const dateTime = now.toLocaleString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+  
+  let formattedContent = horizontalLine;
+  formattedContent += titleLine;
+  formattedContent += horizontalLine + "\n";
+  
+  // 添加基本信息
+  formattedContent += "【基本資料】\n";
+  formattedContent += `身份: ${studentType === 'student' ? '學生' : (studentType === 'teacher' ? '老師' : (studentType === 'parent' ? '家長' : '使用者'))}\n`;
+  formattedContent += `分析區域: ${regionName}\n`;
+  formattedContent += `產生時間: ${dateTime}\n\n`;
+  
+  // 添加成績資料
+  formattedContent += "【成績資料】\n";
+  formattedContent += `國文: ${document.getElementById('chinese').value || '未填'}\n`;
+  formattedContent += `英文: ${document.getElementById('english').value || '未填'}\n`;
+  formattedContent += `數學: ${document.getElementById('math').value || '未填'}\n`;
+  formattedContent += `自然: ${document.getElementById('science').value || '未填'}\n`;
+  formattedContent += `社會: ${document.getElementById('social').value || '未填'}\n`;
+  formattedContent += `作文: ${document.getElementById('composition').value || '未填'}\n\n`;
+  
+  // 添加分析結果
+  formattedContent += "【分析結果】\n";
+  // 移除原始的水印標題，只保留分析內容
+  const resultsContent = content.split("********************************\n\n")[1] || content;
+  formattedContent += resultsContent;
+  
+  // 添加頁腳
+  formattedContent += "\n" + horizontalLine;
+  formattedContent += "備註: 此分析結果僅供參考，請以各校最新招生簡章為準。\n";
+  formattedContent += `網站: https://tyctw.github.io/spare/\n`;
+  formattedContent += `分析區域: ${regionName}\n`;
+  formattedContent += `產生日期: ${now.toLocaleDateString('zh-TW')}\n`;
+  formattedContent += horizontalLine;
+  
+  const blob = new Blob([formattedContent], { type: 'text/plain;charset=utf-8' });
+  downloadFile(blob, `會考落點分析結果_${now.toLocaleDateString('zh-TW').replace(/\//g, '')}.txt`);
 }
 
 async function exportPdf(content) {
@@ -1177,26 +1227,52 @@ async function exportPdf(content) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
+  // 由於繁體中文字體可能導致問題，先使用默認字體
+  // 在未來可以添加更複雜的中文支援
+  
   // Add header
   doc.setFillColor(42, 157, 143);
   doc.rect(0, 0, 210, 20, 'F');
   doc.setTextColor(255);
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
-  doc.text('會考落點分析結果', 105, 12, { align: 'center' });
+  
+  // 由於可能缺少中文支援，使用英文標題以確保正常顯示
+  doc.text('Exam Result Analysis', 105, 12, { align: 'center' });
   
   // Add timestamp
-  const timestamp = new Date().toLocaleString('zh-TW');
+  const timestamp = new Date().toLocaleString();
   doc.setFontSize(10);
   doc.setFont('helvetica', 'italic');
-  doc.text(`產生時間: ${timestamp} | 分析區域: ${document.querySelector('input[name="analysisArea"]:checked').parentElement.querySelector('.region-name').textContent}`, 105, 20, { align: 'center' });
+  const selectedRegionRadio = document.querySelector('input[name="analysisArea"]:checked');
+  const regionName = selectedRegionRadio ? selectedRegionRadio.parentElement.querySelector('.region-name').textContent : '';
+  doc.text(`Created: ${timestamp} | Region: ${regionName}`, 105, 20, { align: 'center' });
   
   // Add main content with improved styling
   doc.setTextColor(0);
   doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
   
-  const splitText = doc.splitTextToSize(content, 180);
+  // 準備內容 - 使用純英文確保顯示正常
+  let processedContent = '';
+  // 添加成績
+  processedContent += 'SCORE SUMMARY:\n\n';
+  processedContent += `Chinese: ${document.getElementById('chinese').value || '-'}\n`;
+  processedContent += `English: ${document.getElementById('english').value || '-'}\n`;
+  processedContent += `Math: ${document.getElementById('math').value || '-'}\n`;
+  processedContent += `Science: ${document.getElementById('science').value || '-'}\n`;
+  processedContent += `Social: ${document.getElementById('social').value || '-'}\n`;
+  processedContent += `Writing: ${document.getElementById('composition').value || '-'}\n\n`;
+  processedContent += 'ANALYSIS RESULTS\n\n';
+  // 從原始內容中提取數據部分
+  if (content.includes('符合條件的學校：')) {
+    const schoolMatch = content.match(/符合條件的學校：(.+?)(?=\n\n|$)/s);
+    if (schoolMatch && schoolMatch[1]) {
+      processedContent += 'Eligible Schools:\n' + schoolMatch[1].replace(/[\u4e00-\u9fa5]/g, '') + '\n\n';
+    }
+  }
+  
+  const splitText = doc.splitTextToSize(processedContent, 180);
   let y = 30;
   
   // Add decorative element
@@ -1205,8 +1281,7 @@ async function exportPdf(content) {
   doc.line(15, 25, 195, 25);
   
   splitText.forEach(line => {
-    // Check if line is a heading (like "分析結果總覽")
-    if (line.includes('總覽') || line.includes('分析') || line.includes('符合條件')) {
+    if (line.includes('SCORE SUMMARY') || line.includes('ANALYSIS RESULTS') || line.includes('Eligible Schools')) {
       doc.setFont('helvetica', 'bold');
       doc.setFillColor(244, 241, 222);
       doc.rect(15, y-5, 180, 8, 'F');
@@ -1225,7 +1300,7 @@ async function exportPdf(content) {
       doc.setTextColor(255);
       doc.setFontSize(16);
       doc.setFont('helvetica', 'bold');
-      doc.text('會考落點分析結果', 105, 12, { align: 'center' });
+      doc.text('Exam Result Analysis', 105, 12, { align: 'center' });
       doc.setTextColor(0);
       doc.setFontSize(12);
       doc.setFont('helvetica', 'normal');
@@ -1264,7 +1339,7 @@ async function exportPdf(content) {
     // Add watermark text
     doc.setTextColor(100);
     doc.setFont('helvetica', 'italic');
-    doc.text(`網站: https://tyctw.github.io/spare/`, 105, 285, { align: 'center' });
+    doc.text(`Website: https://tyctw.github.io/spare/`, 105, 285, { align: 'center' });
     
     // Add footer design element
     doc.setDrawColor(233, 196, 106);
@@ -1275,7 +1350,7 @@ async function exportPdf(content) {
   // Using image is optional but make it more aesthetic - QR code on the first page
   await loadQRCodeToPDF(doc, qrUrl, 1);
   
-  doc.save('會考落點分析結果.pdf');
+  doc.save('exam_result_analysis.pdf');
 }
 
 // Helper function to load QR code to PDF
@@ -2121,15 +2196,54 @@ function getSchoolLocation(schoolElement) {
 }
 
 function downloadFile(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.style.display = 'none';
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  URL.revokeObjectURL(url);
-  a.remove();
+  try {
+    // 使用 FileSaver.js 庫如果可用
+    if (window.saveAs) {
+      window.saveAs(blob, filename);
+      return;
+    }
+    
+    // 標準方法
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = filename;
+    
+    // Safari 需要向 DOM 添加元素
+    document.body.appendChild(a);
+    
+    // 監測異常
+    let clickFailed = false;
+    try {
+      a.click();
+    } catch (e) {
+      clickFailed = true;
+      console.error('下載點擊失敗:', e);
+    }
+    
+    // 延遲釋放 URL 和移除元素
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      // 如果 click() 方法失敗，嘗試另一種方式
+      if (clickFailed) {
+        // 嘗試打開新窗口
+        const newWindow = window.open(url, '_blank');
+        if (!newWindow) alert('請允許彈出視窗以下載檔案，或右鍵點擊並選擇「另存為」');
+        
+        // 在新頁面中延遲清理 URL 物件
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+    }, 100);
+  } catch (error) {
+    console.error('檔案下載失敗:', error);
+    alert('下載檔案時發生錯誤，請稍後再試。');
+    
+    // 顯示下載問題通知
+    showNotification('檔案下載失敗，請檢查瀏覽器設定。', 'error');
+  }
 }
 
 async function loadScript(url) {
@@ -2474,24 +2588,106 @@ function exportComparisonFormat(format) {
 }
 
 function exportComparisonToText(comparisonList) {
-  // Create more detailed comparison text
-  let comparisonText = '學校比較結果\n';
-  comparisonText += '====================\n\n';
-  comparisonText += `產生時間: ${new Date().toLocaleString('zh-TW')}\n`;
+  const horizontalLine = "===============================================\n";
+  const titleLine = "               學校比較結果                \n";
+  const now = new Date();
+  const dateTime = now.toLocaleString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+  
+  // 頭部信息
+  let comparisonText = horizontalLine;
+  comparisonText += titleLine;
+  comparisonText += horizontalLine + "\n";
+  comparisonText += `【基本資訊】\n`;
+  comparisonText += `產生時間: ${dateTime}\n`;
   comparisonText += `比較學校數量: ${comparisonList.length}所\n\n`;
   
-  comparisonText += '比較項目\t' + comparisonList.map(school => school.name).join('\t') + '\n';
-  comparisonText += '學校類型\t' + comparisonList.map(school => school.type || '未知').join('\t') + '\n';
-  comparisonText += '學校屬性\t' + comparisonList.map(school => school.details?.ownership || '未知').join('\t') + '\n';
-  comparisonText += '最低錄取\t' + comparisonList.map(school => school.details?.lastYearCutoff || '未知').join('\t') + '\n';
-  comparisonText += '入學管道\t' + comparisonList.map(school => school.details?.admissionMethod || '一般入學').join('\t') + '\n';
-  comparisonText += '地理位置\t' + comparisonList.map(school => school.details?.location || '未知').join('\t') + '\n\n';
+  // 學校名稱區域
+  comparisonText += `【比較學校】\n`;
+  comparisonList.forEach((school, index) => {
+    comparisonText += `${index + 1}. ${school.name} (${school.type || '未知類型'})\n`;
+  });
+  comparisonText += "\n";
   
-  comparisonText += '備註: 此比較結果僅供參考，請以各校最新招生簡章為準。\n';
-  comparisonText += '資料來源: 會考落點分析系統 https://tyctw.github.io/spare/';
+  // 詳細比較表格 - 使用固定寬度格式化
+  comparisonText += `【詳細比較】\n`;
+  
+  // 確定每個欄位的最大寬度
+  const nameWidths = comparisonList.map(school => Math.max(10, school.name.length + 2));
+  const totalWidth = nameWidths.reduce((sum, width) => sum + width, 20); // 20 for first column
+  
+  // 創建標題行
+  let headerLine = padText("比較項目", 20);
+  comparisonList.forEach((school, index) => {
+    headerLine += padText(school.name, nameWidths[index]);
+  });
+  comparisonText += headerLine + "\n";
+  
+  // 創建分隔線
+  let separatorLine = "-".repeat(totalWidth) + "\n";
+  comparisonText += separatorLine;
+  
+  // 創建各項比較內容行
+  const compareItems = [
+    { name: "學校類型", getter: school => school.type || '未知' },
+    { name: "學校屬性", getter: school => school.details?.ownership || '未知' },
+    { name: "最低錄取", getter: school => school.details?.lastYearCutoff || '未知' },
+    { name: "入學管道", getter: school => school.details?.admissionMethod || '一般入學' },
+    { name: "地理位置", getter: school => school.details?.location || '未知' }
+  ];
+  
+  // 可能的額外比較項 - 如果至少有一所學校有此數據則添加
+  if (comparisonList.some(school => school.details?.admissionRate)) {
+    compareItems.push({ name: "錄取率", getter: school => school.details?.admissionRate || '未知' });
+  }
+  
+  if (comparisonList.some(school => school.details?.studentCount)) {
+    compareItems.push({ name: "學生人數", getter: school => school.details?.studentCount || '未知' });
+  }
+  
+  if (comparisonList.some(school => school.details?.schoolRank)) {
+    compareItems.push({ name: "學校排名", getter: school => school.details?.schoolRank || '未知' });
+  }
+  
+  // 生成比較表格
+  compareItems.forEach((item, itemIndex) => {
+    let line = padText(item.name, 20);
+    comparisonList.forEach((school, schoolIndex) => {
+      line += padText(item.getter(school), nameWidths[schoolIndex]);
+    });
+    comparisonText += line + "\n";
+    
+    // 每兩行添加一個細分隔線，提高可讀性
+    if (itemIndex < compareItems.length - 1 && itemIndex % 2 === 1) {
+      comparisonText += "-".repeat(totalWidth) + "\n";
+    }
+  });
+  
+  // 添加頁腳
+  comparisonText += "\n" + horizontalLine;
+  comparisonText += "【備註說明】\n";
+  comparisonText += "此比較結果僅供參考，請以各校最新招生簡章為準。\n";
+  comparisonText += "資料可能隨時更新，最終依各校公告為主。\n\n";
+  comparisonText += `【資料來源】\n`;
+  comparisonText += `會考落點分析系統 https://tyctw.github.io/spare/\n`;
+  comparisonText += `產生日期: ${now.toLocaleDateString('zh-TW')}\n`;
+  comparisonText += horizontalLine;
   
   const blob = new Blob([comparisonText], { type: 'text/plain;charset=utf-8' });
-  downloadFile(blob, '學校比較結果.txt');
+  downloadFile(blob, `學校比較結果_${now.toLocaleDateString('zh-TW').replace(/\//g, '')}.txt`);
+}
+
+// 輔助函數：將文本填充到固定寬度
+function padText(text, width) {
+  const padded = text.padEnd(width);
+  return padded;
 }
 
 async function exportComparisonToPdf(comparisonList) {
