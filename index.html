@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
@@ -11,6 +12,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-adsense-account" content="ca-pub-3350304014189563" />
     <meta
@@ -45,15 +47,15 @@
   <body>
     <header class="header">
       <div class="header-container">
-        <div class="header-logo">
+        <div class="header-logo hover-glow">
           <i class="fas fa-chart-line"></i>
           <span>會考落點分析</span>
         </div>
         <div class="header-actions">
-          <button class="header-button" onclick="showInstructions()">
+          <button class="header-button hover-glow" onclick="showInstructions()">
             <i class="fas fa-info-circle"></i> 使用說明
           </button>
-          <button class="header-button" onclick="showDisclaimer()">
+          <button class="header-button hover-glow" onclick="showDisclaimer()">
             <i class="fas fa-shield-alt"></i> 免責聲明
           </button>
         </div>
@@ -72,56 +74,58 @@
       <div class="menu-content">
         <div class="menu-section">
           <div class="menu-category">主要功能</div>
-          <a href="#" onclick="closeMenu(); window.scrollTo(0, 0);">
+          <a href="#" onclick="closeMenu(); window.scrollTo(0, 0);" class="hover-glow">
             <i class="fas fa-home"></i> 首頁
           </a>
-          <a href="#" onclick="closeMenu(); showInstructions();">
+          <a href="#" onclick="closeMenu(); showInstructions();" class="hover-glow">
             <i class="fas fa-book"></i> 使用說明
           </a>
-          <a href="#" onclick="closeMenu(); showDisclaimer();">
+          <a href="#" onclick="closeMenu(); showDisclaimer();" class="hover-glow">
             <i class="fas fa-shield-alt"></i> 免責聲明
           </a>
         </div>
         
         <div class="menu-section">
           <div class="menu-category">數據與工具</div>
-          <a href="#" onclick="closeMenu(); toggleDarkMode();">
+          <a href="#" onclick="closeMenu(); toggleDarkMode();" class="hover-glow">
             <i class="fas fa-moon"></i> 深色模式
           </a>
         </div>
         
         <div class="menu-section">
           <div class="menu-category">關聯系統</div>
-          <a href="https://sites.google.com/view/tyctw/" target="_blank">
+          <a href="https://sites.google.com/view/tyctw/" target="_blank" class="hover-glow">
             <i class="fas fa-school"></i> 回到主網頁
           </a>
-          <a href="https://tyctw.github.io/sequence/" target="_blank">
+          <a href="https://tyctw.github.io/sequence/" target="_blank" class="hover-glow">
             <i class="fas fa-pencil-alt"></i> 各校序位推估
           </a>
-          <a href="https://tyctw.github.io/Navigation/">
+          <a href="https://tyctw.github.io/Navigation/" class="hover-glow">
             <i class="fas fa-university"></i> 學校導航系統
           </a>
         </div>
         
         <div class="menu-section">
           <div class="menu-category">支援與回饋</div>
-          <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank">
+          <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank" class="hover-glow">
             <i class="fas fa-envelope-open-text"></i> 獲取邀請碼
           </a>
-          <a href="https://tyctw.github.io/report_form" target="_blank">
+          <a href="https://tyctw.github.io/report_form" target="_blank" class="hover-glow">
             <i class="fas fa-exclamation-triangle"></i> 系統異常回報
           </a>
-          <a href="#" onclick="closeMenu(); showRatingSection();">
+          <a href="#" onclick="closeMenu(); showRatingSection();" class="hover-glow">
             <i class="fas fa-star"></i> 評分與建議
           </a>
         </div>
         
         <div class="menu-footer">
           <div class="menu-social">
-<a href="https://www.threads.net/@114.rcpet" title="Threads" target="_blank">
-  <img src="https://tyctw.github.io/spare/threads-white-icon.svg" alt="Threads" style="width:24px; height:24px;">
-</a>
-            <a href="https://www.instagram.com/p/DGmtMeLvUQ2/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA%3D%3D" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.threads.net/@114.rcpet" title="Threads" target="_blank" class="hover-glow">
+              <img src="https://tyctw.github.io/spare/threads-white-icon.svg" alt="Threads" style="width:24px; height:24px;">
+            </a>
+            <a href="https://www.instagram.com/p/DGmtMeLvUQ2/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA%3D%3D" title="Instagram" class="hover-glow">
+              <i class="fab fa-instagram"></i>
+            </a>
           </div>
           <div class="menu-version">
             版本: 2.0 <span id="menuVersionYear">2025</span>
@@ -131,23 +135,23 @@
     </div>
 
     <div class="container">
-      <h1>
+      <h1 class="slide-in">
         <i class="fas fa-chart-line icon"></i>會考落點分析系統
       </h1>
       <a
         href="https://forms.gle/e5tHU1haqpHRU7nJ9"
         target="_blank"
-        class="invite-link"
+        class="invite-link hover-glow"
       >
         <i class="fas fa-envelope-open-text icon"></i>填寫表單獲取邀請碼
       </a>
-      <button class="instruction-toggle" onclick="showInstructions()">
+      <button class="instruction-toggle hover-glow" onclick="showInstructions()">
         <i class="fas fa-info-circle icon"></i>使用說明
       </button>
-      <button class="disclaimer-toggle" onclick="showDisclaimer()">
+      <button class="disclaimer-toggle hover-glow" onclick="showDisclaimer()">
         <i class="fas fa-exclamation-triangle icon"></i>免責聲明
       </button>
-      <form id="analysisForm">
+      <form id="analysisForm" class="slide-in" style="animation-delay: 0.2s;">
         <div class="form-group">
           <label for="invitationCode">
             <i class="fas fa-key icon"></i>邀請碼：
@@ -157,14 +161,15 @@
             id="invitationCode"
             required
             placeholder="請輸入邀請碼"
+            class="hover-glow"
           />
         </div>
 
         <div class="qr-options">
-          <button type="button" id="scanQRCode">
+          <button type="button" id="scanQRCode" class="hover-glow">
             <i class="fas fa-camera icon"></i>掃描 QR 碼
           </button>
-          <label for="fileInput" class="file-input-label">
+          <label for="fileInput" class="file-input-label hover-glow">
             <i class="fas fa-image icon"></i>上傳 QR 碼
           </label>
           <input type="file" id="fileInput" accept="image/*" />
@@ -173,27 +178,27 @@
         <div id="qr-result"></div>
       </form>
 
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 0.3s;">
         <label for="schoolOwnership">
           <i class="fas fa-building icon"></i>學校屬性：
         </label>
-        <select id="schoolOwnership">
+        <select id="schoolOwnership" class="hover-glow">
           <option value="all">全部</option>
           <option value="public">公立</option>
           <option value="private">私立</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 0.4s;">
         <label for="schoolType">
           <i class="fas fa-graduation-cap icon"></i>學校類型：
         </label>
-        <select id="schoolType" onchange="toggleVocationalGroup()">
+        <select id="schoolType" onchange="toggleVocationalGroup()" class="hover-glow">
           <option value="all">全部</option>
           <option value="普通科">普通科</option>
           <option value="職業類科">職業類科</option>
         </select>
       </div>
-      <div class="form-group" id="vocationalGroupContainer" style="display: none;">
+      <div class="form-group slide-in" id="vocationalGroupContainer" style="display: none; animation-delay: 0.5s;">
         <label for="vocationalGroup">
           <i class="fas fa-tools icon"></i>職業群別 (可複選)：
         </label>
@@ -315,7 +320,7 @@
           <option value="all">全部</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 0.6s;">
         <label>
           <i class="fas fa-user icon"></i> 分析身份：
         </label>
@@ -350,7 +355,7 @@
         </select>
       </div>
 
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 0.7s;">
         <label>
           <i class="fas fa-map-marker-alt icon"></i> 分析區域：
         </label>
@@ -358,50 +363,70 @@
           <div class="region-option">
             <input type="radio" id="region-taoyuan" name="analysisArea" value="taoyuan" class="region-input">
             <label for="region-taoyuan" class="region-label">
-              <i class="fas fa-city region-icon"></i>
+              <div class="region-icon">
+                <i class="fas fa-city"></i>
+              </div>
               <div class="region-text">
                 <div class="region-name">桃聯區</div>
                 <div class="region-description">桃園聯合分發區考生</div>
+                <div class="region-features">
+                  <span class="region-feature"><i class="fas fa-school"></i> 105+ 高中</span>
+                </div>
               </div>
             </label>
           </div>
           <div class="region-option">
             <input type="radio" id="region-central" name="analysisArea" value="central" class="region-input">
             <label for="region-central" class="region-label">
-              <i class="fas fa-mountain region-icon"></i>
+              <div class="region-icon">
+                <i class="fas fa-mountain"></i>
+              </div>
               <div class="region-text">
                 <div class="region-name">中投區</div>
                 <div class="region-description">中投區考生</div>
+                <div class="region-features">
+                  <span class="region-feature"><i class="fas fa-school"></i> 80+ 高中</span>
+                </div>
               </div>
             </label>
           </div>
           <div class="region-option">
             <input type="radio" id="region-kaohsiung" name="analysisArea" value="kaohsiung" class="region-input">
             <label for="region-kaohsiung" class="region-label">
-              <i class="fas fa-ship region-icon"></i>
+              <div class="region-icon">
+                <i class="fas fa-ship"></i>
+              </div>
               <div class="region-text">
                 <div class="region-name">高雄區</div>
                 <div class="region-description">高雄區考生</div>
+                <div class="region-features">
+                  <span class="region-feature"><i class="fas fa-school"></i> 90+ 高中</span>
+                </div>
               </div>
             </label>
           </div>
           <div class="region-option">
             <input type="radio" id="region-changhua" name="analysisArea" value="changhua" class="region-input">
             <label for="region-changhua" class="region-label">
-              <i class="fas fa-seedling region-icon"></i>
+              <div class="region-icon">
+                <i class="fas fa-seedling"></i>
+              </div>
               <div class="region-text">
                 <div class="region-name">彰化區</div>
                 <div class="region-description">彰化區考生</div>
+                <div class="region-features">
+                  <span class="region-feature"><i class="fas fa-school"></i> 60+ 高中</span>
+                </div>
               </div>
             </label>
           </div>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 0.8s;">
         <label for="chinese">
           <i class="fas fa-book icon"></i>國文：
         </label>
-        <select id="chinese">
+        <select id="chinese" class="hover-glow">
           <option value="">請選擇您的國文會考分數</option>
           <option value="A++">A++</option>
           <option value="A+">A+</option>
@@ -412,11 +437,11 @@
           <option value="C">C</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 0.9s;">
         <label for="english">
           <i class="fas fa-language icon"></i>英文：
         </label>
-        <select id="english">
+        <select id="english" class="hover-glow">
           <option value="">請選擇您的英文會考分數</option>
           <option value="A++">A++</option>
           <option value="A+">A+</option>
@@ -427,11 +452,11 @@
           <option value="C">C</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 1s;">
         <label for="math">
           <i class="fas fa-calculator icon"></i>數學：
         </label>
-        <select id="math">
+        <select id="math" class="hover-glow">
           <option value="">請選擇您的數學會考分數</option>
           <option value="A++">A++</option>
           <option value="A+">A+</option>
@@ -442,11 +467,11 @@
           <option value="C">C</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 1.1s;">
         <label for="science">
           <i class="fas fa-flask icon"></i>自然：
         </label>
-        <select id="science">
+        <select id="science" class="hover-glow">
           <option value="">請選擇您的自然會考分數</option>
           <option value="A++">A++</option>
           <option value="A+">A+</option>
@@ -457,11 +482,11 @@
           <option value="C">C</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 1.2s;">
         <label for="social">
           <i class="fas fa-globe icon"></i>社會：
         </label>
-        <select id="social">
+        <select id="social" class="hover-glow">
           <option value="">請選擇您的社會會考分數</option>
           <option value="A++">A++</option>
           <option value="A+">A+</option>
@@ -472,11 +497,11 @@
           <option value="C">C</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group slide-in" style="animation-delay: 1.3s;">
         <label for="composition">
           <i class="fas fa-pen-nib icon"></i>作文：
         </label>
-        <select id="composition">
+        <select id="composition" class="hover-glow">
           <option value="">請選擇您的作文會考分數</option>
           <option value="0">0 級分</option>
           <option value="1">1 級分</option>
@@ -487,15 +512,15 @@
           <option value="6">6 級分</option>
         </select>
       </div>
-      <button type="button" id="analyzeButton" onclick="analyzeScores()">
+      <button type="button" id="analyzeButton" class="slide-in hover-glow" style="animation-delay: 1.4s;" onclick="analyzeScores()">
         <i class="fas fa-search icon"></i>分析落點
       </button>
-      <button id="exportResults" style="display: none;" onclick="exportResults()">
+      <button id="exportResults" class="slide-in hover-glow" style="display: none; animation-delay: 1.5s;" onclick="exportResults()">
         <i class="fas fa-file-export icon"></i>匯出結果
       </button>
       <div id="results"></div>
 
-      <div id="ratingSection">
+      <div id="ratingSection" class="slide-in" style="animation-delay: 1.6s;">
         <h2><i class="fas fa-star icon"></i> 為我們評分</h2>
         <div id="starsContainer">
           <span class="star" data-value="1">&#9733;</span>
@@ -504,45 +529,45 @@
           <span class="star" data-value="4">&#9733;</span>
           <span class="star" data-value="5">&#9733;</span>
         </div>
-        <button id="submitRating" class="rating-button">
+        <button id="submitRating" class="rating-button hover-glow">
           <i class="fas fa-paper-plane icon"></i> 提交評分
         </button>
         <div id="ratingMessage" style="display: none; margin-top: 10px;"></div>
       </div>
 
-      <div class="copyright">
+      <div class="copyright slide-in" style="animation-delay: 1.7s;">
         &copy; <span id="currentYear"></span> 會考落點分析系統. All rights reserved.
         <p>本網站由會考落點分析平台開發維護。未經授權，禁止複製或轉載。</p>
       </div>
     </div>
 
-    <button id="darkModeToggle" class="dark-mode-toggle" aria-label="切換深色模式">
+    <button id="darkModeToggle" class="dark-mode-toggle hover-glow" aria-label="切換深色模式">
       <i class="fas fa-moon"></i>
     </button>
 
     <div id="disclaimerModal" class="modal">
       <div class="modal-content">
-        <button class="close" onclick="closeDisclaimer()">&times;</button>
+        <button class="close hover-glow" onclick="closeDisclaimer()">&times;</button>
         <h2>
           <i class="fas fa-balance-scale icon"></i> 免責聲明
         </h2>
-        <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank">
+        <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank" class="hover-glow">
           <i class="fas fa-link icon"></i> 填寫表單獲取邀請碼
         </a>
         <p>
           <i class="fas fa-info-circle icon"></i> 親愛的使用者，我們誠摯地提醒您：本網站提供的落點分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因多種因素而有所不同，包括但不限於：
         </p>
         <ul>
-          <li>
+          <li class="slide-in" style="animation-delay: 0.2s;">
             <i class="fas fa-university icon"></i> 各校的招生政策變化
           </li>
-          <li>
+          <li class="slide-in" style="animation-delay: 0.3s;">
             <i class="fas fa-users icon"></i> 當年度考生整體表現
           </li>
-          <li>
+          <li class="slide-in" style="animation-delay: 0.4s;">
             <i class="fas fa-star icon"></i> 特殊才能或其他加分項目
           </li>
-          <li>
+          <li class="slide-in" style="animation-delay: 0.5s;">
             <i class="fas fa-clipboard-list icon"></i> 各校的實際招生名額調整
           </li>
         </ul>
@@ -550,20 +575,20 @@
           <i class="fas fa-exclamation-triangle icon"></i> 為了確保您做出最佳的決定，我們強烈建議您：
         </p>
         <ul>
-          <li>
+          <li class="slide-in" style="animation-delay: 0.6s;">
             <i class="fas fa-search icon"></i> 參考多方資訊，不要僅依賴本網站的分析結果
           </li>
-          <li>
+          <li class="slide-in" style="animation-delay: 0.7s;">
             <i class="fas fa-comments icon"></i> 諮詢學校輔導老師或升學顧問的專業意見
           </li>
-          <li>
+          <li class="slide-in" style="animation-delay: 0.8s;">
             <i class="fas fa-globe icon"></i> 密切關注各校的官方網站和招生簡章，以獲取最新和最準確的資訊
           </li>
         </ul>
         <p>
           <i class="fas fa-shield-alt icon"></i> 本網站不對因使用本服務而產生的任何直接或間接損失負責。使用本服務即表示您同意本免責聲明的所有條款。祝您升學順利！
         </p>
-        <button class="confirm-button" onclick="closeDisclaimer()">
+        <button class="confirm-button hover-glow" onclick="closeDisclaimer()">
           <i class="fas fa-check-circle icon"></i> 我已了解並同意
         </button>
       </div>
@@ -571,12 +596,12 @@
 
     <div id="instructionsModal" class="modal">
       <div class="modal-content instructions-modal-content">
-        <button class="close" onclick="closeInstructions()">&times;</button>
+        <button class="close hover-glow" onclick="closeInstructions()">&times;</button>
         <h2>
           <i class="fas fa-book icon"></i>使用說明
         </h2>
         
-        <div class="instruction-item">
+        <div class="instruction-item slide-in" style="animation-delay: 0.2s;">
           <h3>
             <i class="fas fa-key icon"></i>獲取並輸入邀請碼
           </h3>
@@ -592,7 +617,7 @@
           <p>將獲得的邀請碼輸入到"邀請碼"欄位中即可開始使用。</p>
         </div>
 
-        <div class="instruction-item">
+        <div class="instruction-item slide-in" style="animation-delay: 0.3s;">
           <h3>
             <i class="fas fa-filter icon"></i>選擇學校屬性和類型
           </h3>
@@ -608,7 +633,7 @@
           </div>
         </div>
 
-        <div class="instruction-item">
+        <div class="instruction-item slide-in" style="animation-delay: 0.4s;">
           <h3>
             <i class="fas fa-user-graduate icon"></i>選擇分析身份與地區
           </h3>
@@ -622,7 +647,7 @@
           </div>
         </div>
 
-        <div class="instruction-item">
+        <div class="instruction-item slide-in" style="animation-delay: 0.5s;">
           <h3>
             <i class="fas fa-pencil-alt icon"></i>輸入會考成績
           </h3>
@@ -653,7 +678,7 @@
           </div>
         </div>
 
-        <div class="instruction-item">
+        <div class="instruction-item slide-in" style="animation-delay: 0.6s;">
           <h3>
             <i class="fas fa-chart-line icon"></i>分析落點結果
           </h3>
@@ -670,7 +695,7 @@
           </div>
         </div>
 
-        <div class="instruction-item">
+        <div class="instruction-item slide-in" style="animation-delay: 0.7s;">
           <h3>
             <i class="fas fa-file-export icon"></i>匯出和列印分析結果
           </h3>
@@ -687,7 +712,7 @@
           </div>
         </div>
 
-        <div class="instruction-item">
+        <div class="instruction-item slide-in" style="animation-delay: 0.8s;">
           <h3>
             <i class="fas fa-redo icon"></i>重新分析
           </h3>
@@ -706,7 +731,7 @@
           </div>
         </div>
         
-        <button class="confirm-button" onclick="closeInstructions()">
+        <button class="confirm-button hover-glow" onclick="closeInstructions()">
           <i class="fas fa-check-circle icon"></i> 我已了解
         </button>
       </div>

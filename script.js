@@ -4223,3 +4223,38 @@ function closeMenu() {
     }
   }, 300);
 }
+
+// 為分析區域選擇器添加動畫效果
+document.addEventListener('DOMContentLoaded', function() {
+  const regionInputs = document.querySelectorAll('.region-input');
+  
+  regionInputs.forEach(input => {
+    input.addEventListener('change', function() {
+      if (this.checked) {
+        // 獲取當前選中的區域圖標
+        const regionIcon = this.nextElementSibling.querySelector('.region-icon');
+        
+        // 添加並在動畫結束後移除動畫類
+        regionIcon.classList.add('pulse-animation');
+        setTimeout(() => {
+          regionIcon.classList.remove('pulse-animation');
+        }, 800);
+        
+        // 添加波紋效果
+        addRippleEffect(this.nextElementSibling);
+      }
+    });
+  });
+  
+  // 添加波紋效果函數
+  function addRippleEffect(element) {
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple-effect';
+    element.appendChild(ripple);
+    
+    // 動畫完成後移除波紋元素
+    setTimeout(() => {
+      ripple.remove();
+    }, 800);
+  }
+});

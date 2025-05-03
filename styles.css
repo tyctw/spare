@@ -1,25 +1,28 @@
 /* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #2a9d8f;
-  --secondary-color: #e9c46a;
-  --background-color: #f4f1de;
-  --text-color: #264653;
+  --primary-color: #4361ee;
+  --secondary-color: #3a0ca3;
+  --background-color: #f8f9fa;
+  --text-color: #2b2d42;
   --card-background: #ffffff;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --accent-color: #f4a261;
-  --menu-background: rgba(42, 157, 143, 0.95);
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --accent-color: #ef476f;
+  --success-color: #06d6a0;
+  --menu-background: rgba(67, 97, 238, 0.98);
   --menu-text: #ffffff;
   --menu-hover: rgba(255, 255, 255, 0.15);
   --menu-active: rgba(255, 255, 255, 0.25);
   --menu-border: rgba(255, 255, 255, 0.1);
   --menu-icon: rgba(255, 255, 255, 0.7);
   --menu-category: rgba(255, 255, 255, 0.5);
+  --border-radius: 16px;
+  --transition: all 0.3s ease;
 }
 
 body {
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: 'Noto Sans TC', 'Poppins', sans-serif;
   background-color: var(--background-color);
   margin: 0;
   padding: 0;
@@ -28,18 +31,32 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+  background-attachment: fixed;
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .container {
   background: var(--card-background);
   padding: 2.5rem;
-  border-radius: 20px;
+  border-radius: var(--border-radius);
   box-shadow: 0 10px 30px var(--shadow-color);
   max-width: 800px;
   width: 90%;
   margin: 80px auto 20px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .container:hover {
@@ -67,8 +84,8 @@ h1::after {
   transform: translateX(-50%);
   width: 50%;
   height: 3px;
-  background-color: var(--accent-color);
-  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+  border-radius: 3px;
 }
 
 h2 {
@@ -82,16 +99,23 @@ h3 {
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
   text-align: left;
+  position: relative;
+  transition: var(--transition);
+}
+
+.form-group:hover {
+  transform: translateY(-2px);
 }
 
 label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.7rem;
   font-weight: 500;
   color: var(--text-color);
   transition: color 0.3s ease;
+  font-size: 1.1rem;
 }
 
 label:hover {
@@ -100,37 +124,55 @@ label:hover {
 
 select, input[type="text"] {
   width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #bdc3c7;
-  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  border: 2px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background-color: #f9f9f9;
+  background-color: rgba(249, 249, 249, 0.8);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
 }
 
 select:focus, input[type="text"]:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
+  box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2);
   background-color: #fff;
 }
 
 button {
-  background-color: var(--primary-color);
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
   color: #fff;
   border: none;
   padding: 1rem 2rem;
   font-size: 1.1rem;
-  border-radius: 30px;
+  border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px var(--shadow-color);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 button:hover {
-  background-color: #239687;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px var(--shadow-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+}
+
+button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+button:hover:before {
+  transform: translateX(100%);
 }
 
 #results, #instructions {
@@ -201,13 +243,13 @@ button:hover {
   left: 0;
   width: 100%;
   z-index: 1000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  backdrop-filter: blur(10px);
 }
 
 .header.scrolled {
-  background-color: rgba(42, 157, 143, 0.98);
-  backdrop-filter: blur(8px);
+  background-color: var(--menu-background);
   padding: 8px 0;
 }
 
@@ -1862,26 +1904,20 @@ button:hover {
 /* Identity Selector Styles */
 .identity-selector {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 15px;
   margin-bottom: 20px;
-  justify-content: center;
 }
 
 .identity-option {
   flex: 1;
-  min-width: 100px;
-  max-width: 150px;
   position: relative;
-  cursor: pointer;
 }
 
 .identity-input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
-  height: 0;
-  width: 0;
 }
 
 .identity-label {
@@ -1890,35 +1926,33 @@ button:hover {
   align-items: center;
   justify-content: center;
   padding: 20px 15px;
-  background: var(--card-background);
-  border-radius: 15px;
-  border: 2px solid #e0e0e0;
-  transition: all 0.3s ease;
-  text-align: center;
-  height: 100%;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid transparent;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
 }
 
 .identity-label i {
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-bottom: 10px;
-  color: var(--text-color);
+  color: #777;
   transition: all 0.3s ease;
 }
 
 .identity-name {
   font-weight: 500;
-  color: var(--text-color);
   transition: all 0.3s ease;
 }
 
 .identity-input:checked + .identity-label {
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.1));
   border-color: var(--primary-color);
-  background: linear-gradient(135deg, rgba(42, 157, 143, 0.1), rgba(42, 157, 143, 0.2));
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(42, 157, 143, 0.2);
+  box-shadow: 0 8px 20px rgba(67, 97, 238, 0.2);
 }
 
 .identity-input:checked + .identity-label i {
@@ -1928,223 +1962,383 @@ button:hover {
 
 .identity-input:checked + .identity-label .identity-name {
   color: var(--primary-color);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .identity-input:checked + .identity-label::after {
-  content: "\f00c";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
+  content: '';
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
   background: var(--primary-color);
-  color: white;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  font-size: 0.8rem;
+  border-radius: 0 0 0 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: '\f00c';
+  color: white;
+  font-size: 12px;
+  padding: 3px 0 0 3px;
 }
 
 .identity-label:hover {
+  background: rgba(255, 255, 255, 0.85);
   transform: translateY(-3px);
-  border-color: var(--primary-color);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 .identity-label:hover i {
   color: var(--primary-color);
 }
 
-/* Dark mode styles for identity selector */
-.dark-mode .identity-label {
-  border-color: #4a4e69;
-  background: var(--card-background);
-}
-
-.dark-mode .identity-input:checked + .identity-label {
-  background: linear-gradient(135deg, rgba(42, 157, 143, 0.2), rgba(42, 157, 143, 0.3));
-  border-color: var(--primary-color);
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .identity-selector {
-    flex-direction: row;
-    gap: 10px;
-  }
-  
-  .identity-option {
-    min-width: 90px;
-    max-width: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .identity-option {
-    min-width: 80px;
-  }
-  
-  .identity-label {
-    padding: 12px 8px;
-  }
-  
-  .identity-label i {
-    font-size: 1.5rem;
-  }
-  
-  .identity-name {
-    font-size: 0.9rem;
-  }
-}
-
-/* Region Selector Styles */
+/* 區域選擇器改進 */
 .region-selector {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: 15px;
   margin-bottom: 20px;
-  justify-content: center;
 }
 
 .region-option {
-  flex: 1;
-  min-width: 140px;
-  max-width: 200px;
+  flex-basis: calc(50% - 10px);
   position: relative;
-  cursor: pointer;
 }
 
 .region-input {
   position: absolute;
   opacity: 0;
-  cursor: pointer;
-  height: 0;
   width: 0;
+  height: 0;
 }
 
 .region-label {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px 15px;
-  background: var(--card-background);
-  border-radius: 15px;
-  border: 2px solid #e0e0e0;
-  transition: all 0.3s ease;
-  text-align: center;
-  height: 100%;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+  position: relative;
+  border: 2px solid transparent;
+  backdrop-filter: blur(4px);
+  height: 120px;
 }
 
 .region-icon {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  color: var(--text-color);
-  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  font-size: 1.5rem;
+  margin-right: 15px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(58, 12, 163, 0.2);
+  z-index: 2;
+}
+
+.region-text {
+  z-index: 2;
 }
 
 .region-name {
-  font-weight: 500;
-  color: var(--text-color);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  color: var(--primary-color);
   transition: all 0.3s ease;
 }
 
 .region-description {
-  font-size: 0.85rem;
-  color: var(--text-color);
-  opacity: 0.8;
-  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #666;
   transition: all 0.3s ease;
 }
 
 .region-input:checked + .region-label {
   border-color: var(--primary-color);
-  background: linear-gradient(135deg, rgba(42, 157, 143, 0.1), rgba(42, 157, 143, 0.2));
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(42, 157, 143, 0.2);
+  background: rgba(248, 249, 255, 0.95);
+  box-shadow: 0 8px 25px rgba(67, 97, 238, 0.15);
+  transform: translateY(-4px) scale(1.02);
 }
 
 .region-input:checked + .region-label .region-icon {
-  color: var(--primary-color);
-  transform: scale(1.2);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 10px 25px rgba(58, 12, 163, 0.3);
 }
 
 .region-input:checked + .region-label .region-name {
-  color: var(--primary-color);
-  font-weight: 700;
+  color: var(--secondary-color);
 }
 
 .region-input:checked + .region-label::after {
-  content: "\f00c";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
+  content: '';
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: var(--primary-color);
-  color: white;
   width: 25px;
   height: 25px;
+  background: var(--primary-color);
+  top: -12px;
+  right: -12px;
   border-radius: 50%;
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0);
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  z-index: 3;
+}
+
+.region-input:checked + .region-label::before {
+  content: '\f00c';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: white;
+  font-size: 12px;
+  z-index: 4;
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards 0.2s;
 }
 
 .region-label:hover {
-  transform: translateY(-3px);
-  border-color: var(--primary-color);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .region-label:hover .region-icon {
-  color: var(--primary-color);
+  transform: rotate(5deg) scale(1.05);
 }
 
-/* Dark mode styles for region selector */
-.dark-mode .region-label {
-  border-color: #4a4e69;
-  background: var(--card-background);
+.region-label::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(67, 97, 238, 0.03), rgba(58, 12, 163, 0.03));
+  border-radius: 14px;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.dark-mode .region-input:checked + .region-label {
-  background: linear-gradient(135deg, rgba(42, 157, 143, 0.2), rgba(42, 157, 143, 0.3));
-  border-color: var(--primary-color);
+.region-label:hover::before {
+  opacity: 1;
 }
 
-/* Mobile responsive */
+/* 為每個區域添加獨特的漸變色 */
+#region-taoyuan + .region-label .region-icon {
+  background: linear-gradient(135deg, #4361ee, #3a0ca3);
+}
+
+#region-central + .region-label .region-icon {
+  background: linear-gradient(135deg, #06d6a0, #1b9aaa);
+}
+
+#region-kaohsiung + .region-label .region-icon {
+  background: linear-gradient(135deg, #ef476f, #ffd166);
+}
+
+#region-changhua + .region-label .region-icon {
+  background: linear-gradient(135deg, #118ab2, #073b4c);
+}
+
+/* 響應式調整 */
 @media (max-width: 768px) {
   .region-selector {
     flex-direction: column;
-    gap: 10px;
   }
   
   .region-option {
-    max-width: none;
+    flex-basis: 100%;
   }
   
   .region-label {
-    flex-direction: row;
-    justify-content: flex-start;
-    padding: 15px;
-    gap: 15px;
+    height: 110px;
+    padding: 12px;
   }
   
   .region-icon {
-    font-size: 2rem;
-    margin-bottom: 0;
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
   }
   
-  .region-text {
-    text-align: left;
+  .region-name {
+    font-size: 1.1rem;
+  }
+  
+  .region-description {
+    font-size: 0.8rem;
+  }
+}
+
+/* 職業群別選擇器改進 */
+.vocational-group-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.vocational-group-option {
+  position: relative;
+}
+
+.vocational-group-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.vocational-group-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid transparent;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  height: 100%;
+}
+
+.vocational-group-label i {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  color: #777;
+  transition: all 0.3s ease;
+}
+
+.vocational-group-label span {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.vocational-group-input:checked + .vocational-group-label {
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.1));
+  border-color: var(--primary-color);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(67, 97, 238, 0.15);
+}
+
+.vocational-group-input:checked + .vocational-group-label i {
+  color: var(--primary-color);
+}
+
+/* Dark mode 樣式改進 */
+.dark-mode {
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --card-background: #1e1e1e;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --input-background: #2c2c2c;
+  --border-color: #3a3a3a;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.dark-mode .container {
+  background: rgba(30, 30, 30, 0.9);
+  box-shadow: 0 10px 30px var(--shadow-color);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode select,
+.dark-mode input[type="text"] {
+  background-color: var(--input-background);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.dark-mode select option {
+  background-color: var(--input-background);
+  color: var(--text-color);
+}
+
+.dark-mode .identity-label,
+.dark-mode .region-label,
+.dark-mode .vocational-group-label {
+  background: rgba(40, 40, 40, 0.6);
+}
+
+.dark-mode .identity-input:checked + .identity-label,
+.dark-mode .region-input:checked + .region-label,
+.dark-mode .vocational-group-input:checked + .vocational-group-label {
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.2), rgba(58, 12, 163, 0.2));
+  border-color: var(--primary-color);
+}
+
+.dark-mode .region-icon {
+  background: rgba(50, 50, 50, 0.8);
+}
+
+.dark-mode .region-input:checked + .region-label .region-icon {
+  background: rgba(30, 30, 30, 0.8);
+}
+
+/* 手機響應式調整 */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+    width: 95%;
+    margin: 70px auto 15px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .identity-selector,
+  .region-selector {
+    flex-direction: column;
+  }
+  
+  .region-selector {
+    grid-template-columns: 1fr;
+  }
+  
+  .vocational-group-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  .identity-label,
+  .region-label,
+  .vocational-group-label {
+    padding: 15px 10px;
+  }
+  
+  button {
+    padding: 0.9rem 1.8rem;
+    font-size: 1rem;
+  }
+}
+
+/* 平板響應式調整 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .region-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .vocational-group-container {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   }
 }
 
@@ -4374,4 +4568,208 @@ button:hover {
 @keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; }
+}
+
+.region-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.region-feature {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(67, 97, 238, 0.1);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.region-feature i {
+  font-size: 0.7rem;
+  margin-right: 4px;
+}
+
+.region-input:checked + .region-label .region-feature {
+  background-color: rgba(67, 97, 238, 0.2);
+  color: var(--secondary-color);
+}
+
+/* 為各區域添加特定顏色的特徵標籤 */
+#region-taoyuan + .region-label .region-feature {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: #4361ee;
+}
+
+#region-central + .region-label .region-feature {
+  background-color: rgba(6, 214, 160, 0.1);
+  color: #06d6a0;
+}
+
+#region-kaohsiung + .region-label .region-feature {
+  background-color: rgba(239, 71, 111, 0.1);
+  color: #ef476f;
+}
+
+#region-changhua + .region-label .region-feature {
+  background-color: rgba(17, 138, 178, 0.1);
+  color: #118ab2;
+}
+
+#region-taoyuan:checked + .region-label .region-feature {
+  background-color: rgba(67, 97, 238, 0.2);
+  color: #3a0ca3;
+}
+
+#region-central:checked + .region-label .region-feature {
+  background-color: rgba(6, 214, 160, 0.2);
+  color: #1b9aaa;
+}
+
+#region-kaohsiung:checked + .region-label .region-feature {
+  background-color: rgba(239, 71, 111, 0.2);
+  color: #c9184a;
+}
+
+#region-changhua:checked + .region-label .region-feature {
+  background-color: rgba(17, 138, 178, 0.2);
+  color: #073b4c;
+}
+
+@media (max-width: 768px) {
+  .region-features {
+    margin-top: 5px;
+  }
+  
+  .region-feature {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .region-feature i {
+    font-size: 0.65rem;
+  }
+}
+
+/* 波紋效果 */
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.7);
+  width: 100px;
+  height: 100px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.8s ease-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+/* 脈動動畫 */
+.pulse-animation {
+  animation: iconPulse 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes iconPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2) rotate(15deg);
+  }
+  100% {
+    transform: scale(1) rotate(5deg);
+  }
+}
+
+/* 懸停時的輕微浮動效果 */
+.region-option:hover .region-label {
+  transform: translateY(-5px);
+}
+
+/* 懸停時圖標的旋轉效果 */
+.region-option:hover .region-icon {
+  animation: iconFloat 1.5s ease infinite;
+}
+
+@keyframes iconFloat {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-5px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+/* 深色模式的區域選擇器樣式 */
+.dark-mode .region-label {
+  background: rgba(30, 32, 44, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: rgba(67, 97, 238, 0.1);
+}
+
+.dark-mode .region-name {
+  color: #fff;
+}
+
+.dark-mode .region-description {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .region-feature {
+  background-color: rgba(67, 97, 238, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark-mode .region-input:checked + .region-label {
+  background: rgba(40, 44, 65, 0.95);
+  border-color: var(--primary-color);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.dark-mode .region-input:checked + .region-label .region-name {
+  color: var(--primary-color);
+}
+
+.dark-mode .ripple-effect {
+  background-color: rgba(67, 97, 238, 0.2);
+}
+
+/* 深色模式下各區域特定顏色 */
+.dark-mode #region-taoyuan + .region-label .region-feature {
+  background-color: rgba(67, 97, 238, 0.3);
+}
+
+.dark-mode #region-central + .region-label .region-feature {
+  background-color: rgba(6, 214, 160, 0.3);
+}
+
+.dark-mode #region-kaohsiung + .region-label .region-feature {
+  background-color: rgba(239, 71, 111, 0.3);
+}
+
+.dark-mode #region-changhua + .region-label .region-feature {
+  background-color: rgba(17, 138, 178, 0.3);
+}
+
+.dark-mode .region-label:hover {
+  background: rgba(40, 44, 65, 0.8);
 }
