@@ -547,7 +547,9 @@
 
     <div id="disclaimerModal" class="modal">
       <div class="modal-content">
-        <button class="close hover-glow" onclick="closeDisclaimer()">&times;</button>
+        <button class="close modal-close hover-glow" onclick="closeDisclaimer()">
+          <i class="fas fa-times"></i>
+        </button>
         <h2>
           <i class="fas fa-balance-scale icon"></i> 免責聲明
         </h2>
@@ -596,144 +598,326 @@
 
     <div id="instructionsModal" class="modal">
       <div class="modal-content instructions-modal-content">
-        <button class="close hover-glow" onclick="closeInstructions()">&times;</button>
+        <button class="close modal-close hover-glow" onclick="closeInstructions()">
+          <i class="fas fa-times"></i>
+        </button>
         <h2>
           <i class="fas fa-book icon"></i>使用說明
         </h2>
         
-        <div class="instruction-item slide-in" style="animation-delay: 0.2s;">
-          <h3>
-            <i class="fas fa-key icon"></i>獲取並輸入邀請碼
-          </h3>
-          <div class="highlight">
-            <i class="fas fa-info-circle"></i> 邀請碼每小時更新一次，請確保使用最新的邀請碼。
-          </div>
-          <p>您可以通過以下方式獲取邀請碼：</p>
-          <ul>
-            <li>填寫我們的序位回報表單</li>
-            <li>掃描 QR 碼</li>
-            <li>上傳 QR 碼圖片</li>
-          </ul>
-          <p>將獲得的邀請碼輸入到"邀請碼"欄位中即可開始使用。</p>
+        <div class="mobile-guide-notice">
+          <i class="fas fa-info-circle"></i> 滑動屏幕查看更多內容
         </div>
-
-        <div class="instruction-item slide-in" style="animation-delay: 0.3s;">
-          <h3>
-            <i class="fas fa-filter icon"></i>選擇學校屬性和類型
-          </h3>
-          <p>根據您的需求，選擇以下篩選條件：</p>
-          <ul>
-            <li>學校屬性：全部、公立或私立</li>
-            <li>學校類型：全部、普通科或職業類科</li>
-            <li>職業群別：選擇特定職業群或全部（僅限職業類科）</li>
-          </ul>
-          <div class="instruction-visual">
-            <i class="fas fa-sitemap icon-large"></i>
-            <div>依照不同屬性和類型篩選可獲得更精確的分析結果</div>
-          </div>
+        
+        <div class="mobile-instruction-note">
+          <i class="fas fa-hand-point-up"></i> 點擊步驟標籤或使用下一步按鈕切換內容
         </div>
-
-        <div class="instruction-item slide-in" style="animation-delay: 0.4s;">
-          <h3>
-            <i class="fas fa-user-graduate icon"></i>選擇分析身份與地區
-          </h3>
-          <p>請選擇您的身份和想要分析的區域：</p>
-          <ul>
-            <li><i class="fas fa-user-alt"></i> 分析身份：學生、老師或家長</li>
-            <li><i class="fas fa-map-marker-alt"></i> 分析區域：桃聯區、中投區、高雄區或彰化區</li>
-          </ul>
-          <div class="highlight">
-            <i class="fas fa-info-circle"></i> 不同地區有不同的計分方式，請務必選擇正確的區域。
-          </div>
+        
+        <div class="nav-helper-tip">
+          <i class="fas fa-arrow-down"></i> 向下滑動查看更多，底部有導航按鈕
         </div>
-
-        <div class="instruction-item slide-in" style="animation-delay: 0.5s;">
-          <h3>
-            <i class="fas fa-pencil-alt icon"></i>輸入會考成績
-          </h3>
-          <div class="highlight">
-            <i class="fas fa-exclamation-circle"></i> 請確保填寫所有科目的成績，否則無法進行分析。
+        
+        <div class="instructions-guide">
+          <div class="instructions-steps">
+            <div class="instruction-step active" data-step="1">
+              <div class="step-number">1</div>
+              <div class="step-title">獲取邀請碼</div>
+            </div>
+            <div class="instruction-step" data-step="2">
+              <div class="step-number">2</div>
+              <div class="step-title">輸入基本資料</div>
+            </div>
+            <div class="instruction-step" data-step="3">
+              <div class="step-number">3</div>
+              <div class="step-title">填寫會考成績</div>
+            </div>
+            <div class="instruction-step" data-step="4">
+              <div class="step-number">4</div>
+              <div class="step-title">分析落點結果</div>
+            </div>
+            <div class="instruction-step" data-step="5">
+              <div class="step-number">5</div>
+              <div class="step-title">匯出與比較</div>
+            </div>
           </div>
-          <p>依序選擇各科目的會考等級：</p>
-          <ul>
-            <li><i class="fas fa-book"></i> 國文：A++ 到 C</li>
-            <li><i class="fas fa-language"></i> 英文：A++ 到 C</li>
-            <li><i class="fas fa-calculator"></i> 數學：A++ 到 C</li>
-            <li><i class="fas fa-flask"></i> 自然：A++ 到 C</li>
-            <li><i class="fas fa-globe"></i> 社會：A++ 到 C</li>
-            <li><i class="fas fa-pen-nib"></i> 作文：0 到 6 級分</li>
-          </ul>
-          <div class="instruction-visual">
-            <i class="fas fa-award icon-large"></i>
-            <div>會考成績等級表</div>
-            <div class="grade-table">
-              <div class="grade-row"><span>&#160;&#160;A++&#160;&#160;</span><span>精熟</span><span>頂標</span></div>
-              <div class="grade-row"><span>&#160;&#160;A+&#160;&#160;</span><span>精熟</span><span>前標</span></div>
-              <div class="grade-row"><span>&#160;&#160;A&#160;&#160;</span><span>精熟</span><span>均標</span></div>
-              <div class="grade-row"><span>&#160;&#160;B++&#160;&#160;</span><span>基礎</span><span>後標</span></div>
-              <div class="grade-row"><span>&#160;&#160;B+&#160;&#160;</span><span>基礎</span><span>底標</span></div>
-              <div class="grade-row"><span>&#160;&#160;B&#160;&#160;</span><span>基礎</span><span>基礎</span></div>
-              <div class="grade-row"><span>&#160;&#160;C&#160;&#160;</span><span>待加強</span><span>待加強</span></div>
+          
+          <div class="instructions-content">
+            <div class="instruction-panel active" data-panel="1">
+              <h3><i class="fas fa-key icon"></i> 獲取並輸入邀請碼</h3>
+              <div class="instruction-panel-content">
+                <div class="instruction-visual">
+                  <i class="fas fa-qrcode icon-large"></i>
+                  <div>邀請碼每小時更新一次，請確保使用最新的邀請碼</div>
+                </div>
+                <p>您可以通過以下方式獲取邀請碼：</p>
+                <div class="instruction-methods">
+                  <div class="instruction-method">
+                    <i class="fas fa-file-alt"></i>
+                    <span>填寫序位回報表單</span>
+                  </div>
+                  <div class="instruction-method">
+                    <i class="fas fa-camera"></i>
+                    <span>掃描 QR 碼</span>
+                  </div>
+                  <div class="instruction-method">
+                    <i class="fas fa-image"></i>
+                    <span>上傳 QR 碼圖片</span>
+                  </div>
+                </div>
+                <div class="instruction-tip">
+                  <i class="fas fa-lightbulb"></i>
+                  <span>點擊首頁的「填寫表單獲取邀請碼」按鈕可立即獲取最新邀請碼</span>
+                </div>
+              </div>
+              <div class="instruction-nav">
+                <button disabled class="nav-btn prev-btn">
+                  <i class="fas fa-chevron-left"></i> 上一步
+                </button>
+                <div class="mobile-panel-indicator">
+                  <span class="indicator-dot active" data-dot="1"></span>
+                  <span class="indicator-dot" data-dot="2"></span>
+                  <span class="indicator-dot" data-dot="3"></span>
+                  <span class="indicator-dot" data-dot="4"></span>
+                  <span class="indicator-dot" data-dot="5"></span>
+                </div>
+                <button class="nav-btn next-btn" onclick="changeInstructionPanel(2)">
+                  下一步 <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="instruction-panel" data-panel="2">
+              <h3><i class="fas fa-filter icon"></i> 輸入基本資料</h3>
+              <div class="instruction-panel-content">
+                <p>請選擇以下篩選條件，以獲得更精確的分析結果：</p>
+                <div class="instruction-criteria">
+                  <div class="criteria-item">
+                    <div class="criteria-icon"><i class="fas fa-building"></i></div>
+                    <div class="criteria-info">
+                      <h4>學校屬性</h4>
+                      <p>全部、公立或私立</p>
+                    </div>
+                  </div>
+                  <div class="criteria-item">
+                    <div class="criteria-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="criteria-info">
+                      <h4>學校類型</h4>
+                      <p>全部、普通科或職業類科</p>
+                    </div>
+                  </div>
+                  <div class="criteria-item">
+                    <div class="criteria-icon"><i class="fas fa-tools"></i></div>
+                    <div class="criteria-info">
+                      <h4>職業群別</h4>
+                      <p>選擇特定職業群或全部（僅限職業類科）</p>
+                    </div>
+                  </div>
+                  <div class="criteria-item">
+                    <div class="criteria-icon"><i class="fas fa-user-graduate"></i></div>
+                    <div class="criteria-info">
+                      <h4>分析身份</h4>
+                      <p>學生、老師或家長</p>
+                    </div>
+                  </div>
+                  <div class="criteria-item">
+                    <div class="criteria-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="criteria-info">
+                      <h4>分析區域</h4>
+                      <p>桃聯區、中投區、高雄區或彰化區</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="instruction-tip">
+                  <i class="fas fa-exclamation-circle"></i>
+                  <span>不同地區有不同的計分方式，請務必選擇正確的區域</span>
+                </div>
+              </div>
+              <div class="instruction-nav">
+                <button class="nav-btn prev-btn" onclick="changeInstructionPanel(1)">
+                  <i class="fas fa-chevron-left"></i> 上一步
+                </button>
+                <div class="mobile-panel-indicator">
+                  <span class="indicator-dot" data-dot="1"></span>
+                  <span class="indicator-dot active" data-dot="2"></span>
+                  <span class="indicator-dot" data-dot="3"></span>
+                  <span class="indicator-dot" data-dot="4"></span>
+                  <span class="indicator-dot" data-dot="5"></span>
+                </div>
+                <button class="nav-btn next-btn" onclick="changeInstructionPanel(3)">
+                  下一步 <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="instruction-panel" data-panel="3">
+              <h3><i class="fas fa-pencil-alt icon"></i> 填寫會考成績</h3>
+              <div class="instruction-panel-content">
+                <div class="instruction-scores">
+                  <div class="instruction-visual">
+                    <i class="fas fa-award icon-large"></i>
+                    <div>請確保填寫所有科目的成績，否則無法進行分析</div>
+                  </div>
+                  <div class="grade-card">
+                    <div class="grade-header">會考成績等級表</div>
+                    <div class="grade-body">
+                      <div class="grade-row"><span>等級</span><span>會考</span><span>PR值</span></div>
+                      <div class="grade-row grade-excellent"><span>A++</span><span>精熟</span><span>頂標</span></div>
+                      <div class="grade-row grade-great"><span>A+</span><span>精熟</span><span>前標</span></div>
+                      <div class="grade-row grade-good"><span>A</span><span>精熟</span><span>均標</span></div>
+                      <div class="grade-row grade-above-average"><span>B++</span><span>基礎</span><span>後標</span></div>
+                      <div class="grade-row grade-average"><span>B+</span><span>基礎</span><span>底標</span></div>
+                      <div class="grade-row grade-below-average"><span>B</span><span>基礎</span><span>基礎</span></div>
+                      <div class="grade-row grade-needs-improvement"><span>C</span><span>待加強</span><span>待加強</span></div>
+                    </div>
+                  </div>
+                  <div class="score-items">
+                    <div class="score-item"><i class="fas fa-book"></i> 國文：A++ 到 C</div>
+                    <div class="score-item"><i class="fas fa-language"></i> 英文：A++ 到 C</div>
+                    <div class="score-item"><i class="fas fa-calculator"></i> 數學：A++ 到 C</div>
+                    <div class="score-item"><i class="fas fa-flask"></i> 自然：A++ 到 C</div>
+                    <div class="score-item"><i class="fas fa-globe"></i> 社會：A++ 到 C</div>
+                    <div class="score-item"><i class="fas fa-pen-nib"></i> 作文：0 到 6 級分</div>
+                  </div>
+                </div>
+              </div>
+              <div class="instruction-nav">
+                <button class="nav-btn prev-btn" onclick="changeInstructionPanel(2)">
+                  <i class="fas fa-chevron-left"></i> 上一步
+                </button>
+                <div class="mobile-panel-indicator">
+                  <span class="indicator-dot" data-dot="1"></span>
+                  <span class="indicator-dot" data-dot="2"></span>
+                  <span class="indicator-dot active" data-dot="3"></span>
+                  <span class="indicator-dot" data-dot="4"></span>
+                  <span class="indicator-dot" data-dot="5"></span>
+                </div>
+                <button class="nav-btn next-btn" onclick="changeInstructionPanel(4)">
+                  下一步 <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="instruction-panel" data-panel="4">
+              <h3><i class="fas fa-chart-line icon"></i> 分析落點結果</h3>
+              <div class="instruction-panel-content">
+                <div class="analysis-preview">
+                  <div class="analysis-item">
+                    <div class="analysis-icon">
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <div class="analysis-info">
+                      <h4>總積分計算結果</h4>
+                      <p>系統會根據您選擇的區域計算出總積分</p>
+                    </div>
+                  </div>
+                  <div class="analysis-item">
+                    <div class="analysis-icon">
+                      <i class="fas fa-award"></i>
+                    </div>
+                    <div class="analysis-info">
+                      <h4>總積點計算結果</h4>
+                      <p>根據各區域的特定計分方式計算積點</p>
+                    </div>
+                  </div>
+                  <div class="analysis-item">
+                    <div class="analysis-icon">
+                      <i class="fas fa-school"></i>
+                    </div>
+                    <div class="analysis-info">
+                      <h4>符合條件的學校列表</h4>
+                      <p>顯示所有符合您條件和成績的學校</p>
+                    </div>
+                  </div>
+                  <div class="analysis-item">
+                    <div class="analysis-icon">
+                      <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="analysis-info">
+                      <h4>學校分類統計</h4>
+                      <p>各類型學校的數量與比例</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="instruction-tip">
+                  <i class="fas fa-lightbulb"></i>
+                  <span>點選學校名稱可查看更詳細的學校資訊</span>
+                </div>
+              </div>
+              <div class="instruction-nav">
+                <button class="nav-btn prev-btn" onclick="changeInstructionPanel(3)">
+                  <i class="fas fa-chevron-left"></i> 上一步
+                </button>
+                <div class="mobile-panel-indicator">
+                  <span class="indicator-dot" data-dot="1"></span>
+                  <span class="indicator-dot" data-dot="2"></span>
+                  <span class="indicator-dot" data-dot="3"></span>
+                  <span class="indicator-dot active" data-dot="4"></span>
+                  <span class="indicator-dot" data-dot="5"></span>
+                </div>
+                <button class="nav-btn next-btn" onclick="changeInstructionPanel(5)">
+                  下一步 <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="instruction-panel" data-panel="5">
+              <h3><i class="fas fa-file-export icon"></i> 匯出與比較</h3>
+              <div class="instruction-panel-content">
+                <p>您可以將分析結果匯出為多種格式，或進行學校比較：</p>
+                <div class="export-options">
+                  <div class="export-option">
+                    <i class="fas fa-file-alt"></i>
+                    <span>文字檔 (.txt)</span>
+                    <small>簡單易讀的純文字格式</small>
+                  </div>
+                  <div class="export-option">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>PDF檔 (.pdf)</span>
+                    <small>適合列印或正式保存</small>
+                  </div>
+                  <div class="export-option">
+                    <i class="fas fa-file-excel"></i>
+                    <span>Excel檔 (.xlsx)</span>
+                    <small>可在電子表格軟體中開啟</small>
+                  </div>
+                  <div class="export-option">
+                    <i class="fas fa-file-code"></i>
+                    <span>JSON檔 (.json)</span>
+                    <small>適合程式開發者使用</small>
+                  </div>
+                  <div class="export-option">
+                    <i class="fas fa-print"></i>
+                    <span>直接列印</span>
+                    <small>使用瀏覽器列印功能輸出結果</small>
+                  </div>
+                </div>
+                <div class="comparison-feature">
+                  <h4><i class="fas fa-exchange-alt"></i> 學校比較功能</h4>
+                  <p>將感興趣的學校加入比較清單，系統會生成詳細的比較表格，協助您做出更明智的選擇。</p>
+                </div>
+                <div class="instruction-tip">
+                  <i class="fas fa-info-circle"></i>
+                  <span>分析結果僅供參考，請務必與學校官方招生簡章核對</span>
+                </div>
+              </div>
+              <div class="instruction-nav">
+                <button class="nav-btn prev-btn" onclick="changeInstructionPanel(4)">
+                  <i class="fas fa-chevron-left"></i> 上一步
+                </button>
+                <div class="mobile-panel-indicator">
+                  <span class="indicator-dot" data-dot="1"></span>
+                  <span class="indicator-dot" data-dot="2"></span>
+                  <span class="indicator-dot" data-dot="3"></span>
+                  <span class="indicator-dot" data-dot="4"></span>
+                  <span class="indicator-dot active" data-dot="5"></span>
+                </div>
+                <button class="nav-btn next-btn" onclick="closeInstructions()">
+                  開始使用 <i class="fas fa-check"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-
-        <div class="instruction-item slide-in" style="animation-delay: 0.6s;">
-          <h3>
-            <i class="fas fa-chart-line icon"></i>分析落點結果
-          </h3>
-          <p>系統會根據您的輸入進行分析並顯示：</p>
-          <ul>
-            <li><i class="fas fa-star"></i> 總積分計算結果</li>
-            <li><i class="fas fa-award"></i> 總積點計算結果</li>
-            <li><i class="fas fa-school"></i> 符合條件的學校列表</li>
-            <li><i class="fas fa-chart-pie"></i> 各類型學校的數量統計</li>
-          </ul>
-          <div class="instruction-visual">
-            <i class="fas fa-search icon-large"></i>
-            <div>系統會自動計算您的總積分，並比對各校最低錄取標準</div>
-          </div>
-        </div>
-
-        <div class="instruction-item slide-in" style="animation-delay: 0.7s;">
-          <h3>
-            <i class="fas fa-file-export icon"></i>匯出和列印分析結果
-          </h3>
-          <p>您可以將分析結果匯出為多種格式，或直接列印：</p>
-          <ul>
-            <li><i class="fas fa-file-alt"></i> 文字檔 (.txt) - 簡單易讀的純文字格式</li>
-            <li><i class="fas fa-file-pdf"></i> PDF檔 (.pdf) - 適合列印或正式保存</li>
-            <li><i class="fas fa-file-excel"></i> Excel檔 (.xlsx) - 可在電子表格軟體中開啟</li>
-            <li><i class="fas fa-file-code"></i> JSON檔 (.json) - 適合程式開發者使用</li>
-            <li><i class="fas fa-print"></i> 直接列印 - 使用瀏覽器列印功能輸出結果</li>
-          </ul>
-          <div class="highlight">
-            <i class="fas fa-lightbulb"></i> 建議將結果匯出保存或列印，方便日後參考比較。
-          </div>
-        </div>
-
-        <div class="instruction-item slide-in" style="animation-delay: 0.8s;">
-          <h3>
-            <i class="fas fa-redo icon"></i>重新分析
-          </h3>
-          <p>您可以隨時：</p>
-          <ul>
-            <li><i class="fas fa-sliders-h"></i> 修改篩選條件</li>
-            <li><i class="fas fa-edit"></i> 更新會考成績</li>
-            <li><i class="fas fa-sync"></i> 重新進行分析</li>
-          </ul>
-          <div class="highlight">
-            <i class="fas fa-sync"></i> 系統會即時更新分析結果，讓您掌握不同選擇的可能性。
-          </div>
-          <div class="instruction-visual">
-            <i class="fas fa-check-circle icon-large"></i>
-            <div>分析結果僅供參考，請務必與學校招生簡章核對</div>
-          </div>
-        </div>
-        
-        <button class="confirm-button hover-glow" onclick="closeInstructions()">
-          <i class="fas fa-check-circle icon"></i> 我已了解
-        </button>
       </div>
     </div>
 

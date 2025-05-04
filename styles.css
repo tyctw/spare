@@ -1136,13 +1136,29 @@ button:hover:before {
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 9999;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.7);
+  animation: modalFadeIn 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal.fade-out {
+  animation: modalFadeOut 0.3s ease forwards;
+}
+
+@keyframes modalFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 .modal-content {
@@ -1155,6 +1171,18 @@ button:hover:before {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    height: 100%;
+    max-height: 100vh;
+    overflow: auto;
+  }
 }
 
 .close {
@@ -3726,9 +3754,18 @@ button:hover:before {
 
 @media (max-width: 768px) {
   .instructions-modal-content {
-    width: 90%;
-    padding: 25px;
-    margin: 5vh auto;
+    padding: 20px;
+    margin: 0 !important;
+    border-radius: 0;
+    width: 100% !important;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 
@@ -4772,4 +4809,1089 @@ button:hover:before {
 
 .dark-mode .region-label:hover {
   background: rgba(40, 44, 65, 0.8);
+}
+
+.modal-close {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+  font-size: 18px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: var(--primary-color);
+  color: #fff;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modal-close:active {
+  transform: rotate(90deg) scale(0.95);
+}
+
+.dark-mode .modal-close {
+  background: rgba(0, 0, 0, 0.3);
+  color: #edf2f4;
+}
+
+.dark-mode .modal-close:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+/* New Instructions Guide Styles */
+.instructions-guide {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  gap: 20px;
+}
+
+.instructions-steps {
+  flex: 0 0 220px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.instruction-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.instruction-step.active {
+  background: rgba(67, 97, 238, 0.1);
+  border-left-color: var(--primary-color);
+  opacity: 1;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.instruction-step.active .step-number {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(67, 97, 238, 0.4);
+}
+
+.step-title {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.instructions-content {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.instruction-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  transform: translateX(30px);
+  display: flex;
+  flex-direction: column;
+}
+
+.instruction-panel.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.instruction-panel h3 {
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+  padding-bottom: 15px;
+}
+
+.instruction-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.instruction-panel-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.instruction-panel-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.instruction-panel-content::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 3px;
+}
+
+.instruction-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.instruction-method {
+  flex: 1;
+  min-width: 120px;
+  background: var(--card-background);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.instruction-method:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.instruction-method i {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
+.instruction-tip {
+  background: rgba(67, 97, 238, 0.1);
+  padding: 12px 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+  font-weight: 500;
+}
+
+.instruction-tip i {
+  color: var(--secondary-color);
+  font-size: 1.2rem;
+}
+
+.instruction-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 20px;
+}
+
+.nav-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.nav-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.nav-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.prev-btn {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--text-color);
+}
+
+.instruction-criteria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.criteria-item {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.criteria-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.criteria-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.criteria-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+}
+
+.criteria-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.instruction-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.grade-card {
+  background: var(--card-background);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.grade-header {
+  background: var(--primary-color);
+  color: white;
+  padding: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.grade-body {
+  padding: 5px;
+}
+
+.grade-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.grade-row:first-child {
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.grade-excellent { background: rgba(46, 204, 113, 0.1); }
+.grade-great { background: rgba(52, 152, 219, 0.1); }
+.grade-good { background: rgba(155, 89, 182, 0.1); }
+.grade-above-average { background: rgba(241, 196, 15, 0.1); }
+.grade-average { background: rgba(230, 126, 34, 0.1); }
+.grade-below-average { background: rgba(231, 76, 60, 0.1); }
+.grade-needs-improvement { background: rgba(192, 57, 43, 0.1); }
+
+.score-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.score-item {
+  background: var(--card-background);
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.score-item i {
+  color: var(--primary-color);
+}
+
+.analysis-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.analysis-item {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.analysis-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.analysis-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+}
+
+.analysis-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.export-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.export-option {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-option:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.export-option i {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+.export-option span {
+  font-weight: 500;
+}
+
+.export-option small {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.comparison-feature {
+  background: rgba(67, 97, 238, 0.05);
+  border-radius: 12px;
+  padding: 15px;
+  margin: 20px 0;
+  border-left: 3px solid var(--primary-color);
+}
+
+.comparison-feature h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px 0;
+  color: var(--primary-color);
+}
+
+.comparison-feature p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Dark mode adjustments */
+.dark-mode .instructions-steps {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .instruction-step.active {
+  background: rgba(67, 97, 238, 0.2);
+}
+
+.dark-mode .instruction-tip {
+  background: rgba(67, 97, 238, 0.2);
+}
+
+.dark-mode .prev-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.dark-mode .criteria-info p,
+.dark-mode .analysis-info p,
+.dark-mode .export-option small {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .instruction-method,
+.dark-mode .criteria-item,
+.dark-mode .grade-card,
+.dark-mode .score-item,
+.dark-mode .analysis-item,
+.dark-mode .export-option {
+  background: rgba(30, 30, 30, 0.5);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .grade-row:first-child {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .grade-excellent { background: rgba(46, 204, 113, 0.2); }
+.dark-mode .grade-great { background: rgba(52, 152, 219, 0.2); }
+.dark-mode .grade-good { background: rgba(155, 89, 182, 0.2); }
+.dark-mode .grade-above-average { background: rgba(241, 196, 15, 0.2); }
+.dark-mode .grade-average { background: rgba(230, 126, 34, 0.2); }
+.dark-mode .grade-below-average { background: rgba(231, 76, 60, 0.2); }
+.dark-mode .grade-needs-improvement { background: rgba(192, 57, 43, 0.2); }
+
+.dark-mode .comparison-feature {
+  background: rgba(67, 97, 238, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .instructions-guide {
+    flex-direction: column;
+  }
+  
+  .instructions-steps {
+    flex: none;
+    padding: 10px 0;
+    overflow-x: auto;
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  .instruction-step {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+  
+  .step-number {
+    width: 26px;
+    height: 26px;
+    font-size: 0.8rem;
+  }
+  
+  .step-title {
+    font-size: 0.9rem;
+  }
+  
+  .instruction-panel {
+    position: relative;
+    height: auto;
+  }
+  
+  .instruction-criteria,
+  .score-items,
+  .analysis-preview,
+  .export-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .instruction-panel-content {
+    max-height: 60vh;
+  }
+  
+  .nav-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    min-width: 100px;
+  }
+}
+
+/* 手機版使用說明優化 */
+@media (max-width: 768px) {
+  .instructions-modal-content {
+    padding: 20px;
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+  
+  .instructions-guide {
+    height: calc(100vh - 120px);
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .instructions-steps {
+    flex: none;
+    padding: 8px;
+    overflow-x: auto;
+    flex-direction: row;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 5px;
+  }
+  
+  .instructions-steps::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .instruction-step {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    border-left: none;
+    font-size: 0.9rem;
+    min-width: auto;
+    margin: 0 3px;
+    flex-shrink: 0;
+    width: auto;
+    border: 1px solid transparent;
+  }
+  
+  .instruction-step.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+  
+  .step-number {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary-color);
+  }
+  
+  .instruction-step.active .step-number {
+    background: white;
+    color: var(--primary-color);
+  }
+  
+  .step-title {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+  
+  .instruction-step.active .step-title {
+    font-weight: 500;
+  }
+  
+  .instructions-content {
+    height: calc(100% - 80px);
+  }
+  
+  .instruction-panel {
+    position: relative;
+    height: 100%;
+    padding-bottom: 70px;
+  }
+  
+  .instruction-panel h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+  }
+  
+  .instruction-panel-content {
+    padding: 0 5px 15px 5px;
+    max-height: none;
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .instruction-methods {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .instruction-method {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 12px;
+    min-height: 54px;
+  }
+  
+  .instruction-method i {
+    margin-right: 12px;
+    font-size: 1.4rem;
+    width: 30px;
+    text-align: center;
+  }
+  
+  .instruction-tip {
+    padding: 10px;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+  
+  .instruction-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    padding: 12px;
+    margin: 0;
+    z-index: 10;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav-btn {
+    height: 44px;
+    padding: 0 15px;
+    font-size: 0.9rem;
+    min-width: 100px;
+  }
+  
+  /* 面板指示器樣式 */
+  .mobile-panel-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .indicator-dot.active {
+    width: 10px;
+    height: 10px;
+    background: white;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+  }
+  
+  .criteria-item {
+    padding: 12px;
+  }
+  
+  .criteria-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  
+  .criteria-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: 3px;
+  }
+  
+  .criteria-info p {
+    font-size: 0.85rem;
+  }
+  
+  .grade-card {
+    margin: 10px 0;
+  }
+  
+  .grade-header {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .grade-row {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
+  
+  .score-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .score-item {
+    padding: 10px;
+  }
+  
+  .analysis-item {
+    padding: 12px;
+  }
+  
+  .analysis-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  
+  .analysis-info h4 {
+    font-size: 0.95rem;
+  }
+  
+  .analysis-info p {
+    font-size: 0.85rem;
+  }
+  
+  .export-options {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .export-option {
+    padding: 12px 8px;
+  }
+  
+  .export-option i {
+    font-size: 1.5rem;
+    margin-bottom: 3px;
+  }
+  
+  .export-option span {
+    font-size: 0.9rem;
+  }
+  
+  .export-option small {
+    font-size: 0.75rem;
+  }
+  
+  .comparison-feature {
+    padding: 12px;
+    margin: 15px 0;
+  }
+  
+  .comparison-feature h4 {
+    font-size: 1rem;
+  }
+  
+  .comparison-feature p {
+    font-size: 0.85rem;
+  }
+  
+  /* 動態觸控反饋 */
+  .instruction-step:active,
+  .instruction-method:active,
+  .nav-btn:active,
+  .export-option:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* 超小螢幕適配 (iPhone SE等) */
+@media (max-width: 375px) {
+  .instructions-modal-content {
+    padding: 15px;
+  }
+  
+  .instruction-step {
+    padding: 6px 10px;
+  }
+  
+  .step-number {
+    width: 22px;
+    height: 22px;
+    font-size: 0.75rem;
+  }
+  
+  .step-title {
+    font-size: 0.8rem;
+  }
+  
+  .nav-btn {
+    min-width: 80px;
+    font-size: 0.8rem;
+    padding: 0 12px;
+  }
+  
+  .export-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .mobile-panel-indicator {
+    gap: 6px;
+  }
+  
+  .indicator-dot {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .indicator-dot.active {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* 暗黑模式手機版適配 */
+@media (max-width: 768px) {
+  .dark-mode .instruction-step {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark-mode .instruction-step.active {
+    background: var(--primary-color);
+  }
+  
+  .dark-mode .instruction-nav {
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .dark-mode .step-number {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+  
+  .dark-mode .instruction-step.active .step-number {
+    background: white;
+    color: var(--primary-color);
+  }
+  
+  .dark-mode .indicator-dot {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .dark-mode .indicator-dot.active {
+    background: white;
+  }
+}
+
+.mobile-guide-notice {
+  display: none;
+  background: var(--primary-color);
+  color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  animation: fadeInDown 0.5s ease;
+}
+
+.mobile-guide-notice i {
+  margin-right: 5px;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-guide-notice {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .instruction-panel {
+    position: relative;
+    height: 100%;
+    padding-bottom: 70px;
+    overflow: visible;
+    display: none;
+  }
+  
+  .instruction-panel.active {
+    display: block;
+  }
+  
+  .instruction-panel-content {
+    padding: 0 5px 80px 5px;
+    max-height: none;
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    z-index: 5;
+  }
+  
+  .instruction-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(67, 97, 238, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 15px;
+    margin: 0;
+    z-index: 100;
+    border-top: 1px solid rgba(67, 97, 238, 0.2);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.mobile-instruction-note {
+  display: none;
+  background: var(--accent-color);
+  color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  animation: fadeInDown 0.5s ease;
+  animation-delay: 0.3s;
+}
+
+.mobile-instruction-note i {
+  margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .mobile-instruction-note {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .instruction-criteria {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+    overflow-y: visible;
+  }
+  
+  .criteria-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    gap: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .criteria-icon {
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(67, 97, 238, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--primary-color);
+  }
+}
+
+.flash-highlight {
+  animation: buttonFlash 0.5s ease;
+}
+
+@keyframes buttonFlash {
+  0% { transform: scale(1); background: var(--primary-color); }
+  50% { transform: scale(1.05); background: var(--accent-color); box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+  100% { transform: scale(1); background: var(--primary-color); }
+}
+
+/* Ensure navigation is always visible by adding a helper tooltip on mobile */
+@media (max-width: 768px) {
+  .nav-helper-tip {
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    animation: fadeInOut 3s ease forwards;
+  }
+  
+  @keyframes fadeInOut {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+  }
 }

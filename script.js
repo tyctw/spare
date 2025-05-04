@@ -101,24 +101,111 @@ function toggleInstructions() {
   showInstructions();
 }
 
+// Function to change instruction panel
+function changeInstructionPanel(panelNumber) {
+  // Update active panel
+  document.querySelectorAll('.instruction-panel').forEach(panel => {
+    panel.classList.remove('active');
+  });
+  const activePanel = document.querySelector(`.instruction-panel[data-panel="${panelNumber}"]`);
+  activePanel.classList.add('active');
+  
+  // Update active step
+  document.querySelectorAll('.instruction-step').forEach(step => {
+    step.classList.remove('active');
+  });
+  document.querySelector(`.instruction-step[data-step="${panelNumber}"]`).classList.add('active');
+  
+  // Update mobile indicator dots
+  document.querySelectorAll('.indicator-dot').forEach(dot => {
+    dot.classList.remove('active');
+  });
+  document.querySelector(`.indicator-dot[data-dot="${panelNumber}"]`).classList.add('active');
+  
+  // On mobile, scroll content to top and ensure buttons remain visible
+  if (window.innerWidth <= 768) {
+    const contentEl = activePanel.querySelector('.instruction-panel-content');
+    if (contentEl) {
+      contentEl.scrollTop = 0;
+    }
+    
+    // Flash navigation buttons to draw attention
+    const navButtons = document.querySelectorAll('.nav-btn');
+    navButtons.forEach(btn => {
+      btn.classList.add('flash-highlight');
+      setTimeout(() => {
+        btn.classList.remove('flash-highlight');
+      }, 500);
+    });
+  }
+}
+
+// Initialize instruction panel step click handlers
+function initInstructionSteps() {
+  document.querySelectorAll('.instruction-step').forEach(step => {
+    const stepNumber = step.getAttribute('data-step');
+    step.addEventListener('click', () => {
+      changeInstructionPanel(stepNumber);
+    });
+  });
+}
+
 function showInstructions() {
   var modal = document.getElementById('instructionsModal');
   modal.style.display = 'block';
+  // Reset any previous fade-out
+  modal.classList.remove('fade-out');
+  
+  // 修正手機版樣式
+  if (window.innerWidth <= 768) {
+    document.body.style.overflow = 'hidden'; // 防止背景滾動
+    modal.style.overflowY = 'auto';
+    
+    // Create a temporary nav helper tip that appears after a delay
+    setTimeout(() => {
+      const helperTip = modal.querySelector('.nav-helper-tip');
+      if (helperTip) {
+        helperTip.style.opacity = '1';
+      }
+    }, 1500);
+  }
+  
+  // Initialize instruction steps
+  initInstructionSteps();
+  
+  // Reset to first panel
+  changeInstructionPanel(1);
 }
 
 function closeInstructions() {
   var modal = document.getElementById('instructionsModal');
-  modal.style.display = 'none';
+  // Add fade-out animation
+  modal.classList.add('fade-out');
+  // Wait for animation to complete before hiding
+  setTimeout(() => {
+    modal.style.display = 'none';
+    modal.classList.remove('fade-out');
+    // 恢復滾動
+    document.body.style.overflow = '';
+  }, 300);
 }
 
 function showDisclaimer() {
   var modal = document.getElementById('disclaimerModal');
   modal.style.display = 'block';
+  // Reset any previous fade-out
+  modal.classList.remove('fade-out');
 }
 
 function closeDisclaimer() {
   var modal = document.getElementById('disclaimerModal');
-  modal.style.display = 'none';
+  // Add fade-out animation
+  modal.classList.add('fade-out');
+  // Wait for animation to complete before hiding
+  setTimeout(() => {
+    modal.style.display = 'none';
+    modal.classList.remove('fade-out');
+  }, 300);
 }
 
 function showInvitationValidationAnimation() {
