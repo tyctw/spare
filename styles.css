@@ -455,23 +455,51 @@ button:hover:before {
   color: var(--menu-text);
   font-size: 1.3em;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
   width: 46px;
   height: 46px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 2001;
   backdrop-filter: blur(5px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15), inset 0 -2px 5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
 .close-menu:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.25));
   transform: rotate(90deg) scale(1.1);
   color: var(--accent-color);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2), 0 0 0 2px var(--accent-color);
+}
+
+.close-menu:active {
+  transform: rotate(90deg) scale(0.95);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--accent-color);
+}
+
+.close-menu:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 1;
+  transition: all 0.4s ease;
+}
+
+.close-menu:hover:before {
+  width: 150px;
+  height: 150px;
+  opacity: 0.5;
 }
 
 .menu-overlay {
@@ -645,7 +673,26 @@ button:hover:before {
 }
 
 .dark-mode .close-menu {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(30, 35, 60, 0.9), rgba(30, 35, 60, 0.6));
+  color: #edf2f4;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .close-menu:hover {
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), 0 0 0 2px var(--accent-color);
+  background: linear-gradient(135deg, rgba(30, 35, 60, 0.95), rgba(30, 35, 60, 0.7));
+}
+
+.dark-mode .close {
+  background: linear-gradient(135deg, rgba(30, 35, 60, 0.9), rgba(30, 35, 60, 0.6));
+  color: #edf2f4;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .close:hover {
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), 0 0 0 2px var(--primary-color);
 }
 
 .dark-mode .close-menu:hover {
@@ -1185,19 +1232,130 @@ button:hover:before {
   }
 }
 
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+/* 為關閉按鈕添加強制性圓形樣式 */
+.close,
+.modal-close,
+.new-close-button {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 40px !important; /* 強制寬度 */
+  height: 40px !important; /* 強制高度 */
+  min-width: 40px !important; /* 防止最小寬度覆蓋 */
+  min-height: 40px !important; /* 防止最小高度覆蓋 */
+  max-width: 40px !important; /* 防止最大寬度覆蓋 */
+  max-height: 40px !important; /* 防止最大高度覆蓋 */
+  aspect-ratio: 1 / 1 !important; /* 強制寬高比例為1:1 */
+  border-radius: 50% !important; /* 強制圓角 */
+  padding: 0 !important; /* 移除可能的內邊距 */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4));
+  backdrop-filter: blur(5px);
+  border: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15), inset 0 -2px 5px rgba(0, 0, 0, 0.05);
+  color: var(--primary-color);
+  font-size: 18px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.close i,
+.modal-close i,
+.new-close-button i {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 2;
+}
+
+.close:before,
+.modal-close:before,
+.new-close-button:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 1;
+  transition: all 0.4s ease;
 }
 
 .close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
+.modal-close:hover,
+.new-close-button:hover {
+  transform: rotate(90deg) scale(1.1);
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2), 0 0 0 2px var(--primary-color);
+}
+
+.close:hover:before,
+.modal-close:hover:before,
+.new-close-button:hover:before {
+  width: 150px;
+  height: 150px;
+  opacity: 0.08;
+}
+
+.close:active,
+.modal-close:active,
+.new-close-button:active {
+  transform: rotate(90deg) scale(0.95);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--primary-color);
+}
+
+.close:after,
+.modal-close:after,
+.new-close-button:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--primary-color);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.7);
+  z-index: 0;
+  animation: close-pulse-ring 2s infinite;
+}
+
+@keyframes close-pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* 深色模式下的關閉按鈕 */
+.dark-mode .close,
+.dark-mode .modal-close,
+.dark-mode .new-close-button {
+  background: linear-gradient(135deg, rgba(30, 35, 60, 0.9), rgba(30, 35, 60, 0.6));
+  color: #edf2f4;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .close:hover,
+.dark-mode .modal-close:hover,
+.dark-mode .new-close-button:hover {
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), 0 0 0 2px var(--primary-color);
 }
 
 .confirm-button {
@@ -2025,16 +2183,17 @@ button:hover:before {
 
 /* 區域選擇器改進 */
 .region-selector {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
   margin-bottom: 20px;
+  perspective: 1000px;
 }
 
 .region-option {
-  flex-basis: calc(50% - 10px);
   position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
 }
 
 .region-input {
@@ -2047,35 +2206,152 @@ button:hover:before {
 .region-label {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 18px;
   background: rgba(255, 255, 255, 0.8);
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
   position: relative;
   border: 2px solid transparent;
-  backdrop-filter: blur(4px);
-  height: 120px;
+  backdrop-filter: blur(10px);
+  height: 130px;
+  transform: translateZ(0);
 }
 
 .region-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
-  font-size: 1.5rem;
-  margin-right: 15px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-size: 1.7rem;
+  margin-right: 20px;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   flex-shrink: 0;
-  box-shadow: 0 6px 16px rgba(58, 12, 163, 0.2);
+  box-shadow: 0 8px 20px rgba(58, 12, 163, 0.2);
   z-index: 2;
+}
+
+/* 區域圖標添加裝飾效果 */
+.region-icon::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: -1;
+}
+
+.region-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 60%);
+  z-index: 1;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.region-input:checked + .region-label .region-icon::after {
+  opacity: 1;
+  animation: pulse-ring 1.5s infinite ease-out;
+}
+
+.region-label:hover .region-icon::after {
+  opacity: 0.7;
+}
+
+/* 加強區域懸停效果 */
+.region-option:hover .region-label {
+  transform: translateY(-3px) translateZ(10px) scale(1.01);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.region-option:hover .region-icon {
+  animation: iconFloat 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes iconFloat {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-5px) rotate(5deg);
+  }
+}
+
+/* 暗黑模式優化 */
+.dark-mode .region-label {
+  background: rgba(30, 32, 44, 0.7);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  border-color: rgba(60, 62, 74, 0.3);
+}
+
+.dark-mode .region-name {
+  color: #e0e0ff;
+}
+
+.dark-mode .region-description {
+  color: #b0b0c0;
+}
+
+.dark-mode .region-feature {
+  background: rgba(40, 42, 58, 0.8);
+  color: #d0d0f0;
+}
+
+.dark-mode .region-feature i {
+  color: #7a93ed;
+}
+
+.dark-mode .region-input:checked + .region-label {
+  background: rgba(35, 37, 51, 0.9);
+  border-color: #5d6bbc;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .region-input:checked + .region-label .region-name {
+  color: #7a93ed;
+}
+
+.dark-mode .ripple-effect {
+  background-color: rgba(122, 147, 237, 0.15);
+}
+
+.dark-mode #region-taoyuan + .region-label .region-feature {
+  background: rgba(67, 97, 238, 0.2);
+}
+
+.dark-mode #region-central + .region-label .region-feature {
+  background: rgba(6, 214, 160, 0.2);
+}
+
+.dark-mode #region-kaohsiung + .region-label .region-feature {
+  background: rgba(239, 71, 111, 0.2);
+}
+
+.dark-mode #region-changhua + .region-label .region-feature {
+  background: rgba(17, 138, 178, 0.2);
+}
+
+.dark-mode .region-label:hover {
+  background: rgba(35, 37, 51, 0.8);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .region-text {
@@ -2087,7 +2363,32 @@ button:hover:before {
   font-size: 1.2rem;
   margin-bottom: 5px;
   color: var(--primary-color);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  display: inline-block;
+  text-shadow: 0 0 0 rgba(67, 97, 238, 0);
+}
+
+.region-name::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  transition: width 0.4s ease;
+  opacity: 0.8;
+  border-radius: 2px;
+}
+
+.region-label:hover .region-name::after {
+  width: 100%;
+}
+
+.region-input:checked + .region-label .region-name {
+  transform: scale(1.05);
+  text-shadow: 0 0 8px rgba(67, 97, 238, 0.3);
 }
 
 .region-description {
@@ -4618,11 +4919,32 @@ button:hover:before {
   display: inline-flex;
   align-items: center;
   background-color: rgba(67, 97, 238, 0.1);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.75rem;
   color: var(--primary-color);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.region-feature::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    rgba(255, 255, 255, 0) 100%);
+  transition: all 0.8s ease;
+}
+
+.region-label:hover .region-feature::before {
+  left: 100%;
 }
 
 .region-feature i {
@@ -4811,44 +5133,55 @@ button:hover:before {
   background: rgba(40, 44, 65, 0.8);
 }
 
-.modal-close {
-  position: absolute;
-  right: 15px;
-  top: 15px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-color);
-  font-size: 18px;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-}
+/* 此類別通過全局樣式設定 */
 
-.modal-close:hover {
-  background: var(--primary-color);
-  color: #fff;
-  transform: rotate(90deg) scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.modal-close:active {
-  transform: rotate(90deg) scale(0.95);
-}
+/* 已透過全局樣式設定 */
 
 .dark-mode .modal-close {
-  background: rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, rgba(30, 35, 60, 0.9), rgba(30, 35, 60, 0.6));
   color: #edf2f4;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .dark-mode .modal-close:hover {
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), 0 0 0 2px var(--primary-color);
+}
+
+.modal-close:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
   background: var(--primary-color);
-  color: #fff;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.7);
+  z-index: 0;
+  animation: pulseRing 2s infinite;
+}
+
+.modal-close:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 1;
+  transition: all 0.4s ease;
+}
+
+.modal-close:hover:before {
+  width: 150px;
+  height: 150px;
+  opacity: 0.8;
 }
 
 /* New Instructions Guide Styles */
@@ -5893,5 +6226,204 @@ button:hover:before {
     15% { opacity: 1; }
     85% { opacity: 1; }
     100% { opacity: 0; }
+  }
+}
+
+/* 全新關閉按鈕設計 */
+/* 此類別通過全局樣式設定 */
+
+/* 已通過全局樣式設定 */
+
+/* 已透過全局樣式設定 */
+
+/* 已透過全局樣式設定 */
+
+/* 深色模式樣式 */
+/* 已透過全局深色模式樣式設定 */
+
+/* 動畫效果 */
+/* 已透過全局樣式設定 */
+
+/* 已透過全局樣式設定 */
+
+/* 響應式樣式 */
+@media (max-width: 768px) {
+  .close,
+  .modal-close,
+  .new-close-button {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    right: 15px;
+    top: 15px;
+    font-size: 16px;
+  }
+}
+
+/* 為每個區域添加獨特的選中後脈動動畫 */
+@keyframes pulse-icon-taoyuan {
+  0% {
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 12px 30px rgba(67, 97, 238, 0.3);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+    box-shadow: 0 15px 35px rgba(67, 97, 238, 0.4);
+  }
+  100% {
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 12px 30px rgba(67, 97, 238, 0.3);
+  }
+}
+
+@keyframes pulse-icon-central {
+  0% {
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 12px 30px rgba(6, 214, 160, 0.3);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+    box-shadow: 0 15px 35px rgba(6, 214, 160, 0.4);
+  }
+  100% {
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 12px 30px rgba(6, 214, 160, 0.3);
+  }
+}
+
+@keyframes pulse-icon-kaohsiung {
+  0% {
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 12px 30px rgba(239, 71, 111, 0.3);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+    box-shadow: 0 15px 35px rgba(239, 71, 111, 0.4);
+  }
+  100% {
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 12px 30px rgba(239, 71, 111, 0.3);
+  }
+}
+
+@keyframes pulse-icon-changhua {
+  0% {
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 12px 30px rgba(17, 138, 178, 0.3);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+    box-shadow: 0 15px 35px rgba(17, 138, 178, 0.4);
+  }
+  100% {
+    transform: scale(1.15) rotate(8deg);
+    box-shadow: 0 12px 30px rgba(17, 138, 178, 0.3);
+  }
+}
+
+/* 添加選中動畫 */
+#region-taoyuan:checked + .region-label .region-icon {
+  animation: pulse-icon-taoyuan 2s infinite ease-in-out;
+}
+
+#region-central:checked + .region-label .region-icon {
+  animation: pulse-icon-central 2s infinite ease-in-out;
+}
+
+#region-kaohsiung:checked + .region-label .region-icon {
+  animation: pulse-icon-kaohsiung 2s infinite ease-in-out;
+}
+
+#region-changhua:checked + .region-label .region-icon {
+  animation: pulse-icon-changhua 2s infinite ease-in-out;
+}
+
+/* 區域卡片光效 */
+.region-label {
+  position: relative;
+  overflow: hidden;
+}
+
+.region-label::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(circle at center, transparent 30%, rgba(255, 255, 255, 0));
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 0.6s ease-out;
+  pointer-events: none;
+}
+
+.region-input:checked + .region-label::after {
+  opacity: 1;
+  animation: region-glow 2s infinite alternate ease-in-out;
+}
+
+@keyframes region-glow {
+  0% {
+    background: radial-gradient(circle at center, transparent 30%, rgba(255, 255, 255, 0));
+  }
+  100% {
+    background: radial-gradient(circle at center, rgba(67, 97, 238, 0.05) 30%, rgba(255, 255, 255, 0));
+  }
+}
+
+/* 為各區域定制發光效果 */
+#region-taoyuan:checked + .region-label::after {
+  animation: region-glow-taoyuan 2s infinite alternate ease-in-out;
+}
+
+#region-central:checked + .region-label::after {
+  animation: region-glow-central 2s infinite alternate ease-in-out;
+}
+
+#region-kaohsiung:checked + .region-label::after {
+  animation: region-glow-kaohsiung 2s infinite alternate ease-in-out;
+}
+
+#region-changhua:checked + .region-label::after {
+  animation: region-glow-changhua 2s infinite alternate ease-in-out;
+}
+
+@keyframes region-glow-taoyuan {
+  0% {
+    background: radial-gradient(circle at center, transparent 30%, rgba(255, 255, 255, 0));
+  }
+  100% {
+    background: radial-gradient(circle at center, rgba(67, 97, 238, 0.08) 30%, rgba(255, 255, 255, 0));
+  }
+}
+
+@keyframes region-glow-central {
+  0% {
+    background: radial-gradient(circle at center, transparent 30%, rgba(255, 255, 255, 0));
+  }
+  100% {
+    background: radial-gradient(circle at center, rgba(6, 214, 160, 0.08) 30%, rgba(255, 255, 255, 0));
+  }
+}
+
+@keyframes region-glow-kaohsiung {
+  0% {
+    background: radial-gradient(circle at center, transparent 30%, rgba(255, 255, 255, 0));
+  }
+  100% {
+    background: radial-gradient(circle at center, rgba(239, 71, 111, 0.08) 30%, rgba(255, 255, 255, 0));
+  }
+}
+
+@keyframes region-glow-changhua {
+  0% {
+    background: radial-gradient(circle at center, transparent 30%, rgba(255, 255, 255, 0));
+  }
+  100% {
+    background: radial-gradient(circle at center, rgba(17, 138, 178, 0.08) 30%, rgba(255, 255, 255, 0));
   }
 }

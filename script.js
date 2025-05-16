@@ -2452,7 +2452,9 @@ function showSchoolComparison() {
     
     modal.innerHTML = `
       <div class="modal-content comparison-modal-content">
-        <span class="close" onclick="closeComparisonModal()">&times;</span>
+        <button class="new-close-button" onclick="closeComparisonModal()">
+          <i class="fas fa-times"></i>
+        </button>
         <h2><i class="fas fa-balance-scale icon"></i> 學校比較</h2>
         <div id="comparisonContainer"></div>
         <button class="confirm-button" onclick="closeComparisonModal()">
@@ -3354,7 +3356,9 @@ function showSchoolDetails(schoolName) {
   // Enhanced school details with more information and visualization
   modal.innerHTML = `
     <div class="modal-content" style="max-width: 800px;">
-      <span class="close" onclick="closeSchoolDetailsModal()">&times;</span>
+      <button class="new-close-button" onclick="closeSchoolDetailsModal()">
+        <i class="fas fa-times"></i>
+      </button>
       <h2 style="color: var(--primary-color); display: flex; align-items: center; gap: 10px;">
         <i class="fas fa-school"></i> ${school.name} 詳細資訊
       </h2>
@@ -3908,7 +3912,9 @@ function showAdvancedComparisonView() {
   
   modal.innerHTML = `
     <div class="modal-content" style="max-width: 90%; width: 1000px; max-height: 85vh; overflow-y: auto;">
-      <span class="close" onclick="closeAdvancedComparisonModal()">&times;</span>
+      <button class="new-close-button" onclick="closeAdvancedComparisonModal()">
+        <i class="fas fa-times"></i>
+      </button>
       <h2 style="color: var(--primary-color); display: flex; align-items: center; gap: 10px;">
         <i class="fas fa-chart-bar"></i> 進階學校比較分析
       </h2>
