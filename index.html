@@ -137,6 +137,79 @@
         opacity: 0.8;
       }
       
+      /* 計分方式顯示區域樣式 */
+      .scoring-info {
+        display: none;
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-left: 4px solid var(--primary-color);
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      
+      .scoring-info.active {
+        display: block;
+      }
+      
+      .scoring-info-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary-color);
+      }
+      
+      .scoring-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
+      }
+      
+      .scoring-item {
+        background-color: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      
+      .scoring-item-header {
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 5px;
+        color: #333;
+      }
+      
+      .scoring-item-value {
+        font-size: 0.9rem;
+        color: #555;
+      }
+      
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(0,0,0,0.1);
+        border-radius: 50%;
+        border-top-color: var(--primary-color);
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 10px;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
       @keyframes slideIn {
         from {
           transform: translateY(-50px);
@@ -468,6 +541,19 @@
           <i class="fas fa-map-marked-alt"></i> 選擇分析區域 <span id="selectedRegionName" class="selected-region">（未選擇）</span>
         </button>
         <input type="hidden" id="selectedRegionValue" name="selectedRegion" value="">
+        
+        <!-- 計分方式顯示區域 -->
+        <div id="scoringInfo" class="scoring-info">
+          <div class="scoring-info-title">
+            <i class="fas fa-calculator"></i> <span id="scoringRegionName"></span> 計分方式
+          </div>
+          <div id="scoringContent">
+            <div class="loading-spinner"></div> 正在載入計分方式...
+          </div>
+          <div class="scoring-details" id="scoringDetails" style="display: none;">
+            <!-- 計分詳情將由JavaScript動態生成 -->
+          </div>
+        </div>
       </div>
       <div class="form-group slide-in" style="animation-delay: 0.8s;">
         <label for="chinese">
@@ -1199,6 +1285,151 @@
     document.getElementById('selectedRegionValue').value = value;
     document.getElementById('selectedRegionName').textContent = name;
     closeRegionModal();
+    
+    // 顯示計分方式
+    showScoringInfo(value, name);
+  }
+  
+  // 查詢並顯示計分方式
+  function showScoringInfo(region, regionName) {
+    const scoringInfo = document.getElementById('scoringInfo');
+    const scoringContent = document.getElementById('scoringContent');
+    const scoringDetails = document.getElementById('scoringDetails');
+    const scoringRegionName = document.getElementById('scoringRegionName');
+    
+    // 顯示載入狀態
+    scoringInfo.classList.add('active');
+    scoringRegionName.textContent = regionName;
+    scoringDetails.style.display = 'none';
+    scoringContent.innerHTML = '<div class="loading-spinner"></div> 正在載入計分方式...';
+    
+    // 模擬後端API請求
+    setTimeout(() => {
+      const scoringData = getScoringMethod(region);
+      
+      if (scoringData) {
+        // 清空載入訊息
+        scoringContent.innerHTML = scoringData.description;
+        
+        // 構建計分詳情
+        let detailsHTML = '';
+        scoringData.details.forEach(item => {
+          detailsHTML += `
+            <div class="scoring-item">
+              <div class="scoring-item-header">
+                <i class="fas ${item.icon}"></i> ${item.title}
+              </div>
+              <div class="scoring-item-value">${item.value}</div>
+            </div>
+          `;
+        });
+        
+        scoringDetails.innerHTML = detailsHTML;
+        scoringDetails.style.display = 'grid';
+      } else {
+        scoringContent.innerHTML = '<i class="fas fa-exclamation-circle"></i> 無法獲取該區域計分方式信息';
+      }
+    }, 800); // 模擬網絡延遲
+  }
+  
+  // 獲取不同區域的計分方式
+  function getScoringMethod(region) {
+    const scoringMethods = {
+      'taoyuan': {
+        description: '桃聯區採用五科等級轉換積分制，並考慮作文級分，同時計算積點總和用於同分比序。',
+        details: [
+          { title: '分數轉換', value: 'A++/A+/A: 6分，B++/B+/B: 4分，C: 2分', icon: 'fa-star' },
+          { title: '作文換算', value: '0級: 0分, 1級: 1分, 2-3級: 2分, 4-6級: 3分', icon: 'fa-pen-nib' },
+          { title: '積點計算', value: 'A++: 7點, A+: 6點, A: 5點, B++: 4點, B+: 3點, B: 2點, C: 1點', icon: 'fa-calculator' },
+          { title: '錄取依據', value: '主要看總分，同分則比總積點', icon: 'fa-sort-amount-up' }
+        ]
+      },
+      'central': {
+        description: '中投區採用五科積分制，並將作文級分納入積點計算用於同分比序。',
+        details: [
+          { title: '分數轉換', value: 'A++/A+/A: 6分，B++/B+/B: 4分，C: 2分', icon: 'fa-star' },
+          { title: '積點計算', value: 'A++: 21點, A+: 18點, A: 15點, B++: 12點, B+: 9點, B: 6點, C: 3點', icon: 'fa-calculator' },
+          { title: '作文積點', value: '作文級分直接轉換為積點(0-6點)', icon: 'fa-pen-nib' },
+          { title: '錄取依據', value: '主要看總分，同分則比總積點', icon: 'fa-sort-amount-up' }
+        ]
+      },
+      'kaohsiung': {
+        description: '高雄區計分方式採用五科積分總和，作文不計入總分但計入積點用於同分比序。',
+        details: [
+          { title: '分數轉換', value: 'A++/A+/A: 6分，B++/B+/B: 4分，C: 2分', icon: 'fa-star' },
+          { title: '積點計算', value: 'A++: 7點, A+: 6點, A: 5點, B++: 4點, B+: 3點, B: 2點, C: 1點', icon: 'fa-calculator' },
+          { title: '作文影響', value: '不計入總分，僅計入積點', icon: 'fa-pen-nib' },
+          { title: '錄取依據', value: '主要看總分，同分則比總積點', icon: 'fa-sort-amount-up' }
+        ]
+      },
+      'changhua': {
+        description: '彰化區直接使用五科原始等級分數加總，採用更細緻的分級計分方式。',
+        details: [
+          { title: '分數轉換', value: 'A++: 9分, A+: 8分, A: 7分, B++: 6分, B+: 5分, B: 4分, C: 3分', icon: 'fa-star' },
+          { title: '計分方式', value: '五科分數直接相加', icon: 'fa-plus' },
+          { title: '作文影響', value: '不計入總分', icon: 'fa-pen-nib' },
+          { title: '錄取依據', value: '僅看總分', icon: 'fa-sort-amount-up' }
+        ]
+      },
+      'taipei': {
+        description: '基北區正在籌備中，預計將採用五科積分總和及作文加權計分。',
+        details: [
+          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
+          { title: '預計上線', value: '2025年4月', icon: 'fa-calendar-alt' }
+        ]
+      },
+      'hsinchu': {
+        description: '竹苗區正在籌備中，預計將採用五科積分及作文級分計算方式。',
+        details: [
+          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
+          { title: '預計上線', value: '2025年4月', icon: 'fa-calendar-alt' }
+        ]
+      },
+      'yunlin': {
+        description: '雲林區正在籌備中，計分方式尚在設計階段。',
+        details: [
+          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
+          { title: '預計上線', value: '2025年5月', icon: 'fa-calendar-alt' }
+        ]
+      },
+      'chiayi': {
+        description: '嘉義區正在籌備中，計分方式尚在設計階段。',
+        details: [
+          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
+          { title: '預計上線', value: '2025年5月', icon: 'fa-calendar-alt' }
+        ]
+      },
+      'tainan': {
+        description: '台南區正在籌備中，計分方式尚在設計階段。',
+        details: [
+          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
+          { title: '預計上線', value: '2025年5月', icon: 'fa-calendar-alt' }
+        ]
+      },
+      'pingtung': {
+        description: '屏東區正在籌備中，計分方式尚在設計階段。',
+        details: [
+          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
+          { title: '預計上線', value: '2025年6月', icon: 'fa-calendar-alt' }
+        ]
+      },
+      'yilan': {
+        description: '宜蘭區正在籌備中，計分方式尚在設計階段。',
+        details: [
+          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
+          { title: '預計上線', value: '2025年6月', icon: 'fa-calendar-alt' }
+        ]
+      },
+      'hualien': {
+        description: '花蓮區正在籌備中，計分方式尚在設計階段。',
+        details: [
+          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
+          { title: '預計上線', value: '2025年6月', icon: 'fa-calendar-alt' }
+        ]
+      }
+    };
+    
+    return scoringMethods[region] || null;
   }
 </script>
   </body>
