@@ -21,7 +21,7 @@
     />
     <meta
       name="keywords"
-      content="會考落點分析,會考成績分析,基北區,雲林區,高中落點分析,免費落點分析,桃聯區,中投區,高雄區,彰化區,國中會考,高中錄取,學校比較,大學升學,升學分析,國中升高中,會考分數,武陵高中,中壢高中,內壢高中,平鎮高中,大園高中,永豐高中,南崁高中,振聲高中,楊梅高中,治平高中,新興高中,關西高中,大溪高中"
+      content="會考落點分析,會考成績分析,高中落點分析,免費落點分析,桃聯區,中投區,高雄區,彰化區,國中會考,高中錄取,學校比較,大學升學,升學分析,國中升高中,會考分數,武陵高中,中壢高中,內壢高中,平鎮高中,大園高中,永豐高中,南崁高中,振聲高中,楊梅高中,治平高中,新興高中,關西高中,大溪高中"
     />
     <meta name="author" content="落點分析研究團隊" />
     <meta property="og:title" content="會考落點分析 | 免費高中落點分析工具" />
@@ -763,8 +763,8 @@
               </div>
             </label>
           </div>
-          <div class="region-option disabled">
-            <input type="radio" id="region-tainan" name="analysisArea" value="tainan" class="region-input" disabled>
+          <div class="region-option">
+            <input type="radio" id="region-tainan" name="analysisArea" value="tainan" class="region-input" onchange="selectRegion('tainan', '台南區')">
             <label for="region-tainan" class="region-label">
               <div class="region-icon">
                 <i class="fas fa-landmark"></i>
@@ -773,7 +773,7 @@
                 <div class="region-name">台南區</div>
                 <div class="region-description">台南區考生</div>
                 <div class="region-features">
-                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                  <span class="region-feature"><i class="fas fa-school"></i> 75+ 高中</span>
                 </div>
               </div>
             </label>
@@ -1488,10 +1488,12 @@
         ]
       },
       'tainan': {
-        description: '台南區正在籌備中，計分方式尚在設計階段。',
+        description: '台南區採用五科等級積分制與作文級分加權計算，積分轉換更細緻。',
         details: [
-          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
-          { title: '預計上線', value: '2025年5月', icon: 'fa-calendar-alt' }
+          { title: '科目積分', value: 'A++: 7分, A+: 6分, A: 5分, B++: 4分, B+: 3分, B: 2分, C: 1分', icon: 'fa-star' },
+          { title: '作文積分', value: '6級: 1分, 5級: 0.8分, 4級: 0.6分, 3級: 0.4分, 2級: 0.2分, 1級: 0.1分', icon: 'fa-pen-nib' },
+          { title: '計分方式', value: '五科積分相加再加上作文積分', icon: 'fa-plus' },
+          { title: '區域說明', value: '台南市考生', icon: 'fa-info-circle' }
         ]
       },
       'pingtung': {

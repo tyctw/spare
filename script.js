@@ -617,7 +617,7 @@ async function analyzeScores() {
       composition: parseInt(document.getElementById('composition').value)
     };
 
-    const response = await fetch('https://script.google.com/macros/s/AKfycby9peTae24Y1RelMaj-UKiDp-qPkwzPPNKMiIZvWGaaJ16etB80fkb1VSxI1nr3eHf0/exec', {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbzWLq0xIeCId9v47p36I1upDBlvnw9JD7j_lzEEo7lTC2c98lf_s22wfPU4sXp0-jeOrA/exec', {
       method: 'POST',
       body: JSON.stringify({
         scores,

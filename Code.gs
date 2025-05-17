@@ -75,6 +75,11 @@ function getRegionConfig(region) {
       spreadsheetId: '1vHKGVcY0Y7VuS4B2Vxm_cZXZQZJT4DnOIj7-1cBzizw',
       calculateScores: calculateTaipeiScores,
       filterSchools: filterSchoolsWithSorting
+    },
+    'tainan': {
+      spreadsheetId: '輸入台南區的試算表ID',
+      calculateScores: calculateTainanScores,
+      filterSchools: filterSchoolsWithSorting
     }
   };
 
@@ -181,6 +186,19 @@ function calculateChanghuaScores(scores) {
 
 // 基北區計分函數
 function calculateTaipeiScores(scores) {
+  const scorePoints = { 'A++': 7, 'A+': 6, 'A': 5, 'B++': 4, 'B+': 3, 'B': 2, 'C': 1 };
+  const compositionPoints = { 0: 0, 1: 0.1, 2: 0.2, 3: 0.4, 4: 0.6, 5: 0.8, 6: 1.0 };
+  
+  const subjectsTotal = scorePoints[scores.chinese] + scorePoints[scores.english] + scorePoints[scores.math] + scorePoints[scores.science] + scorePoints[scores.social];
+  const compositionTotal = compositionPoints[scores.composition];
+  
+  const totalPoints = subjectsTotal + compositionTotal;
+  
+  return { totalPoints };
+}
+
+// 台南區計分函數
+function calculateTainanScores(scores) {
   const scorePoints = { 'A++': 7, 'A+': 6, 'A': 5, 'B++': 4, 'B+': 3, 'B': 2, 'C': 1 };
   const compositionPoints = { 0: 0, 1: 0.1, 2: 0.2, 3: 0.4, 4: 0.6, 5: 0.8, 6: 1.0 };
   
