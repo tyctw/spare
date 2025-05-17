@@ -220,6 +220,72 @@
           opacity: 1;
         }
       }
+      
+      /* 職業群別彈窗樣式 */
+      #vocationalGroupModal {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      
+      .vocational-modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        animation: slideIn 0.3s ease-out;
+      }
+      
+      .vocational-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .vocational-modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+      
+      .vocational-select-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .vocational-select-btn:hover {
+        background-color: var(--hover-color);
+        transform: translateY(-2px);
+      }
+      
+      .selected-vocational-groups {
+        margin-left: 10px;
+        font-weight: normal;
+        opacity: 0.8;
+      }
     </style>
   </head>
   <body>
@@ -380,120 +446,9 @@
         <label for="vocationalGroup">
           <i class="fas fa-tools icon"></i>職業群別 (可複選)：
         </label>
-        <div class="vocational-group-container">
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupAll" class="vocational-group-input" value="all" checked>
-            <label for="groupAll" class="vocational-group-label">
-              <i class="fas fa-check-circle"></i>
-              <span>全部選擇</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupMechanical" class="vocational-group-input" value="機械群">
-            <label for="groupMechanical" class="vocational-group-label">
-              <i class="fas fa-cogs"></i>
-              <span>機械群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupPower" class="vocational-group-input" value="動力機械群">
-            <label for="groupPower" class="vocational-group-label">
-              <i class="fas fa-car"></i>
-              <span>動力機械群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupElectrical" class="vocational-group-input" value="電機與電子群">
-            <label for="groupElectrical" class="vocational-group-label">
-              <i class="fas fa-bolt"></i>
-              <span>電機與電子群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupChemical" class="vocational-group-input" value="化工群">
-            <label for="groupChemical" class="vocational-group-label">
-              <i class="fas fa-flask"></i>
-              <span>化工群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupCivil" class="vocational-group-input" value="土木與建築群">
-            <label for="groupCivil" class="vocational-group-label">
-              <i class="fas fa-building"></i>
-              <span>土木與建築群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupBusiness" class="vocational-group-input" value="商業與管理群">
-            <label for="groupBusiness" class="vocational-group-label">
-              <i class="fas fa-briefcase"></i>
-              <span>商業與管理群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupForeign" class="vocational-group-input" value="外語群">
-            <label for="groupForeign" class="vocational-group-label">
-              <i class="fas fa-language"></i>
-              <span>外語群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupDesign" class="vocational-group-input" value="設計群">
-            <label for="groupDesign" class="vocational-group-label">
-              <i class="fas fa-palette"></i>
-              <span>設計群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupAgriculture" class="vocational-group-input" value="農業群">
-            <label for="groupAgriculture" class="vocational-group-label">
-              <i class="fas fa-leaf"></i>
-              <span>農業群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupFood" class="vocational-group-input" value="食品群">
-            <label for="groupFood" class="vocational-group-label">
-              <i class="fas fa-utensils"></i>
-              <span>食品群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupHomEc" class="vocational-group-input" value="家政群">
-            <label for="groupHomEc" class="vocational-group-label">
-              <i class="fas fa-home"></i>
-              <span>家政群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupHospitality" class="vocational-group-input" value="餐旅群">
-            <label for="groupHospitality" class="vocational-group-label">
-              <i class="fas fa-concierge-bell"></i>
-              <span>餐旅群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupAquaFishery" class="vocational-group-input" value="水產群">
-            <label for="groupAquaFishery" class="vocational-group-label">
-              <i class="fas fa-fish"></i>
-              <span>水產群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupMarine" class="vocational-group-input" value="海事群">
-            <label for="groupMarine" class="vocational-group-label">
-              <i class="fas fa-ship"></i>
-              <span>海事群</span>
-            </label>
-          </div>
-          <div class="vocational-group-option">
-            <input type="checkbox" id="groupArt" class="vocational-group-input" value="藝術群">
-            <label for="groupArt" class="vocational-group-label">
-              <i class="fas fa-paint-brush"></i>
-              <span>藝術群</span>
-            </label>
-          </div>
-        </div>
+        <button type="button" id="vocationalSelectBtn" class="vocational-select-btn hover-glow">
+          <i class="fas fa-list-ul"></i> 選擇職業群別 <span id="selectedVocationalGroups" class="selected-vocational-groups">（未選擇）</span>
+        </button>
         <select id="vocationalGroup" style="display: none;">
           <option value="all">全部</option>
         </select>
@@ -1248,6 +1203,137 @@
       </div>
     </div>
 
+    <!-- 職業群別選擇彈窗 -->
+    <div id="vocationalGroupModal" class="modal">
+      <div class="vocational-modal-content">
+        <div class="vocational-modal-header">
+          <h2 class="vocational-modal-title"><i class="fas fa-tools"></i> 選擇職業群別</h2>
+          <button class="new-close-button" onclick="closeVocationalModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="vocational-group-container">
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupAll" class="vocational-group-input" value="all" checked onclick="toggleAllVocationalGroups()">
+            <label for="groupAll" class="vocational-group-label">
+              <i class="fas fa-check-circle"></i>
+              <span>全部選擇</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupMechanical" class="vocational-group-input" value="機械群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupMechanical" class="vocational-group-label">
+              <i class="fas fa-cogs"></i>
+              <span>機械群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupPower" class="vocational-group-input" value="動力機械群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupPower" class="vocational-group-label">
+              <i class="fas fa-car"></i>
+              <span>動力機械群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupElectrical" class="vocational-group-input" value="電機與電子群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupElectrical" class="vocational-group-label">
+              <i class="fas fa-bolt"></i>
+              <span>電機與電子群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupChemical" class="vocational-group-input" value="化工群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupChemical" class="vocational-group-label">
+              <i class="fas fa-flask"></i>
+              <span>化工群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupCivil" class="vocational-group-input" value="土木與建築群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupCivil" class="vocational-group-label">
+              <i class="fas fa-building"></i>
+              <span>土木與建築群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupBusiness" class="vocational-group-input" value="商業與管理群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupBusiness" class="vocational-group-label">
+              <i class="fas fa-briefcase"></i>
+              <span>商業與管理群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupForeign" class="vocational-group-input" value="外語群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupForeign" class="vocational-group-label">
+              <i class="fas fa-language"></i>
+              <span>外語群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupDesign" class="vocational-group-input" value="設計群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupDesign" class="vocational-group-label">
+              <i class="fas fa-palette"></i>
+              <span>設計群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupAgriculture" class="vocational-group-input" value="農業群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupAgriculture" class="vocational-group-label">
+              <i class="fas fa-leaf"></i>
+              <span>農業群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupFood" class="vocational-group-input" value="食品群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupFood" class="vocational-group-label">
+              <i class="fas fa-utensils"></i>
+              <span>食品群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupHomEc" class="vocational-group-input" value="家政群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupHomEc" class="vocational-group-label">
+              <i class="fas fa-home"></i>
+              <span>家政群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupHospitality" class="vocational-group-input" value="餐旅群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupHospitality" class="vocational-group-label">
+              <i class="fas fa-concierge-bell"></i>
+              <span>餐旅群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupAquaFishery" class="vocational-group-input" value="水產群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupAquaFishery" class="vocational-group-label">
+              <i class="fas fa-fish"></i>
+              <span>水產群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupMarine" class="vocational-group-input" value="海事群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupMarine" class="vocational-group-label">
+              <i class="fas fa-ship"></i>
+              <span>海事群</span>
+            </label>
+          </div>
+          <div class="vocational-group-option">
+            <input type="checkbox" id="groupArt" class="vocational-group-input" value="藝術群" onclick="updateVocationalGroupsSelection()">
+            <label for="groupArt" class="vocational-group-label">
+              <i class="fas fa-paint-brush"></i>
+              <span>藝術群</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="confirm-button hover-glow" onclick="confirmVocationalGroups()">
+            <i class="fas fa-check-circle icon"></i> 確認選擇
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="script.js"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H9X7EC127P"></script>
@@ -1430,6 +1516,101 @@
     };
     
     return scoringMethods[region] || null;
+  }
+
+  // 打開職業群別選擇彈窗
+  document.getElementById('vocationalSelectBtn').addEventListener('click', function() {
+    document.getElementById('vocationalGroupModal').style.display = 'block';
+    document.body.style.overflow = 'hidden'; // 防止背景滾動
+  });
+
+  // 關閉職業群別選擇彈窗
+  function closeVocationalModal() {
+    document.getElementById('vocationalGroupModal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // 恢復背景滾動
+  }
+
+  // 當用戶點擊彈窗外的區域時關閉彈窗
+  window.addEventListener('click', function(event) {
+    if (event.target == document.getElementById('vocationalGroupModal')) {
+      closeVocationalModal();
+    }
+  });
+
+  // 切換全選/取消全選
+  function toggleAllVocationalGroups() {
+    const allCheckbox = document.getElementById('groupAll');
+    const checkboxes = document.querySelectorAll('.vocational-group-input:not(#groupAll)');
+    
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = allCheckbox.checked;
+    });
+    
+    updateVocationalGroupsSelection();
+  }
+
+  // 更新職業群別選擇狀態
+  function updateVocationalGroupsSelection() {
+    const checkboxes = document.querySelectorAll('.vocational-group-input:not(#groupAll)');
+    const allCheckbox = document.getElementById('groupAll');
+    
+    // 檢查是否有任何子選項被選中
+    let anyChecked = false;
+    let allChecked = true;
+    
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        anyChecked = true;
+      } else {
+        allChecked = false;
+      }
+    });
+    
+    // 根據子選項狀態更新全選框
+    allCheckbox.checked = allChecked;
+    
+    // 如果沒有任何子選項被選中，自動選中全部
+    if (!anyChecked) {
+      allCheckbox.checked = true;
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+      });
+    }
+  }
+
+  // 確認職業群別選擇
+  function confirmVocationalGroups() {
+    const selectedGroups = [];
+    const checkboxes = document.querySelectorAll('.vocational-group-input:checked');
+    
+    checkboxes.forEach(checkbox => {
+      selectedGroups.push(checkbox.value);
+    });
+    
+    // 更新顯示文字
+    const selectedText = document.getElementById('selectedVocationalGroups');
+    if (selectedGroups.includes('all') && selectedGroups.length <= 2) {
+      selectedText.textContent = '全部';
+    } else if (selectedGroups.length > 3) {
+      selectedText.textContent = `已選擇 ${selectedGroups.length - (selectedGroups.includes('all') ? 1 : 0)} 個群別`;
+    } else {
+      const displayGroups = selectedGroups.filter(group => group !== 'all');
+      selectedText.textContent = displayGroups.join('、');
+    }
+    
+    // 更新隱藏的select元素，用於表單提交
+    const selectElement = document.getElementById('vocationalGroup');
+    selectElement.innerHTML = '';
+    
+    selectedGroups.forEach(group => {
+      const option = document.createElement('option');
+      option.value = group;
+      option.text = group;
+      option.selected = true;
+      selectElement.appendChild(option);
+    });
+    
+    closeVocationalModal();
   }
 </script>
   </body>
