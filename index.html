@@ -43,6 +43,111 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+      /* 新增樣式，用於顯示正在籌備中的區域 */
+      .region-option.disabled {
+        opacity: 0.7;
+        position: relative;
+      }
+      
+      .region-option.disabled::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.05);
+        pointer-events: none;
+        border-radius: inherit;
+      }
+      
+      .region-feature.preparing {
+        color: #ff6b6b;
+        font-weight: bold;
+      }
+      
+      .region-option.disabled .region-label {
+        cursor: not-allowed;
+      }
+      
+      /* 區域選擇彈窗樣式 */
+      #regionModal {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      
+      .region-modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        animation: slideIn 0.3s ease-out;
+      }
+      
+      .region-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .region-modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+      
+      .region-select-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .region-select-btn:hover {
+        background-color: var(--hover-color);
+        transform: translateY(-2px);
+      }
+      
+      .selected-region {
+        margin-left: 10px;
+        font-weight: normal;
+        opacity: 0.8;
+      }
+      
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+    </style>
   </head>
   <body>
     <header class="header">
@@ -359,68 +464,10 @@
         <label>
           <i class="fas fa-map-marker-alt icon"></i> 分析區域：
         </label>
-        <div class="region-selector">
-          <div class="region-option">
-            <input type="radio" id="region-taoyuan" name="analysisArea" value="taoyuan" class="region-input">
-            <label for="region-taoyuan" class="region-label">
-              <div class="region-icon">
-                <i class="fas fa-city"></i>
-              </div>
-              <div class="region-text">
-                <div class="region-name">桃聯區</div>
-                <div class="region-description">桃園聯合分發區考生</div>
-                <div class="region-features">
-                  <span class="region-feature"><i class="fas fa-school"></i> 105+ 高中</span>
-                </div>
-              </div>
-            </label>
-          </div>
-          <div class="region-option">
-            <input type="radio" id="region-central" name="analysisArea" value="central" class="region-input">
-            <label for="region-central" class="region-label">
-              <div class="region-icon">
-                <i class="fas fa-mountain"></i>
-              </div>
-              <div class="region-text">
-                <div class="region-name">中投區</div>
-                <div class="region-description">中投區考生</div>
-                <div class="region-features">
-                  <span class="region-feature"><i class="fas fa-school"></i> 80+ 高中</span>
-                </div>
-              </div>
-            </label>
-          </div>
-          <div class="region-option">
-            <input type="radio" id="region-kaohsiung" name="analysisArea" value="kaohsiung" class="region-input">
-            <label for="region-kaohsiung" class="region-label">
-              <div class="region-icon">
-                <i class="fas fa-ship"></i>
-              </div>
-              <div class="region-text">
-                <div class="region-name">高雄區</div>
-                <div class="region-description">高雄區考生</div>
-                <div class="region-features">
-                  <span class="region-feature"><i class="fas fa-school"></i> 90+ 高中</span>
-                </div>
-              </div>
-            </label>
-          </div>
-          <div class="region-option">
-            <input type="radio" id="region-changhua" name="analysisArea" value="changhua" class="region-input">
-            <label for="region-changhua" class="region-label">
-              <div class="region-icon">
-                <i class="fas fa-seedling"></i>
-              </div>
-              <div class="region-text">
-                <div class="region-name">彰化區</div>
-                <div class="region-description">彰化區考生</div>
-                <div class="region-features">
-                  <span class="region-feature"><i class="fas fa-school"></i> 60+ 高中</span>
-                </div>
-              </div>
-            </label>
-          </div>
-        </div>
+        <button type="button" id="regionSelectBtn" class="region-select-btn hover-glow">
+          <i class="fas fa-map-marked-alt"></i> 選擇分析區域 <span id="selectedRegionName" class="selected-region">（未選擇）</span>
+        </button>
+        <input type="hidden" id="selectedRegionValue" name="selectedRegion" value="">
       </div>
       <div class="form-group slide-in" style="animation-delay: 0.8s;">
         <label for="chinese">
@@ -544,6 +591,200 @@
     <button id="darkModeToggle" class="dark-mode-toggle hover-glow" aria-label="切換深色模式">
       <i class="fas fa-moon"></i>
     </button>
+
+    <!-- 區域選擇彈窗 -->
+    <div id="regionModal" class="modal">
+      <div class="region-modal-content">
+        <div class="region-modal-header">
+          <h2 class="region-modal-title"><i class="fas fa-map-marker-alt"></i> 選擇分析區域</h2>
+          <button class="new-close-button" onclick="closeRegionModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="region-selector">
+          <div class="region-option">
+            <input type="radio" id="region-taoyuan" name="analysisArea" value="taoyuan" class="region-input" onchange="selectRegion('taoyuan', '桃聯區')">
+            <label for="region-taoyuan" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-city"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">桃聯區</div>
+                <div class="region-description">桃園聯合分發區考生</div>
+                <div class="region-features">
+                  <span class="region-feature"><i class="fas fa-school"></i> 105+ 高中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-central" name="analysisArea" value="central" class="region-input" onchange="selectRegion('central', '中投區')">
+            <label for="region-central" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-mountain"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">中投區</div>
+                <div class="region-description">中投區考生</div>
+                <div class="region-features">
+                  <span class="region-feature"><i class="fas fa-school"></i> 80+ 高中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-kaohsiung" name="analysisArea" value="kaohsiung" class="region-input" onchange="selectRegion('kaohsiung', '高雄區')">
+            <label for="region-kaohsiung" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-ship"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">高雄區</div>
+                <div class="region-description">高雄區考生</div>
+                <div class="region-features">
+                  <span class="region-feature"><i class="fas fa-school"></i> 90+ 高中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option">
+            <input type="radio" id="region-changhua" name="analysisArea" value="changhua" class="region-input" onchange="selectRegion('changhua', '彰化區')">
+            <label for="region-changhua" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-seedling"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">彰化區</div>
+                <div class="region-description">彰化區考生</div>
+                <div class="region-features">
+                  <span class="region-feature"><i class="fas fa-school"></i> 60+ 高中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option disabled">
+            <input type="radio" id="region-taipei" name="analysisArea" value="taipei" class="region-input" disabled>
+            <label for="region-taipei" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-city"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">基北區</div>
+                <div class="region-description">基北區考生</div>
+                <div class="region-features">
+                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option disabled">
+            <input type="radio" id="region-hsinchu" name="analysisArea" value="hsinchu" class="region-input" disabled>
+            <label for="region-hsinchu" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-microchip"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">竹苗區</div>
+                <div class="region-description">竹苗區考生</div>
+                <div class="region-features">
+                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option disabled">
+            <input type="radio" id="region-yunlin" name="analysisArea" value="yunlin" class="region-input" disabled>
+            <label for="region-yunlin" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-warehouse"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">雲林區</div>
+                <div class="region-description">雲林區考生</div>
+                <div class="region-features">
+                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option disabled">
+            <input type="radio" id="region-chiayi" name="analysisArea" value="chiayi" class="region-input" disabled>
+            <label for="region-chiayi" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-tree"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">嘉義區</div>
+                <div class="region-description">嘉義區考生</div>
+                <div class="region-features">
+                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option disabled">
+            <input type="radio" id="region-tainan" name="analysisArea" value="tainan" class="region-input" disabled>
+            <label for="region-tainan" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-landmark"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">台南區</div>
+                <div class="region-description">台南區考生</div>
+                <div class="region-features">
+                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option disabled">
+            <input type="radio" id="region-pingtung" name="analysisArea" value="pingtung" class="region-input" disabled>
+            <label for="region-pingtung" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-umbrella-beach"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">屏東區</div>
+                <div class="region-description">屏東區考生</div>
+                <div class="region-features">
+                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option disabled">
+            <input type="radio" id="region-yilan" name="analysisArea" value="yilan" class="region-input" disabled>
+            <label for="region-yilan" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-spa"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">宜蘭區</div>
+                <div class="region-description">宜蘭區考生</div>
+                <div class="region-features">
+                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+          <div class="region-option disabled">
+            <input type="radio" id="region-hualien" name="analysisArea" value="hualien" class="region-input" disabled>
+            <label for="region-hualien" class="region-label">
+              <div class="region-icon">
+                <i class="fas fa-mountain"></i>
+              </div>
+              <div class="region-text">
+                <div class="region-name">花蓮區</div>
+                <div class="region-description">花蓮區考生</div>
+                <div class="region-features">
+                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div id="disclaimerModal" class="modal">
       <div class="modal-content">
@@ -930,6 +1171,35 @@
   gtag('js', new Date());
 
   gtag('config', 'G-H9X7EC127P');
+</script>
+
+<!-- 新增區域彈窗選擇JavaScript函數 -->
+<script>
+  // 打開區域選擇彈窗
+  document.getElementById('regionSelectBtn').addEventListener('click', function() {
+    document.getElementById('regionModal').style.display = 'block';
+    document.body.style.overflow = 'hidden'; // 防止背景滾動
+  });
+
+  // 關閉區域選擇彈窗
+  function closeRegionModal() {
+    document.getElementById('regionModal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // 恢復背景滾動
+  }
+
+  // 當用戶點擊彈窗外的區域時關閉彈窗
+  window.addEventListener('click', function(event) {
+    if (event.target == document.getElementById('regionModal')) {
+      closeRegionModal();
+    }
+  });
+
+  // 選擇區域
+  function selectRegion(value, name) {
+    document.getElementById('selectedRegionValue').value = value;
+    document.getElementById('selectedRegionName').textContent = name;
+    closeRegionModal();
+  }
 </script>
   </body>
 </html>
