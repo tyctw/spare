@@ -70,6 +70,11 @@ function getRegionConfig(region) {
       spreadsheetId: '11KV9vlOUQ2ncJ_Wlr5XmFMeznZ1TdtKctZ-_ZVQSTNg',
       calculateScores: calculateChanghuaScores,
       filterSchools: filterSchoolsWithSorting
+    },
+    'taipei': {
+      spreadsheetId: '1vHKGVcY0Y7VuS4B2Vxm_cZXZQZJT4DnOIj7-1cBzizw',
+      calculateScores: calculateTaipeiScores,
+      filterSchools: filterSchoolsWithSorting
     }
   };
 
@@ -171,5 +176,18 @@ function calculateCentralScores(scores) {
 function calculateChanghuaScores(scores) {
   const scorePoints = { 'A++': 9, 'A+': 8, 'A': 7, 'B++': 6, 'B+': 5, 'B': 4, 'C': 3 };
   const totalPoints = scorePoints[scores.chinese] + scorePoints[scores.english] + scorePoints[scores.math] + scorePoints[scores.science] + scorePoints[scores.social];
+  return { totalPoints };
+}
+
+// 基北區計分函數
+function calculateTaipeiScores(scores) {
+  const scorePoints = { 'A++': 7, 'A+': 6, 'A': 5, 'B++': 4, 'B+': 3, 'B': 2, 'C': 1 };
+  const compositionPoints = { 0: 0, 1: 0.1, 2: 0.2, 3: 0.4, 4: 0.6, 5: 0.8, 6: 1.0 };
+  
+  const subjectsTotal = scorePoints[scores.chinese] + scorePoints[scores.english] + scorePoints[scores.math] + scorePoints[scores.science] + scorePoints[scores.social];
+  const compositionTotal = compositionPoints[scores.composition];
+  
+  const totalPoints = subjectsTotal + compositionTotal;
+  
   return { totalPoints };
 }

@@ -703,8 +703,8 @@
               </div>
             </label>
           </div>
-          <div class="region-option disabled">
-            <input type="radio" id="region-taipei" name="analysisArea" value="taipei" class="region-input" disabled>
+          <div class="region-option">
+            <input type="radio" id="region-taipei" name="analysisArea" value="taipei" class="region-input" onchange="selectRegion('taipei', '基北區')">
             <label for="region-taipei" class="region-label">
               <div class="region-icon">
                 <i class="fas fa-city"></i>
@@ -713,7 +713,7 @@
                 <div class="region-name">基北區</div>
                 <div class="region-description">基北區考生</div>
                 <div class="region-features">
-                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                  <span class="region-feature"><i class="fas fa-school"></i> 110+ 高中</span>
                 </div>
               </div>
             </label>
@@ -1458,10 +1458,12 @@
         ]
       },
       'taipei': {
-        description: '基北區正在籌備中，預計將採用五科積分總和及作文加權計分。',
+        description: '基北區採用五科等級積分制與作文級分加權計算，積分轉換更細緻。',
         details: [
-          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
-          { title: '預計上線', value: '2025年4月', icon: 'fa-calendar-alt' }
+          { title: '科目積分', value: 'A++: 7分, A+: 6分, A: 5分, B++: 4分, B+: 3分, B: 2分, C: 1分', icon: 'fa-star' },
+          { title: '作文積分', value: '6級: 1分, 5級: 0.8分, 4級: 0.6分, 3級: 0.4分, 2級: 0.2分, 1級: 0.1分', icon: 'fa-pen-nib' },
+          { title: '計分方式', value: '五科積分相加再加上作文積分', icon: 'fa-plus' },
+          { title: '區域說明', value: '臺北市、新北市、基隆市考生', icon: 'fa-info-circle' }
         ]
       },
       'hsinchu': {
