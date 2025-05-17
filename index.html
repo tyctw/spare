@@ -1572,9 +1572,6 @@
     // 如果沒有任何子選項被選中，自動選中全部
     if (!anyChecked) {
       allCheckbox.checked = true;
-      checkboxes.forEach(checkbox => {
-        checkbox.checked = true;
-      });
     }
   }
 
@@ -1582,20 +1579,57 @@
   function confirmVocationalGroups() {
     const selectedGroups = [];
     const checkboxes = document.querySelectorAll('.vocational-group-input:checked');
+    const allCheckbox = document.getElementById('groupAll');
+    const otherCheckboxes = document.querySelectorAll('.vocational-group-input:not(#groupAll)');
     
-    checkboxes.forEach(checkbox => {
-      selectedGroups.push(checkbox.value);
+    // 檢查是否有任何非全部選項被選中
+    let anyOtherChecked = false;
+    otherCheckboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        anyOtherChecked = true;
+        selectedGroups.push(checkbox.value);
+      }
     });
     
-    // 更新顯示文字
-    const selectedText = document.getElementById('selectedVocationalGroups');
-    if (selectedGroups.includes('all') && selectedGroups.length <= 2) {
-      selectedText.textContent = '全部';
-    } else if (selectedGroups.length > 3) {
-      selectedText.textContent = `已選擇 ${selectedGroups.length - (selectedGroups.includes('all') ? 1 : 0)} 個群別`;
+    // 如果沒有選擇任何群別或只選了「全部」，則設置為全部
+    if (!anyOtherChecked || (selectedGroups.length === 0 && allCheckbox.checked)) {
+      // 選中全部選項
+      allCheckbox.checked = true;
+      selectedGroups.length = 0;  // 清空數組
+      selectedGroups.push('all');
+      
+      // 更新隱藏的select元素
+      const selectElement = document.getElementById('vocationalGroup');
+      selectElement.innerHTML = '';
+      const option = document.createElement('option');
+      option.value = 'all';
+      option.text = '全部';
+      option.selected = true;
+      selectElement.appendChild(option);
+      
+      // 更新顯示文字
+      document.getElementById('selectedVocationalGroups').textContent = '全部';
+      
+      closeVocationalModal();
+      return;
+    }
+    
+    // 如果有選擇非全部的選項，則判斷是否所有選項都被選中
+    if (selectedGroups.length === otherCheckboxes.length) {
+      // 如果所有選項都被選中，相當於選擇了全部
+      selectedGroups.length = 0;  // 清空數組
+      selectedGroups.push('all');
+      
+      // 更新顯示文字
+      document.getElementById('selectedVocationalGroups').textContent = '全部';
     } else {
-      const displayGroups = selectedGroups.filter(group => group !== 'all');
-      selectedText.textContent = displayGroups.join('、');
+      // 更新顯示文字
+      const selectedText = document.getElementById('selectedVocationalGroups');
+      if (selectedGroups.length > 3) {
+        selectedText.textContent = `已選擇 ${selectedGroups.length} 個群別`;
+      } else {
+        selectedText.textContent = selectedGroups.join('、');
+      }
     }
     
     // 更新隱藏的select元素，用於表單提交
