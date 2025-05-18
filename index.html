@@ -363,6 +363,187 @@
           padding: 8px;
         }
       }
+      
+      /* 新表單按鈕樣式 */
+      .new-form-button-container {
+        position: relative;
+        margin: 20px auto;
+        max-width: 500px;
+      }
+      
+      .new-form-button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #34a0db 100%);
+        color: white;
+        text-decoration: none;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.3);
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      
+      .new-form-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(var(--primary-rgb), 0.4);
+      }
+      
+      .new-form-button:active {
+        transform: translateY(0);
+        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.2);
+      }
+      
+      .button-content {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        width: calc(100% - 60px);
+        z-index: 2;
+      }
+      
+      .button-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+      
+      .button-icon i {
+        font-size: 24px;
+        color: white;
+      }
+      
+      .button-text {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .button-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      
+      .button-subtitle {
+        font-size: 0.85rem;
+        opacity: 0.8;
+      }
+      
+      .button-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.1);
+        z-index: 2;
+        transition: all 0.3s ease;
+      }
+      
+      .new-form-button:hover .button-arrow {
+        background-color: rgba(0, 0, 0, 0.2);
+        transform: translateX(5px);
+      }
+      
+      .new-form-button:hover .button-arrow i {
+        animation: bounceRight 1s infinite;
+      }
+      
+      .form-button-badge {
+        position: absolute;
+        top: -10px;
+        right: -5px;
+        background-color: #ff6b6b;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 3;
+        transform: rotate(3deg);
+        animation: pulse 2s infinite;
+      }
+      
+      .form-button-badge i {
+        font-size: 0.7rem;
+        margin-right: 3px;
+        animation: rotateStar 3s linear infinite;
+      }
+      
+      .pulse-effect {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 70%);
+        opacity: 0;
+        z-index: 1;
+      }
+      
+      .new-form-button:hover .pulse-effect {
+        animation: pulseEffect 1.5s infinite;
+      }
+      
+      @keyframes bounceRight {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(5px); }
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1) rotate(3deg); }
+        50% { transform: scale(1.05) rotate(3deg); }
+        100% { transform: scale(1) rotate(3deg); }
+      }
+      
+      @keyframes rotateStar {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes pulseEffect {
+        0% { opacity: 0; transform: scale(0.8); }
+        50% { opacity: 0.5; transform: scale(1.5); }
+        100% { opacity: 0; transform: scale(2); }
+      }
+      
+      @media (max-width: 600px) {
+        .new-form-button-container {
+          max-width: 100%;
+          margin: 15px 10px;
+        }
+        
+        .button-content {
+          padding: 12px 15px;
+        }
+        
+        .button-icon {
+          width: 40px;
+          height: 40px;
+          margin-right: 10px;
+        }
+        
+        .button-icon i {
+          font-size: 20px;
+        }
+        
+        .button-title {
+          font-size: 1rem;
+        }
+        
+        .button-subtitle {
+          font-size: 0.75rem;
+        }
+      }
     </style>
   </head>
   <body>
@@ -466,13 +647,26 @@
       <h1 class="slide-in">
         <i class="fas fa-chart-line icon"></i>會考落點分析系統
       </h1>
-      <a
-        href="https://forms.gle/e5tHU1haqpHRU7nJ9"
-        target="_blank"
-        class="invite-link hover-glow"
-      >
-        <i class="fas fa-envelope-open-text icon"></i>填寫表單獲取邀請碼
-      </a>
+      <div class="new-form-button-container slide-in" style="animation-delay: 0.15s;">
+        <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank" class="new-form-button">
+          <div class="button-content">
+            <div class="button-icon">
+              <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="button-text">
+              <span class="button-title">填寫表單獲取邀請碼</span>
+              <span class="button-subtitle">快速獲取系統存取權限</span>
+            </div>
+          </div>
+          <div class="button-arrow">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+          <div class="pulse-effect"></div>
+        </a>
+        <div class="form-button-badge">
+          <i class="fas fa-star"></i> 推薦
+        </div>
+      </div>
       <button class="instruction-toggle hover-glow" onclick="showInstructions()">
         <i class="fas fa-info-circle icon"></i>使用說明
       </button>
