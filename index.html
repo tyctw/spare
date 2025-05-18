@@ -851,6 +851,101 @@
           align-self: flex-start;
         }
       }
+
+      /* 會考重要日期彈窗樣式 */
+      .important-dates-modal {
+        max-width: 600px;
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+
+      .important-dates-modal h2 {
+        color: var(--primary-color, #3498db);
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .important-dates-modal .dates-table {
+        display: grid;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .important-dates-modal .date-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        background-color: rgba(var(--primary-rgb, 52, 152, 219), 0.05);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .important-dates-modal .date-item:hover {
+        transform: translateX(5px);
+        background-color: rgba(var(--primary-rgb, 52, 152, 219), 0.1);
+      }
+
+      .important-dates-modal .date-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        color: var(--text-color, #333);
+      }
+
+      .important-dates-modal .date-label i {
+        color: var(--primary-color, #3498db);
+      }
+
+      .important-dates-modal .date-value {
+        font-weight: 600;
+        color: var(--primary-color, #3498db);
+        background-color: rgba(var(--primary-rgb, 52, 152, 219), 0.1);
+        padding: 5px 10px;
+        border-radius: 6px;
+      }
+
+      /* 深色模式下的重要日期彈窗樣式 */
+      .dark-mode .important-dates-modal {
+        background-color: var(--card-bg-color);
+        color: var(--text-color);
+      }
+
+      .dark-mode .important-dates-modal h2 {
+        color: var(--primary-color);
+      }
+
+      .dark-mode .important-dates-modal .date-item {
+        background-color: rgba(var(--primary-rgb), 0.1);
+      }
+
+      .dark-mode .important-dates-modal .date-item:hover {
+        background-color: rgba(var(--primary-rgb), 0.15);
+      }
+
+      .dark-mode .important-dates-modal .date-label {
+        color: var(--text-color);
+      }
+
+      .dark-mode .important-dates-modal .date-value {
+        background-color: rgba(var(--primary-rgb), 0.2);
+      }
+
+      @media (max-width: 768px) {
+        .important-dates-modal .date-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        
+        .important-dates-modal .date-value {
+          align-self: flex-start;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1194,38 +1289,11 @@
       <button id="exportResults" class="slide-in hover-glow" style="display: none; animation-delay: 1.5s;" onclick="exportResults()">
         <i class="fas fa-file-export icon"></i>匯出結果
       </button>
+      <button id="showDatesBtn" class="slide-in hover-glow" style="animation-delay: 1.5s;" onclick="showImportantDates()">
+        <i class="fas fa-calendar-alt icon"></i>會考重要日期
+      </button>
 
-      <!-- 會考重要日期區塊 -->
-      <div class="important-dates-container slide-in" style="animation-delay: 1.5s;">
-        <h2><i class="fas fa-calendar-alt icon"></i> 會考重要日期</h2>
-        <div class="dates-table">
-          <div class="date-item">
-            <div class="date-label"><i class="fas fa-check-square"></i> 公布答對題數與等級對照表</div>
-            <div class="date-value">114/06/03</div>
-          </div>
-          <div class="date-item">
-            <div class="date-label"><i class="fas fa-file-alt"></i> 國中會考成績公布</div>
-            <div class="date-value">114/06/06</div>
-          </div>
-          <div class="date-item">
-            <div class="date-label"><i class="fas fa-sort-numeric-down"></i> 個人序位區間公告</div>
-            <div class="date-value">114/06/20</div>
-          </div>
-          <div class="date-item">
-            <div class="date-label"><i class="fas fa-edit"></i> 就學區免試入學填志願</div>
-            <div class="date-value">114/06/20（開始）（結束依各地區時間為主）</div>
-          </div>
-          <div class="date-item">
-            <div class="date-label"><i class="fas fa-clipboard-list"></i> 就學區免試入學放榜</div>
-            <div class="date-value">114/07/08（依各地區時間為主）</div>
-          </div>
-          <div class="date-item">
-            <div class="date-label"><i class="fas fa-school"></i> 免試入學報到</div>
-            <div class="date-value">114/07/10</div>
-          </div>
-        </div>
-      </div>
-
+      <!-- 移除先前添加的會考重要日期區塊 -->
       <div id="results"></div>
 
       <div id="ratingSection" class="slide-in" style="animation-delay: 1.6s;">
@@ -2053,6 +2121,69 @@
         </button>
       </div>
     </div>
+
+    <!-- 在最後添加會考重要日期彈窗 -->
+    <div id="importantDatesModal" class="modal">
+      <div class="modal-content important-dates-modal">
+        <button class="new-close-button" onclick="closeImportantDates()">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2>
+          <i class="fas fa-calendar-alt icon"></i> 會考重要日期
+        </h2>
+        <div class="dates-table">
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-check-square"></i> 公布答對題數與等級對照表</div>
+            <div class="date-value">114/06/03</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-file-alt"></i> 國中會考成績公布</div>
+            <div class="date-value">114/06/06</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-sort-numeric-down"></i> 個人序位區間公告</div>
+            <div class="date-value">114/06/20</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-edit"></i> 就學區免試入學填志願</div>
+            <div class="date-value">114/06/20（開始）（結束依各地區時間為主）</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-clipboard-list"></i> 就學區免試入學放榜</div>
+            <div class="date-value">114/07/08（依各地區時間為主）</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-school"></i> 免試入學報到</div>
+            <div class="date-value">114/07/10</div>
+          </div>
+        </div>
+        <button class="confirm-button hover-glow" onclick="closeImportantDates()">
+          <i class="fas fa-check-circle icon"></i> 我已了解
+        </button>
+      </div>
+    </div>
+
+    <!-- 重要日期彈窗相關JavaScript -->
+    <script>
+      // 顯示重要日期彈窗
+      function showImportantDates() {
+        document.getElementById('importantDatesModal').style.display = 'block';
+        document.body.style.overflow = 'hidden'; // 防止背景滾動
+      }
+      
+      // 關閉重要日期彈窗
+      function closeImportantDates() {
+        document.getElementById('importantDatesModal').style.display = 'none';
+        document.body.style.overflow = 'auto'; // 恢復背景滾動
+      }
+      
+      // 當用戶點擊彈窗外的區域時關閉彈窗
+      window.addEventListener('click', function(event) {
+        if (event.target == document.getElementById('importantDatesModal')) {
+          closeImportantDates();
+        }
+      });
+    </script>
 
     <script src="script.js"></script>
 <!-- Google tag (gtag.js) -->
