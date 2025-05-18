@@ -757,6 +757,100 @@
       .dark-mode .scoring-item-value {
         color: var(--text-secondary-color);
       }
+
+      /* 重要日期區塊樣式 */
+      .important-dates-container {
+        background-color: var(--card-bg-color, #ffffff);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 30px auto;
+        max-width: 800px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid var(--primary-color, #3498db);
+      }
+
+      .important-dates-container h2 {
+        color: var(--primary-color, #3498db);
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .dates-table {
+        display: grid;
+        gap: 15px;
+      }
+
+      .date-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        background-color: rgba(var(--primary-rgb, 52, 152, 219), 0.05);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .date-item:hover {
+        transform: translateX(5px);
+        background-color: rgba(var(--primary-rgb, 52, 152, 219), 0.1);
+      }
+
+      .date-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        color: var(--text-color, #333);
+      }
+
+      .date-label i {
+        color: var(--primary-color, #3498db);
+      }
+
+      .date-value {
+        font-weight: 600;
+        color: var(--primary-color, #3498db);
+        background-color: rgba(var(--primary-rgb, 52, 152, 219), 0.1);
+        padding: 5px 10px;
+        border-radius: 6px;
+      }
+
+      /* 深色模式下的重要日期樣式 */
+      .dark-mode .important-dates-container {
+        background-color: var(--card-bg-color);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .dark-mode .date-item {
+        background-color: rgba(var(--primary-rgb), 0.1);
+      }
+
+      .dark-mode .date-item:hover {
+        background-color: rgba(var(--primary-rgb), 0.15);
+      }
+
+      .dark-mode .date-label {
+        color: var(--text-color);
+      }
+
+      .dark-mode .date-value {
+        background-color: rgba(var(--primary-rgb), 0.2);
+      }
+
+      @media (max-width: 768px) {
+        .date-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        
+        .date-value {
+          align-self: flex-start;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1100,6 +1194,38 @@
       <button id="exportResults" class="slide-in hover-glow" style="display: none; animation-delay: 1.5s;" onclick="exportResults()">
         <i class="fas fa-file-export icon"></i>匯出結果
       </button>
+
+      <!-- 會考重要日期區塊 -->
+      <div class="important-dates-container slide-in" style="animation-delay: 1.5s;">
+        <h2><i class="fas fa-calendar-alt icon"></i> 會考重要日期</h2>
+        <div class="dates-table">
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-check-square"></i> 公布答對題數與等級對照表</div>
+            <div class="date-value">114/06/03</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-file-alt"></i> 國中會考成績公布</div>
+            <div class="date-value">114/06/06</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-sort-numeric-down"></i> 個人序位區間公告</div>
+            <div class="date-value">114/06/20</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-edit"></i> 就學區免試入學填志願</div>
+            <div class="date-value">114/06/20（開始）（結束依各地區時間為主）</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-clipboard-list"></i> 就學區免試入學放榜</div>
+            <div class="date-value">114/07/08（依各地區時間為主）</div>
+          </div>
+          <div class="date-item">
+            <div class="date-label"><i class="fas fa-school"></i> 免試入學報到</div>
+            <div class="date-value">114/07/10</div>
+          </div>
+        </div>
+      </div>
+
       <div id="results"></div>
 
       <div id="ratingSection" class="slide-in" style="animation-delay: 1.6s;">
