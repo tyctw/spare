@@ -286,6 +286,83 @@
         font-weight: normal;
         opacity: 0.8;
       }
+      
+      /* 更新日誌樣式 */
+      .changelog-modal-content {
+        max-width: 800px;
+        max-height: 85vh;
+      }
+      
+      .changelog-container {
+        max-height: 60vh;
+        overflow-y: auto;
+        padding-right: 10px;
+        margin-bottom: 20px;
+      }
+      
+      .changelog-entry {
+        margin-bottom: 30px;
+        border-left: 4px solid var(--primary-color);
+        padding-left: 15px;
+        position: relative;
+      }
+      
+      .changelog-entry:before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+      }
+      
+      .changelog-version {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 5px;
+      }
+      
+      .changelog-date {
+        font-size: 0.9rem;
+        color: var(--text-secondary-color);
+        margin-bottom: 15px;
+      }
+      
+      .changelog-changes ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+      
+      .changelog-changes li {
+        margin-bottom: 12px;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: rgba(var(--primary-rgb), 0.05);
+        transition: all 0.3s ease;
+      }
+      
+      .changelog-changes li:hover {
+        background-color: rgba(var(--primary-rgb), 0.1);
+        transform: translateX(5px);
+      }
+      
+      .changelog-changes li .icon {
+        color: var(--primary-color);
+        margin-right: 8px;
+      }
+      
+      @media (max-width: 768px) {
+        .changelog-version {
+          font-size: 1.2rem;
+        }
+        
+        .changelog-changes li {
+          padding: 8px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -350,6 +427,13 @@
         </div>
         
         <div class="menu-section">
+          <div class="menu-category">系統資訊</div>
+          <a href="#" onclick="closeMenu(); showChangeLog();" class="hover-glow">
+            <i class="fas fa-history"></i> 更新日誌
+          </a>
+        </div>
+        
+        <div class="menu-section">
           <div class="menu-category">支援與回饋</div>
           <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank" class="hover-glow">
             <i class="fas fa-envelope-open-text"></i> 獲取邀請碼
@@ -394,6 +478,9 @@
       </button>
       <button class="disclaimer-toggle hover-glow" onclick="showDisclaimer()">
         <i class="fas fa-exclamation-triangle icon"></i>免責聲明
+      </button>
+      <button class="disclaimer-toggle hover-glow" onclick="showChangeLog()">
+        <i class="fas fa-history icon"></i>更新日誌
       </button>
       <form id="analysisForm" class="slide-in" style="animation-delay: 0.2s;">
         <div class="form-group">
@@ -1334,6 +1421,83 @@
       </div>
     </div>
 
+    <div id="changeLogModal" class="modal">
+      <div class="modal-content changelog-modal-content">
+        <button class="new-close-button" onclick="closeChangeLog()">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2>
+          <i class="fas fa-history icon"></i> 更新日誌
+        </h2>
+        
+        <div class="changelog-container">
+          <div class="changelog-entry">
+            <div class="changelog-version">版本 2.0</div>
+            <div class="changelog-date">2024 年 5 月 10 日</div>
+            <div class="changelog-changes">
+              <ul>
+                <li class="slide-in" style="animation-delay: 0.1s;">
+                  <i class="fas fa-star icon"></i> <strong>全新區域選擇功能</strong>：新增彰化區、基北區及台南區支援
+                </li>
+                <li class="slide-in" style="animation-delay: 0.2s;">
+                  <i class="fas fa-tools icon"></i> <strong>職業群別篩選</strong>：新增職業群別多選功能
+                </li>
+                <li class="slide-in" style="animation-delay: 0.3s;">
+                  <i class="fas fa-calculator icon"></i> <strong>計分方式顯示</strong>：各區域計分方式即時顯示
+                </li>
+                <li class="slide-in" style="animation-delay: 0.4s;">
+                  <i class="fas fa-mobile-alt icon"></i> <strong>行動裝置優化</strong>：改善手機和平板的使用體驗
+                </li>
+                <li class="slide-in" style="animation-delay: 0.5s;">
+                  <i class="fas fa-moon icon"></i> <strong>深色模式</strong>：新增深色模式支援
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="changelog-entry">
+            <div class="changelog-version">版本 1.5</div>
+            <div class="changelog-date">2024 年 2 月 15 日</div>
+            <div class="changelog-changes">
+              <ul>
+                <li class="slide-in" style="animation-delay: 0.6s;">
+                  <i class="fas fa-file-export icon"></i> <strong>匯出功能升級</strong>：新增 PDF 及 Excel 匯出選項
+                </li>
+                <li class="slide-in" style="animation-delay: 0.7s;">
+                  <i class="fas fa-database icon"></i> <strong>資料庫更新</strong>：更新最新學校資訊及錄取標準
+                </li>
+                <li class="slide-in" style="animation-delay: 0.8s;">
+                  <i class="fas fa-bug icon"></i> <strong>錯誤修復</strong>：修復多項系統穩定性問題
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="changelog-entry">
+            <div class="changelog-version">版本 1.0</div>
+            <div class="changelog-date">2023 年 10 月 20 日</div>
+            <div class="changelog-changes">
+              <ul>
+                <li class="slide-in" style="animation-delay: 0.9s;">
+                  <i class="fas fa-rocket icon"></i> <strong>系統啟動</strong>：會考落點分析系統正式上線
+                </li>
+                <li class="slide-in" style="animation-delay: 1.0s;">
+                  <i class="fas fa-map-marked-alt icon"></i> <strong>初始區域支援</strong>：支援桃聯區、中投區及高雄區
+                </li>
+                <li class="slide-in" style="animation-delay: 1.1s;">
+                  <i class="fas fa-user-shield icon"></i> <strong>邀請碼系統</strong>：實施邀請碼機制確保系統穩定
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <button class="confirm-button hover-glow" onclick="closeChangeLog()">
+          <i class="fas fa-check-circle icon"></i> 關閉
+        </button>
+      </div>
+    </div>
+
     <script src="script.js"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H9X7EC127P"></script>
@@ -1650,6 +1814,27 @@
     
     closeVocationalModal();
   }
+</script>
+
+<!-- 更新日誌相關函數 -->
+<script>
+  // 更新日誌相關函數
+  function showChangeLog() {
+    document.getElementById('changeLogModal').style.display = 'block';
+    document.body.style.overflow = 'hidden'; // 防止背景滾動
+  }
+  
+  function closeChangeLog() {
+    document.getElementById('changeLogModal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // 恢復背景滾動
+  }
+  
+  // 當用戶點擊彈窗外的區域時關閉彈窗
+  window.addEventListener('click', function(event) {
+    if (event.target == document.getElementById('changeLogModal')) {
+      closeChangeLog();
+    }
+  });
 </script>
   </body>
 </html>
