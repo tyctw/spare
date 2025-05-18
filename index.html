@@ -579,6 +579,184 @@
           padding: 12px;
         }
       }
+      
+      /* 深色模式樣式調整 */
+      .dark-mode {
+        --primary-color: #4a89dc;
+        --primary-rgb: 74, 137, 220;
+        --secondary-color: #5d9cec;
+        --text-color: #e0e0e0;
+        --text-secondary-color: #b0b0b0;
+        --background-color: #121212;
+        --card-bg-color: #1e1e1e;
+        --border-color: #333;
+        --hover-color: #3a70c0;
+        --disabled-color: #555;
+        --error-color: #ff6b6b;
+        --success-color: #5cb85c;
+        --input-bg: #2d2d2d;
+        --shadow-color: rgba(0, 0, 0, 0.5);
+      }
+      
+      /* 為新增的區域類別添加深色模式樣式 */
+      .dark-mode .region-category {
+        background-color: rgba(var(--primary-rgb), 0.15);
+        color: var(--primary-color);
+      }
+      
+      .dark-mode .preparing-category {
+        background-color: rgba(255, 107, 107, 0.1);
+        color: #ff8a8a;
+      }
+      
+      .dark-mode .preparing-category i {
+        color: #ff8a8a;
+      }
+      
+      /* 為更新日誌添加深色模式樣式 */
+      .dark-mode .changelog-modal-content {
+        background-color: var(--card-bg-color);
+        color: var(--text-color);
+      }
+      
+      .dark-mode .changelog-version {
+        color: var(--primary-color);
+      }
+      
+      .dark-mode .changelog-date {
+        color: var(--text-secondary-color);
+      }
+      
+      .dark-mode .changelog-changes li {
+        background-color: rgba(var(--primary-rgb), 0.1);
+      }
+      
+      .dark-mode .changelog-changes li:hover {
+        background-color: rgba(var(--primary-rgb), 0.2);
+      }
+      
+      .dark-mode .changelog-changes li .icon {
+        color: var(--primary-color);
+      }
+      
+      .dark-mode .changelog-entry {
+        border-left-color: var(--primary-color);
+      }
+      
+      .dark-mode .changelog-entry:before {
+        background-color: var(--primary-color);
+      }
+      
+      /* 為新表單按鈕添加深色模式樣式 */
+      .dark-mode .new-form-button {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #2a65b8 100%);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      }
+      
+      .dark-mode .button-icon {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      .dark-mode .button-arrow {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      
+      .dark-mode .new-form-button:hover .button-arrow {
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      
+      .dark-mode .form-button-badge {
+        background-color: #ff8a8a;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+      
+      /* 為區域選擇彈窗添加深色模式樣式 */
+      .dark-mode .region-modal-content {
+        background-color: var(--card-bg-color);
+        color: var(--text-color);
+      }
+      
+      .dark-mode .region-modal-title {
+        color: var(--primary-color);
+      }
+      
+      .dark-mode .region-option {
+        background-color: var(--background-color);
+      }
+      
+      .dark-mode .region-label {
+        background-color: var(--card-bg-color);
+        border: 1px solid var(--border-color);
+      }
+      
+      .dark-mode .region-name {
+        color: var(--text-color);
+      }
+      
+      .dark-mode .region-description {
+        color: var(--text-secondary-color);
+      }
+      
+      .dark-mode .region-feature {
+        color: var(--text-color);
+        background-color: rgba(var(--primary-rgb), 0.1);
+      }
+      
+      .dark-mode .region-feature.preparing {
+        color: #ff8a8a;
+      }
+      
+      .dark-mode .region-option.disabled .region-label {
+        background-color: #1a1a1a;
+        border-color: #2a2a2a;
+      }
+      
+      .dark-mode .region-option.disabled::after {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      
+      /* 為職業群別彈窗添加深色模式樣式 */
+      .dark-mode .vocational-modal-content {
+        background-color: var(--card-bg-color);
+        color: var(--text-color);
+      }
+      
+      .dark-mode .vocational-modal-title {
+        color: var(--primary-color);
+      }
+      
+      .dark-mode .vocational-group-label {
+        background-color: var(--card-bg-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+      }
+      
+      .dark-mode .vocational-group-input:checked + .vocational-group-label {
+        background-color: rgba(var(--primary-rgb), 0.2);
+        border-color: var(--primary-color);
+      }
+      
+      /* 為計分方式面板添加深色模式樣式 */
+      .dark-mode .scoring-info {
+        background-color: var(--card-bg-color);
+        border-left-color: var(--primary-color);
+      }
+      
+      .dark-mode .scoring-info-title {
+        color: var(--primary-color);
+      }
+      
+      .dark-mode .scoring-item {
+        background-color: var(--background-color);
+      }
+      
+      .dark-mode .scoring-item-header {
+        color: var(--text-color);
+      }
+      
+      .dark-mode .scoring-item-value {
+        color: var(--text-secondary-color);
+      }
     </style>
   </head>
   <body>
