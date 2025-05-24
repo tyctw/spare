@@ -4416,36 +4416,78 @@ button:hover:before {
   position: absolute;
   top: 8px;
   right: 8px;
-  color: white;
-  font-size: 24px;
+  color: #fff;
+  font-size: 22px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.1);
-  width: 40px;
-  height: 40px;
+  background: linear-gradient(135deg, #e74c3c 60%, #ff7675 100%);
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 2px 8px rgba(231,76,60,0.10);
   z-index: 10;
-  opacity: 0.7;
+  opacity: 0.85;
+  border: none;
+  outline: none;
 }
-
 .remove-school-btn:hover {
-  background: rgba(231, 76, 60, 0.8);
-  transform: scale(1.15) rotate(5deg);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #ff7675 0%, #e74c3c 100%);
+  transform: scale(1.18) rotate(-8deg);
+  box-shadow: 0 4px 16px rgba(231,76,60,0.18);
   opacity: 1;
+  filter: brightness(1.08);
 }
-
 .remove-school-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.92);
+  filter: brightness(0.95);
 }
 
-.school-column {
-  position: relative;
-  padding-top: 28px !important;
+/* 卡片視圖下的移除按鈕 */
+.school-card-button.remove-btn {
+  background: linear-gradient(90deg, #e74c3c 60%, #ff7675 100%);
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.98rem;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 2px 8px rgba(231,76,60,0.10);
+  font-weight: 500;
+}
+.school-card-button.remove-btn:hover {
+  background: linear-gradient(90deg, #ff7675 0%, #e74c3c 100%);
+  transform: translateY(-2px) scale(1.07);
+  box-shadow: 0 4px 16px rgba(231,76,60,0.18);
+  filter: brightness(1.08);
+}
+.school-card-button.remove-btn:active {
+  transform: scale(0.96);
+  filter: brightness(0.95);
+}
+
+/* dark mode for remove btn */
+.dark-mode .remove-school-btn {
+  background: linear-gradient(135deg, #c0392b 60%, #e17055 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.18);
+}
+.dark-mode .remove-school-btn:hover {
+  background: linear-gradient(135deg, #e17055 0%, #c0392b 100%);
+}
+.dark-mode .school-card-button.remove-btn {
+  background: linear-gradient(90deg, #c0392b 60%, #e17055 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.18);
+}
+.dark-mode .school-card-button.remove-btn:hover {
+  background: linear-gradient(90deg, #e17055 0%, #c0392b 100%);
 }
 
 .comparison-summary {

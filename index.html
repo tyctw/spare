@@ -1295,6 +1295,75 @@
         color: #ff8a8a;
         border-left-color: #ff6b6b;
       }
+
+      /* 分析中動畫遮罩 */
+      .analyzing-overlay {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.25);
+        backdrop-filter: blur(2px);
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.3s;
+      }
+      .analyzing-overlay.active {
+        display: flex;
+      }
+      .analyzing-spinner {
+        width: 64px;
+        height: 64px;
+        border: 6px solid #e0e7ef;
+        border-top: 6px solid var(--primary-color, #3498db);
+        border-radius: 50%;
+        animation: analyzing-spin 1s linear infinite;
+        margin-bottom: 28px;
+        box-shadow: 0 4px 16px rgba(52,152,219,0.08);
+      }
+      @keyframes analyzing-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .analyzing-text {
+        font-size: 1.25rem;
+        color: var(--primary-color, #3498db);
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-align: center;
+        animation: analyzing-fade 1.6s infinite;
+      }
+      @keyframes analyzing-fade {
+        0%,100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      .analyzing-dots::after {
+        content: '...';
+        animation: analyzing-dots 1.2s steps(3, end) infinite;
+      }
+      @keyframes analyzing-dots {
+        0% { content: ''; }
+        33% { content: '.'; }
+        66% { content: '..'; }
+        100% { content: '...'; }
+      }
+      @media (max-width: 600px) {
+        .analyzing-spinner { width: 44px; height: 44px; border-width: 4px; }
+        .analyzing-text { font-size: 1.05rem; }
+      }
+      .dark-mode .analyzing-overlay {
+        background: rgba(20,20,30,0.45);
+      }
+      .dark-mode .analyzing-spinner {
+        border: 6px solid #333a4a;
+        border-top: 6px solid var(--primary-color, #4a89dc);
+      }
+      .dark-mode .analyzing-text {
+        color: var(--primary-color, #4a89dc);
+      }
     </style>
   </head>
   <body>
@@ -2931,6 +3000,28 @@
       closeChangeLog();
     }
   });
+</script>
+
+<!-- 分析中動畫遮罩 -->
+<div id="analyzingOverlay" class="analyzing-overlay">
+  <div>
+    <div class="analyzing-spinner"></div>
+    <div class="analyzing-text analyzing-dots">分析中，請稍後</div>
+  </div>
+</div>
+
+<script>
+// ... existing code ...
+// 顯示/隱藏分析中動畫
+function showAnalyzingOverlay() {
+  document.getElementById('analyzingOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function hideAnalyzingOverlay() {
+  document.getElementById('analyzingOverlay').classList.remove('active');
+  document.body.style.overflow = 'auto';
+}
+// ... existing code ...
 </script>
   </body>
 </html>

@@ -1152,6 +1152,7 @@ function displayResults(data) {
     
     // Initialize comparison badge
     updateComparisonBadge();
+    refreshResultsComparisonButtons(); // 新增：渲染後同步按鈕狀態
   }, 100);
 }
 
@@ -2430,12 +2431,10 @@ function removeSchoolFromComparison(schoolName) {
     comparisonList = comparisonList.filter(school => school.name !== schoolName);
     localStorage.setItem('schoolComparison', JSON.stringify(comparisonList));
     updateComparisonBadge();
-    
-    // Update the comparison display after removal
+    refreshResultsComparisonButtons(); // 新增：移除後同步分析區塊按鈕
     if (document.getElementById('comparisonContainer')) {
       showSchoolComparison();
     }
-    
     showNotification(`已從比較清單中移除 ${schoolName}`, 'info');
   }, 300);
 }
@@ -4351,3 +4350,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 800);
   }
 });
+
+// 新增：同步分析區塊加入比較按鈕狀態
+function refreshResultsComparisonButtons() {
+  const comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
+  document.querySelectorAll('.school-item').forEach(item => {
+    const btn = item.querySelector('.add-comparison-btn');
+    const schoolName = item.querySelector('.school-name')?.textContent?.trim();
+    if (btn && schoolName) {
+      if (comparisonList.some(s => s.name === schoolName)) {
+        btn.innerHTML = '<i class="fas fa-check"></i> 已加入比較';
+        btn.classList.add('added');
+        btn.disabled = true;
+      } else {
+        btn.innerHTML = '<i class="fas fa-plus-circle"></i> 加入比較';
+        btn.classList.remove('added');
+        btn.disabled = false;
+      }
+    }
+  });
+}
