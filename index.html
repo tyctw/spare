@@ -1156,6 +1156,145 @@
       .date-item:nth-child(4) { animation-delay: 0.4s; }
       .date-item:nth-child(5) { animation-delay: 0.5s; }
       .date-item:nth-child(6) { animation-delay: 0.6s; }
+
+      /* 免責聲明彈窗美化 */
+      .disclaimer-modal-content {
+        max-width: 600px;
+        max-height: 85vh;
+        background: var(--card-bg-color, #fff);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        padding: 0;
+        overflow-y: auto; /* 讓內容可滾動 */
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+      }
+      .disclaimer-modal-content h2 {
+        color: var(--primary-color);
+        font-size: 1.7rem;
+        margin: 0;
+        padding: 32px 32px 12px 32px;
+        border-bottom: 2px solid rgba(var(--primary-rgb, 52,152,219),0.12);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .disclaimer-modal-content a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 18px 32px 0 32px;
+        color: var(--primary-color);
+        font-weight: 500;
+        text-decoration: none;
+        background: rgba(var(--primary-rgb,52,152,219),0.07);
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: background 0.2s;
+      }
+      .disclaimer-modal-content a:hover {
+        background: rgba(var(--primary-rgb,52,152,219),0.15);
+      }
+      .disclaimer-modal-content .disclaimer-section {
+        padding: 24px 32px 0 32px;
+      }
+      .disclaimer-modal-content .disclaimer-list {
+        margin: 0 0 18px 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 14px;
+      }
+      .disclaimer-modal-content .disclaimer-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        background: rgba(var(--primary-rgb,52,152,219),0.05);
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        color: var(--text-color,#333);
+        transition: background 0.2s;
+      }
+      .disclaimer-modal-content .disclaimer-list li i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        margin-top: 2px;
+      }
+      .disclaimer-modal-content .disclaimer-tip {
+        background: #fffbe6;
+        color: #b8860b;
+        border-left: 4px solid #ffd700;
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 18px 0 0 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+      }
+      .disclaimer-modal-content .disclaimer-warning {
+        background: #fff0f0;
+        color: #d7263d;
+        border-left: 4px solid #ff6b6b;
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin: 18px 0 0 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+      }
+      .disclaimer-modal-content .modal-footer {
+        padding: 0 32px 32px 32px;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .disclaimer-modal-content .confirm-button {
+        font-size: 1.1rem;
+        padding: 12px 28px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, var(--primary-color), #34a0db);
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb,52,152,219),0.12);
+        transition: background 0.2s, transform 0.2s;
+      }
+      .disclaimer-modal-content .confirm-button:hover {
+        background: linear-gradient(90deg, #34a0db, var(--primary-color));
+        transform: translateY(-2px);
+      }
+      @media (max-width: 600px) {
+        .disclaimer-modal-content {
+          max-width: 98vw;
+          border-radius: 12px;
+        }
+        .disclaimer-modal-content h2,
+        .disclaimer-modal-content .disclaimer-section,
+        .disclaimer-modal-content .modal-footer {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+      }
+      .dark-mode .disclaimer-modal-content {
+        background: var(--card-bg-color);
+        color: var(--text-color);
+      }
+      .dark-mode .disclaimer-modal-content .disclaimer-list li {
+        background: rgba(var(--primary-rgb),0.10);
+        color: var(--text-color);
+      }
+      .dark-mode .disclaimer-modal-content .disclaimer-tip {
+        background: #3a3a1a;
+        color: #ffd700;
+        border-left-color: #ffd700;
+      }
+      .dark-mode .disclaimer-modal-content .disclaimer-warning {
+        background: #3a1a1a;
+        color: #ff8a8a;
+        border-left-color: #ff6b6b;
+      }
     </style>
   </head>
   <body>
@@ -1749,7 +1888,7 @@
     </div>
 
     <div id="disclaimerModal" class="modal">
-      <div class="modal-content">
+      <div class="modal-content disclaimer-modal-content">
         <button class="new-close-button" onclick="closeDisclaimer()">
           <i class="fas fa-times"></i>
         </button>
@@ -1759,43 +1898,33 @@
         <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank" class="hover-glow">
           <i class="fas fa-link icon"></i> 填寫表單獲取邀請碼
         </a>
-        <p>
-          <i class="fas fa-info-circle icon"></i> 親愛的使用者，我們誠摯地提醒您：本網站提供的落點分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因多種因素而有所不同，包括但不限於：
-        </p>
-        <ul>
-          <li class="slide-in" style="animation-delay: 0.2s;">
-            <i class="fas fa-university icon"></i> 各校的招生政策變化
-          </li>
-          <li class="slide-in" style="animation-delay: 0.3s;">
-            <i class="fas fa-users icon"></i> 當年度考生整體表現
-          </li>
-          <li class="slide-in" style="animation-delay: 0.4s;">
-            <i class="fas fa-star icon"></i> 特殊才能或其他加分項目
-          </li>
-          <li class="slide-in" style="animation-delay: 0.5s;">
-            <i class="fas fa-clipboard-list icon"></i> 各校的實際招生名額調整
-          </li>
-        </ul>
-        <p>
-          <i class="fas fa-exclamation-triangle icon"></i> 為了確保您做出最佳的決定，我們強烈建議您：
-        </p>
-        <ul>
-          <li class="slide-in" style="animation-delay: 0.6s;">
-            <i class="fas fa-search icon"></i> 參考多方資訊，不要僅依賴本網站的分析結果
-          </li>
-          <li class="slide-in" style="animation-delay: 0.7s;">
-            <i class="fas fa-comments icon"></i> 諮詢學校輔導老師或升學顧問的專業意見
-          </li>
-          <li class="slide-in" style="animation-delay: 0.8s;">
-            <i class="fas fa-globe icon"></i> 密切關注各校的官方網站和招生簡章，以獲取最新和最準確的資訊
-          </li>
-        </ul>
-        <p>
-          <i class="fas fa-shield-alt icon"></i> 本網站不對因使用本服務而產生的任何直接或間接損失負責。使用本服務即表示您同意本免責聲明的所有條款。祝您升學順利！
-        </p>
-        <button class="confirm-button hover-glow" onclick="closeDisclaimer()">
-          <i class="fas fa-check-circle icon"></i> 我已了解並同意
-        </button>
+        <div class="disclaimer-section">
+          <ul class="disclaimer-list">
+            <li><i class="fas fa-info-circle"></i> 親愛的使用者，我們誠摯地提醒您：本網站提供的落點分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因多種因素而有所不同，包括但不限於：</li>
+            <li><i class="fas fa-university"></i> 各校的招生政策變化</li>
+            <li><i class="fas fa-users"></i> 當年度考生整體表現</li>
+            <li><i class="fas fa-star"></i> 特殊才能或其他加分項目</li>
+            <li><i class="fas fa-clipboard-list"></i> 各校的實際招生名額調整</li>
+          </ul>
+          <div class="disclaimer-tip">
+            <i class="fas fa-exclamation-triangle"></i>
+            為了確保您做出最佳的決定，我們強烈建議您：
+          </div>
+          <ul class="disclaimer-list">
+            <li><i class="fas fa-search"></i> 參考多方資訊，不要僅依賴本網站的分析結果</li>
+            <li><i class="fas fa-comments"></i> 諮詢學校輔導老師或升學顧問的專業意見</li>
+            <li><i class="fas fa-globe"></i> 密切關注各校的官方網站和招生簡章，以獲取最新和最準確的資訊</li>
+          </ul>
+          <div class="disclaimer-warning">
+            <i class="fas fa-shield-alt"></i>
+            本網站不對因使用本服務而產生的任何直接或間接損失負責。使用本服務即表示您同意本免責聲明的所有條款。祝您升學順利！
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="confirm-button hover-glow" onclick="closeDisclaimer()">
+            <i class="fas fa-check-circle icon"></i> 我已了解並同意
+          </button>
+        </div>
       </div>
     </div>
 
