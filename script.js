@@ -2357,6 +2357,44 @@ document.addEventListener('DOMContentLoaded', function() {
     referrer: document.referrer,
     screenSize: `${window.innerWidth}x${window.innerHeight}`
   });
+
+  // 全域互動紀錄：點擊
+  document.body.addEventListener('click', function(e) {
+    const target = e.target.closest('button, a, input[type="button"], input[type="submit"]');
+    if (target) {
+      logUserActivity('ui_click', {
+        tag: target.tagName,
+        id: target.id,
+        class: target.className,
+        text: target.innerText || target.value || '',
+        name: target.name || '',
+        value: target.value || '',
+        href: target.href || '',
+        time: new Date().toISOString()
+      });
+    }
+  });
+
+  // 全域互動紀錄：表單變更
+  document.body.addEventListener('change', function(e) {
+    const target = e.target;
+    if (["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName)) {
+      logUserActivity('ui_change', {
+        tag: target.tagName,
+        id: target.id,
+        class: target.className,
+        name: target.name || '',
+        value: target.value || '',
+        type: target.type || '',
+        time: new Date().toISOString()
+      });
+    }
+  });
+});
+
+// 頁面離開時紀錄
+window.addEventListener('beforeunload', function() {
+  logUserActivity('page_exit', { time: new Date().toISOString() });
 });
 
 // Add school comparison functionality
@@ -4019,8 +4057,8 @@ function showAdvancedComparisonView() {
                 <button class="school-card-button" onclick="showSchoolDetails('${school.name.replace(/'/g, "\\'")}')">
                   <i class="fas fa-search"></i> 查看詳情
                 </button>
-                <button class="school-card-button" style="margin-left: 10px; background: #e74c3c;" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
-                  <i class="fas fa-trash-alt"></i> 移除
+                <button class="school-card-button remove-btn" style="margin-left: 10px; background: #e74c3c;" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
+                  <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
             </div>
