@@ -2444,19 +2444,24 @@ function addSchoolToComparison(schoolName, schoolType, schoolDetails) {
 function removeSchoolFromComparison(schoolName) {
   let comparisonList = JSON.parse(localStorage.getItem('schoolComparison') || '[]');
   
-  // Find the column to animate before removal
-  const columnIndex = comparisonList.findIndex(school => school.name === schoolName);
-  if (columnIndex > -1) {
-    const columns = document.querySelectorAll(`.school-column`);
-    if (columns[columnIndex]) {
-      columns[columnIndex].classList.add('removing');
-      // Add animation to all cells in this column
-      const table = document.querySelector('.comparison-table');
-      if (table) {
-        const rows = table.querySelectorAll('tr');
-        rows.forEach(row => {
+  // 找到要刪除的元素
+  const schoolCard = document.querySelector(`.school-card[data-school="${schoolName}"]`);
+  const tableColumn = document.querySelector(`.school-column[data-school="${schoolName}"]`);
+  
+  // 添加移除動畫
+  if (schoolCard) {
+    schoolCard.classList.add('removing');
+  }
+  if (tableColumn) {
+    tableColumn.classList.add('removing');
+    // 同時為該列的所有單元格添加動畫
+    const table = document.querySelector('.comparison-table');
+    if (table) {
+      const columnIndex = Array.from(table.querySelectorAll('th.school-column')).findIndex(th => th.getAttribute('data-school') === schoolName);
+      if (columnIndex > -1) {
+        table.querySelectorAll('tr').forEach(row => {
           const cells = row.querySelectorAll('td, th');
-          if (cells[columnIndex + 1]) { // +1 because first column is for labels
+          if (cells[columnIndex + 1]) {
             cells[columnIndex + 1].classList.add('removing');
           }
         });
@@ -2464,15 +2469,35 @@ function removeSchoolFromComparison(schoolName) {
     }
   }
   
-  // Remove after animation completes
+  // 移除學校並更新存儲
+  comparisonList = comparisonList.filter(school => school.name !== schoolName);
+  localStorage.setItem('schoolComparison', JSON.stringify(comparisonList));
+  
+  // 更新徽章和按鈕狀態
+  updateComparisonBadge();
+  refreshResultsComparisonButtons();
+  
+  // 延遲更新視圖，等待動畫完成
   setTimeout(() => {
-    comparisonList = comparisonList.filter(school => school.name !== schoolName);
-    localStorage.setItem('schoolComparison', JSON.stringify(comparisonList));
-    updateComparisonBadge();
-    refreshResultsComparisonButtons(); // 新增：移除後同步分析區塊按鈕
-    if (document.getElementById('comparisonContainer')) {
-      showSchoolComparison();
+    // 重新渲染整個比較視圖
+    if (document.getElementById('advancedComparisonModal')) {
+      showAdvancedComparisonView();
     }
+    
+    // 如果比較清單為空，顯示提示訊息
+    if (comparisonList.length === 0) {
+      const container = document.getElementById('comparisonContainer');
+      if (container) {
+        container.innerHTML = `
+          <div class="empty-comparison">
+            <i class="fas fa-info-circle icon-large"></i>
+            <p>您尚未新增任何學校到比較清單</p>
+            <p>請在分析結果中點擊「加入比較」按鈕新增學校</p>
+          </div>
+        `;
+      }
+    }
+    
     showNotification(`已從比較清單中移除 ${schoolName}`, 'info');
   }, 300);
 }
@@ -2537,7 +2562,7 @@ function showSchoolComparison() {
           <tr>
             <th>比較項目</th>
             ${comparisonList.map(school => `
-              <th class="school-column">
+              <th class="school-column" data-school="${school.name}">
                 ${school.name}
                 <button class="remove-school-btn" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
                   <i class="fas fa-times"></i>
@@ -3972,7 +3997,7 @@ function showAdvancedComparisonView() {
               <tr>
                 <th>比較項目</th>
                 ${comparisonList.map(school => `
-                  <th class="school-column">
+                  <th class="school-column" data-school="${school.name}">
                     ${school.name}
                     <button class="remove-school-btn" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
                       <i class="fas fa-times"></i>
@@ -4030,7 +4055,7 @@ function showAdvancedComparisonView() {
       <div class="comparison-view-content" id="card-view">
         <div class="school-cards-container">
           ${comparisonList.map(school => `
-            <div class="school-card">
+            <div class="school-card" data-school="${school.name}">
               <div class="school-card-header">
                 <div class="school-card-title">${school.name}</div>
                 <div class="school-card-badge">${school.type || '未知'}</div>
@@ -4057,22 +4082,13 @@ function showAdvancedComparisonView() {
                 <button class="school-card-button" onclick="showSchoolDetails('${school.name.replace(/'/g, "\\'")}')">
                   <i class="fas fa-search"></i> 查看詳情
                 </button>
-                <button class="school-card-button remove-btn" style="margin-left: 10px; background: #e74c3c;" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
-                  <i class="fas fa-trash-alt"></i>
+                <button class="school-card-button remove-btn" onclick="removeSchoolFromComparison('${school.name.replace(/'/g, "\\'")}')">
+                  <i class="fas fa-times"></i>
                 </button>
               </div>
             </div>
           `).join('')}
         </div>
-      </div>
-      
-      <div style="text-align: center; margin-top: 20px;">
-        <button class="confirm-button" onclick="exportComparison()">
-          <i class="fas fa-file-export"></i> 匯出比較結果
-        </button>
-        <button class="confirm-button" style="margin-left: 10px; background: #e74c3c;" onclick="clearComparison()">
-          <i class="fas fa-trash-alt"></i> 清空比較
-        </button>
       </div>
     </div>
   `;
