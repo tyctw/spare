@@ -4418,65 +4418,69 @@ button:hover:before {
   position: absolute;
   top: 8px;
   right: 8px;
-  color: #fff;
-  font-size: 22px;
+  color: #e74c3c;
+  font-size: 20px;
   cursor: pointer;
-  background: linear-gradient(135deg, #e74c3c 60%, #ff7675 100%);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
-  box-shadow: 0 2px 8px rgba(231,76,60,0.10);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  opacity: 0.85;
-  border: none;
-  outline: none;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  backdrop-filter: blur(8px);
 }
+
 .remove-school-btn:hover {
-  background: linear-gradient(135deg, #ff7675 0%, #e74c3c 100%);
-  transform: scale(1.18) rotate(-8deg);
-  box-shadow: 0 4px 16px rgba(231,76,60,0.18);
-  opacity: 1;
-  filter: brightness(1.08);
+  background: #e74c3c;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+  border-color: transparent;
 }
+
 .remove-school-btn:active {
-  transform: scale(0.92);
-  filter: brightness(0.95);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(231, 76, 60, 0.1);
 }
 
 /* 卡片視圖下的移除按鈕 */
 .school-card-button.remove-btn {
-  background: linear-gradient(90deg, #e74c3c 60%, #ff7675 100%);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  box-shadow: 0 2px 8px rgba(231,76,60,0.10);
-  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-left: 10px;
   cursor: pointer;
+  backdrop-filter: blur(8px);
 }
+
 .school-card-button.remove-btn:hover {
-  background: linear-gradient(90deg, #ff7675 0%, #e74c3c 100%);
-  transform: scale(1.18) rotate(-8deg);
-  box-shadow: 0 4px 16px rgba(231,76,60,0.18);
-  opacity: 1;
-  filter: brightness(1.08);
+  background: #e74c3c;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+  border-color: transparent;
 }
+
 .school-card-button.remove-btn:active {
-  transform: scale(0.92);
-  filter: brightness(0.95);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(231, 76, 60, 0.1);
 }
 
 /* dark mode for remove btn */
@@ -4781,92 +4785,181 @@ button:hover:before {
 }
 
 .school-card {
-  background: #f9f9f9;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  border-left: 4px solid var(--primary-color);
+  position: relative;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  flex: 1;
+  min-width: 280px;
+  max-width: 350px;
 }
 
 .school-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary-color);
 }
 
 .school-card-header {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .school-card-title {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: var(--primary-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-right: 15px;
+  line-height: 1.4;
+  flex: 1;
 }
 
 .school-card-badge {
-  background: var(--secondary-color);
-  color: #264653;
-  padding: 3px 10px;
+  padding: 6px 12px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 500;
+  color: white;
+  background: linear-gradient(135deg, var(--primary-color), #34d399);
+  box-shadow: 0 2px 8px rgba(42, 157, 143, 0.2);
 }
 
 .school-card-content {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .school-card-item {
   display: flex;
   flex-direction: column;
+  gap: 5px;
 }
 
 .school-card-label {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #666;
-  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.school-card-label i {
+  color: var(--primary-color);
+  font-size: 1rem;
 }
 
 .school-card-value {
+  font-size: 1rem;
+  color: var(--text-color);
   font-weight: 500;
 }
 
 .school-card-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .school-card-button {
-  background: var(--accent-color);
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
   font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  background: var(--primary-color);
+  border: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(42, 157, 143, 0.15);
 }
 
 .school-card-button:hover {
-  background: #da8c5c;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 157, 143, 0.25);
+  filter: brightness(1.1);
+}
+
+/* 深色模式樣式 */
+.dark-mode .school-card {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .school-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .school-card-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .school-card-title {
+  color: #fff;
+}
+
+.dark-mode .school-card-label {
+  color: #94a3b8;
+}
+
+.dark-mode .school-card-value {
+  color: #e2e8f0;
+}
+
+.dark-mode .school-card-actions {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .school-card {
+    margin: 10px;
+    padding: 15px;
+    min-width: calc(100% - 20px);
+    max-width: none;
+  }
+
+  .school-card-content {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .school-card-header {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+  }
+
+  .school-card-title {
+    font-size: 1.1rem;
+  }
+
+  .school-card-badge {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+
+  .school-card-actions {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
 }
 
 .comparison-visualizations {
@@ -6474,5 +6567,42 @@ button:hover:before {
   }
   100% {
     background: radial-gradient(circle at center, rgba(17, 138, 178, 0.08) 30%, rgba(255, 255, 255, 0));
+  }
+}
+
+.school-cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.school-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  min-width: unset;
+  max-width: none;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .school-cards-container {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+
+  .school-card {
+    margin: 0;
+    padding: 15px;
   }
 }
