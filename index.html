@@ -3043,9 +3043,32 @@
 
 <!-- 分析中動畫遮罩 -->
 <div id="analyzingOverlay" class="analyzing-overlay">
-  <div>
-    <div class="analyzing-spinner"></div>
-    <div class="analyzing-text analyzing-dots">分析中，請稍後</div>
+  <div class="analyzing-container">
+    <div class="analyzing-progress">
+      <div class="analyzing-circle"></div>
+      <div class="analyzing-percentage">0%</div>
+    </div>
+    <div class="analyzing-steps">
+      <div class="analyzing-step" data-step="1">
+        <div class="step-icon">1</div>
+        <div class="step-text">收集成績資料</div>
+      </div>
+      <div class="analyzing-step" data-step="2">
+        <div class="step-icon">2</div>
+        <div class="step-text">計算加權分數</div>
+      </div>
+      <div class="analyzing-step" data-step="3">
+        <div class="step-icon">3</div>
+        <div class="step-text">分析學校資料</div>
+      </div>
+      <div class="analyzing-step" data-step="4">
+        <div class="step-icon">4</div>
+        <div class="step-text">生成落點建議</div>
+      </div>
+    </div>
+    <div class="analyzing-message">
+      分析處理中，請稍候...
+    </div>
   </div>
 </div>
 

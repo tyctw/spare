@@ -393,64 +393,66 @@ function hideInvitationValidationAnimation() {
 }
 
 function showLoading() {
-  const loadingOverlay = document.createElement('div');
-  loadingOverlay.className = 'loading-overlay';
+  const overlay = document.querySelector('.analyzing-overlay');
+  overlay.classList.add('active');
   
-  loadingOverlay.innerHTML = `
-    <div class="loading-spinner-container">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">分析中，請稍候...</div>
-      <div class="loading-progress"></div>
-      <div class="loading-steps">
-        <div class="loading-step" data-step="1">
-          <i class="fas fa-check-circle"></i>
-          <span>驗證邀請碼</span>
-        </div>
-        <div class="loading-step" data-step="2">
-          <i class="fas fa-check-circle"></i>
-          <span>計算總積分</span>
-        </div>
-        <div class="loading-step" data-step="3">
-          <i class="fas fa-check-circle"></i>
-          <span>分析落點區間</span>
-        </div>
-        <div class="loading-step" data-step="4">
-          <i class="fas fa-check-circle"></i>
-          <span>生成分析報告</span>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(loadingOverlay);
+  // 重置所有步驟狀態
+  document.querySelectorAll('.analyzing-step').forEach(step => {
+    step.classList.remove('active', 'completed');
+  });
   
-  requestAnimationFrame(() => {
-    loadingOverlay.style.display = 'flex';
-    simulateLoadingSteps();
-  });
-}
-
-function simulateLoadingSteps() {
-  const steps = document.querySelectorAll('.loading-step');
-  const stepDelay = 500; // Time between each step
-
-  steps.forEach((step, index) => {
-    setTimeout(() => {
-      step.classList.add('active');
-    }, stepDelay * (index + 1));
-  });
+  // 重置進度
+  const circle = document.querySelector('.analyzing-circle');
+  const percentage = document.querySelector('.analyzing-percentage');
+  circle.style.setProperty('--progress', '0%');
+  percentage.textContent = '0%';
+  
+  // 模擬分析進度
+  let currentStep = 1;
+  let progress = 0;
+  
+  const updateProgress = () => {
+    if (progress >= 100) return;
+    
+    progress += 1;
+    circle.style.setProperty('--progress', `${progress}%`);
+    percentage.textContent = `${progress}%`;
+    
+    // 更新步驟狀態
+    const stepThresholds = [25, 50, 75, 100];
+    const newStep = stepThresholds.findIndex(threshold => progress <= threshold) + 1;
+    
+    if (newStep !== currentStep) {
+      // 完成前一個步驟
+      if (currentStep > 0) {
+        const prevStep = document.querySelector(`[data-step="${currentStep}"]`);
+        prevStep.classList.remove('active');
+        prevStep.classList.add('completed');
+      }
+      
+      // 激活新步驟
+      const nextStep = document.querySelector(`[data-step="${newStep}"]`);
+      nextStep.classList.add('active');
+      
+      currentStep = newStep;
+    }
+    
+    if (progress < 100) {
+      setTimeout(updateProgress, 50);
+    }
+  };
+  
+  // 開始第一個步驟
+  const firstStep = document.querySelector('[data-step="1"]');
+  firstStep.classList.add('active');
+  
+  // 開始更新進度
+  setTimeout(updateProgress, 50);
 }
 
 function hideLoading() {
-  const loadingOverlay = document.querySelector('.loading-overlay');
-  if (loadingOverlay) {
-    loadingOverlay.style.opacity = '0';
-    loadingOverlay.style.transition = 'opacity 0.3s ease';
-    
-    setTimeout(() => {
-      loadingOverlay.remove();
-    }, 300);
-  }
+  const overlay = document.querySelector('.analyzing-overlay');
+  overlay.classList.remove('active');
 }
 
 async function logUserActivity(action, details = {}) {
