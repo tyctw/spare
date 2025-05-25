@@ -844,23 +844,18 @@ button:hover:before {
 
 /* 邀請碼驗證動畫樣式 */
 .validation-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(42, 157, 143, 0.95);
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 100;
-  color: white;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
   animation: fadeIn 0.3s ease-out;
-  backdrop-filter: blur(3px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
 }
 
 .validation-overlay.fade-out {
@@ -868,315 +863,307 @@ button:hover:before {
 }
 
 .validation-content {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  box-sizing: border-box;
+  background: linear-gradient(135deg, #2a9d8f, #264653);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  animation: slideInUp 0.5s ease-out;
 }
 
-.validation-header {
+.validation-steps {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  position: relative;
+  padding: 0 1rem;
 }
 
 .validation-step {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.step-circle i {
+  font-size: 1rem;
   opacity: 0.5;
   transition: all 0.3s ease;
 }
 
-.validation-step.active {
+.validation-step.active .step-circle {
+  background: white;
+  border-color: white;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.validation-step.active .step-circle i {
+  color: #2a9d8f;
   opacity: 1;
 }
 
-.step-indicator {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-  font-size: 12px;
-  font-weight: bold;
-  transition: all 0.3s ease;
+.validation-step.completed .step-circle {
+  background: #4CAF50;
+  border-color: #4CAF50;
 }
 
-.validation-step.active .step-indicator {
-  background: #ffffff;
-  color: var(--primary-color);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  transform: scale(1.1);
+.validation-step.completed .step-circle i {
+  color: white;
+  opacity: 1;
 }
 
 .step-label {
-  font-size: 14px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.validation-step.active .step-label {
+  color: white;
   font-weight: 500;
 }
 
-.validation-progress-bar {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 10px;
+.progress-line {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
 }
 
-.validation-progress-inner {
+.progress-line-inner {
   height: 100%;
-  width: 33%;
-  background: #ffffff;
-  border-radius: 2px;
-  transition: width 0.5s cubic-bezier(0.65, 0, 0.35, 1);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+  width: 0;
+  background: white;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .validation-body {
-  flex: 1;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.validation-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  margin: 0 auto 1.5rem;
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.scanner-container {
-  width: 90%;
-  max-width: 300px;
-  height: 70px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-.scanner-light {
+.validation-circle::before {
+  content: '';
   position: absolute;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0) 0%, 
-    rgba(255, 255, 255, 0.8) 50%, 
-    rgba(255, 255, 255, 0) 100%);
-  top: 0;
-  left: 0;
-  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
-  opacity: 0;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
 }
 
-.scanner-light.scanning {
-  animation: scanMove 1.5s cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
-  opacity: 1;
+.validation-percentage {
+  font-size: 2rem;
+  font-weight: 600;
+  color: white;
 }
 
-.scanner-light.complete {
-  animation: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.validation-message {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.validation-details {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .code-display {
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  font-family: monospace;
-  font-size: 20px;
-  letter-spacing: 3px;
+  gap: 0.5rem;
+  margin: 1rem 0;
 }
 
 .code-char {
-  opacity: 0;
-  margin: 0 2px;
-  animation: fadeInChar 0.5s forwards;
+  width: 40px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-family: monospace;
   position: relative;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+.code-char::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: shimmer 2s infinite;
 }
 
 .code-char.verified {
-  color: #4cd137;
-  text-shadow: 0 0 5px rgba(76, 209, 55, 0.7);
-  animation: pulseChar 0.3s forwards;
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  animation: popVerified 0.3s ease-out forwards;
 }
 
-.validation-message {
-  font-size: 18px;
-  font-weight: 500;
-  margin-bottom: 5px;
-  text-align: center;
-}
-
-.validation-details {
-  font-size: 14px;
-  opacity: 0.8;
-  text-align: center;
-  max-width: 80%;
-}
-
-.validation-spinner-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.validation-spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s linear infinite;
-}
-
-/* 成功檢查標記動畫 */
 .success-checkmark {
   width: 80px;
   height: 80px;
   margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.check-icon {
-  width: 40px;
-  height: 40px;
   position: relative;
-  transform: scale(0);
-  animation: popInCheck 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+  display: none;
 }
 
-.icon-line {
-  height: 5px;
-  background-color: #ffffff;
+.success-checkmark.show {
   display: block;
-  border-radius: 3px;
-  position: absolute;
-  z-index: 10;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: checkmarkAppear 0.5s ease-out forwards;
 }
 
-.icon-line.line-tip {
-  top: 22px;
-  left: 8px;
-  width: 12px;
-  transform: rotate(45deg);
-  transform-origin: left top;
-  animation: drawLineTip 0.5s ease-in-out 0.1s forwards;
-  opacity: 0;
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #4CAF50;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 
-.icon-line.line-long {
-  top: 18px;
-  right: 0;
-  width: 25px;
-  transform: rotate(-45deg);
-  transform-origin: right top;
-  animation: drawLineLong 0.5s ease-in-out 0.3s forwards;
-  opacity: 0;
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke: #4CAF50;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
 }
 
-/* 動畫關鍵幀 */
-@keyframes scanMove {
-  0% { top: 0; }
-  50% { top: calc(100% - 2px); }
-  51% { top: calc(100% - 2px); }
-  100% { top: 0; }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@keyframes fadeInChar {
-  from { 
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
     opacity: 0;
-    transform: translateY(5px);
   }
-  to { 
-    opacity: 1;
+  to {
     transform: translateY(0);
+    opacity: 1;
   }
 }
 
-@keyframes pulseChar {
-  0% { 
-    transform: scale(1);
-  }
-  50% { 
-    transform: scale(1.3);
-  }
-  100% { 
-    transform: scale(1);
-  }
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
-@keyframes popInCheck {
-  from { 
+@keyframes popVerified {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes checkmarkAppear {
+  from {
     transform: scale(0);
+    opacity: 0;
   }
-  to { 
+  to {
     transform: scale(1);
-  }
-}
-
-@keyframes drawLineTip {
-  0% {
-    width: 0;
-    opacity: 0;
-  }
-  100% {
-    width: 12px;
     opacity: 1;
   }
 }
 
-@keyframes drawLineLong {
-  0% {
-    width: 0;
-    opacity: 0;
-  }
-  100% {
-    width: 25px;
-    opacity: 1;
-  }
+@keyframes stroke {
+  100% { stroke-dashoffset: 0; }
 }
 
-/* 深色模式適配 */
-.dark-mode .validation-overlay {
-  background: rgba(33, 33, 33, 0.95);
-}
-
-.dark-mode .validation-step.active .step-indicator {
-  background: #ffffff;
-  color: #1e272e;
-}
-
-/* 移動端響應式設計 */
 @media (max-width: 768px) {
   .validation-content {
-    padding: 15px;
+    padding: 1.5rem;
+    width: 95%;
   }
-  
-  .scanner-container {
-    height: 60px;
+
+  .validation-circle {
+    width: 120px;
+    height: 120px;
   }
-  
-  .code-display {
-    font-size: 16px;
+
+  .validation-percentage {
+    font-size: 1.5rem;
   }
-  
+
   .validation-message {
-    font-size: 16px;
+    font-size: 1rem;
   }
-  
-  .validation-details {
-    font-size: 12px;
+
+  .code-char {
+    width: 30px;
+    height: 40px;
+    font-size: 1.2rem;
   }
+}
+
+/* Dark mode styles */
+.dark-mode .validation-overlay {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.dark-mode .validation-content {
+  background: linear-gradient(135deg, #1a1a1a, #2d3436);
+}
+
+.dark-mode .code-char {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .code-char.verified {
+  background: rgba(76, 175, 80, 0.1);
 }
 
 /* Modal styles */
@@ -5930,6 +5917,7 @@ button:hover:before {
   .instructions-content {
     height: calc(100% - 80px);
   }
+  }
   
   .instruction-panel {
     position: relative;
@@ -7090,5 +7078,349 @@ button:hover:before {
 
   .analyzing-message {
     font-size: 1rem;
+  }
+}
+
+/* New Desktop Instruction Panel Styles */
+.instructions-modal-content {
+  max-width: 1200px;
+  width: 90%;
+  height: 90vh; /* 增加高度 */
+  background: var(--card-background);
+  border-radius: 24px;
+  padding: 0;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  margin: 3vh auto; /* 減少上下邊距 */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.instructions-modal-content h2 {
+  padding: 1.5rem 2rem; /* 減少標題區域高度 */
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(67, 97, 238, 0.1));
+}
+
+.instructions-guide {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  background: var(--card-background);
+  height: calc(100% - 70px); /* 減去標題高度 */
+}
+
+.instructions-steps {
+  width: 260px; /* 稍微減少側邊欄寬度 */
+  background: rgba(67, 97, 238, 0.03);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+.instructions-steps::-webkit-scrollbar {
+  width: 6px;
+}
+
+.instructions-steps::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.instructions-steps::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 3px;
+}
+
+.instructions-content {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--card-background);
+  height: 100%;
+}
+
+.instruction-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1.5rem 2rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(30px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+.instruction-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.instruction-panel::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 0.5rem 0;
+}
+
+.instruction-panel::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  border: 2px solid var(--card-background);
+}
+
+.instruction-panel-content {
+  max-width: 900px; /* 增加內容最大寬度 */
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.instruction-visual {
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(67, 97, 238, 0.1));
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.instruction-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 增加卡片最小寬度 */
+  gap: 1.2rem;
+  margin: 1.5rem 0;
+}
+
+.instruction-method {
+  background: var(--card-background);
+  padding: 1.2rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(67, 97, 238, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.instruction-tip {
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(67, 97, 238, 0.15));
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1.2rem 0;
+  font-weight: 500;
+  border: 1px solid rgba(67, 97, 238, 0.2);
+  line-height: 1.5;
+}
+
+.instruction-nav {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card-background);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 1.5rem;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+/* 調整移動版樣式 */
+@media (max-width: 768px) {
+  .instructions-modal-content {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .instructions-modal-content h2 {
+    padding: 1rem 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .instructions-guide {
+    height: calc(100% - 60px);
+  }
+
+  .instruction-panel {
+    padding: 1rem 1.2rem;
+  }
+
+  .instruction-panel-content {
+    padding: 0 0.5rem;
+  }
+
+  .instruction-methods {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .instruction-nav {
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
+
+/* 深色模式調整 */
+.dark-mode .instructions-steps::-webkit-scrollbar-thumb {
+  background-color: var(--accent-color);
+}
+
+.dark-mode .instruction-panel::-webkit-scrollbar-thumb {
+  background-color: var(--accent-color);
+  border-color: var(--card-background);
+}
+
+.dark-mode .instruction-nav {
+  background: rgba(0, 0, 0, 0.8);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .instructions-steps {
+  background: rgba(67, 97, 238, 0.05);
+  border-right-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .instruction-step {
+  color: var(--text-color);
+}
+
+.dark-mode .instruction-step:hover {
+  background: rgba(67, 97, 238, 0.15);
+}
+
+.dark-mode .instruction-step.active {
+  background: rgba(67, 97, 238, 0.2);
+}
+
+.dark-mode .instruction-method {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .instruction-method:hover {
+  border-color: var(--primary-color);
+  background: rgba(67, 97, 238, 0.1);
+}
+
+.dark-mode .instruction-tip {
+  background: linear-gradient(135deg, rgba(67, 97, 238, 0.15), rgba(67, 97, 238, 0.2));
+  border-color: rgba(67, 97, 238, 0.3);
+}
+
+.dark-mode .instruction-nav {
+  background: rgba(0, 0, 0, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .prev-btn {
+  background: rgba(67, 97, 238, 0.15);
+  color: var(--text-color);
+}
+
+.dark-mode .prev-btn:hover {
+  background: rgba(67, 97, 238, 0.2);
+  color: white;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .instructions-modal-content {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .instructions-guide {
+    flex-direction: column;
+  }
+
+  .instructions-steps {
+    width: 100%;
+    padding: 1rem;
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .instruction-step {
+    flex: 0 0 auto;
+    padding: 0.8rem 1.2rem;
+    margin: 0 0.3rem;
+    border-radius: 30px;
+    background: rgba(67, 97, 238, 0.05);
+  }
+
+  .instruction-step::before {
+    display: none;
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .step-title {
+    font-size: 0.9rem;
+  }
+
+  .instruction-panel {
+    padding: 1.5rem;
+  }
+
+  .instruction-panel h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .instruction-methods {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .instruction-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+  }
+
+  .nav-btn {
+    padding: 0.7rem 1.2rem;
+    min-width: 120px;
+    font-size: 0.9rem;
   }
 }

@@ -209,181 +209,127 @@ function closeDisclaimer() {
 }
 
 function showInvitationValidationAnimation() {
-  const invitationGroup = document.getElementById('invitationCode').closest('.form-group');
-  const invitationInput = document.getElementById('invitationCode');
-  const invitationCode = invitationInput.value;
-  
-  if (!invitationGroup) return;
-  
-  // 儲存邀請碼供動畫使用
-  const codeDigits = invitationCode.split('');
-  
-  invitationGroup.style.position = 'relative';
-  
-  // 創建覆蓋層
   const overlay = document.createElement('div');
-  overlay.id = 'invitationValidationOverlay';
   overlay.className = 'validation-overlay';
   
-  // 創建更精美的動畫內容
+  // 創建驗證內容
   overlay.innerHTML = `
     <div class="validation-content">
-      <div class="validation-header">
+      <div class="validation-steps">
         <div class="validation-step active" data-step="1">
-          <div class="step-indicator">1</div>
-          <div class="step-label">初始化</div>
+          <div class="step-circle">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <div class="step-label">資料收集</div>
         </div>
         <div class="validation-step" data-step="2">
-          <div class="step-indicator">2</div>
+          <div class="step-circle">
+            <i class="fas fa-shield-alt"></i>
+          </div>
           <div class="step-label">驗證中</div>
         </div>
-        <div class="validation-step" data-step="3"> 
-          <div class="step-indicator">3</div>
+        <div class="validation-step" data-step="3">
+          <div class="step-circle">
+            <i class="fas fa-check"></i>
+          </div>
           <div class="step-label">完成</div>
         </div>
-        <div class="validation-progress-bar">
-          <div class="validation-progress-inner"></div>
+        <div class="progress-line">
+          <div class="progress-line-inner"></div>
         </div>
       </div>
       
       <div class="validation-body">
-        <div class="scanner-container">
-          <div class="scanner-light"></div>
-          <div class="code-display"></div>
+        <div class="validation-circle">
+          <div class="validation-percentage">0%</div>
         </div>
-        
-        <div class="validation-message">正在連接伺服器...</div>
-        <div class="validation-details">驗證邀請碼格式</div>
-      </div>
-      
-      <div class="validation-spinner-container">
-        <div class="validation-spinner"></div>
+        <div class="validation-message">正在初始化...</div>
+        <div class="validation-details">準備驗證邀請碼</div>
+        <div class="code-display"></div>
+        <div class="success-checkmark">
+          <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
       </div>
     </div>
   `;
   
-  invitationGroup.appendChild(overlay);
+  document.body.appendChild(overlay);
   
-  // 創建掃描動畫效果
-  setTimeout(() => {
-    const codeDisplay = overlay.querySelector('.code-display');
-    if (codeDisplay) {
-      // 建立字符動畫效果
-      let html = '';
-      codeDigits.forEach((digit, index) => {
-        html += `<span class="code-char" style="animation-delay: ${index * 100}ms">${digit}</span>`;
-      });
-      codeDisplay.innerHTML = html;
-      
-      // 啟動掃描動畫
-      overlay.querySelector('.scanner-light').classList.add('scanning');
-      
-      // 更新訊息
-      overlay.querySelector('.validation-message').textContent = '驗證邀請碼中...';
-      overlay.querySelector('.validation-details').textContent = '正在檢查邀請碼有效性';
-      
-      // 啟動第二階段
-      overlay.querySelector('.validation-step[data-step="2"]').classList.add('active');
-      overlay.querySelector('.validation-progress-inner').style.width = '66%';
-    }
-  }, 800);
+  // 獲取邀請碼
+  const invitationCode = document.getElementById('invitationCode').value;
+  const codeDigits = invitationCode.split('');
   
-  // 模擬驗證過程
+  // 顯示邀請碼字符
+  const codeDisplay = overlay.querySelector('.code-display');
   setTimeout(() => {
-    // 讓字符一個個變綠色，表示驗證進行中
-    const codeChars = overlay.querySelectorAll('.code-char');
-    codeChars.forEach((char, index) => {
-      setTimeout(() => {
-        char.classList.add('verified');
-      }, index * 200);
+    codeDigits.forEach((digit, index) => {
+      const charDiv = document.createElement('div');
+      charDiv.className = 'code-char';
+      charDiv.textContent = digit;
+      charDiv.style.animationDelay = `${index * 100}ms`;
+      codeDisplay.appendChild(charDiv);
     });
-    
-    // 最後一個字符變綠後，顯示成功
-    setTimeout(() => {
-      // 停止掃描動畫
-      overlay.querySelector('.scanner-light').classList.remove('scanning');
-      overlay.querySelector('.scanner-light').classList.add('complete');
-      
-      // 更新訊息
-      overlay.querySelector('.validation-message').innerHTML = '<i class="fas fa-check-circle"></i> 驗證成功';
-      overlay.querySelector('.validation-details').textContent = '邀請碼有效，授權成功';
-      
-      // 啟動第三階段
-      overlay.querySelector('.validation-step[data-step="3"]').classList.add('active');
-      overlay.querySelector('.validation-progress-inner').style.width = '100%';
-      
-      // 移除spinner，添加成功動畫
-      const spinnerContainer = overlay.querySelector('.validation-spinner-container');
-      spinnerContainer.innerHTML = '<div class="success-checkmark"><div class="check-icon"><span class="icon-line line-tip"></span><span class="icon-line line-long"></span></div></div>';
-      
-      // 創建煙花效果
-      createVerificationFireworks(overlay);
-      
-    }, codeChars.length * 200 + 300);
-  }, 1500);
+  }, 500);
   
-  // 等待一段時間後隱藏動畫
-  setTimeout(() => {
-    hideInvitationValidationAnimation();
-  }, 5000);
-}
-
-// 創建驗證成功的煙花效果
-function createVerificationFireworks(container) {
-  for (let i = 0; i < 30; i++) {
-    const firework = document.createElement('div');
-    firework.className = 'verification-firework';
-    
-    // 隨機位置和顏色
-    const x = Math.random() * 100;
-    const y = Math.random() * 100;
-    const size = 3 + Math.random() * 5;
-    const colors = ['#2ecc71', '#3498db', '#e9c46a', '#f4a261', '#ffffff'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    
-    firework.style.cssText = `
-      position: absolute;
-      width: ${size}px;
-      height: ${size}px;
-      background: ${color};
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      opacity: 0;
-      z-index: 200;
-    `;
-    
-    container.appendChild(firework);
-    
-    // 創建動畫
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 20 + Math.random() * 80;
-    const destinationX = Math.cos(angle) * distance;
-    const destinationY = Math.sin(angle) * distance;
-    
-    // 使用Web Animation API
-    firework.animate(
-      [
-        { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
-        { transform: `translate(calc(-50% + ${destinationX}px), calc(-50% + ${destinationY}px)) scale(1)`, opacity: 1, offset: 0.7 },
-        { transform: `translate(calc(-50% + ${destinationX}px), calc(-50% + ${destinationY}px)) scale(0)`, opacity: 0 }
-      ], 
-      {
-        duration: 1000 + Math.random() * 1000,
-        easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
-        delay: Math.random() * 300
+  // 更新進度和狀態
+  const progressLine = overlay.querySelector('.progress-line-inner');
+  const percentage = overlay.querySelector('.validation-percentage');
+  const message = overlay.querySelector('.validation-message');
+  const details = overlay.querySelector('.validation-details');
+  
+  let progress = 0;
+  const progressInterval = setInterval(() => {
+    if (progress < 100) {
+      progress += 1;
+      percentage.textContent = `${progress}%`;
+      progressLine.style.width = `${progress}%`;
+      
+      // 更新步驟狀態
+      if (progress === 33) {
+        const step1 = overlay.querySelector('.validation-step[data-step="1"]');
+        const step2 = overlay.querySelector('.validation-step[data-step="2"]');
+        step1.classList.add('completed');
+        step2.classList.add('active');
+        message.textContent = '驗證邀請碼中...';
+        details.textContent = '檢查邀請碼有效性';
+        
+        // 開始驗證每個字符
+        const codeChars = overlay.querySelectorAll('.code-char');
+        codeChars.forEach((char, index) => {
+          setTimeout(() => {
+            char.classList.add('verified');
+          }, index * 200);
+        });
       }
-    );
-    
-    // 自動移除元素
-    setTimeout(() => {
-      firework.remove();
-    }, 2000 + Math.random() * 1000);
-  }
+      
+      if (progress === 66) {
+        const step2 = overlay.querySelector('.validation-step[data-step="2"]');
+        const step3 = overlay.querySelector('.validation-step[data-step="3"]');
+        step2.classList.add('completed');
+        step3.classList.add('active');
+        message.textContent = '驗證成功';
+        details.textContent = '邀請碼有效，授權成功';
+      }
+      
+      if (progress === 100) {
+        clearInterval(progressInterval);
+        const checkmark = overlay.querySelector('.success-checkmark');
+        checkmark.classList.add('show');
+        
+        // 3秒後關閉動畫
+        setTimeout(() => {
+          hideInvitationValidationAnimation();
+        }, 3000);
+      }
+    }
+  }, 30);
 }
 
 function hideInvitationValidationAnimation() {
-  const overlay = document.getElementById('invitationValidationOverlay');
+  const overlay = document.querySelector('.validation-overlay');
   if (overlay) {
     overlay.classList.add('fade-out');
     setTimeout(() => {
