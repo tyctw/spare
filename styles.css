@@ -6606,3 +6606,248 @@ button:hover:before {
     padding: 15px;
   }
 }
+
+.disclaimer-modal-content {
+  max-width: 600px;
+  width: 90%;
+  background: var(--card-bg-color);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: modalSlideIn 0.4s ease-out;
+}
+
+.disclaimer-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.disclaimer-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: rotate(90deg);
+}
+
+.disclaimer-body {
+  padding: 24px 32px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.disclaimer-card {
+  background: var(--card-bg-color);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.disclaimer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.primary-card {
+  background: linear-gradient(135deg, var(--primary-color), #34a0db);
+  color: white;
+}
+
+.warning-card {
+  background: #fff8e1;
+  border-left: 4px solid #ffd54f;
+}
+
+.info-card {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.card-icon {
+  font-size: 2rem;
+  color: inherit;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-content h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.4rem;
+  color: inherit;
+}
+
+.card-content p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.disclaimer-factors {
+  margin: 32px 0;
+}
+
+.disclaimer-factors h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.3rem;
+  color: var(--text-color);
+}
+
+.factors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.factor-item {
+  background: var(--card-bg-color);
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s;
+}
+
+.factor-item:hover {
+  transform: translateY(-2px);
+}
+
+.factor-item i {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+}
+
+.suggestion-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestion-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+
+.suggestion-list li i {
+  color: #4caf50;
+}
+
+.disclaimer-footer {
+  padding: 24px 32px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  text-align: right;
+}
+
+.confirm-button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.confirm-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode adjustments */
+.dark-mode .disclaimer-modal-content {
+  background: var(--dark-card-bg);
+}
+
+.dark-mode .disclaimer-card {
+  background: var(--dark-card-bg);
+}
+
+.dark-mode .warning-card {
+  background: #2c2500;
+  border-left-color: #ffd54f;
+}
+
+.dark-mode .info-card {
+  background: #002744;
+  border-left-color: #2196f3;
+}
+
+.dark-mode .factor-item {
+  background: var(--dark-card-bg);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .disclaimer-modal-content {
+    width: 95%;
+    margin: 20px auto;
+  }
+
+  .disclaimer-header {
+    padding: 20px;
+  }
+
+  .disclaimer-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .disclaimer-body {
+    padding: 20px;
+  }
+
+  .factors-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .disclaimer-card {
+    padding: 20px;
+  }
+}

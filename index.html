@@ -1958,40 +1958,79 @@
 
     <div id="disclaimerModal" class="modal">
       <div class="modal-content disclaimer-modal-content">
-        <button class="new-close-button" onclick="closeDisclaimer()">
-          <i class="fas fa-times"></i>
-        </button>
-        <h2>
-          <i class="fas fa-balance-scale icon"></i> 免責聲明
-        </h2>
-        <a href="https://forms.gle/e5tHU1haqpHRU7nJ9" target="_blank" class="hover-glow">
-          <i class="fas fa-link icon"></i> 填寫表單獲取邀請碼
-        </a>
-        <div class="disclaimer-section">
-          <ul class="disclaimer-list">
-            <li><i class="fas fa-info-circle"></i> 親愛的使用者，我們誠摯地提醒您：本網站提供的落點分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因多種因素而有所不同，包括但不限於：</li>
-            <li><i class="fas fa-university"></i> 各校的招生政策變化</li>
-            <li><i class="fas fa-users"></i> 當年度考生整體表現</li>
-            <li><i class="fas fa-star"></i> 特殊才能或其他加分項目</li>
-            <li><i class="fas fa-clipboard-list"></i> 各校的實際招生名額調整</li>
-          </ul>
-          <div class="disclaimer-tip">
-            <i class="fas fa-exclamation-triangle"></i>
-            為了確保您做出最佳的決定，我們強烈建議您：
-          </div>
-          <ul class="disclaimer-list">
-            <li><i class="fas fa-search"></i> 參考多方資訊，不要僅依賴本網站的分析結果</li>
-            <li><i class="fas fa-comments"></i> 諮詢學校輔導老師或升學顧問的專業意見</li>
-            <li><i class="fas fa-globe"></i> 密切關注各校的官方網站和招生簡章，以獲取最新和最準確的資訊</li>
-          </ul>
-          <div class="disclaimer-warning">
+        <div class="disclaimer-header">
+          <h2>
             <i class="fas fa-shield-alt"></i>
-            本網站不對因使用本服務而產生的任何直接或間接損失負責。使用本服務即表示您同意本免責聲明的所有條款。祝您升學順利！
+            免責聲明
+          </h2>
+          <button class="modal-close" onclick="closeDisclaimer()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="disclaimer-body">
+          <div class="disclaimer-section">
+            <div class="disclaimer-card primary-card">
+              <div class="card-icon">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <div class="card-content">
+                <h3>重要提醒</h3>
+                <p>本網站提供的落點分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因多種因素而有所不同。</p>
+              </div>
+            </div>
+
+            <div class="disclaimer-factors">
+              <h3>影響因素包括：</h3>
+              <div class="factors-grid">
+                <div class="factor-item">
+                  <i class="fas fa-university"></i>
+                  <span>招生政策變化</span>
+                </div>
+                <div class="factor-item">
+                  <i class="fas fa-users"></i>
+                  <span>考生整體表現</span>
+                </div>
+                <div class="factor-item">
+                  <i class="fas fa-star"></i>
+                  <span>特殊才能加分</span>
+                </div>
+                <div class="factor-item">
+                  <i class="fas fa-clipboard-list"></i>
+                  <span>招生名額調整</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="disclaimer-card warning-card">
+              <div class="card-icon">
+                <i class="fas fa-lightbulb"></i>
+              </div>
+              <div class="card-content">
+                <h3>建議事項</h3>
+                <ul class="suggestion-list">
+                  <li><i class="fas fa-check-circle"></i>參考多方資訊，不要僅依賴單一分析結果</li>
+                  <li><i class="fas fa-check-circle"></i>諮詢學校輔導老師或升學顧問的專業意見</li>
+                  <li><i class="fas fa-check-circle"></i>密切關注各校官方網站和招生簡章</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="disclaimer-card info-card">
+              <div class="card-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="card-content">
+                <p>本網站不對因使用本服務而產生的任何直接或間接損失負責。使用本服務即表示您同意本免責聲明的所有條款。</p>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button class="confirm-button hover-glow" onclick="closeDisclaimer()">
-            <i class="fas fa-check-circle icon"></i> 我已了解並同意
+
+        <div class="disclaimer-footer">
+          <button class="confirm-button" onclick="closeDisclaimer()">
+            <i class="fas fa-check-circle"></i>
+            我已了解並同意
           </button>
         </div>
       </div>
