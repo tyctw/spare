@@ -7269,6 +7269,7 @@ button:hover:before {
 
   .instruction-panel {
     padding: 1rem 1.2rem;
+    padding-bottom: calc(1rem + 60px); /* 增加底部 padding，確保內容不會被導航按鈕擋住 */
   }
 
   .instruction-panel-content {
@@ -7283,6 +7284,12 @@ button:hover:before {
   .instruction-nav {
     padding: 0.8rem 1rem;
     background: rgba(255, 255, 255, 0.95);
+    position: fixed; /* 改為固定定位 */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001; /* 確保在最上層 */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* 添加陰影效果 */
   }
 }
 
@@ -7422,5 +7429,120 @@ button:hover:before {
     padding: 0.7rem 1.2rem;
     min-width: 120px;
     font-size: 0.9rem;
+  }
+}
+
+/* 深色模式下的導航欄背景 */
+.dark-mode .instruction-nav {
+  background: rgba(17, 24, 39, 0.95); /* 更深的背景色 */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .instructions-modal-content {
+  background: rgb(17, 24, 39);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .instruction-panel {
+  background: rgb(17, 24, 39);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark-mode .instruction-panel-content {
+  background: rgb(17, 24, 39);
+}
+
+.dark-mode .instructions-steps {
+  background: rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .instruction-step {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .instruction-step.active {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .instruction-step:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 768px) {
+  .dark-mode .instruction-nav {
+    background: rgba(17, 24, 39, 0.98);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark-mode .instruction-panel {
+    padding-bottom: calc(1rem + 60px);
+  }
+}
+
+/* 深色模式下的頁面背景 */
+.dark-mode {
+  background: rgb(17, 24, 39);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark-mode .modal {
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.dark-mode .instructions-modal-content {
+  background: rgb(17, 24, 39);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .instruction-panel {
+  background: rgb(17, 24, 39);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark-mode .instruction-panel-content {
+  background: rgb(17, 24, 39);
+}
+
+.dark-mode .instructions-steps {
+  background: rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .instruction-step {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .instruction-step.active {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .instruction-step:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark-mode .instruction-nav {
+  background: rgba(17, 24, 39, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .dark-mode .instruction-nav {
+    background: rgba(17, 24, 39, 0.98);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark-mode .instruction-panel {
+    padding-bottom: calc(1rem + 60px);
+  }
+  
+  .dark-mode .modal {
+    background: rgb(17, 24, 39);
   }
 }
