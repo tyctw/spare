@@ -7546,3 +7546,142 @@ button:hover:before {
     background: rgb(17, 24, 39);
   }
 }
+
+/* Dark mode adjustments for school details */
+.dark-mode .school-info-item {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .info-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .info-value {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark-mode .school-description {
+  background: rgba(255, 255, 255, 0.05);
+  border-left-color: var(--primary-color);
+}
+
+.dark-mode .admission-stats .stat-item {
+  background: linear-gradient(135deg, var(--primary-color), rgba(35, 150, 135, 0.8));
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .admission-requirements li::before {
+  color: var(--primary-color);
+}
+
+.dark-mode .timeline::after {
+  background-color: rgba(233, 196, 106, 0.3);
+}
+
+.dark-mode .timeline-item::after {
+  background-color: var(--card-background);
+  border-color: var(--primary-color);
+}
+
+.dark-mode .timeline-content {
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .timeline-date {
+  color: var(--primary-color);
+}
+
+.dark-mode .program-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-left-color: var(--accent-color);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .program-title {
+  color: var(--accent-color);
+}
+
+.dark-mode .program-description {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .achievement-item {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .achievement-item i {
+  color: #f1c40f;
+}
+
+.dark-mode .facility-item {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .facility-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .facility-item i {
+  color: var(--primary-color);
+}
+
+.dark-mode .facility-name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark-mode .facility-description {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Dark mode modal adjustments */
+.dark-mode #schoolDetailsModal {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.dark-mode #schoolDetailsModal .modal-content {
+  background: var(--card-background);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode #schoolDetailsModal h2 {
+  color: var(--primary-color);
+}
+
+.dark-mode #schoolDetailsModal .school-detail-tab {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode #schoolDetailsModal .school-detail-tab:hover {
+  color: var(--primary-color);
+}
+
+.dark-mode #schoolDetailsModal .school-detail-tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.dark-mode #schoolDetailsModal .new-close-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dark-mode #schoolDetailsModal .new-close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 1);
+}
+
+.dark-mode #schoolDetailsModal .confirm-button {
+  background: var(--primary-color);
+  color: white;
+}
+
+.dark-mode #schoolDetailsModal .confirm-button:hover {
+  background: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
