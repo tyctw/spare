@@ -4372,3 +4372,114 @@ function refreshResultsComparisonButtons() {
     }
   });
 }
+
+function showGradeLevelReference() {
+  const modal = document.createElement('div');
+  modal.id = 'gradeLevelModal';
+  modal.className = 'modal';
+  
+  modal.innerHTML = `
+    <div class="modal-content grade-level-modal-content">
+      <button class="new-close-button" onclick="closeGradeLevelModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <h2><i class="fas fa-chart-line icon"></i> 113會考答對題數與分數等級標示對照表</h2>
+      <div class="grade-level-container">
+        <table class="grade-level-table">
+          <thead>
+            <tr>
+              <th>成績等級標示</th>
+              <th>國文</th>
+              <th>社會</th>
+              <th>自然</th>
+              <th>英文<br>(加權成績)</th>
+              <th>數學<br>(加權成績)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="grade-excellent">
+              <td>精熟<br>A++</td>
+              <td>答對40-42題</td>
+              <td>答對52-54題</td>
+              <td>答對48-50題</td>
+              <td>98.14-100.00</td>
+              <td>93.20-100.00</td>
+            </tr>
+            <tr class="grade-excellent">
+              <td>精熟<br>A+</td>
+              <td>答對39題</td>
+              <td>答對50-51題</td>
+              <td>答對47題</td>
+              <td>96.23-98.13</td>
+              <td>86.40-93.19</td>
+            </tr>
+            <tr class="grade-excellent">
+              <td>精熟<br>A</td>
+              <td>答對37-38題</td>
+              <td>答對48-49題</td>
+              <td>答對44-46題</td>
+              <td>90.70-96.22</td>
+              <td>76.40-86.39</td>
+            </tr>
+            <tr class="grade-basic">
+              <td>基礎<br>B++</td>
+              <td>答對33-36題</td>
+              <td>答對42-47題</td>
+              <td>答對37-43題</td>
+              <td>82.30-90.69</td>
+              <td>66.20-76.39</td>
+            </tr>
+            <tr class="grade-basic">
+              <td>基礎<br>B+</td>
+              <td>答對30-32題</td>
+              <td>答對36-41題</td>
+              <td>答對30-36題</td>
+              <td>70.01-82.29</td>
+              <td>56.90-66.19</td>
+            </tr>
+            <tr class="grade-basic">
+              <td>基礎<br>B</td>
+              <td>答對18-29題</td>
+              <td>答對21-35題</td>
+              <td>答對19-29題</td>
+              <td>38.43-70.00</td>
+              <td>38.10-56.89</td>
+            </tr>
+            <tr class="grade-need-improve">
+              <td>待加強<br>C</td>
+              <td>答對0-17題</td>
+              <td>答對0-20題</td>
+              <td>答對0-18題</td>
+              <td>00.00-38.42</td>
+              <td>00.00-38.09</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="confirm-button" onclick="closeGradeLevelModal()">
+        <i class="fas fa-check-circle icon"></i> 關閉
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  modal.style.display = 'block';
+  
+  setTimeout(() => {
+    document.querySelector('.grade-level-modal-content').classList.add('show');
+  }, 10);
+}
+
+function closeGradeLevelModal() {
+  const modal = document.getElementById('gradeLevelModal');
+  if (modal) {
+    const modalContent = modal.querySelector('.grade-level-modal-content');
+    modalContent.classList.remove('show');
+    modalContent.classList.add('hide');
+    
+    setTimeout(() => {
+      modal.style.display = 'none';
+      modal.remove();
+    }, 300);
+  }
+}
