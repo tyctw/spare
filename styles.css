@@ -7894,14 +7894,18 @@ button:hover:before {
 
 /* 成績選單和參考按鈕容器 */
 .score-select-container {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
   width: 100%;
 }
 
 .score-select-container select {
   flex: 1;
+}
+
+.dark-mode .score-select-container select {
+  background: rgba(30, 30, 30, 0.5);
 }
 
 .score-reference-btn {
