@@ -7891,3 +7891,224 @@ button:hover:before {
 .dark-mode .instruction-toggle.changelog {
   background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%);
 }
+
+/* 成績選單和參考按鈕容器 */
+.score-select-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.score-select-container select {
+  flex: 1;
+}
+
+.score-reference-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.score-reference-btn:hover {
+  background: rgba(var(--primary-rgb), 0.1);
+  transform: scale(1.1);
+}
+
+.dark-mode .score-reference-btn {
+  color: var(--primary-color);
+}
+
+.dark-mode .score-reference-btn:hover {
+  background: rgba(var(--primary-rgb), 0.2);
+}
+
+.grade-level-header {
+  margin-bottom: 20px;
+}
+
+.update-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+.update-info i {
+  color: var(--primary-color);
+}
+
+.grade-level-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 10px;
+}
+
+.grade-level-tab {
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.grade-level-tab:hover {
+  color: var(--primary-color);
+}
+
+.grade-level-tab.active {
+  color: var(--primary-color);
+}
+
+.grade-level-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--primary-color);
+}
+
+.grade-level-content {
+  position: relative;
+}
+
+.grade-level-year {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.grade-level-year.active {
+  display: block;
+}
+
+.dark-mode .grade-level-tabs {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .grade-level-tab {
+  color: var(--text-color);
+}
+
+.dark-mode .grade-level-tab:hover,
+.dark-mode .grade-level-tab.active {
+  color: var(--primary-color);
+}
+
+.dark-mode .update-info {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .grade-level-tabs {
+    gap: 5px;
+  }
+  
+  .grade-level-tab {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .update-info {
+    font-size: 0.8rem;
+  }
+}
+
+.update-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+}
+
+.update-notice i {
+  font-size: 1.1rem;
+}
+
+.dark-mode .update-notice {
+  background: rgba(var(--primary-rgb), 0.2);
+}
+
+@media (max-width: 768px) {
+  .update-notice {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+.update-info i {
+  color: var(--primary-color);
+}
+
+.score-inquiry-link {
+  margin-top: 12px;
+}
+
+.score-inquiry-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.score-inquiry-link a:hover {
+  background: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.score-inquiry-link i {
+  font-size: 0.8rem;
+}
+
+.dark-mode .score-inquiry-link a {
+  background: var(--primary-color);
+}
+
+.dark-mode .score-inquiry-link a:hover {
+  background: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+  .score-inquiry-link {
+    margin-top: 10px;
+  }
+  
+  .score-inquiry-link a {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+.grade-level-tabs {
+// ... existing code ...
+}

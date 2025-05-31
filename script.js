@@ -4374,99 +4374,127 @@ function refreshResultsComparisonButtons() {
 }
 
 function showGradeLevelReference() {
+  // 創建模態框
   const modal = document.createElement('div');
   modal.id = 'gradeLevelModal';
   modal.className = 'modal';
   
+  // 設置模態框內容
   modal.innerHTML = `
     <div class="modal-content grade-level-modal-content">
       <button class="new-close-button" onclick="closeGradeLevelModal()">
         <i class="fas fa-times"></i>
       </button>
-      <h2><i class="fas fa-chart-line icon"></i> 113會考答對題數與分數等級標示對照表</h2>
-      <div class="grade-level-container">
-        <table class="grade-level-table">
-          <thead>
-            <tr>
-              <th>成績等級標示</th>
-              <th>國文</th>
-              <th>社會</th>
-              <th>自然</th>
-              <th>英文<br>(加權成績)</th>
-              <th>數學<br>(加權成績)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="grade-excellent">
-              <td>精熟<br>A++</td>
-              <td>答對40-42題</td>
-              <td>答對52-54題</td>
-              <td>答對48-50題</td>
-              <td>98.14-100.00</td>
-              <td>93.20-100.00</td>
-            </tr>
-            <tr class="grade-excellent">
-              <td>精熟<br>A+</td>
-              <td>答對39題</td>
-              <td>答對50-51題</td>
-              <td>答對47題</td>
-              <td>96.23-98.13</td>
-              <td>86.40-93.19</td>
-            </tr>
-            <tr class="grade-excellent">
-              <td>精熟<br>A</td>
-              <td>答對37-38題</td>
-              <td>答對48-49題</td>
-              <td>答對44-46題</td>
-              <td>90.70-96.22</td>
-              <td>76.40-86.39</td>
-            </tr>
-            <tr class="grade-basic">
-              <td>基礎<br>B++</td>
-              <td>答對33-36題</td>
-              <td>答對42-47題</td>
-              <td>答對37-43題</td>
-              <td>82.30-90.69</td>
-              <td>66.20-76.39</td>
-            </tr>
-            <tr class="grade-basic">
-              <td>基礎<br>B+</td>
-              <td>答對30-32題</td>
-              <td>答對36-41題</td>
-              <td>答對30-36題</td>
-              <td>70.01-82.29</td>
-              <td>56.90-66.19</td>
-            </tr>
-            <tr class="grade-basic">
-              <td>基礎<br>B</td>
-              <td>答對18-29題</td>
-              <td>答對21-35題</td>
-              <td>答對19-29題</td>
-              <td>38.43-70.00</td>
-              <td>38.10-56.89</td>
-            </tr>
-            <tr class="grade-need-improve">
-              <td>待加強<br>C</td>
-              <td>答對0-17題</td>
-              <td>答對0-20題</td>
-              <td>答對0-18題</td>
-              <td>00.00-38.42</td>
-              <td>00.00-38.09</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="grade-level-header">
+        <h2><i class="fas fa-chart-line icon"></i> 會考答對題數與分數等級標示對照表</h2>
+        <div class="update-info">
+          <i class="fas fa-clock"></i> 最後更新：2024/06/03
+        </div>
+        <div class="score-inquiry-link">
+          <a href="https://cap.rcpet.edu.tw/" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-external-link-alt"></i>
+            前往會考成績查詢系統
+          </a>
+        </div>
       </div>
-      <button class="confirm-button" onclick="closeGradeLevelModal()">
-        <i class="fas fa-check-circle icon"></i> 關閉
-      </button>
+      <div class="grade-level-tabs">
+        <button class="grade-level-tab active" onclick="switchGradeYear(event, '114')">114年</button>
+        <button class="grade-level-tab" onclick="switchGradeYear(event, '113')">113年</button>
+      </div>
+      <div class="grade-level-content">
+        <div class="grade-level-year active" id="year-114">
+          <div class="update-notice">
+            <i class="fas fa-info-circle"></i>
+            114年資料將於2025年6月3日更新
+          </div>
+        </div>
+        <div class="grade-level-year" id="year-113">
+          <div class="grade-level-container">
+            <table class="grade-level-table">
+              <thead>
+                <tr>
+                  <th>成績等級標示</th>
+                  <th>國文</th>
+                  <th>社會</th>
+                  <th>自然</th>
+                  <th>英文<br>(加權成績)</th>
+                  <th>數學<br>(加權成績)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="grade-excellent">
+                  <td>精熟<br>A++</td>
+                  <td>答對41-43題</td>
+                  <td>答對53-55題</td>
+                  <td>答對49-51題</td>
+                  <td>98.50-100.00</td>
+                  <td>94.00-100.00</td>
+                </tr>
+                <tr class="grade-excellent">
+                  <td>精熟<br>A+</td>
+                  <td>答對40題</td>
+                  <td>答對51-52題</td>
+                  <td>答對48題</td>
+                  <td>96.50-98.49</td>
+                  <td>87.00-93.99</td>
+                </tr>
+                <tr class="grade-excellent">
+                  <td>精熟<br>A</td>
+                  <td>答對38-39題</td>
+                  <td>答對49-50題</td>
+                  <td>答對45-47題</td>
+                  <td>91.00-96.49</td>
+                  <td>77.00-86.99</td>
+                </tr>
+                <tr class="grade-basic">
+                  <td>基礎<br>B++</td>
+                  <td>答對34-37題</td>
+                  <td>答對43-48題</td>
+                  <td>答對38-44題</td>
+                  <td>82.50-90.99</td>
+                  <td>67.00-76.99</td>
+                </tr>
+                <tr class="grade-basic">
+                  <td>基礎<br>B+</td>
+                  <td>答對31-33題</td>
+                  <td>答對37-42題</td>
+                  <td>答對31-37題</td>
+                  <td>70.50-82.49</td>
+                  <td>57.50-66.99</td>
+                </tr>
+                <tr class="grade-basic">
+                  <td>基礎<br>B</td>
+                  <td>答對19-30題</td>
+                  <td>答對22-36題</td>
+                  <td>答對20-30題</td>
+                  <td>38.50-70.49</td>
+                  <td>38.50-57.49</td>
+                </tr>
+                <tr class="grade-need-improve">
+                  <td>待加強<br>C</td>
+                  <td>答對0-18題</td>
+                  <td>答對0-21題</td>
+                  <td>答對0-19題</td>
+                  <td>00.00-38.49</td>
+                  <td>00.00-38.49</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   `;
   
+  // 添加到文檔中
   document.body.appendChild(modal);
+  
+  // 顯示模態框
   modal.style.display = 'block';
   
+  // 添加動畫效果
   setTimeout(() => {
-    document.querySelector('.grade-level-modal-content').classList.add('show');
+    modal.querySelector('.grade-level-modal-content').classList.add('show');
   }, 10);
 }
 
@@ -4482,4 +4510,16 @@ function closeGradeLevelModal() {
       modal.remove();
     }, 300);
   }
+}
+
+function switchGradeYear(event, year) {
+  event.preventDefault();
+  
+  // 移除所有標籤和內容的活動狀態
+  document.querySelectorAll('.grade-level-tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.grade-level-year').forEach(content => content.classList.remove('active'));
+  
+  // 添加活動狀態到選中的標籤和內容
+  event.target.classList.add('active');
+  document.getElementById('year-' + year).classList.add('active');
 }
