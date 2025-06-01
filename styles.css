@@ -175,6 +175,39 @@ button:hover:before {
   transform: translateX(100%);
 }
 
+/* 分析落點按鈕 */
+#analyzeButton {
+  background: linear-gradient(45deg, #2a9d8f, #264653);
+  box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+}
+
+#analyzeButton:hover {
+  background: linear-gradient(45deg, #264653, #2a9d8f);
+  box-shadow: 0 8px 25px rgba(42, 157, 143, 0.4);
+}
+
+/* 匯出結果按鈕 */
+#exportResults {
+  background: linear-gradient(45deg, #e76f51, #f4a261);
+  box-shadow: 0 4px 15px rgba(231, 111, 81, 0.3);
+}
+
+#exportResults:hover {
+  background: linear-gradient(45deg, #f4a261, #e76f51);
+  box-shadow: 0 8px 25px rgba(231, 111, 81, 0.4);
+}
+
+/* 會考重要日程按鈕 */
+#showDatesBtn {
+  background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+#showDatesBtn:hover {
+  background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+}
+
 #results, #instructions {
   margin-top: 2.5rem;
   text-align: left;
