@@ -199,13 +199,244 @@ button:hover:before {
 
 /* 會考重要日程按鈕 */
 #showDatesBtn {
-  background: linear-gradient(45deg, #6c5ce7, #a29bfe);
-  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+  background: linear-gradient(135deg, #845EC2, #D65DB1);
+  box-shadow: 0 4px 15px rgba(132, 94, 194, 0.3);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #showDatesBtn:hover {
-  background: linear-gradient(45deg, #a29bfe, #6c5ce7);
-  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+  background: linear-gradient(135deg, #D65DB1, #845EC2);
+  box-shadow: 0 8px 25px rgba(132, 94, 194, 0.4);
+  transform: translateY(-2px);
+}
+
+#showDatesBtn:active {
+  transform: translateY(1px);
+}
+
+#showDatesBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+#showDatesBtn:hover::before {
+  transform: translateX(100%);
+}
+
+/* 會考重要日程彈窗樣式 */
+.important-dates-modal {
+  max-width: 800px;
+  background: var(--card-bg-color, #ffffff);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  position: relative;
+}
+
+.important-dates-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #845EC2, #D65DB1);
+  border-radius: 6px 6px 0 0;
+}
+
+.important-dates-modal h2 {
+  color: #845EC2;
+  margin: 0;
+  padding: 25px 30px;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dates-table {
+  padding: 20px 30px;
+  display: grid;
+  gap: 15px;
+}
+
+.date-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: rgba(132, 94, 194, 0.05);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(132, 94, 194, 0.1);
+  animation: slideInRight 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.date-item:hover {
+  transform: translateX(8px);
+  background: rgba(132, 94, 194, 0.08);
+  box-shadow: 0 5px 15px rgba(132, 94, 194, 0.1);
+}
+
+.date-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: var(--text-color, #333);
+}
+
+.date-label i {
+  color: #845EC2;
+  font-size: 1.2rem;
+  padding: 8px;
+  background: rgba(132, 94, 194, 0.1);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.date-item:hover .date-label i {
+  transform: scale(1.1);
+  background: rgba(132, 94, 194, 0.2);
+}
+
+.date-value {
+  font-weight: 600;
+  color: #845EC2;
+  background: rgba(132, 94, 194, 0.1);
+  padding: 8px 16px;
+  border-radius: 8px;
+  min-width: 120px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.date-item:hover .date-value {
+  background: rgba(132, 94, 194, 0.15);
+  transform: translateY(-2px);
+}
+
+.date-item.important {
+  background: rgba(214, 93, 177, 0.05);
+  border-color: rgba(214, 93, 177, 0.1);
+}
+
+.date-item.important .date-label i {
+  color: #D65DB1;
+  background: rgba(214, 93, 177, 0.1);
+}
+
+.date-item.important:hover .date-label i {
+  background: rgba(214, 93, 177, 0.2);
+}
+
+.date-item.important .date-value {
+  color: #D65DB1;
+  background: rgba(214, 93, 177, 0.1);
+}
+
+.date-item.important:hover .date-value {
+  background: rgba(214, 93, 177, 0.15);
+}
+
+/* 深色模式樣式 */
+.dark-mode .important-dates-modal {
+  background: var(--card-bg-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .date-item {
+  background: rgba(132, 94, 194, 0.1);
+  border-color: rgba(132, 94, 194, 0.2);
+}
+
+.dark-mode .date-item:hover {
+  background: rgba(132, 94, 194, 0.15);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .date-label {
+  color: var(--text-color);
+}
+
+.dark-mode .date-value {
+  background: rgba(132, 94, 194, 0.2);
+}
+
+.dark-mode .date-item:hover .date-value {
+  background: rgba(132, 94, 194, 0.25);
+}
+
+.dark-mode .date-item.important {
+  background: rgba(214, 93, 177, 0.1);
+  border-color: rgba(214, 93, 177, 0.2);
+}
+
+.dark-mode .date-item.important:hover {
+  background: rgba(214, 93, 177, 0.15);
+}
+
+/* 動畫效果 */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.date-item:nth-child(1) { animation-delay: 0.1s; }
+.date-item:nth-child(2) { animation-delay: 0.2s; }
+.date-item:nth-child(3) { animation-delay: 0.3s; }
+.date-item:nth-child(4) { animation-delay: 0.4s; }
+.date-item:nth-child(5) { animation-delay: 0.5s; }
+.date-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* 移動端適配 */
+@media (max-width: 768px) {
+  .important-dates-modal {
+    margin: 10px;
+    border-radius: 20px;
+  }
+
+  .important-dates-modal h2 {
+    font-size: 1.5rem;
+    padding: 20px;
+  }
+
+  .dates-table {
+    padding: 15px;
+  }
+
+  .date-item {
+    padding: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .date-value {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .date-label {
+    width: 100%;
+  }
 }
 
 #results, #instructions {
@@ -3188,10 +3419,6 @@ button:hover:before {
   border-color: var(--primary-color);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.vocational-group-label:hover i {
-  color: var(--primary-color);
 }
 
 .vocational-group-label:hover:before {
