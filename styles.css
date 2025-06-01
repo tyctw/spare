@@ -8164,3 +8164,202 @@ button:hover:before {
     min-width: calc(100% - 10px);
   }
 }
+
+/* 新表單按鈕容器樣式 */
+.new-form-button-container {
+  margin: 20px 0;
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+}
+
+/* 新表單按鈕樣式 */
+.new-form-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #2a9d8f 100%);
+  border-radius: 16px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(42, 157, 143, 0.2);
+}
+
+.new-form-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(42, 157, 143, 0.3);
+}
+
+.new-form-button:active {
+  transform: translateY(0);
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.button-icon {
+  background: rgba(255, 255, 255, 0.2);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.button-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.button-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.button-subtitle {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.button-arrow {
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.new-form-button:hover .button-arrow {
+  transform: translateX(4px);
+}
+
+.form-button-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #e76f51;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 4px 12px rgba(231, 111, 81, 0.3);
+  animation: badgePulse 2s infinite;
+}
+
+.form-button-badge i {
+  font-size: 0.9rem;
+  color: #ffd700;
+}
+
+@keyframes badgePulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pulse-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  animation: pulseEffect 2s infinite;
+}
+
+@keyframes pulseEffect {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* 深色模式適配 */
+.dark-mode .new-form-button {
+  background: linear-gradient(135deg, #2a9d8f 0%, #1f7268 100%);
+}
+
+.dark-mode .button-icon {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .new-form-button {
+    padding: 16px;
+  }
+  
+  .button-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  .button-title {
+    font-size: 1rem;
+  }
+  
+  .button-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .form-button-badge {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .button-content {
+    gap: 12px;
+  }
+  
+  .button-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+  
+  .button-arrow {
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+  }
+}
