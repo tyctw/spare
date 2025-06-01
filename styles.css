@@ -19,6 +19,9 @@
   --menu-category: rgba(255, 255, 255, 0.5);
   --border-radius: 16px;
   --transition: all 0.3s ease;
+  --hover-color: #64b5f6;
+  --dark-primary: #2196f3;
+  --dark-hover: #4dabf5;
 }
 
 body {
@@ -8115,4 +8118,158 @@ button:hover:before {
 
 .grade-level-tabs {
 // ... existing code ...
+}
+
+/* 系統選單按鈕樣式 */
+.menu-button {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--hover-color) 100%);
+  width: 100%;
+  max-width: 300px;
+  margin: 10px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.menu-button:hover {
+  background: linear-gradient(135deg, var(--hover-color) 0%, var(--primary-color) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.menu-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-button i {
+  font-size: 1.2rem;
+}
+
+/* 深色模式適配 */
+.dark-mode .menu-button {
+  background: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-hover) 100%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .menu-button:hover {
+  background: linear-gradient(135deg, var(--dark-hover) 0%, var(--dark-primary) 100%);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 選單彈窗樣式 */
+.menu-modal-content {
+  max-width: 400px;
+  width: 90%;
+  background: var(--card-background);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  margin: 20vh auto;
+  position: relative;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: scale(0.9);
+  opacity: 0;
+  animation: modalFadeIn 0.3s ease forwards;
+}
+
+.menu-modal-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.menu-modal-header h2 {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.menu-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.menu-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: var(--background-color);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.menu-option:hover {
+  background: var(--hover-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.menu-option:active {
+  transform: translateY(0);
+}
+
+.menu-option i {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
+}
+
+/* 深色模式適配 */
+.dark-mode .menu-modal-content {
+  background: var(--dark-card-bg);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .menu-option {
+  background: var(--dark-background);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .menu-option:hover {
+  background: var(--hover-color);
+}
+
+@keyframes modalFadeIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 移動端適配 */
+@media (max-width: 768px) {
+  .menu-modal-content {
+    width: 95%;
+    margin: 15vh auto;
+    padding: 20px;
+  }
+  
+  .menu-option {
+    padding: 12px 15px;
+    font-size: 1rem;
+  }
 }

@@ -1487,18 +1487,39 @@
           <i class="fas fa-star"></i> 推薦
         </div>
       </div>
-      <button class="instruction-toggle hover-glow grade-level" onclick="showGradeLevelReference()">
-        <i class="fas fa-chart-line icon"></i>等級對照表
+      <button class="instruction-toggle hover-glow menu-button" onclick="showMenuModal()">
+        <i class="fas fa-bars icon"></i>系統選單
       </button>
-      <button class="instruction-toggle hover-glow instructions" onclick="showInstructions()">
-        <i class="fas fa-info-circle icon"></i>使用說明
-      </button>
-      <button class="instruction-toggle hover-glow disclaimer" onclick="showDisclaimer()">
-        <i class="fas fa-exclamation-triangle icon"></i>免責聲明
-      </button>
-      <button class="instruction-toggle hover-glow changelog" onclick="showChangeLog()">
-        <i class="fas fa-history icon"></i>更新日誌
-      </button>
+      
+      <!-- 系統選單彈窗 -->
+      <div id="menuModal" class="modal">
+        <div class="menu-modal-content">
+          <button class="new-close-button" onclick="closeMenuModal()">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="menu-modal-header">
+            <h2><i class="fas fa-bars"></i> 系統選單</h2>
+          </div>
+          <div class="menu-options">
+            <button class="menu-option" onclick="showGradeLevelReference()">
+              <i class="fas fa-chart-line icon"></i>
+              <span>等級對照表</span>
+            </button>
+            <button class="menu-option" onclick="showInstructions()">
+              <i class="fas fa-info-circle icon"></i>
+              <span>使用說明</span>
+            </button>
+            <button class="menu-option" onclick="showDisclaimer()">
+              <i class="fas fa-exclamation-triangle icon"></i>
+              <span>免責聲明</span>
+            </button>
+            <button class="menu-option" onclick="showChangeLog()">
+              <i class="fas fa-history icon"></i>
+              <span>更新日誌</span>
+            </button>
+          </div>
+        </div>
+      </div>
       <form id="analysisForm" class="slide-in" style="animation-delay: 0.2s;">
         <div class="form-group">
           <label for="invitationCode">
@@ -1621,13 +1642,13 @@
         <div class="score-select-container">
           <select id="chinese" class="hover-glow">
             <option value="">請選擇您的國文會考分數</option>
-            <option value="A++">A++</option>
-            <option value="A+">A+</option>
-            <option value="A">A</option>
-            <option value="B++">B++</option>
-            <option value="B+">B+</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
+            <option value="A++">A++ (精熟，答對41-43題)</option>
+            <option value="A+">A+ (精熟，答對40題)</option>
+            <option value="A">A (精熟，答對38-39題)</option>
+            <option value="B++">B++ (基礎，答對34-37題)</option>
+            <option value="B+">B+ (基礎，答對31-33題)</option>
+            <option value="B">B (基礎，答對19-30題)</option>
+            <option value="C">C (待加強，答對0-18題)</option>
           </select>
         </div>
       </div>
@@ -1638,13 +1659,13 @@
         <div class="score-select-container">
           <select id="english" class="hover-glow">
             <option value="">請選擇您的英文會考分數</option>
-            <option value="A++">A++</option>
-            <option value="A+">A+</option>
-            <option value="A">A</option>
-            <option value="B++">B++</option>
-            <option value="B+">B+</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
+            <option value="A++">A++ (精熟，98.50-100.00分)</option>
+            <option value="A+">A+ (精熟，96.50-98.49分)</option>
+            <option value="A">A (精熟，91.00-96.49分)</option>
+            <option value="B++">B++ (基礎，82.50-90.99分)</option>
+            <option value="B+">B+ (基礎，70.50-82.49分)</option>
+            <option value="B">B (基礎，38.50-70.49分)</option>
+            <option value="C">C (待加強，0.00-38.49分)</option>
           </select>
         </div>
       </div>
@@ -1655,13 +1676,13 @@
         <div class="score-select-container">
           <select id="math" class="hover-glow">
             <option value="">請選擇您的數學會考分數</option>
-            <option value="A++">A++</option>
-            <option value="A+">A+</option>
-            <option value="A">A</option>
-            <option value="B++">B++</option>
-            <option value="B+">B+</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
+            <option value="A++">A++ (精熟，94.00-100.00分)</option>
+            <option value="A+">A+ (精熟，87.00-93.99分)</option>
+            <option value="A">A (精熟，77.00-86.99分)</option>
+            <option value="B++">B++ (基礎，67.00-76.99分)</option>
+            <option value="B+">B+ (基礎，57.50-66.99分)</option>
+            <option value="B">B (基礎，38.50-57.49分)</option>
+            <option value="C">C (待加強，0.00-38.49分)</option>
           </select>
         </div>
       </div>
@@ -1672,13 +1693,13 @@
         <div class="score-select-container">
           <select id="science" class="hover-glow">
             <option value="">請選擇您的自然會考分數</option>
-            <option value="A++">A++</option>
-            <option value="A+">A+</option>
-            <option value="A">A</option>
-            <option value="B++">B++</option>
-            <option value="B+">B+</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
+            <option value="A++">A++ (精熟，答對49-51題)</option>
+            <option value="A+">A+ (精熟，答對48題)</option>
+            <option value="A">A (精熟，答對45-47題)</option>
+            <option value="B++">B++ (基礎，答對38-44題)</option>
+            <option value="B+">B+ (基礎，答對31-37題)</option>
+            <option value="B">B (基礎，答對20-30題)</option>
+            <option value="C">C (待加強，答對0-19題)</option>
           </select>
         </div>
       </div>
@@ -1689,13 +1710,13 @@
         <div class="score-select-container">
           <select id="social" class="hover-glow">
             <option value="">請選擇您的社會會考分數</option>
-            <option value="A++">A++</option>
-            <option value="A+">A+</option>
-            <option value="A">A</option>
-            <option value="B++">B++</option>
-            <option value="B+">B+</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
+            <option value="A++">A++ (精熟，答對53-55題)</option>
+            <option value="A+">A+ (精熟，答對51-52題)</option>
+            <option value="A">A (精熟，答對49-50題)</option>
+            <option value="B++">B++ (基礎，答對43-48題)</option>
+            <option value="B+">B+ (基礎，答對37-42題)</option>
+            <option value="B">B (基礎，答對22-36題)</option>
+            <option value="C">C (待加強，答對0-21題)</option>
           </select>
         </div>
       </div>
@@ -1706,13 +1727,13 @@
         <div class="score-select-container">
           <select id="composition" class="hover-glow">
             <option value="">請選擇您的作文會考分數</option>
-            <option value="0">0 級分</option>
-            <option value="1">1 級分</option>
-            <option value="2">2 級分</option>
-            <option value="3">3 級分</option>
-            <option value="4">4 級分</option>
-            <option value="5">5 級分</option>
-            <option value="6">6 級分</option>
+            <option value="6">6 級分 (優秀)</option>
+            <option value="5">5 級分 (優良)</option>
+            <option value="4">4 級分 (中等)</option>
+            <option value="3">3 級分 (待加強)</option>
+            <option value="2">2 級分 (待加強)</option>
+            <option value="1">1 級分 (待加強)</option>
+            <option value="0">0 級分 (待加強)</option>
           </select>
         </div>
       </div>
