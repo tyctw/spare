@@ -2527,9 +2527,28 @@ button:hover:before {
     font-size: 2rem;
   }
   
-  .identity-selector,
-  .region-selector {
-    flex-direction: column;
+  .identity-selector {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .identity-option {
+    flex: 1;
+  }
+  
+  .identity-label {
+    padding: 12px 8px;
+    min-height: 100px;
+  }
+  
+  .identity-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+  
+  .identity-name {
+    font-size: 0.9rem;
   }
   
   .region-selector {
@@ -2540,7 +2559,6 @@ button:hover:before {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
   
-  .identity-label,
   .region-label,
   .vocational-group-label {
     padding: 15px 10px;
