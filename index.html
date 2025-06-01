@@ -1487,39 +1487,18 @@
           <i class="fas fa-star"></i> 推薦
         </div>
       </div>
-      <button class="instruction-toggle hover-glow menu-button" onclick="showMenuModal()">
-        <i class="fas fa-bars icon"></i>系統選單
+      <button class="instruction-toggle hover-glow grade-level" onclick="showGradeLevelReference()">
+        <i class="fas fa-chart-line icon"></i>等級對照表
       </button>
-      
-      <!-- 系統選單彈窗 -->
-      <div id="menuModal" class="modal">
-        <div class="menu-modal-content">
-          <button class="new-close-button" onclick="closeMenuModal()">
-            <i class="fas fa-times"></i>
-          </button>
-          <div class="menu-modal-header">
-            <h2><i class="fas fa-bars"></i> 系統選單</h2>
-          </div>
-          <div class="menu-options">
-            <button class="menu-option" onclick="showGradeLevelReference()">
-              <i class="fas fa-chart-line icon"></i>
-              <span>等級對照表</span>
-            </button>
-            <button class="menu-option" onclick="showInstructions()">
-              <i class="fas fa-info-circle icon"></i>
-              <span>使用說明</span>
-            </button>
-            <button class="menu-option" onclick="showDisclaimer()">
-              <i class="fas fa-exclamation-triangle icon"></i>
-              <span>免責聲明</span>
-            </button>
-            <button class="menu-option" onclick="showChangeLog()">
-              <i class="fas fa-history icon"></i>
-              <span>更新日誌</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <button class="instruction-toggle hover-glow instructions" onclick="showInstructions()">
+        <i class="fas fa-info-circle icon"></i>使用說明
+      </button>
+      <button class="instruction-toggle hover-glow disclaimer" onclick="showDisclaimer()">
+        <i class="fas fa-exclamation-triangle icon"></i>免責聲明
+      </button>
+      <button class="instruction-toggle hover-glow changelog" onclick="showChangeLog()">
+        <i class="fas fa-history icon"></i>更新日誌
+      </button>
       <form id="analysisForm" class="slide-in" style="animation-delay: 0.2s;">
         <div class="form-group">
           <label for="invitationCode">

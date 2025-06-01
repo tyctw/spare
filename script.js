@@ -4523,25 +4523,3 @@ function switchGradeYear(event, year) {
   event.target.classList.add('active');
   document.getElementById('year-' + year).classList.add('active');
 }
-
-// 顯示系統選單彈窗
-function showMenuModal() {
-  const modal = document.getElementById('menuModal');
-  modal.style.display = 'block';
-  document.body.style.overflow = 'hidden';
-}
-
-// 關閉系統選單彈窗
-function closeMenuModal() {
-  const modal = document.getElementById('menuModal');
-  modal.style.display = 'none';
-  document.body.style.overflow = 'auto';
-}
-
-// 點擊彈窗外部關閉
-window.addEventListener('click', function(event) {
-  const modal = document.getElementById('menuModal');
-  if (event.target === modal) {
-    closeMenuModal();
-  }
-});
