@@ -6116,6 +6116,86 @@ button:hover:before {
   }
 }
 
+/* 修改等級對照表格的手機版樣式 */
+@media (max-width: 768px) {
+  .grade-level-modal-content {
+    width: 95%;
+    max-height: 90vh;
+    margin: 5vh auto;
+    padding: 1rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .grade-level-table {
+    width: 100%;
+    font-size: 0.9rem;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+  }
+
+  .grade-level-table th,
+  .grade-level-table td {
+    padding: 0.8rem;
+    min-width: 100px;
+  }
+
+  .grade-level-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: inherit;
+    z-index: 1;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* 增加表格橫向滾動提示 */
+  .grade-level-container {
+    position: relative;
+  }
+
+  .grade-level-container::after {
+    content: '← 左右滑動查看更多 →';
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    animation: fadeInOut 2s ease-in-out infinite;
+  }
+
+  .dark-mode .grade-level-container::after {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+}
+
+/* 針對更小螢幕的優化 */
+@media (max-width: 480px) {
+  .grade-level-table {
+    font-size: 0.85rem;
+  }
+
+  .grade-level-table th,
+  .grade-level-table td {
+    padding: 0.6rem;
+    min-width: 90px;
+  }
+}
+
+/* 確保深色模式下的樣式正確 */
+.dark-mode .grade-level-table td:first-child {
+  background: var(--card-background, #1e2028);
+}
+
 /* 手機版使用說明優化 */
 @media (max-width: 768px) {
   .instructions-modal-content {
