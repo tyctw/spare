@@ -4388,7 +4388,7 @@ function showGradeLevelReference() {
       <div class="grade-level-header">
         <h2><i class="fas fa-chart-line icon"></i> 會考答對題數與分數等級標示對照表</h2>
         <div class="update-info">
-          <i class="fas fa-clock"></i> 最後更新：2024/06/03
+          <i class="fas fa-clock"></i> 最後更新：2025/06/03
         </div>
         <div class="score-inquiry-link">
           <a href="https://cap.rcpet.edu.tw/" target="_blank" rel="noopener noreferrer">
