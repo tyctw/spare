@@ -4401,82 +4401,150 @@ function showGradeLevelReference() {
         <button class="grade-level-tab active" onclick="switchGradeYear(event, '114')">114年</button>
         <button class="grade-level-tab" onclick="switchGradeYear(event, '113')">113年</button>
       </div>
-      <div class="grade-level-content">
-        <div class="grade-level-year active" id="year-114">
-          <div class="update-notice">
-            <i class="fas fa-info-circle"></i>
-            114年資料將於2025年6月3日更新
-          </div>
-        </div>
+<div class="grade-level-year active" id="year-114">
+  <div class="grade-level-container">
+    <table class="grade-level-table">
+      <thead>
+        <tr>
+          <th>成績等級標示</th>
+          <th>國文</th>
+          <th>社會</th>
+          <th>自然</th>
+          <th>英文<br>(加權成績)</th>
+          <th>數學<br>(加權成績)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="grade-excellent">
+          <td>精熟<br>A++</td>
+          <td>答對40–42題</td>
+          <td>答對52–54題</td>
+          <td>答對48–50題</td>
+          <td>98.14–100.00</td>
+          <td>93.20–100.00</td>
+        </tr>
+        <tr class="grade-excellent">
+          <td>精熟<br>A+</td>
+          <td>答對38–39題</td>
+          <td>答對51題</td>
+          <td>答對46–47題</td>
+          <td>95.33–98.13</td>
+          <td>85.70–93.19</td>
+        </tr>
+        <tr class="grade-excellent">
+          <td>精熟<br>A</td>
+          <td>答對36–37題</td>
+          <td>答對48–50題</td>
+          <td>答對43–45題</td>
+          <td>90.70–95.32</td>
+          <td>76.20–85.69</td>
+        </tr>
+        <tr class="grade-basic">
+          <td>基礎<br>B++</td>
+          <td>答對32–35題</td>
+          <td>答對41–47題</td>
+          <td>答對36–42題</td>
+          <td>83.21–90.69</td>
+          <td>67.10–76.19</td>
+        </tr>
+        <tr class="grade-basic">
+          <td>基礎<br>B+</td>
+          <td>答對28–31題</td>
+          <td>答對35–40題</td>
+          <td>答對29–35題</td>
+          <td>71.05–83.20</td>
+          <td>59.40–67.09</td>
+        </tr>
+        <tr class="grade-basic">
+          <td>基礎<br>B</td>
+          <td>答對18–27題</td>
+          <td>答對21–34題</td>
+          <td>答對18–28題</td>
+          <td>38.43–71.04</td>
+          <td>40.60–59.39</td>
+        </tr>
+        <tr class="grade-need-improve">
+          <td>待加強<br>C</td>
+          <td>答對0–17題</td>
+          <td>答對0–20題</td>
+          <td>答對0–17題</td>
+          <td>00.00–38.42</td>
+          <td>00.00–40.59</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
         <div class="grade-level-year" id="year-113">
           <div class="grade-level-container">
             <table class="grade-level-table">
               <thead>
                 <tr>
-                  <th>成績等級標示</th>
-                  <th>國文</th>
-                  <th>社會</th>
-                  <th>自然</th>
-                  <th>英文<br>(加權成績)</th>
-                  <th>數學<br>(加權成績)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="grade-excellent">
-                  <td>精熟<br>A++</td>
-                  <td>答對41-43題</td>
-                  <td>答對53-55題</td>
-                  <td>答對49-51題</td>
-                  <td>98.50-100.00</td>
-                  <td>94.00-100.00</td>
-                </tr>
-                <tr class="grade-excellent">
-                  <td>精熟<br>A+</td>
-                  <td>答對40題</td>
-                  <td>答對51-52題</td>
-                  <td>答對48題</td>
-                  <td>96.50-98.49</td>
-                  <td>87.00-93.99</td>
-                </tr>
-                <tr class="grade-excellent">
-                  <td>精熟<br>A</td>
-                  <td>答對38-39題</td>
-                  <td>答對49-50題</td>
-                  <td>答對45-47題</td>
-                  <td>91.00-96.49</td>
-                  <td>77.00-86.99</td>
-                </tr>
-                <tr class="grade-basic">
-                  <td>基礎<br>B++</td>
-                  <td>答對34-37題</td>
-                  <td>答對43-48題</td>
-                  <td>答對38-44題</td>
-                  <td>82.50-90.99</td>
-                  <td>67.00-76.99</td>
-                </tr>
-                <tr class="grade-basic">
-                  <td>基礎<br>B+</td>
-                  <td>答對31-33題</td>
-                  <td>答對37-42題</td>
-                  <td>答對31-37題</td>
-                  <td>70.50-82.49</td>
-                  <td>57.50-66.99</td>
-                </tr>
-                <tr class="grade-basic">
-                  <td>基礎<br>B</td>
-                  <td>答對19-30題</td>
-                  <td>答對22-36題</td>
-                  <td>答對20-30題</td>
-                  <td>38.50-70.49</td>
-                  <td>38.50-57.49</td>
-                </tr>
-                <tr class="grade-need-improve">
-                  <td>待加強<br>C</td>
-                  <td>答對0-18題</td>
-                  <td>答對0-21題</td>
-                  <td>答對0-19題</td>
-                  <td>00.00-38.49</td>
-                  <td>00.00-38.49</td>
+          <th>成績等級標示</th>
+          <th>國文</th>
+          <th>社會</th>
+          <th>自然</th>
+          <th>英文<br>(加權成績)</th>
+          <th>數學<br>(加權成績)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="grade-excellent">
+          <td>精熟<br>A++</td>
+          <td>答對40-42題</td>
+          <td>答對52-54題</td>
+          <td>答對48-50題</td>
+          <td>98.14-100.00</td>
+          <td>93.20-100.00</td>
+        </tr>
+        <tr class="grade-excellent">
+          <td>精熟<br>A+</td>
+          <td>答對39題</td>
+          <td>答對50-51題</td>
+          <td>答對47題</td>
+          <td>96.23-98.13</td>
+          <td>86.40-93.19</td>
+        </tr>
+        <tr class="grade-excellent">
+          <td>精熟<br>A</td>
+          <td>答對37-38題</td>
+          <td>答對48-49題</td>
+          <td>答對44-46題</td>
+          <td>90.70-96.22</td>
+          <td>76.40-86.39</td>
+        </tr>
+        <tr class="grade-basic">
+          <td>基礎<br>B++</td>
+          <td>答對33-36題</td>
+          <td>答對42-47題</td>
+          <td>答對37-43題</td>
+          <td>82.30-90.69</td>
+          <td>66.20-76.39</td>
+        </tr>
+        <tr class="grade-basic">
+          <td>基礎<br>B+</td>
+          <td>答對30-32題</td>
+          <td>答對36-41題</td>
+          <td>答對30-36題</td>
+          <td>70.01-82.29</td>
+          <td>56.90-66.19</td>
+        </tr>
+        <tr class="grade-basic">
+          <td>基礎<br>B</td>
+          <td>答對18-29題</td>
+          <td>答對21-35題</td>
+          <td>答對19-29題</td>
+          <td>38.43-70.00</td>
+          <td>38.10-56.89</td>
+        </tr>
+        <tr class="grade-need-improve">
+          <td>待加強<br>C</td>
+          <td>答對0-17題</td>
+          <td>答對0-20題</td>
+          <td>答對0-18題</td>
+          <td>00.00-38.42</td>
+          <td>00.00-38.09</td>
                 </tr>
               </tbody>
             </table>
