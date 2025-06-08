@@ -140,110 +140,54 @@
       /* 計分方式顯示區域樣式 */
       .scoring-info {
         display: none;
-        margin: 20px 0;
-        padding: 25px;
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 12px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-left: 4px solid var(--primary-color);
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        animation: fadeIn 0.5s ease-in-out;
       }
       
       .scoring-info.active {
         display: block;
-        animation: slideUp 0.5s ease-out;
       }
       
       .scoring-info-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid var(--primary-color);
-        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
-        gap: 10px;
-      }
-      
-      .scoring-info-title i {
-        font-size: 1.4rem;
+        gap: 8px;
+        color: var(--primary-color);
       }
       
       .scoring-details {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        margin-top: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
       }
       
       .scoring-item {
-        background: white;
-        padding: 18px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        border: 1px solid rgba(0,0,0,0.05);
-      }
-      
-      .scoring-item:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        background-color: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       }
       
       .scoring-item-header {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #2c3e50;
+        font-weight: 500;
         display: flex;
         align-items: center;
-        gap: 8px;
-        margin-bottom: 10px;
-      }
-      
-      .scoring-item-header i {
-        color: var(--primary-color);
-        font-size: 1.2rem;
+        gap: 5px;
+        margin-bottom: 5px;
+        color: #333;
       }
       
       .scoring-item-value {
-        font-size: 1rem;
+        font-size: 0.9rem;
         color: #555;
-        line-height: 1.6;
-        padding: 8px 12px;
-        background-color: #f8f9fa;
-        border-radius: 6px;
-        border-left: 3px solid var(--primary-color);
-      }
-      
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      
-      /* 響應式設計調整 */
-      @media (max-width: 768px) {
-        .scoring-details {
-          grid-template-columns: 1fr;
-        }
-        
-        .scoring-info {
-          padding: 20px;
-          margin: 15px 0;
-        }
-        
-        .scoring-info-title {
-          font-size: 1.1rem;
-        }
-        
-        .scoring-item {
-          padding: 15px;
-        }
       }
       
       .loading-spinner {
