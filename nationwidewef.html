@@ -8,115 +8,109 @@
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 
     :root {
-      --primary-color: #4361ee;
-      --secondary-color: #3a0ca3;
-      --background-color: #f8f9fa;
-      --text-color: #2b2d42;
+      --primary-color: #6366f1;
+      --secondary-color: #4f46e5;
+      --background-color: #f8fafc;
+      --text-color: #1e293b;
       --card-background: #ffffff;
-      --shadow-color: rgba(0, 0, 0, 0.08);
-      --accent-color: #ef476f;
-      --success-color: #06d6a0;
-      --border-radius: 16px;
-      --transition: all 0.3s ease;
+      --shadow-color: rgba(0, 0, 0, 0.06);
+      --accent-color: #ec4899;
+      --success-color: #10b981;
+      --border-radius: 20px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     body {
       font-family: 'Noto Sans TC', sans-serif;
       background-color: var(--background-color);
       margin: 0;
-      padding: 0;
+      padding: 2rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       color: var(--text-color);
-      line-height: 1.6;
-      background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+      line-height: 1.7;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%);
       background-attachment: fixed;
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
     }
 
     .container {
       background: var(--card-background);
-      padding: 2.5rem;
+      padding: 3rem;
       border-radius: var(--border-radius);
-      box-shadow: 0 10px 30px var(--shadow-color);
-      max-width: 650px;
+      box-shadow: 
+        0 10px 25px var(--shadow-color),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      max-width: 700px;
       width: 90%;
       text-align: center;
       transition: var(--transition);
       margin-bottom: 2rem;
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(10px);
-      animation: slideInFromTop 0.8s ease-out;
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(20px);
+      animation: fadeInUp 0.8s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    @keyframes slideInFromTop {
-      0% {
-        transform: translateY(-30px);
+    @keyframes fadeInUp {
+      from {
         opacity: 0;
+        transform: translateY(20px);
       }
-      100% {
-        transform: translateY(0);
+      to {
         opacity: 1;
+        transform: translateY(0);
       }
     }
 
-    h1, h2 {
-      color: var(--primary-color);
-      margin-bottom: 1.5rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    h1 { 
-      font-size: 2.2rem; 
-      font-weight: 700; 
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-top: 0;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      margin: 0 0 2rem;
+      position: relative;
+      letter-spacing: -0.5px;
     }
 
     h1::after {
       content: "";
       position: absolute;
-      bottom: -10px;
+      bottom: -12px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px;
+      width: 100px;
       height: 4px;
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
       border-radius: 2px;
+      opacity: 0.8;
     }
 
-    h2 { font-size: 1.8rem; font-weight: 500; }
-
     .code-card {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(249,250,251,0.9) 100%);
+      padding: 2rem;
       border-radius: var(--border-radius);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      margin: 2rem 0;
+      box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.02),
+        0 10px 15px rgba(0, 0, 0, 0.03),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+      margin: 2.5rem 0;
       position: relative;
       overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: var(--transition);
+      transform: translateZ(0);
     }
 
     .code-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      transform: translateY(-5px) translateZ(0);
+      box-shadow: 
+        0 12px 20px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
     }
 
     .code-card::before {
@@ -125,43 +119,44 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 5px;
+      height: 6px;
       background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
       border-radius: var(--border-radius) var(--border-radius) 0 0;
+      opacity: 0.8;
     }
 
     .invitation-code-container {
       display: flex;
       justify-content: center;
       align-items: stretch;
-      margin: 1.5rem 0;
-      box-shadow: 0 5px 15px var(--shadow-color);
+      margin: 2rem 0;
+      box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.02),
+        0 10px 15px rgba(0, 0, 0, 0.03);
       border-radius: var(--border-radius);
       overflow: hidden;
       position: relative;
+      background: white;
     }
 
     .invitation-code {
-      font-size: 2rem;
-      font-weight: bold;
+      font-size: 2.2rem;
+      font-weight: 700;
       color: var(--primary-color);
-      padding: 1.2rem 1.5rem;
-      background-color: rgba(67, 97, 238, 0.05);
-      display: inline-block;
-      border: 2px solid var(--primary-color);
+      padding: 1.5rem 2rem;
+      background-color: rgba(99, 102, 241, 0.04);
+      border: 2px solid rgba(99, 102, 241, 0.2);
       border-right: none;
       border-radius: var(--border-radius) 0 0 var(--border-radius);
-      position: relative;
-      overflow: hidden;
-      letter-spacing: 2px;
-      text-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+      letter-spacing: 3px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      transition: var(--transition);
     }
 
-    /* 動態邀請碼效果 */
     .digit-container {
       display: inline-block;
       position: relative;
-      margin: 0 2px;
+      margin: 0 3px;
       width: 1.2ch;
       height: 1.2em;
       text-align: center;
@@ -173,33 +168,49 @@
       width: 100%;
       height: 100%;
       position: relative;
+      transition: var(--transition);
     }
 
     .digit-animation {
-      animation: digit-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation: digitPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
     .digit-animation-glow {
-      animation: digit-glow 2s ease-in-out;
+      animation: digitGlow 2s ease-in-out;
     }
 
-    @keyframes digit-pop {
-      0% { transform: scale(0.8); opacity: 0.2; }
-      60% { transform: scale(1.2); }
-      100% { transform: scale(1); opacity: 1; }
+    @keyframes digitPop {
+      0% { 
+        transform: scale(0.8) translateY(10px);
+        opacity: 0;
+      }
+      70% { 
+        transform: scale(1.1) translateY(-2px);
+      }
+      100% { 
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
     }
 
-    @keyframes digit-glow {
-      0%, 100% { text-shadow: 0 0 5px rgba(67, 97, 238, 0); }
-      50% { text-shadow: 0 0 20px rgba(67, 97, 238, 0.8); color: var(--secondary-color); }
+    @keyframes digitGlow {
+      0%, 100% { 
+        text-shadow: 0 0 5px rgba(99, 102, 241, 0);
+        color: var(--primary-color);
+      }
+      50% { 
+        text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        color: var(--secondary-color);
+      }
     }
 
     .copy-button {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
       border: none;
-      padding: 1rem 1.5rem;
-      font-size: 1.3rem;
+      padding: 1.2rem 2rem;
+      font-size: 1.4rem;
+      font-weight: 500;
       border-radius: 0 var(--border-radius) var(--border-radius) 0;
       cursor: pointer;
       transition: var(--transition);
@@ -208,9 +219,12 @@
       box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11);
     }
 
-    .copy-button:hover { 
-      transform: translateY(-3px);
-      box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    .copy-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 7px 14px rgba(50, 50, 93, 0.1),
+        0 3px 6px rgba(0, 0, 0, 0.08);
+      filter: brightness(1.1);
     }
 
     .copy-button::before {
@@ -220,33 +234,181 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
-      transform: translateX(-100%);
-      transition: transform 0.6s;
+      background: linear-gradient(
+        45deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.2) 50%,
+        rgba(255,255,255,0) 100%
+      );
+      transform: translateX(-100%) skewX(-15deg);
+      transition: transform 0.7s;
     }
 
     .copy-button:hover::before {
-      transform: translateX(100%);
+      transform: translateX(100%) skewX(-15deg);
     }
 
     .timer {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin: 2.5rem 0;
       color: var(--accent-color);
-      background-color: rgba(239, 71, 111, 0.1);
-      padding: 0.8rem 1.2rem;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(236, 72, 153, 0.05));
+      padding: 1rem 2rem;
       border-radius: 30px;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-      animation: pulse 2s infinite;
+      box-shadow: 
+        0 4px 6px rgba(236, 72, 153, 0.1),
+        0 1px 3px rgba(236, 72, 153, 0.05);
+      animation: timerPulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(239, 71, 111, 0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(239, 71, 111, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 71, 111, 0); }
+    @keyframes timerPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.2);
+      }
+      70% {
+        box-shadow: 0 0 0 15px rgba(236, 72, 153, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      .container {
+        padding: 1.5rem;
+        width: 95%;
+        border-radius: calc(var(--border-radius) * 0.8);
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+        margin: 0 0 1.5rem;
+      }
+
+      h1::after {
+        width: 80px;
+        bottom: -8px;
+      }
+      
+      .code-card {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      
+      .invitation-code-container {
+        flex-direction: column;
+        margin: 1.5rem 0;
+      }
+      
+      .invitation-code {
+        font-size: 1.6rem;
+        padding: 1rem;
+        border: 2px solid rgba(99, 102, 241, 0.2);
+        border-bottom: none;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        letter-spacing: 2px;
+      }
+      
+      .copy-button {
+        padding: 0.8rem;
+        font-size: 1.1rem;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+        width: 100%;
+      }
+
+      .digit-container {
+        margin: 0 2px;
+      }
+      
+      .timer {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+        margin: 1.5rem 0;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .invitation-code {
+        font-size: 1.4rem;
+        padding: 0.8rem;
+      }
+      
+      .copy-button {
+        padding: 0.7rem;
+        font-size: 1rem;
+      }
+      
+      .timer {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+      }
+    }
+
+    /* 新增觸控優化 */
+    @media (hover: none) {
+      .copy-button {
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      .copy-button:active {
+        transform: translateY(1px);
+        filter: brightness(0.95);
+      }
+      
+      .code-card {
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      .code-card:active {
+        transform: translateY(2px);
+      }
+    }
+
+    /* 新增螢幕方向優化 */
+    @media screen and (orientation: landscape) and (max-height: 500px) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      .container {
+        padding: 1rem;
+        margin: 0.5rem 0;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+        margin: 0 0 1rem;
+      }
+      
+      .code-card {
+        margin: 1rem 0;
+      }
+      
+      .invitation-code-container {
+        margin: 1rem 0;
+      }
+      
+      .timer {
+        margin: 1rem 0;
+      }
     }
 
     .progress-container {
@@ -665,13 +827,125 @@
 
     #qrCode {
       background-color: white;
-      padding: 15px;
+      padding: 20px;
       border-radius: var(--border-radius);
       transition: var(--transition);
-      margin: 15px auto;
+      margin: 20px auto;
       display: inline-block;
+      box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
     }
-    #qrCode:hover { transform: scale(1.05); }
+
+    #qrCode::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: qrShine 3s infinite;
+    }
+
+    @keyframes qrShine {
+      0% {
+        transform: translateX(-100%) rotate(45deg);
+      }
+      50% {
+        transform: translateX(100%) rotate(45deg);
+      }
+      100% {
+        transform: translateX(100%) rotate(45deg);
+      }
+    }
+
+    #qrCode:hover {
+      transform: scale(1.05);
+      box-shadow: 
+        0 15px 30px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    .qr-container {
+      text-align: center;
+      position: relative;
+    }
+
+    .qr-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 5px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .qr-container:hover .qr-overlay {
+      opacity: 1;
+    }
+
+    .qr-download {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .qr-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      filter: brightness(1.1);
+    }
+
+    .qr-info {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+
+    body.dark-mode #qrCode {
+      background-color: white;
+      box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    @media (max-width: 480px) {
+      #qrCode {
+        padding: 15px;
+        margin: 15px auto;
+      }
+
+      .qr-download {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+
+      .qr-info {
+        font-size: 0.8rem;
+      }
+    }
 
     .marquee {
       width: 100%;
@@ -980,9 +1254,116 @@
       box-shadow: 0 0 15px 3px var(--primary-color);
       opacity: 0.4;
     }
+
+    /* 新增返回按鈕樣式 */
+    .return-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 2px rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      border: none;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+    }
+
+    .return-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        0 0 0 2px rgba(255, 255, 255, 0.2);
+      filter: brightness(1.1);
+    }
+
+    .return-button:active {
+      transform: translateY(-1px);
+    }
+
+    .return-button i {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .return-button:hover i {
+      transform: translateX(-5px);
+    }
+
+    /* 返回按鈕動畫 */
+    @keyframes pulse {
+      0% {
+        box-shadow: 
+          0 4px 15px rgba(0, 0, 0, 0.1),
+          0 0 0 0 rgba(99, 102, 241, 0.4);
+      }
+      70% {
+        box-shadow: 
+          0 4px 15px rgba(0, 0, 0, 0.1),
+          0 0 0 15px rgba(99, 102, 241, 0);
+      }
+      100% {
+        box-shadow: 
+          0 4px 15px rgba(0, 0, 0, 0.1),
+          0 0 0 0 rgba(99, 102, 241, 0);
+      }
+    }
+
+    .return-button {
+      animation: pulse 2s infinite;
+    }
+
+    /* 深色模式適配 */
+    body.dark-mode .return-button {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        0 0 0 2px rgba(255, 255, 255, 0.05);
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+      .return-button {
+        top: auto;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        font-size: 1rem;
+      }
+
+      .return-button:hover {
+        transform: translateX(-50%) translateY(-3px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .return-button {
+        bottom: 20px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- 添加返回按鈕 -->
+  <a href="https://tyctw.github.io/spare/" class="return-button">
+    <i class="fas fa-arrow-left"></i>
+    返回分析系統
+  </a>
+
   <!-- 添加粒子效果容器 -->
   <div class="particles" id="particles"></div>
   
@@ -1224,7 +1605,7 @@
       const closeBtn = document.getElementsByClassName("close")[0];
       const qrCodeDiv = document.getElementById("qrCode");
       
-      // 獲取實際的邀請碼值，忽略HTML標籤
+      // 獲取實際的邀請碼值
       const digitSpans = document.querySelectorAll('.digit');
       let invitationCode = '';
       digitSpans.forEach(span => {
@@ -1236,21 +1617,57 @@
         invitationCode = document.getElementById('invitationCode').textContent;
       }
       
+      // 清空並創建新的 QR 碼容器
       qrCodeDiv.innerHTML = '';
-      new QRCode(qrCodeDiv, {
+      const qrContainer = document.createElement('div');
+      qrContainer.className = 'qr-container';
+      qrCodeDiv.appendChild(qrContainer);
+      
+      // 創建 QR 碼
+      new QRCode(qrContainer, {
         text: invitationCode,
-        width: 128,
-        height: 128,
-        colorDark : "#000000",
-        colorLight : document.body.classList.contains('dark-mode') ? "#ffffff" : "#ffffff"
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
       });
       
+      // 添加下載按鈕
+      const downloadBtn = document.createElement('a');
+      downloadBtn.className = 'qr-download';
+      downloadBtn.innerHTML = '<i class="fas fa-download"></i> 下載 QR 碼';
+      downloadBtn.addEventListener('click', () => {
+        const canvas = qrContainer.querySelector('canvas');
+        if (canvas) {
+          const image = canvas.toDataURL("image/png");
+          const link = document.createElement('a');
+          link.download = '邀請碼_QR.png';
+          link.href = image;
+          link.click();
+        }
+      });
+      qrCodeDiv.appendChild(downloadBtn);
+      
+      // 添加提示信息
+      const info = document.createElement('div');
+      info.className = 'qr-info';
+      info.innerHTML = '掃描 QR 碼以獲取邀請碼';
+      qrCodeDiv.appendChild(info);
+      
+      // 顯示模態框
       modal.style.display = "block";
       
-      closeBtn.onclick = function() { modal.style.display = "none"; };
+      // 關閉按鈕事件
+      closeBtn.onclick = function() {
+        modal.style.display = "none";
+      }
       
+      // 點擊模態框外部關閉
       window.onclick = function(event) {
-        if (event.target == modal) { modal.style.display = "none"; }
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
       }
     }
 
