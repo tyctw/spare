@@ -952,47 +952,7 @@ function displayResults(data) {
           </div>
         </div>
       </div>
-
-      <div class="results-details">
-        <h3><i class="fas fa-chart-bar icon"></i>成績分析</h3>
-        <div class="scores-summary">
-          <div class="score-item">
-            <span class="score-label">國文：</span>
-            <span class="score-value ${getScoreClass(document.getElementById('chinese').value)}">
-              ${document.getElementById('chinese').value}
-            </span>
-          </div>
-          <div class="score-item">
-            <span class="score-label">英文：</span>
-            <span class="score-value ${getScoreClass(document.getElementById('english').value)}">
-              ${document.getElementById('english').value}
-            </span>
-          </div>
-          <div class="score-item">
-            <span class="score-label">數學：</span>
-            <span class="score-value ${getScoreClass(document.getElementById('math').value)}">
-              ${document.getElementById('math').value}
-            </span>
-          </div>
-          <div class="score-item">
-            <span class="score-label">自然：</span>
-            <span class="score-value ${getScoreClass(document.getElementById('science').value)}">
-              ${document.getElementById('science').value}
-            </span>
-          </div>
-          <div class="score-item">
-            <span class="score-label">社會：</span>
-            <span class="score-value ${getScoreClass(document.getElementById('social').value)}">
-              ${document.getElementById('social').value}
-            </span>
-          </div>
-          <div class="score-item">
-            <span class="score-label">作文：</span>
-            <span class="score-value composition-score">
-              ${document.getElementById('composition').value} 級分
-            </span>
-          </div>
-        </div>`;
+  `;
   
   if (eligibleSchools && eligibleSchools.length > 0) {
     let groupedSchools = {};
@@ -1021,39 +981,50 @@ function displayResults(data) {
                 <span class="school-count">${schools.length}所</span>
               </div>
               <div class="school-list">
-                ${schools.map(school => `
-                  <div class="school-item">
-                    <div class="school-name">
-                      <i class="fas fa-graduation-cap icon"></i>
-                      ${school.name}
+                ${schools.map(school => {
+                  const scoreDiff = school.points ? totalPoints - school.points : null;
+                  const scoreDiffClass = scoreDiff > 0 ? 'positive-diff' : (scoreDiff < 0 ? 'negative-diff' : 'equal-diff');
+                  const scoreDiffText = scoreDiff !== null ? 
+                    (scoreDiff > 0 ? `高於錄取分數 ${scoreDiff.toFixed(1)} 分` : 
+                     scoreDiff < 0 ? `低於錄取分數 ${Math.abs(scoreDiff).toFixed(1)} 分` : 
+                     '與錄取分數相同') : '';
+                  const scoreDiffIcon = scoreDiff > 0 ? 'fa-arrow-up' : 
+                                      (scoreDiff < 0 ? 'fa-arrow-down' : 'fa-equals');
+                  
+                  return `
+                    <div class="school-item">
+                      <div class="school-name">
+                        <i class="fas fa-graduation-cap icon"></i>
+                        ${school.name}
+                      </div>
+                      <div class="school-details">
+                        ${school.ownership ? `
+                          <span class="school-ownership">
+                            <i class="fas fa-university icon"></i>
+                            ${school.ownership}
+                          </span>
+                        ` : ''}
+                        ${school.group ? `
+                          <span class="school-group">
+                            <i class="fas fa-layer-group icon"></i>
+                            ${school.group}
+                          </span>
+                        ` : ''}
+                        ${school.points ? `
+                          <span class="school-group">
+                            <i class="fas ${scoreDiffIcon} icon"></i>
+                            ${scoreDiffText}
+                          </span>
+                        ` : ''}
+                      </div>
+                      <div class="school-actions">
+                        <button class="add-comparison-btn" onclick="addSchoolToComparison('${school.name}', '${school.type}', ${JSON.stringify(school).replace(/"/g, '&quot;')})">
+                          <i class="fas fa-plus-circle"></i> 加入比較
+                        </button>
+                      </div>
                     </div>
-                    <div class="school-details">
-                      ${school.ownership ? `
-                        <span class="school-ownership">
-                          <i class="fas fa-university icon"></i>
-                          ${school.ownership}
-                        </span>
-                      ` : ''}
-                      ${school.group ? `
-                        <span class="school-group">
-                          <i class="fas fa-layer-group icon"></i>
-                          ${school.group}
-                        </span>
-                      ` : ''}
-                      ${school.lastYearCutoff ? `
-                        <span class="cutoff-score">
-                          <i class="fas fa-chart-line icon"></i>
-                          去年最低錄取: ${school.lastYearCutoff}
-                        </span>
-                      ` : ''}
-                    </div>
-                    <div class="school-actions">
-                      <button class="add-comparison-btn" onclick="addSchoolToComparison('${school.name}', '${school.type}', ${JSON.stringify(school).replace(/"/g, '&quot;')})">
-                        <i class="fas fa-plus-circle"></i> 加入比較
-                      </button>
-                    </div>
-                  </div>
-                `).join('')}
+                  `;
+                }).join('')}
               </div>
             </div>
           `).join('')}
