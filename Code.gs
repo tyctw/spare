@@ -42,7 +42,7 @@ function doPost(e) {
 
 // 記錄 log 到試算表
 function logToSheet(region, action, message) {
-  const LOG_SHEET_ID = '1yKMl3yEso1Jbi9fUIi2nE2v-6w8YXXc43DyO9_QfbfQ'; // ← 替換成你自己的
+  const LOG_SHEET_ID = '10rBKIqUNRBz8MM5bW5eAeF54FcP0OGO5nLuMJClwj6Q'; // ← 替換成你自己的
   const sheet = SpreadsheetApp.openById(LOG_SHEET_ID).getSheetByName('Logs');
   if (!sheet) throw new Error('找不到 Logs 工作表');
   sheet.appendRow([new Date(), region, action, message]);
@@ -72,12 +72,12 @@ function getRegionConfig(region) {
       filterSchools: filterSchoolsWithSorting
     },
     'taipei': {
-      spreadsheetId: '1vHKGVcY0Y7VuS4B2Vxm_cZXZQZJT4DnOIj7-1cBzizw',
+      spreadsheetId: '1Xn3NaeU8eFtTqnDl5OfsVj4Q544xqCQgzIaIwOO8kEY',
       calculateScores: calculateTaipeiScores,
       filterSchools: filterSchoolsWithSorting
     },
     'tainan': {
-      spreadsheetId: '輸入台南區的試算表ID',
+      spreadsheetId: '1i394ipC-B0kkxO66SJdMxFH1MojabuEvfd4zGG7ML-w',
       calculateScores: calculateTainanScores,
       filterSchools: filterSchoolsWithSorting
     }
