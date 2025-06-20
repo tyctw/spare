@@ -13535,9 +13535,11 @@ button:hover:before {
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   padding: 0;
-  overflow: hidden;
+  overflow-y: auto;
   position: relative;
   animation: slideIn 0.3s ease-out;
+  max-height: 90vh;
+  -webkit-overflow-scrolling: touch; /* 為 iOS 設備提供平滑滾動 */
 }
 
 .invitation-header {
@@ -13654,6 +13656,33 @@ button:hover:before {
   font-size: 0.95rem;
 }
 
+.invitation-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.invitation-footer .confirm-button {
+  font-size: 1.1rem;
+  padding: 12px 28px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--primary-color), #34a0db);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb, 52, 152, 219), 0.12);
+  transition: background 0.2s, transform 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.invitation-footer .confirm-button:hover {
+  background: linear-gradient(90deg, #34a0db, var(--primary-color));
+  transform: translateY(-2px);
+}
+
 /* 深色模式樣式 */
 .dark-mode .invitation-modal-content {
   background: var(--card-bg-color);
@@ -13679,6 +13708,16 @@ button:hover:before {
   color: #ffd700;
 }
 
+.dark-mode .invitation-footer .confirm-button {
+  background: linear-gradient(90deg, var(--primary-color), #2980b9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .invitation-footer .confirm-button:hover {
+  background: linear-gradient(90deg, #2980b9, var(--primary-color));
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
@@ -13689,7 +13728,8 @@ button:hover:before {
 @media (max-width: 600px) {
   .invitation-modal-content {
     width: 90%;
-    margin: 10% auto;
+    margin: 5vh auto;
+    max-height: 90vh;
   }
   
   .invitation-header h2 {
@@ -13703,6 +13743,11 @@ button:hover:before {
   
   .invitation-button {
     padding: 12px 15px;
+    font-size: 1rem;
+  }
+  
+  .invitation-footer .confirm-button {
+    padding: 10px 20px;
     font-size: 1rem;
   }
 }

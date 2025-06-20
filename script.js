@@ -456,6 +456,12 @@ function showInvitationCodeModal() {
   modal.id = 'invitationCodeModal';
   modal.style.display = 'block';
   
+  // 禁用背景滾動但允許彈窗內容滾動
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
+  document.body.style.height = '100%';
+  
   // 創建彈窗內容
   modal.innerHTML = `
     <div class="modal-content invitation-modal-content">
@@ -480,6 +486,11 @@ function showInvitationCodeModal() {
         <div class="invitation-tip">
           <i class="fas fa-lightbulb"></i>
           <p>提示：邀請碼每小時更新一次，請確保使用最新的邀請碼</p>
+        </div>
+        <div class="invitation-footer">
+          <button class="confirm-button" onclick="closeInvitationCodeModal()">
+            <i class="fas fa-check-circle"></i> 確定
+          </button>
         </div>
       </div>
     </div>
@@ -506,7 +517,11 @@ function closeInvitationCodeModal() {
     modal.classList.add('fade-out');
     setTimeout(() => {
       document.body.removeChild(modal);
-      document.body.style.overflow = 'auto';
+      // 恢復背景滾動
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
     }, 300);
   }
 }
