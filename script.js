@@ -448,6 +448,69 @@ async function logUserActivity(action, details = {}) {
   }
 }
 
+// 新增獲取邀請碼彈窗函數
+function showInvitationCodeModal() {
+  // 創建彈窗元素
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.id = 'invitationCodeModal';
+  modal.style.display = 'block';
+  
+  // 創建彈窗內容
+  modal.innerHTML = `
+    <div class="modal-content invitation-modal-content">
+      <button class="new-close-button" onclick="closeInvitationCodeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="invitation-header">
+        <h2><i class="fas fa-key"></i> 獲取邀請碼</h2>
+      </div>
+      <div class="invitation-body">
+        <div class="invitation-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <p>您輸入的邀請碼無效或已過期</p>
+        </div>
+        <div class="invitation-instruction">
+          <p>請點擊下方按鈕填寫表單獲取最新邀請碼：</p>
+        </div>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnBMyKDwHWNX7k5yFCfVcf1QeElgx1HNet_Y4yFM_NVUp7QQ/viewform" target="_blank" class="invitation-button">
+          <i class="fas fa-file-alt"></i>
+          填寫表單獲取邀請碼
+        </a>
+        <div class="invitation-tip">
+          <i class="fas fa-lightbulb"></i>
+          <p>提示：邀請碼每小時更新一次，請確保使用最新的邀請碼</p>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // 添加到頁面
+  document.body.appendChild(modal);
+  
+  // 禁止背景滾動
+  document.body.style.overflow = 'hidden';
+  
+  // 點擊彈窗外部關閉
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) {
+      closeInvitationCodeModal();
+    }
+  });
+}
+
+// 關閉邀請碼彈窗
+function closeInvitationCodeModal() {
+  const modal = document.getElementById('invitationCodeModal');
+  if (modal) {
+    modal.classList.add('fade-out');
+    setTimeout(() => {
+      document.body.removeChild(modal);
+      document.body.style.overflow = 'auto';
+    }, 300);
+  }
+}
+
 async function analyzeScores() {
   const analyzeButton = document.getElementById('analyzeButton');
   if (analyzeButton) {
@@ -485,7 +548,8 @@ async function analyzeScores() {
 
     const validationResult = await validationResponse.json();
     if (!validationResult.valid) {
-      alert('邀請碼錯誤或已過期，請確認最新的邀請碼。');
+      // 修改這裡：顯示獲取邀請碼彈窗，而不是簡單的 alert
+      showInvitationCodeModal();
       return;
     }
     
