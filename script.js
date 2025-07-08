@@ -4641,3 +4641,50 @@ function switchGradeYear(event, year) {
   event.target.classList.add('active');
   document.getElementById('year-' + year).classList.add('active');
 }
+
+// 更新日誌標籤切換功能
+function initChangelogTabs() {
+  const tabs = document.querySelectorAll('.changelog-tab');
+  const entries = document.querySelectorAll('.changelog-entry');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetVersion = tab.getAttribute('data-version');
+      
+      // 更新標籤狀態
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // 更新內容顯示
+      entries.forEach(entry => {
+        if (entry.getAttribute('data-version') === targetVersion) {
+          entry.classList.add('active');
+        } else {
+          entry.classList.remove('active');
+        }
+      });
+    });
+  });
+}
+
+// 顯示更新日誌彈窗
+function showChangeLog() {
+  document.getElementById('changeLogModal').style.display = 'block';
+  document.body.style.overflow = 'hidden'; // 防止背景滾動
+  
+  // 初始化標籤功能
+  initChangelogTabs();
+}
+
+// 關閉更新日誌彈窗
+function closeChangeLog() {
+  document.getElementById('changeLogModal').style.display = 'none';
+  document.body.style.overflow = 'auto'; // 恢復背景滾動
+}
+
+// 當用戶點擊彈窗外的區域時關閉彈窗
+window.addEventListener('click', function(event) {
+  if (event.target == document.getElementById('changeLogModal')) {
+    closeChangeLog();
+  }
+});

@@ -350,21 +350,76 @@
       
       /* 更新日誌樣式 */
       .changelog-modal-content {
-        max-width: 800px;
-        max-height: 85vh;
+        max-width: 900px;
+        max-height: 90vh;
         background: #ffffff;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .changelog-header {
+        padding: 25px 30px 20px;
+        border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        position: relative;
+      }
+      
+      .changelog-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .changelog-tabs {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      
+      .changelog-tab {
+        padding: 8px 16px;
+        background: rgba(var(--primary-rgb), 0.05);
+        border: 1px solid rgba(var(--primary-rgb), 0.1);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-secondary-color);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .changelog-tab:hover {
+        background: rgba(var(--primary-rgb), 0.1);
+        transform: translateY(-2px);
+      }
+      
+      .changelog-tab.active {
+        background: var(--primary-color);
+        color: white;
+        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.2);
       }
       
       .changelog-container {
-        max-height: 60vh;
+        max-height: 55vh;
         overflow-y: auto;
-        padding: 20px;
-        margin: 0 20px 20px 20px;
+        padding: 0;
+        margin: 0;
         scrollbar-width: thin;
         scrollbar-color: var(--primary-color) transparent;
         background: #ffffff;
+        position: relative;
+        flex: 1;
       }
       
       .changelog-container::-webkit-scrollbar {
@@ -381,53 +436,57 @@
       }
       
       .changelog-entry {
-        margin-bottom: 40px;
-        padding: 25px;
+        padding: 30px;
         background: #ffffff;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         position: relative;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border-left: 5px solid var(--primary-color);
+        display: none;
+        animation: fadeIn 0.4s ease-out;
       }
       
-      .changelog-entry:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      .changelog-entry.active {
+        display: block;
       }
       
-      .changelog-entry:before {
-        content: '';
-        position: absolute;
-        left: -15px;
-        top: 25px;
-        width: 25px;
-        height: 25px;
-        background-color: var(--primary-color);
-        border-radius: 50%;
-        box-shadow: 0 0 0 5px rgba(var(--primary-rgb), 0.1);
+      .changelog-version-badge {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        background: linear-gradient(135deg, var(--primary-color), #34a0db);
+        color: white;
+        border-radius: 12px;
+        padding: 8px 16px;
+        margin-bottom: 15px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.2);
       }
       
-      .changelog-version {
+      .version-number {
         font-size: 1.8rem;
         font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        line-height: 1;
       }
       
-      .changelog-version:before {
+      .version-number::before {
         content: 'v';
-        font-size: 1.2rem;
-        opacity: 0.7;
+        font-size: 1rem;
+        opacity: 0.8;
+        font-weight: 400;
+      }
+      
+      .version-label {
+        font-size: 0.7rem;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-top: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
       
       .changelog-date {
         font-size: 0.95rem;
         color: var(--text-secondary-color);
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -437,63 +496,117 @@
         color: var(--primary-color);
       }
       
-      .changelog-changes ul {
+      .changelog-summary {
+        font-size: 1.2rem;
+        color: var(--text-color);
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed rgba(var(--primary-rgb), 0.2);
+        font-weight: 500;
+      }
+      
+      .changelog-category {
+        margin-bottom: 25px;
+      }
+      
+      .category-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-left: 10px;
+        border-left: 4px solid var(--primary-color);
+      }
+      
+      .category-items {
         list-style-type: none;
-        padding-left: 0;
+        padding-left: 15px;
         display: grid;
         gap: 15px;
       }
       
-      .changelog-changes li {
-        padding: 15px;
+      .changelog-item {
+        padding: 18px;
         border-radius: 12px;
-        background: rgba(var(--primary-rgb), 0.05);
+        background: rgba(var(--primary-rgb), 0.03);
+        border: 1px solid rgba(var(--primary-rgb), 0.08);
         transition: all 0.3s ease;
         display: flex;
         align-items: flex-start;
-        gap: 12px;
+        gap: 15px;
         position: relative;
         overflow: hidden;
       }
       
-      .changelog-changes li:hover {
-        background: rgba(var(--primary-rgb), 0.1);
-        transform: translateX(10px);
+      .changelog-item:hover {
+        background: rgba(var(--primary-rgb), 0.06);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        border-color: rgba(var(--primary-rgb), 0.15);
       }
       
-      .changelog-changes li .icon {
+      .item-icon {
         color: var(--primary-color);
         font-size: 1.2rem;
         flex-shrink: 0;
-        width: 24px;
-        height: 24px;
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
         background: rgba(var(--primary-rgb), 0.1);
-        border-radius: 50%;
-        padding: 5px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
       }
       
-      .changelog-changes li strong {
+      .changelog-item:hover .item-icon {
+        transform: scale(1.1) rotate(5deg);
+        background: rgba(var(--primary-rgb), 0.15);
+      }
+      
+      .item-content {
+        flex: 1;
+      }
+      
+      .item-content strong {
         color: var(--primary-color);
         font-weight: 600;
+        font-size: 1.1rem;
+        display: block;
+        margin-bottom: 5px;
       }
       
-      .changelog-changes li:after {
+      .item-content p {
+        color: var(--text-color);
+        margin: 0;
+        line-height: 1.5;
+      }
+      
+      .changelog-item::after {
         content: '';
         position: absolute;
+        bottom: 0;
         left: 0;
-        top: 0;
-        width: 4px;
-        height: 100%;
-        background: var(--primary-color);
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), transparent);
         opacity: 0;
         transition: opacity 0.3s ease;
       }
       
-      .changelog-changes li:hover:after {
+      .changelog-item:hover::after {
         opacity: 1;
+      }
+      
+      .changelog-footer {
+        padding: 20px 30px;
+        border-top: 1px solid rgba(var(--primary-rgb), 0.1);
+        display: flex;
+        justify-content: flex-end;
+        margin-top: auto;
       }
       
       /* 深色模式下的更新日誌樣式 */
@@ -505,25 +618,54 @@
         background: var(--card-bg-color);
       }
       
+      .dark-mode .changelog-header {
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      .dark-mode .changelog-tab {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .dark-mode .changelog-tab:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
+      .dark-mode .changelog-tab.active {
+        background: var(--primary-color);
+        color: white;
+      }
+      
       .dark-mode .changelog-entry {
         background: var(--card-bg-color);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       }
       
-      .dark-mode .changelog-entry:hover {
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      .dark-mode .changelog-summary {
+        border-color: rgba(255, 255, 255, 0.1);
       }
       
-      .dark-mode .changelog-changes li {
+      .dark-mode .changelog-item {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.05);
+      }
+      
+      .dark-mode .changelog-item:hover {
         background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        border-color: rgba(var(--primary-rgb), 0.2);
       }
       
-      .dark-mode .changelog-changes li:hover {
+      .dark-mode .item-icon {
         background: rgba(255, 255, 255, 0.08);
       }
       
-      .dark-mode .changelog-changes li .icon {
-        background: rgba(255, 255, 255, 0.1);
+      .dark-mode .changelog-item:hover .item-icon {
+        background: rgba(var(--primary-rgb), 0.2);
+      }
+      
+      .dark-mode .changelog-footer {
+        border-color: rgba(255, 255, 255, 0.1);
       }
       
       @media (max-width: 768px) {
@@ -532,22 +674,64 @@
           max-height: 90vh;
         }
         
+        .changelog-header {
+          padding: 20px;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
+        .changelog-tabs {
+          width: 100%;
+          overflow-x: auto;
+          padding-bottom: 5px;
+        }
+        
         .changelog-container {
-          padding: 15px;
-          margin: 0 10px 15px 10px;
+          max-height: 50vh;
         }
         
         .changelog-entry {
           padding: 20px;
-          margin-bottom: 30px;
         }
         
-        .changelog-version {
+        .changelog-version-badge {
+          padding: 6px 12px;
+        }
+        
+        .version-number {
           font-size: 1.5rem;
         }
         
-        .changelog-changes li {
-          padding: 12px;
+        .changelog-summary {
+          font-size: 1.1rem;
+        }
+        
+        .changelog-item {
+          padding: 15px;
+        }
+        
+        .item-icon {
+          width: 35px;
+          height: 35px;
+        }
+        
+        .item-content strong {
+          font-size: 1rem;
+        }
+        
+        .changelog-footer {
+          padding: 15px 20px;
+        }
+      }
+      
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
       }
       
@@ -3016,125 +3200,175 @@
         <button class="new-close-button" onclick="closeChangeLog()">
           <i class="fas fa-times"></i>
         </button>
-        <h2>
-          <i class="fas fa-history icon"></i> 更新日誌
-        </h2>
+        <div class="changelog-header">
+          <h2>
+            <i class="fas fa-history icon"></i> 更新日誌
+          </h2>
+          <div class="changelog-tabs">
+            <button class="changelog-tab active" data-version="2.0">v2.0</button>
+            <button class="changelog-tab" data-version="1.5">v1.5</button>
+            <button class="changelog-tab" data-version="1.0">v1.0</button>
+          </div>
+        </div>
         
         <div class="changelog-container">
-          <div class="changelog-entry">
-            <div class="changelog-version">2.0</div>
+          <div class="changelog-entry active" data-version="2.0">
+            <div class="changelog-version-badge">
+              <span class="version-number">2.0</span>
+              <span class="version-label">最新版本</span>
+            </div>
             <div class="changelog-date">
               <i class="fas fa-calendar-alt"></i> 2025 年 6 月 10 日
             </div>
+            <div class="changelog-summary">
+              全新區域支援與介面升級，提供更全面的分析服務
+            </div>
             <div class="changelog-changes">
-              <ul>
-                <li class="slide-in" style="animation-delay: 0.1s;">
-                  <i class="fas fa-star icon"></i>
-                  <div>
-                    <strong>全新區域選擇功能</strong>
-                    <p>新增彰化區、基北區及台南區支援，提供更全面的區域分析服務</p>
-                  </div>
-                </li>
-                <li class="slide-in" style="animation-delay: 0.2s;">
-                  <i class="fas fa-tools icon"></i>
-                  <div>
-                    <strong>職業群別篩選</strong>
-                    <p>新增職業群別多選功能，讓您更精確地找到理想學校</p>
-                  </div>
-                </li>
-                <li class="slide-in" style="animation-delay: 0.3s;">
-                  <i class="fas fa-calculator icon"></i>
-                  <div>
-                    <strong>計分方式顯示</strong>
-                    <p>各區域計分方式即時顯示，讓您清楚了解錄取標準</p>
-                  </div>
-                </li>
-                <li class="slide-in" style="animation-delay: 0.4s;">
-                  <i class="fas fa-mobile-alt icon"></i>
-                  <div>
-                    <strong>行動裝置優化</strong>
-                    <p>全面改善手機和平板的使用體驗，讓您隨時隨地都能使用</p>
-                  </div>
-                </li>
-                <li class="slide-in" style="animation-delay: 0.5s;">
-                  <i class="fas fa-moon icon"></i>
-                  <div>
-                    <strong>深色模式</strong>
-                    <p>新增深色模式支援，保護您的眼睛，提供更舒適的使用體驗</p>
-                  </div>
-                </li>
-              </ul>
+              <div class="changelog-category">
+                <div class="category-label"><i class="fas fa-puzzle-piece"></i> 新功能</div>
+                <ul class="category-items">
+                  <li class="changelog-item slide-in" style="animation-delay: 0.1s;">
+                    <div class="item-icon"><i class="fas fa-star"></i></div>
+                    <div class="item-content">
+                      <strong>全新區域選擇功能</strong>
+                      <p>新增彰化區、基北區及台南區支援，提供更全面的區域分析服務</p>
+                    </div>
+                  </li>
+                  <li class="changelog-item slide-in" style="animation-delay: 0.2s;">
+                    <div class="item-icon"><i class="fas fa-tools"></i></div>
+                    <div class="item-content">
+                      <strong>職業群別篩選</strong>
+                      <p>新增職業群別多選功能，讓您更精確地找到理想學校</p>
+                    </div>
+                  </li>
+                  <li class="changelog-item slide-in" style="animation-delay: 0.3s;">
+                    <div class="item-icon"><i class="fas fa-calculator"></i></div>
+                    <div class="item-content">
+                      <strong>計分方式顯示</strong>
+                      <p>各區域計分方式即時顯示，讓您清楚了解錄取標準</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="changelog-category">
+                <div class="category-label"><i class="fas fa-paint-brush"></i> 介面優化</div>
+                <ul class="category-items">
+                  <li class="changelog-item slide-in" style="animation-delay: 0.4s;">
+                    <div class="item-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="item-content">
+                      <strong>行動裝置優化</strong>
+                      <p>全面改善手機和平板的使用體驗，讓您隨時隨地都能使用</p>
+                    </div>
+                  </li>
+                  <li class="changelog-item slide-in" style="animation-delay: 0.5s;">
+                    <div class="item-icon"><i class="fas fa-moon"></i></div>
+                    <div class="item-content">
+                      <strong>深色模式</strong>
+                      <p>新增深色模式支援，保護您的眼睛，提供更舒適的使用體驗</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
           
-          <div class="changelog-entry">
-            <div class="changelog-version">1.5</div>
+          <div class="changelog-entry" data-version="1.5">
+            <div class="changelog-version-badge">
+              <span class="version-number">1.5</span>
+            </div>
             <div class="changelog-date">
               <i class="fas fa-calendar-alt"></i> 2024 年 12 月 15 日
             </div>
+            <div class="changelog-summary">
+              匯出功能增強與資料庫更新
+            </div>
             <div class="changelog-changes">
-              <ul>
-                <li class="slide-in" style="animation-delay: 0.6s;">
-                  <i class="fas fa-file-export icon"></i>
-                  <div>
-                    <strong>匯出功能升級</strong>
-                    <p>新增 PDF 及 Excel 匯出選項，方便您保存和分享分析結果</p>
-                  </div>
-                </li>
-                <li class="slide-in" style="animation-delay: 0.7s;">
-                  <i class="fas fa-database icon"></i>
-                  <div>
-                    <strong>資料庫更新</strong>
-                    <p>更新最新學校資訊及錄取標準，確保分析結果的準確性</p>
-                  </div>
-                </li>
-                <li class="slide-in" style="animation-delay: 0.8s;">
-                  <i class="fas fa-bug icon"></i>
-                  <div>
-                    <strong>錯誤修復</strong>
-                    <p>修復多項系統穩定性問題，提升整體使用體驗</p>
-                  </div>
-                </li>
-              </ul>
+              <div class="changelog-category">
+                <div class="category-label"><i class="fas fa-puzzle-piece"></i> 功能更新</div>
+                <ul class="category-items">
+                  <li class="changelog-item slide-in" style="animation-delay: 0.1s;">
+                    <div class="item-icon"><i class="fas fa-file-export"></i></div>
+                    <div class="item-content">
+                      <strong>匯出功能升級</strong>
+                      <p>新增 PDF 及 Excel 匯出選項，方便您保存和分享分析結果</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="changelog-category">
+                <div class="category-label"><i class="fas fa-database"></i> 資料更新</div>
+                <ul class="category-items">
+                  <li class="changelog-item slide-in" style="animation-delay: 0.2s;">
+                    <div class="item-icon"><i class="fas fa-database"></i></div>
+                    <div class="item-content">
+                      <strong>資料庫更新</strong>
+                      <p>更新最新學校資訊及錄取標準，確保分析結果的準確性</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="changelog-category">
+                <div class="category-label"><i class="fas fa-bug"></i> 錯誤修復</div>
+                <ul class="category-items">
+                  <li class="changelog-item slide-in" style="animation-delay: 0.3s;">
+                    <div class="item-icon"><i class="fas fa-bug"></i></div>
+                    <div class="item-content">
+                      <strong>錯誤修復</strong>
+                      <p>修復多項系統穩定性問題，提升整體使用體驗</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
           
-          <div class="changelog-entry">
-            <div class="changelog-version">1.0</div>
+          <div class="changelog-entry" data-version="1.0">
+            <div class="changelog-version-badge">
+              <span class="version-number">1.0</span>
+              <span class="version-label">初始版本</span>
+            </div>
             <div class="changelog-date">
               <i class="fas fa-calendar-alt"></i> 2024 年 10 月 20 日
             </div>
+            <div class="changelog-summary">
+              會考落點分析系統正式上線
+            </div>
             <div class="changelog-changes">
-              <ul>
-                <li class="slide-in" style="animation-delay: 0.9s;">
-                  <i class="fas fa-rocket icon"></i>
-                  <div>
-                    <strong>系統啟動</strong>
-                    <p>會考落點分析系統正式上線，為您提供專業的升學分析服務</p>
-                  </div>
-                </li>
-                <li class="slide-in" style="animation-delay: 1.0s;">
-                  <i class="fas fa-map-marked-alt icon"></i>
-                  <div>
-                    <strong>初始區域支援</strong>
-                    <p>支援桃連區、中投區及高雄區，開啟區域分析服務</p>
-                  </div>
-                </li>
-                <li class="slide-in" style="animation-delay: 1.1s;">
-                  <i class="fas fa-user-shield icon"></i>
-                  <div>
-                    <strong>邀請碼系統</strong>
-                    <p>實施邀請碼機制確保系統穩定，提供更好的服務品質</p>
-                  </div>
-                </li>
-              </ul>
+              <div class="changelog-category">
+                <div class="category-label"><i class="fas fa-rocket"></i> 系統功能</div>
+                <ul class="category-items">
+                  <li class="changelog-item slide-in" style="animation-delay: 0.1s;">
+                    <div class="item-icon"><i class="fas fa-rocket"></i></div>
+                    <div class="item-content">
+                      <strong>系統啟動</strong>
+                      <p>會考落點分析系統正式上線，為您提供專業的升學分析服務</p>
+                    </div>
+                  </li>
+                  <li class="changelog-item slide-in" style="animation-delay: 0.2s;">
+                    <div class="item-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <div class="item-content">
+                      <strong>初始區域支援</strong>
+                      <p>支援桃連區、中投區及高雄區，開啟區域分析服務</p>
+                    </div>
+                  </li>
+                  <li class="changelog-item slide-in" style="animation-delay: 0.3s;">
+                    <div class="item-icon"><i class="fas fa-user-shield"></i></div>
+                    <div class="item-content">
+                      <strong>邀請碼系統</strong>
+                      <p>實施邀請碼機制確保系統穩定，提供更好的服務品質</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
         
-        <button class="confirm-button hover-glow" onclick="closeChangeLog()">
-          <i class="fas fa-check-circle icon"></i> 關閉
-        </button>
+        <div class="changelog-footer">
+          <button class="confirm-button hover-glow" onclick="closeChangeLog()">
+            <i class="fas fa-check-circle icon"></i> 關閉
+          </button>
+        </div>
       </div>
     </div>
 
@@ -3539,26 +3773,7 @@
   }
 </script>
 
-<!-- 更新日誌相關函數 -->
-<script>
-  // 更新日誌相關函數
-  function showChangeLog() {
-    document.getElementById('changeLogModal').style.display = 'block';
-    document.body.style.overflow = 'hidden'; // 防止背景滾動
-  }
-  
-  function closeChangeLog() {
-    document.getElementById('changeLogModal').style.display = 'none';
-    document.body.style.overflow = 'auto'; // 恢復背景滾動
-  }
-  
-  // 當用戶點擊彈窗外的區域時關閉彈窗
-  window.addEventListener('click', function(event) {
-    if (event.target == document.getElementById('changeLogModal')) {
-      closeChangeLog();
-    }
-  });
-</script>
+<!-- 已將更新日誌相關函數移至script.js中 -->
 
 <!-- 分析中動畫遮罩 -->
 <div id="analyzingOverlay" class="analyzing-overlay">
