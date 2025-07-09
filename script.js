@@ -479,7 +479,7 @@ function showInvitationCodeModal() {
         <div class="invitation-instruction">
           <p>請點擊下方按鈕填寫表單獲取最新邀請碼：</p>
         </div>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnBMyKDwHWNX7k5yFCfVcf1QeElgx1HNet_Y4yFM_NVUp7QQ/viewform" target="_blank" class="invitation-button">
+        <a href="https://forms.gle/R1fXvtiu4kPEYL5E6" target="_blank" class="invitation-button">
           <i class="fas fa-file-alt"></i>
           填寫表單獲取邀請碼
         </a>
