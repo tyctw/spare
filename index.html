@@ -230,6 +230,91 @@
       }
 
       /* 深色模式適配 */
+      /* 訊息公告樣式 */
+      .announcement-container {
+        margin: 20px auto;
+        max-width: 800px;
+      }
+      
+      .announcement-card {
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 6px 16px rgba(255, 154, 158, 0.2);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      
+      .announcement-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(255, 154, 158, 0.3);
+      }
+      
+      .announcement-icon {
+        background-color: rgba(255, 255, 255, 0.25);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        flex-shrink: 0;
+      }
+      
+      .announcement-icon i {
+        color: #fff;
+        font-size: 22px;
+      }
+      
+      .announcement-content {
+        flex: 1;
+      }
+      
+      .announcement-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #fff;
+        margin-bottom: 5px;
+      }
+      
+      .announcement-message {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+      
+      /* 深色模式下的公告樣式 */
+      .dark-mode .announcement-card {
+        background: linear-gradient(135deg, #614385 0%, #516395 100%);
+      }
+      
+      .dark-mode .announcement-icon {
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+      
+      @media (max-width: 768px) {
+        .announcement-card {
+          padding: 14px 16px;
+        }
+        
+        .announcement-icon {
+          width: 40px;
+          height: 40px;
+        }
+        
+        .announcement-title {
+          font-size: 1rem;
+        }
+        
+        .announcement-message {
+          font-size: 0.9rem;
+        }
+      }
+
       .dark-mode .scoring-info {
         background-color: var(--card-bg-color);
         border-color: var(--primary-color);
@@ -739,7 +824,7 @@
       .new-form-button-container {
         position: relative;
         margin: 20px auto;
-        max-width: 500px;
+        max-width: 800px;
       }
       
       .new-form-button {
@@ -2149,7 +2234,22 @@
       <h1 class="slide-in">
         <i class="fas fa-chart-line icon"></i>會考落點分析系統
       </h1>
-      <div class="new-form-button-container slide-in" style="animation-delay: 0.15s;">
+      <!-- 訊息公告區塊 -->
+      <div class="announcement-container slide-in" style="animation-delay: 0.15s;">
+        <div class="announcement-card">
+          <div class="announcement-icon">
+            <i class="fas fa-bullhorn"></i>
+          </div>
+          <div class="announcement-content">
+            <div class="announcement-title">重要公告</div>
+            <div class="announcement-message">
+              114年錄取分數蒐集分析當中，預計12月更新完成
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="new-form-button-container slide-in" style="animation-delay: 0.25s;">
         <a href="https://forms.gle/R1fXvtiu4kPEYL5E6" target="_blank" class="new-form-button">
           <div class="button-content">
             <div class="button-icon">
