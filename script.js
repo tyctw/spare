@@ -384,7 +384,7 @@ function showLoading() {
     }
     
     if (progress < 100) {
-      setTimeout(updateProgress, 50);
+      setTimeout(updateProgress, 10);
     }
   };
   
@@ -672,7 +672,7 @@ async function analyzeScores() {
       analyzeButton.disabled = false;
       analyzeButton.innerHTML = '<i class="fas fa-search icon"></i>分析落點';
     }
-    setTimeout(hideLoading, 2000);
+    setTimeout(hideLoading, 500);
   }
 }
 
