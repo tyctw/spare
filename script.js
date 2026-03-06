@@ -584,6 +584,7 @@ function closeInvitationCodeModal() {
   }
 }
 
+// 在 analyzeScores 函數中進行以下修改
 async function analyzeScores() {
   const analyzeButton = document.getElementById('analyzeButton');
   if (analyzeButton) {
@@ -593,37 +594,55 @@ async function analyzeScores() {
 
   try {
     const invitationCode = document.getElementById('invitationCode').value;
-    if (!invitationCode.trim()) {
-      alert("請填寫邀請碼");
-      return;
-    }
     
-    // Validate invitation code with animation
-    showInvitationValidationAnimation();
-    let validationResponse;
-    try {
-      validationResponse = await fetch('https://script.google.com/a/macros/jiooq.com/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'validateInvitationCode',
-          invitationCode: invitationCode
-        })
-      });
-    } catch (error) {
+    // --- 新增：檢查 10 分鐘內是否已驗證過 ---
+    const lastAuthSuccess = localStorage.getItem('lastInvitationAuthSuccess');
+    const now = Date.now();
+    const tenMinutes = 10 * 60 * 1000; // 10 分鐘的毫秒數
+    
+    let skipVerification = false;
+    if (lastAuthSuccess && (now - parseInt(lastAuthSuccess) < tenMinutes)) {
+      skipVerification = true;
+      console.log("10分鐘內已驗證過，跳過邀請碼檢查");
+    }
+    // ---------------------------------------
+
+    if (!skipVerification) {
+      if (!invitationCode.trim()) {
+        alert("請填寫邀請碼");
+        return;
+      }
+      
+      // 原有的驗證流程
+      showInvitationValidationAnimation();
+      let validationResponse;
+      try {
+        validationResponse = await fetch('https://script.google.com/a/macros/jiooq.com/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'validateInvitationCode',
+            invitationCode: invitationCode
+          })
+        });
+      } catch (error) {
+        hideInvitationValidationAnimation();
+        throw error;
+      }
       hideInvitationValidationAnimation();
-      throw error;
-    }
-    hideInvitationValidationAnimation();
 
-    if (!validationResponse.ok) {
-      throw new Error('邀請碼驗證失敗');
-    }
+      if (!validationResponse.ok) {
+        throw new Error('邀請碼驗證失敗');
+      }
 
-    const validationResult = await validationResponse.json();
-    if (!validationResult.valid) {
-      // 修改這裡：顯示獲取邀請碼彈窗，而不是簡單的 alert
-      showInvitationCodeModal();
-      return;
+      const validationResult = await validationResponse.json();
+      if (!validationResult.valid) {
+        showInvitationCodeModal();
+        return;
+      }
+
+      // --- 新增：驗證成功後紀錄目前時間 ---
+      localStorage.setItem('lastInvitationAuthSuccess', Date.now().toString());
+      // ---------------------------------------
     }
     
     showLoading();
