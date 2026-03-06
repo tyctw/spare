@@ -3875,38 +3875,45 @@
   }
 </script>
 
-<!-- 已將更新日誌相關函數移至script.js中 -->
+<div class="quantum-analyzing-overlay" id="quantumLoadingOverlay">
+    <div class="quantum-container">
+      <div class="quantum-sphere">
+        <div class="ring ring1"></div>
+        <div class="ring ring2"></div>
+        <div class="ring ring3"></div>
+        <div class="core">
+          <i class="fas fa-network-wired"></i>
+        </div>
+      </div>
 
-<!-- 分析中動畫遮罩 -->
-<div id="analyzingOverlay" class="analyzing-overlay">
-  <div class="analyzing-container">
-    <div class="analyzing-progress">
-      <div class="analyzing-circle"></div>
-      <div class="analyzing-percentage">0%</div>
-    </div>
-    <div class="analyzing-steps">
-      <div class="analyzing-step" data-step="1">
-        <div class="step-icon">1</div>
-        <div class="step-text">收集成績資料</div>
+      <div class="quantum-text-area">
+        <div class="quantum-title">QUANTUM AI ANALYSIS</div>
+        <div class="quantum-status" id="quantumStatusText">正在初始化落點預測模型...</div>
       </div>
-      <div class="analyzing-step" data-step="2">
-        <div class="step-icon">2</div>
-        <div class="step-text">計算加權分數</div>
+
+      <div class="quantum-data-box">
+        <div class="quantum-progress-bg">
+          <div class="quantum-progress-fill" id="quantumProgressBar"></div>
+        </div>
+        <div class="quantum-percentage" id="quantumPercentage">0.00%</div>
       </div>
-      <div class="analyzing-step" data-step="3">
-        <div class="step-icon">3</div>
-        <div class="step-text">分析學校資料</div>
+
+      <div class="quantum-metrics">
+        <div class="metric-item">
+          <div class="metric-value" id="q-metric-schools">0</div>
+          <div class="metric-label">校系交叉比對</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value" id="q-metric-nodes">0</div>
+          <div class="metric-label">神經節點運算</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value" id="q-metric-prob">0.0%</div>
+          <div class="metric-label">精準度調校</div>
+        </div>
       </div>
-      <div class="analyzing-step" data-step="4">
-        <div class="step-icon">4</div>
-        <div class="step-text">生成落點建議</div>
-      </div>
-    </div>
-    <div class="analyzing-message">
-      分析處理中，請稍候...
     </div>
   </div>
-</div>
 
 <script>
 // ... existing code ...

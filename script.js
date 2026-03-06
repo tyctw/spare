@@ -208,199 +208,257 @@ function closeDisclaimer() {
   }, 300);
 }
 
+// ==========================================
+// 全新邀請碼安全驗證動畫控制邏輯
+// ==========================================
+let authProgressInterval;
+let authScrambleInterval;
+
 function showInvitationValidationAnimation() {
+  // 移除舊的(如果存在)
+  hideInvitationValidationAnimation(true);
+
+  // 取得使用者輸入的邀請碼
+  const invitationCode = document.getElementById('invitationCode').value || 'UNKNOWN';
+
+  // 創建覆蓋層與 HTML 結構
   const overlay = document.createElement('div');
-  overlay.className = 'validation-overlay';
+  overlay.className = 'cyber-auth-overlay';
+  overlay.id = 'cyberAuthOverlay';
   
-  // 創建驗證內容
   overlay.innerHTML = `
-    <div class="validation-content">
-      <div class="validation-steps">
-        <div class="validation-step active" data-step="1">
-          <div class="step-circle">
-            <i class="fas fa-file-alt"></i>
-          </div>
-          <div class="step-label">資料收集</div>
-        </div>
-        <div class="validation-step" data-step="2">
-          <div class="step-circle">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <div class="step-label">驗證中</div>
-        </div>
-        <div class="validation-step" data-step="3">
-          <div class="step-circle">
-            <i class="fas fa-check"></i>
-          </div>
-          <div class="step-label">完成</div>
-        </div>
-        <div class="progress-line">
-          <div class="progress-line-inner"></div>
-        </div>
+    <div class="cyber-auth-panel">
+      <div class="auth-scan-line"></div>
+      <div class="auth-header">
+        <i class="fas fa-shield-alt"></i> 系統安全憑證驗證序列
       </div>
-      
-      <div class="validation-body">
-        <div class="validation-circle">
-          <div class="validation-percentage">0%</div>
-        </div>
-        <div class="validation-message">正在初始化...</div>
-        <div class="validation-details">準備驗證邀請碼</div>
-        <div class="code-display"></div>
-        <div class="success-checkmark">
-          <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
-            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-          </svg>
-        </div>
+      <div class="auth-icon-container">
+        <i class="fas fa-user-lock" id="authLockIcon"></i>
+      </div>
+      <div class="auth-code-display" id="authCodeDisplay"></div>
+      <div class="auth-status" id="authStatusText">INITIALIZING...</div>
+      <div class="auth-progress-bar">
+        <div class="auth-progress-fill" id="authProgressFill"></div>
+      </div>
+      <div class="auth-details">
+        <span>TARGET: SECURE_SERVER</span>
+        <span>SYS.REQ: VERIFY_KEY</span>
       </div>
     </div>
   `;
-  
   document.body.appendChild(overlay);
+
+  // 觸發 CSS 動畫
+  setTimeout(() => overlay.classList.add('active'), 10);
+
+  const codeDisplay = overlay.querySelector('#authCodeDisplay');
+  const progressFill = overlay.querySelector('#authProgressFill');
+  const statusText = overlay.querySelector('#authStatusText');
+  const lockIcon = overlay.querySelector('#authLockIcon');
   
-  // 獲取邀請碼
-  const invitationCode = document.getElementById('invitationCode').value;
-  const codeDigits = invitationCode.split('');
+  // 建立解密字元框
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+  const codeLength = invitationCode.length > 0 ? invitationCode.length : 6;
   
-  // 顯示邀請碼字符
-  const codeDisplay = overlay.querySelector('.code-display');
-  setTimeout(() => {
-    codeDigits.forEach((digit, index) => {
-      const charDiv = document.createElement('div');
-      charDiv.className = 'code-char';
-      charDiv.textContent = digit;
-      charDiv.style.animationDelay = `${index * 100}ms`;
-      codeDisplay.appendChild(charDiv);
-    });
-  }, 500);
-  
-  // 更新進度和狀態
-  const progressLine = overlay.querySelector('.progress-line-inner');
-  const percentage = overlay.querySelector('.validation-percentage');
-  const message = overlay.querySelector('.validation-message');
-  const details = overlay.querySelector('.validation-details');
-  
+  for(let i=0; i<codeLength; i++) {
+    const span = document.createElement('span');
+    span.className = 'auth-char';
+    span.textContent = '0';
+    codeDisplay.appendChild(span);
+  }
+
+  const charElements = codeDisplay.querySelectorAll('.auth-char');
   let progress = 0;
-  const progressInterval = setInterval(() => {
-    if (progress < 100) {
-      progress += 1;
-      percentage.textContent = `${progress}%`;
-      progressLine.style.width = `${progress}%`;
-      
-      // 更新步驟狀態
-      if (progress === 33) {
-        const step1 = overlay.querySelector('.validation-step[data-step="1"]');
-        const step2 = overlay.querySelector('.validation-step[data-step="2"]');
-        step1.classList.add('completed');
-        step2.classList.add('active');
-        message.textContent = '驗證邀請碼中...';
-        details.textContent = '檢查邀請碼有效性';
-        
-        // 開始驗證每個字符
-        const codeChars = overlay.querySelectorAll('.code-char');
-        codeChars.forEach((char, index) => {
-          setTimeout(() => {
-            char.classList.add('verified');
-          }, index * 200);
-        });
+
+  // 亂碼跳動特效 (Matrix 駭客風格)
+  authScrambleInterval = setInterval(() => {
+    charElements.forEach((el) => {
+      if (!el.classList.contains('decoded')) {
+        el.textContent = chars[Math.floor(Math.random() * chars.length)];
       }
+    });
+  }, 50);
+
+  // 進度條與狀態切換邏輯
+  authProgressInterval = setInterval(() => {
+    progress += 1.2; // 控制進度條速度
+    if (progress > 100) progress = 100;
+    
+    progressFill.style.width = `${progress}%`;
+
+    // 階段 1：連線中
+    if (progress < 35) {
+      statusText.textContent = '建立加密通道 (ESTABLISHING CONNECTION)...';
+    } 
+    // 階段 2：解密中 (逐字解開邀請碼)
+    else if (progress >= 35 && progress < 80) {
+      statusText.textContent = '解析授權金鑰 (DECRYPTING KEY)...';
+      lockIcon.className = 'fas fa-fingerprint auth-pulse';
       
-      if (progress === 66) {
-        const step2 = overlay.querySelector('.validation-step[data-step="2"]');
-        const step3 = overlay.querySelector('.validation-step[data-step="3"]');
-        step2.classList.add('completed');
-        step3.classList.add('active');
-        message.textContent = '驗證成功';
-        details.textContent = '邀請碼有效，授權成功';
+      const decodedCount = Math.floor(((progress - 35) / 45) * codeLength);
+      for(let i=0; i<decodedCount; i++) {
+        if (charElements[i] && !charElements[i].classList.contains('decoded')) {
+          charElements[i].textContent = invitationCode[i] || '*';
+          charElements[i].classList.add('decoded');
+        }
       }
-      
-      if (progress === 100) {
-        clearInterval(progressInterval);
-        const checkmark = overlay.querySelector('.success-checkmark');
-        checkmark.classList.add('show');
-        
-        // 3秒後關閉動畫
-        setTimeout(() => {
-          hideInvitationValidationAnimation();
-        }, 3000);
-      }
+    } 
+    // 階段 3：最終核對
+    else if (progress >= 80 && progress < 100) {
+      statusText.textContent = '核對雲端資料庫憑證 (VERIFYING CREDENTIALS)...';
+      charElements.forEach((el, idx) => {
+        el.textContent = invitationCode[idx] || '*';
+        el.classList.add('decoded');
+      });
+      clearInterval(authScrambleInterval);
+    } 
+    // 階段 4：完成
+    else if (progress === 100) {
+      clearInterval(authProgressInterval);
+      statusText.textContent = '憑證驗證完成 (VALIDATION COMPLETE)';
     }
   }, 30);
 }
 
-function hideInvitationValidationAnimation() {
-  const overlay = document.querySelector('.validation-overlay');
-  if (overlay) {
-    overlay.classList.add('fade-out');
+// 傳入 true/false 來隱藏動畫 (強制清除計時器並淡出)
+function hideInvitationValidationAnimation(immediate = false) {
+  clearInterval(authProgressInterval);
+  clearInterval(authScrambleInterval);
+  
+  const overlay = document.getElementById('cyberAuthOverlay');
+  if (!overlay) return;
+
+  // 如果伺服器回應很快，強制將畫面變成全綠色的「授權成功」狀態再關閉
+  if (!immediate) {
+    const statusText = overlay.querySelector('#authStatusText');
+    const lockIcon = overlay.querySelector('#authLockIcon');
+    const progressFill = overlay.querySelector('#authProgressFill');
+    const charElements = overlay.querySelectorAll('.auth-char');
+
+    if (statusText) {
+      statusText.textContent = '授權存取 (ACCESS GRANTED)';
+      statusText.style.color = '#2ecc71';
+    }
+    if (lockIcon) {
+      lockIcon.className = 'fas fa-unlock-alt auth-success';
+    }
+    if (progressFill) {
+      progressFill.style.width = '100%';
+      progressFill.style.background = '#2ecc71';
+      progressFill.style.boxShadow = '0 0 15px #2ecc71';
+    }
+    if (charElements) {
+      charElements.forEach(el => {
+        el.classList.add('granted');
+      });
+    }
+
+    // 停頓 0.5 秒讓使用者看到綠色解鎖畫面，然後淡出
     setTimeout(() => {
-      overlay.remove();
+      overlay.classList.remove('active');
+      setTimeout(() => overlay.remove(), 400);
     }, 500);
+  } else {
+    // 立即移除
+    overlay.remove();
   }
 }
+// ==========================================
+// 全新分析動畫：量子 AI 運算控制邏輯
+// ==========================================
+let quantumAnalysisInterval;
+let quantumMetricsInterval;
 
 function showLoading() {
-  const overlay = document.querySelector('.analyzing-overlay');
-  overlay.classList.add('active');
+  const overlay = document.getElementById('quantumLoadingOverlay');
+  if (overlay) overlay.classList.add('active');
   
-  // 重置所有步驟狀態
-  document.querySelectorAll('.analyzing-step').forEach(step => {
-    step.classList.remove('active', 'completed');
-  });
+  // 獲取 DOM 元素
+  const progressBar = document.getElementById('quantumProgressBar');
+  const percentageTxt = document.getElementById('quantumPercentage');
+  const statusTxt = document.getElementById('quantumStatusText');
   
-  // 重置進度
-  const circle = document.querySelector('.analyzing-circle');
-  const percentage = document.querySelector('.analyzing-percentage');
-  circle.style.setProperty('--progress', '0%');
-  percentage.textContent = '0%';
+  const metricSchools = document.getElementById('q-metric-schools');
+  const metricNodes = document.getElementById('q-metric-nodes');
+  const metricProb = document.getElementById('q-metric-prob');
   
-  // 模擬分析進度
-  let currentStep = 1;
+  // 重置進度與文字
   let progress = 0;
+  if (progressBar) progressBar.style.width = '0%';
+  if (percentageTxt) percentageTxt.textContent = '0.00%';
+  if (statusTxt) statusTxt.textContent = '正在喚醒量子 AI 運算核心...';
   
-  const updateProgress = () => {
-    if (progress >= 100) return;
-    
-    progress += 1;
-    circle.style.setProperty('--progress', `${progress}%`);
-    percentage.textContent = `${progress}%`;
-    
-    // 更新步驟狀態
-    const stepThresholds = [25, 50, 75, 100];
-    const newStep = stepThresholds.findIndex(threshold => progress <= threshold) + 1;
-    
-    if (newStep !== currentStep) {
-      // 完成前一個步驟
-      if (currentStep > 0) {
-        const prevStep = document.querySelector(`[data-step="${currentStep}"]`);
-        prevStep.classList.remove('active');
-        prevStep.classList.add('completed');
-      }
-      
-      // 激活新步驟
-      const nextStep = document.querySelector(`[data-step="${newStep}"]`);
-      nextStep.classList.add('active');
-      
-      currentStep = newStep;
-    }
-    
+  // 狀態語錄字典 (對應各進度區間，讓等待過程不枯燥)
+  const phases = [
+    { threshold: 0, text: "正在喚醒量子 AI 運算核心..." },
+    { threshold: 15, text: "讀取歷年招生大數據庫..." },
+    { threshold: 30, text: "解構會考成績與志願群集矩陣..." },
+    { threshold: 50, text: "執行神經網路落點交叉比對..." },
+    { threshold: 70, text: "計算安全、合理、夢幻校系分佈..." },
+    { threshold: 85, text: "最佳化錄取預測機率模型..." },
+    { threshold: 95, text: "準備渲染最終分析報告..." }
+  ];
+
+  // 1. 啟動底部數據跳動特效 (模擬超級電腦正在進行大量運算)
+  clearInterval(quantumMetricsInterval);
+  quantumMetricsInterval = setInterval(() => {
     if (progress < 100) {
-      setTimeout(updateProgress, 50);
+      if (metricSchools) metricSchools.textContent = Math.floor(Math.random() * 500) + 100;
+      if (metricNodes) metricNodes.textContent = (Math.random() * 90 + 10).toFixed(1) + 'k';
+      if (metricProb) metricProb.textContent = (Math.random() * 20 + 79).toFixed(2) + '%';
     }
-  };
-  
-  // 開始第一個步驟
-  const firstStep = document.querySelector('[data-step="1"]');
-  firstStep.classList.add('active');
-  
-  // 開始更新進度
-  setTimeout(updateProgress, 50);
+  }, 80); // 每 0.08 秒跳動一次數字
+
+  // 2. 主進度條更新邏輯
+  clearInterval(quantumAnalysisInterval);
+  quantumAnalysisInterval = setInterval(() => {
+    if (progress >= 100) {
+      clearInterval(quantumAnalysisInterval);
+      return;
+    }
+    
+    // 隨機增加進度 (模擬真實的處理停頓感，保留兩位小數的科技感)
+    const increment = Math.random() * 1.5 + 0.1;
+    progress = Math.min(progress + increment, 99.9); // 最高卡在 99.9% 等待後端資料正式回傳
+    
+    // 更新 UI 數字與進度條長度
+    if (progressBar) progressBar.style.width = `${progress}%`;
+    if (percentageTxt) percentageTxt.textContent = `${progress.toFixed(2)}%`;
+    
+    // 根據目前的進度百分比，更新對應的狀態文字
+    const currentPhase = [...phases].reverse().find(p => progress >= p.threshold);
+    if (currentPhase && statusTxt && statusTxt.textContent !== currentPhase.text) {
+      statusTxt.textContent = currentPhase.text;
+    }
+    
+  }, 40); // 螢幕更新頻率 (每 0.04 秒跑一次動畫)
 }
+
 
 function hideLoading() {
-  const overlay = document.querySelector('.analyzing-overlay');
-  overlay.classList.remove('active');
-}
+  const progressBar = document.getElementById('quantumProgressBar');
+  const percentageTxt = document.getElementById('quantumPercentage');
+  const statusTxt = document.getElementById('quantumStatusText');
+  const metricProb = document.getElementById('q-metric-prob');
+  
+  // 收到後端資料後，將進度瞬間填滿到 100% 顯示完成
+  if (progressBar) progressBar.style.width = '100%';
+  if (percentageTxt) percentageTxt.textContent = '100.00%';
+  if (statusTxt) statusTxt.textContent = '分析完成，系統啟動渲染程序！';
+  if (metricProb) metricProb.textContent = '99.99%'; // 鎖死精準度
+  
+  // 停止所有跳動的計時器
+  clearInterval(quantumAnalysisInterval);
+  clearInterval(quantumMetricsInterval);
 
+  // 稍微延遲 0.6 秒後關閉遮罩 (確保使用者有時間看清楚 100% 完成的畫面)
+  setTimeout(() => {
+    const overlay = document.getElementById('quantumLoadingOverlay');
+    if (overlay) {
+      overlay.classList.remove('active');
+    }
+  }, 600);
+}
 async function logUserActivity(action, details = {}) {
   try {
     const userAgent = navigator.userAgent;
@@ -667,12 +725,14 @@ async function analyzeScores() {
   } catch (error) {
     await logUserActivity('analyze_error', { error: error.message });
     alert('發生錯誤：' + error.message);
-  } finally {
+} finally {
     if (analyzeButton) {
       analyzeButton.disabled = false;
       analyzeButton.innerHTML = '<i class="fas fa-search icon"></i>分析落點';
     }
-    setTimeout(hideLoading, 2000);
+    // 移除原本的 setTimeout(hideLoading, 2000);
+    // 直接呼叫 hideLoading，因為我們的新動畫裡面已經有包含完美的退場機制了
+    hideLoading();
   }
 }
 

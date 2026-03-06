@@ -13751,3 +13751,411 @@ button:hover:before {
     font-size: 1rem;
   }
 }
+/* =========================================
+   全新邀請碼驗證動畫 (Cyber Security Style)
+   ========================================= */
+.cyber-auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 15, 25, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.cyber-auth-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cyber-auth-panel {
+  background: linear-gradient(180deg, rgba(20, 30, 48, 0.95) 0%, rgba(15, 25, 40, 0.95) 100%);
+  border: 1px solid rgba(42, 157, 143, 0.5);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(42, 157, 143, 0.1);
+  border-radius: 8px;
+  padding: 40px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 掃描線特效 */
+.auth-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(42, 157, 143, 0.8);
+  box-shadow: 0 0 15px rgba(42, 157, 143, 1);
+  opacity: 0.6;
+  animation: scanAuthPanel 2.5s linear infinite;
+  z-index: 10;
+}
+
+/* 標題與圖示 */
+.auth-header {
+  color: var(--primary-color, #2a9d8f);
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(42, 157, 143, 0.3);
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.auth-icon-container {
+  font-size: 4rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 25px;
+  text-shadow: 0 0 20px rgba(42, 157, 143, 0.4);
+}
+
+.auth-pulse {
+  animation: pulseAuthIcon 1s infinite alternate;
+  color: #e9c46a !important;
+  text-shadow: 0 0 20px rgba(233, 196, 106, 0.6) !important;
+}
+
+.auth-success {
+  animation: unlockBounce 0.5s ease forwards;
+  color: #2ecc71 !important;
+  text-shadow: 0 0 20px rgba(46, 204, 113, 0.6) !important;
+}
+
+/* 解密字元區塊 */
+.auth-code-display {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 30px;
+  min-height: 45px;
+  flex-wrap: wrap;
+}
+
+.auth-char {
+  width: 35px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.auth-char.decoded {
+  color: #e9c46a;
+  border-color: #e9c46a;
+  text-shadow: 0 0 10px rgba(233, 196, 106, 0.8);
+  background: rgba(233, 196, 106, 0.1);
+  box-shadow: inset 0 0 8px rgba(233, 196, 106, 0.2);
+}
+
+.auth-char.granted {
+  color: #2ecc71;
+  border-color: #2ecc71;
+  text-shadow: 0 0 10px rgba(46, 204, 113, 0.8);
+  background: rgba(46, 204, 113, 0.1);
+  box-shadow: inset 0 0 8px rgba(46, 204, 113, 0.2);
+}
+
+/* 狀態列與進度條 */
+.auth-status {
+  font-family: 'Courier New', Courier, monospace;
+  color: #a0aec0;
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  height: 20px;
+  letter-spacing: 1px;
+}
+
+.auth-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.auth-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--primary-color, #2a9d8f);
+  box-shadow: 0 0 10px var(--primary-color, #2a9d8f);
+  transition: width 0.1s linear, background 0.3s, box-shadow 0.3s;
+}
+
+.auth-details {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Keyframes 動畫 */
+@keyframes scanAuthPanel {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes pulseAuthIcon {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes unlockBounce {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+/* =========================================
+   全新分析動畫 (Quantum AI Engine Style)
+   ========================================= */
+.quantum-analyzing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(8, 12, 23, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.quantum-analyzing-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.quantum-container {
+  width: 90%;
+  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* 量子球體核心 */
+.quantum-sphere {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.quantum-sphere .ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.quantum-sphere .ring1 {
+  border-top: 3px solid #00f0ff;
+  border-right: 3px solid transparent;
+  animation: rotateRing1 2s linear infinite;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+}
+
+.quantum-sphere .ring2 {
+  border-bottom: 3px solid #ff0055;
+  border-left: 3px solid transparent;
+  animation: rotateRing2 3s linear infinite;
+  box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
+}
+
+.quantum-sphere .ring3 {
+  border-left: 3px solid #7000ff;
+  border-bottom: 3px solid transparent;
+  animation: rotateRing3 2.5s linear infinite;
+  box-shadow: 0 0 20px rgba(112, 0, 255, 0.2);
+}
+
+.quantum-sphere .core {
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(circle, #00f0ff, #7000ff);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 40px #00f0ff, inset 0 0 20px #fff;
+  animation: corePulse 1.5s ease-in-out infinite alternate;
+}
+
+.quantum-sphere .core i {
+  color: #fff;
+  font-size: 2rem;
+  text-shadow: 0 0 10px #fff;
+}
+
+/* 文字區域 */
+.quantum-text-area {
+  text-align: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.quantum-title {
+  color: #00f0ff;
+  font-size: 1.2rem;
+  letter-spacing: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+}
+
+.quantum-status {
+  color: #e2e8f0;
+  font-size: 1.1rem;
+  min-height: 28px;
+}
+
+/* 進度條區域 */
+.quantum-data-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.quantum-percentage {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  text-shadow: 0 0 20px #00f0ff;
+  margin-top: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.quantum-progress-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.quantum-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #7000ff, #00f0ff, #fff);
+  background-size: 200% 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #00f0ff;
+  transition: width 0.1s ease;
+  animation: gradientShift 2s linear infinite;
+}
+
+/* 底部指標數據 */
+.quantum-metrics {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.metric-item:last-child {
+  border-right: none;
+}
+
+.metric-value {
+  color: #00f0ff;
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
+  margin-bottom: 5px;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.metric-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+/* 動畫 Keyframes */
+@keyframes rotateRing1 {
+  0% { transform: rotateX(60deg) rotateY(0deg) rotateZ(0deg); }
+  100% { transform: rotateX(60deg) rotateY(360deg) rotateZ(360deg); }
+}
+@keyframes rotateRing2 {
+  0% { transform: rotateX(120deg) rotateY(45deg) rotateZ(0deg); }
+  100% { transform: rotateX(120deg) rotateY(45deg) rotateZ(360deg); }
+}
+@keyframes rotateRing3 {
+  0% { transform: rotateX(30deg) rotateY(90deg) rotateZ(0deg); }
+  100% { transform: rotateX(30deg) rotateY(90deg) rotateZ(360deg); }
+}
+@keyframes corePulse {
+  0% { transform: scale(0.9); box-shadow: 0 0 20px #00f0ff; }
+  100% { transform: scale(1.1); box-shadow: 0 0 50px #00f0ff, 0 0 20px #7000ff; }
+}
+@keyframes gradientShift {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@media (max-width: 600px) {
+  .quantum-sphere { width: 120px; height: 120px; margin-bottom: 30px; }
+  .quantum-sphere .core { width: 50px; height: 50px; }
+  .quantum-percentage { font-size: 2rem; }
+  .metric-value { font-size: 1.1rem; }
+  .metric-label { font-size: 0.7rem; }
+}
