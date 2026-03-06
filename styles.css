@@ -10983,9 +10983,8 @@ button:hover:before {
     font-weight: 500;
   }
   
-  .instructions-content {
+.instructions-content {
     height: calc(100% - 80px);
-  }
   }
   
   .instruction-panel {
@@ -11172,7 +11171,7 @@ button:hover:before {
     font-size: 0.85rem;
   }
   
-  /* 動態觸控反饋 */
+/* 動態觸控反饋 */
   .instruction-step:active,
   .instruction-method:active,
   .nav-btn:active,
@@ -11180,6 +11179,7 @@ button:hover:before {
     transform: scale(0.98);
     transition: transform 0.1s ease;
   }
+} /* <--- 補上這個括號 */
 
 /* 超小螢幕適配 (iPhone SE等) */
 @media (max-width: 375px) {
@@ -14158,4 +14158,183 @@ button:hover:before {
   .quantum-percentage { font-size: 2rem; }
   .metric-value { font-size: 1.1rem; }
   .metric-label { font-size: 0.7rem; }
+}
+/* =========================================================
+   專屬電腦版 - 使用說明儀表板 (Desktop Instructions Dashboard)
+   ========================================================= */
+@media (min-width: 769px) {
+  /* 1. 彈窗主體：寬度加寬、去除預設 padding 讓內部元素可以貼邊佈局 */
+  .instructions-modal-content {
+    max-width: 1000px !important;
+    width: 90%;
+    height: 75vh;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    overflow: hidden;
+    border-radius: 20px;
+  }
+
+  /* 2. 標題列：獨立區塊、帶點漸層背景 */
+  .instructions-modal-content h2 {
+    padding: 20px 30px !important;
+    margin: 0 !important;
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), transparent);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+    font-size: 1.6rem;
+  }
+  .dark-mode .instructions-modal-content h2 {
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.15), transparent);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+
+  /* 3. 內容佈局：左邊導航、右邊內容，填滿剩餘高度 */
+  .instructions-guide {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    overflow: hidden;
+    height: 100% !important;
+    gap: 0 !important;
+  }
+
+  /* 4. 左側導航列：固定寬度、獨立背景色 */
+  .instructions-steps {
+    flex: 0 0 280px !important;
+    background: #f8f9fa; 
+    border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
+    padding: 25px 20px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 15px !important;
+    overflow-y: auto;
+    border-radius: 0 0 0 20px;
+  }
+  .dark-mode .instructions-steps {
+    background: rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+  }
+
+  /* 5. 步驟按鈕樣式：立體懸停效果 */
+  .instruction-step {
+    padding: 16px 20px !important;
+    border-radius: 14px !important;
+    border-left: none !important;
+    background: transparent !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    opacity: 0.7;
+  }
+  
+  .instruction-step:hover {
+    background: rgba(67, 97, 238, 0.08) !important;
+    transform: translateX(8px);
+    opacity: 1;
+  }
+
+  /* 啟動中的步驟按鈕 */
+  .instruction-step.active {
+    background: var(--primary-color) !important;
+    color: white !important;
+    box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3) !important;
+    transform: translateX(10px);
+    opacity: 1;
+  }
+
+  /* 步驟圓圈數字 */
+  .step-number {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 1.1rem !important;
+    background: white !important;
+    color: var(--primary-color) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  .dark-mode .step-number {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+  }
+  .instruction-step.active .step-number {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    box-shadow: none;
+  }
+
+  /* 6. 右側內容區 */
+  .instructions-content {
+    flex: 1;
+    position: relative;
+    background: var(--card-background);
+  }
+
+  /* 獨立面板：改為由下往上的平滑淡入動畫 */
+  .instruction-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex !important;
+    flex-direction: column;
+    padding: 35px 45px !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(30px) !important;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  .instruction-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) !important;
+  }
+
+  /* 內容滾動區與美化滾動條 */
+  .instruction-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 20px !important;
+    margin-bottom: 25px !important;
+  }
+  .instruction-panel-content::-webkit-scrollbar {
+    width: 6px;
+  }
+  .instruction-panel-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+  }
+  .instruction-panel-content::-webkit-scrollbar-thumb {
+    background: rgba(67, 97, 238, 0.3);
+    border-radius: 10px;
+  }
+  .instruction-panel-content::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+  }
+
+  /* 7. 底部導航區：固定在面板最下方 */
+  .instruction-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 25px !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+    margin-top: auto !important;
+    position: relative !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .dark-mode .instruction-nav {
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+
+  /* 隱藏手機版的點狀指示器 */
+  .mobile-panel-indicator {
+    display: none !important;
+  }
+  
+  /* 按鈕優化 */
+  .nav-btn {
+    padding: 12px 25px !important;
+    font-size: 1.05rem !important;
+    border-radius: 10px !important;
+  }
 }
