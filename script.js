@@ -644,7 +644,7 @@ async function analyzeScores() {
       composition: parseInt(document.getElementById('composition').value)
     };
 
-    const response = await fetch('https://script.google.com/macros/s/AKfycbzWLq0xIeCId9v47p36I1upDBlvnw9JD7j_lzEEo7lTC2c98lf_s22wfPU4sXp0-jeOrA/exec', {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbxQD0ENt4twxvuThmgRZ2dbvjKbt38IjRYMCFuPmNXGxXNWyY7VVOGH_vZZFBHlZOaV/exec', {
       method: 'POST',
       body: JSON.stringify({
         scores,
@@ -1012,13 +1012,13 @@ function displayResults(data) {
             <div class="result-value">${totalPoints}</div>
             <div class="result-label">總積分</div>
           </div>
-          ${totalCredits !== null ? `
-          <div class="result-card total-credits">
-            <i class="fas fa-award icon"></i>
-            <div class="result-value">${totalCredits}</div>
-            <div class="result-label">總積點</div>
-          </div>
-          ` : ''}
+${typeof totalCredits !== 'undefined' && totalCredits !== null ? `
+<div class="result-card total-credits">
+  <i class="fas fa-award icon"></i>
+  <div class="result-value">${totalCredits}</div>
+  <div class="result-label">總積點</div>
+</div>
+` : ''}
           <div class="result-card schools-count">
             <i class="fas fa-school icon"></i>
             <div class="result-value">${eligibleSchools ? eligibleSchools.length : 0}</div>

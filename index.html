@@ -2654,14 +2654,8 @@
             </label>
           </div>
           
-          <!-- 籌備中區域分類標題 -->
-          <div class="region-category preparing-category">
-            <i class="fas fa-tools"></i> 籌備中區域
-          </div>
-          
-          <!-- 未開放區域 -->
-          <div class="region-option disabled">
-            <input type="radio" id="region-hsinchu" name="analysisArea" value="hsinchu" class="region-input" disabled>
+          <div class="region-option">
+            <input type="radio" id="region-hsinchu" name="analysisArea" value="hsinchu" class="region-input" onchange="selectRegion('hsinchu', '竹苗區')">
             <label for="region-hsinchu" class="region-label">
               <div class="region-icon">
                 <i class="fas fa-microchip"></i>
@@ -2670,11 +2664,18 @@
                 <div class="region-name">竹苗區</div>
                 <div class="region-description">竹苗區考生</div>
                 <div class="region-features">
-                  <span class="region-feature preparing"><i class="fas fa-tools"></i> 正在籌備中</span>
+                  <span class="region-feature"><i class="fas fa-school"></i> 70+ 高中</span>
                 </div>
               </div>
             </label>
           </div>
+
+          <!-- 籌備中區域分類標題 -->
+          <div class="region-category preparing-category">
+            <i class="fas fa-tools"></i> 籌備中區域
+          </div>
+          
+          <!-- 未開放區域 -->
           
           <div class="region-option disabled">
             <input type="radio" id="region-yunlin" name="analysisArea" value="yunlin" class="region-input" disabled>
@@ -3687,11 +3688,12 @@
           { title: '區域說明', value: '臺北市、新北市、基隆市考生', icon: 'fa-info-circle' }
         ]
       },
-      'hsinchu': {
-        description: '竹苗區正在籌備中，預計將採用五科積分及作文級分計算方式。',
+'hsinchu': {
+        description: '竹苗區採用五科等級轉換積分制（精熟6分，基礎4分，待加強2分），滿分30分。',
         details: [
-          { title: '主要依據', value: '籌備中', icon: 'fa-tools' },
-          { title: '預計上線', value: '2025年4月', icon: 'fa-calendar-alt' }
+          { title: '分數轉換', value: 'A: 6分，B: 4分，C: 2分', icon: 'fa-star' },
+          { title: '計分方式', value: '五科分數直接相加', icon: 'fa-plus' },
+          { title: '錄取依據', value: '看總積分，同分時看標示加號總數', icon: 'fa-sort-amount-up' }
         ]
       },
       'yunlin': {
