@@ -38,12 +38,20 @@ export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
         timestamp: new Date().toISOString()
       };
       
-      await fetch('https://script.google.com/macros/s/AKfycby7gY-pB8nZ6GInx36-YJsh9C50e30gJ0Gf02y9e0Wtv6m4m3S33Y3l_YkF6sJ1d0lM9g/exec', {
+      const clientInfo = {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        screenResolution: `${window.screen.width}x${window.screen.height}`,
+        viewport: `${window.innerWidth}x${window.innerHeight}`,
+        url: window.location.href
+      };
+      
+      await fetch('https://script.google.com/macros/s/AKfycbxAR0tyczm3-HDjdub3R-Xy1uoZ4T42Athz8VkJN5bk4gcO_GyVmyOiOBV0BCMEPKpeYg/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8',
         },
-        body: JSON.stringify({ action: 'submitFeedback', payload })
+        body: JSON.stringify({ action: 'submitFeedback', payload, clientInfo })
       });
       setSubmitted(true);
       setTimeout(() => {
