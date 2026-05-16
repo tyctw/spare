@@ -1,0 +1,6 @@
+{
+  "name": "會考落點分析系統",
+  "description": "全台最精準的國中教育會考落點分析系統。提供各學區會考落點預測、志願選填建議。",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

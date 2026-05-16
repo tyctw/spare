@@ -1,0 +1,108 @@
+import React from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { X, CheckCircle } from 'lucide-react';
+
+const vocationalGroupsList = [
+  { id: '機械群', label: '機械群', icon: '⚙️' },
+  { id: '動力機械群', label: '動力機械群', icon: '🚗' },
+  { id: '電機與電子群', label: '電機與電子群', icon: '⚡' },
+  { id: '化工群', label: '化工群', icon: '🧪' },
+  { id: '土木與建築群', label: '土木與建築群', icon: '🏗️' },
+  { id: '商業與管理群', label: '商業與管理群', icon: '💼' },
+  { id: '外語群', label: '外語群', icon: '🌍' },
+  { id: '設計群', label: '設計群', icon: '🎨' },
+  { id: '農業群', label: '農業群', icon: '🌱' },
+  { id: '食品群', label: '食品群', icon: '🍔' },
+  { id: '家政群', label: '家政群', icon: '🏠' },
+  { id: '餐旅群', label: '餐旅群', icon: '🏨' },
+  { id: '水產群', label: '水產群', icon: '🐟' },
+  { id: '海事群', label: '海事群', icon: '🚢' },
+  { id: '藝術群', label: '藝術群', icon: '🎭' }
+];
+
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedGroups: string[];
+  onChange: (groups: string[]) => void;
+}
+
+export default function VocationalModal({ isOpen, onClose, selectedGroups, onChange }: Props) {
+  const isAllSelected = selectedGroups.includes('all');
+
+  const toggleGroup = (id: string) => {
+    if (id === 'all') {
+      onChange(['all']);
+      return;
+    }
+    
+    let newGroups = selectedGroups.filter(g => g !== 'all');
+    if (newGroups.includes(id)) {
+      newGroups = newGroups.filter(g => g !== id);
+    } else {
+      newGroups.push(id);
+    }
+
+    if (newGroups.length === 0 || newGroups.length === vocationalGroupsList.length) {
+      onChange(['all']);
+    } else {
+      onChange(newGroups);
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+            className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border-2 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] max-h-[90vh] flex flex-col"
+          >
+            <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-indigo-50">
+              <h2 className="text-2xl font-black text-slate-900">選擇職業群別</h2>
+              <button onClick={onClose} className="p-2 hover:bg-white rounded-xl transition-colors border-2 border-transparent hover:border-slate-900">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <button
+                onClick={() => toggleGroup('all')}
+                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+                  isAllSelected ? 'bg-indigo-600 border-slate-900 text-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]' : 'bg-slate-50 border-slate-200 hover:border-indigo-400 hover:-translate-y-1'
+                }`}
+              >
+                <CheckCircle className="w-8 h-8" />
+                <span className="font-bold">全部選擇</span>
+              </button>
+              {vocationalGroupsList.map(group => {
+                const isSelected = selectedGroups.includes(group.id) || isAllSelected;
+                return (
+                  <button
+                    key={group.id}
+                    onClick={() => toggleGroup(group.id)}
+                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+                      isSelected && !isAllSelected ? 'bg-indigo-100 border-slate-900 text-indigo-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]' : 'bg-white border-slate-200 hover:border-indigo-400 hover:-translate-y-1'
+                    } ${(isAllSelected && group.id !== 'all') && 'opacity-60 grayscale'}`}
+                  >
+                    <span className="text-3xl mb-1">{group.icon}</span>
+                    <span className="font-bold text-slate-700">{group.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="p-6 border-t border-slate-200 bg-slate-50 flex justify-end">
+               <button onClick={onClose} className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:bg-indigo-500 hover:-translate-y-1 transition-all active:translate-y-0 active:shadow-none">
+                 確認選擇
+               </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
