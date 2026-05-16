@@ -10,6 +10,7 @@ import VocationalModal from './components/VocationalModal';
 import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
 import { InfoModal } from './components/InfoModals';
 import ChangelogModal from './components/ChangelogModal';
+import DisclaimerModal from './components/DisclaimerModal';
 import ComparisonModal from './components/ComparisonModal';
 import QRCodeModal from './components/QRCodeModal';
 import CyberAuthOverlay from './components/CyberAuthOverlay';
@@ -902,51 +903,10 @@ export default function App() {
         onExport={handleExport}
       />
 
-      <InfoModal 
+      <DisclaimerModal 
         isOpen={activeModal === 'disclaimer'} 
         onClose={() => setActiveModal(null)}
-        title="免責聲明"
-        icon={<Shield className="w-8 h-8 text-amber-500" />}
-      >
-        <div className="space-y-6">
-          <div className="bg-amber-300 p-5 rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-            <div className="w-12 h-12 bg-white rounded-2xl border-4 border-slate-900 flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-              <AlertCircle className="w-6 h-6 text-amber-600" />
-            </div>
-            <div>
-              <h3 className="font-black text-xl text-slate-900 mb-1">本系統結果僅供參考</h3>
-              <p className="text-slate-900 font-bold text-sm">本推薦引擎基於歷年數據演算，不代表最終實際錄取結果。填寫志願時請審慎評估。</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-              <h4 className="font-black text-slate-900 flex items-center gap-2 mb-2">
-                <Map className="w-4 h-4 text-rose-500" /> 政策與名額變動
-              </h4>
-              <p className="text-sm font-bold text-slate-500">當年度各校招生名額調整、招生政策變化皆會影響錄取分數與序位。</p>
-            </div>
-            <div className="p-4 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-              <h4 className="font-black text-slate-900 flex items-center gap-2 mb-2">
-                <Award className="w-4 h-4 text-blue-500" /> 考生整體表現
-              </h4>
-              <p className="text-sm font-bold text-slate-500">該年度考題難易度及整體考生表現分布，會導致基準線上下浮動。</p>
-            </div>
-            <div className="p-4 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-              <h4 className="font-black text-slate-900 flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-purple-500" /> 特殊加分與條件
-              </h4>
-              <p className="text-sm font-bold text-slate-500">未包含直升、特種身分加分、以及其他未列入一般生計算之特殊條件。</p>
-            </div>
-            <div className="p-4 bg-slate-900 text-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-              <h4 className="font-black text-sky-300 flex items-center gap-2 mb-2">
-                <Check className="w-4 h-4" /> 最終依據
-              </h4>
-              <p className="text-sm font-medium text-slate-300">請務必以各校最新官方發布之「免試入學招生簡章」為最準確之最終依據。</p>
-            </div>
-          </div>
-        </div>
-      </InfoModal>
+      />
 
       <InfoModal 
         isOpen={activeModal === 'instructions'} 
