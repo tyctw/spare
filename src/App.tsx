@@ -585,7 +585,7 @@ export default function App() {
               </motion.div>
             ) : (
               <>
-                開始精密落點運算 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                開始落點分析 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </>
             )}
           </button>
