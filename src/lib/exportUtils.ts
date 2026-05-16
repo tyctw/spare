@@ -79,7 +79,7 @@ export const exportJson = (data: any) => {
     }
   };
   const blob = new Blob([JSON.stringify(enhancedData, null, 2)], { type: 'application/json;charset=utf-8' });
-  saveAs(blob, `114年_會考落點分析_${data.scores.region}.json`);
+  saveAs(blob, `115年_會考落點分析_${data.scores.region}.json`);
 };
 
 export const exportExcel = (data: any, regionName: string) => {
@@ -87,7 +87,7 @@ export const exportExcel = (data: any, regionName: string) => {
   
   // 1. Summary Sheet
   const summary = [
-    ["114年 會考落點分析結果報告"],
+    ["115年 會考落點分析結果報告"],
     ["", ""],
     ["【基本資料】"],
     ["產生日期", new Date().toLocaleString('zh-TW')],
@@ -145,7 +145,7 @@ export const exportExcel = (data: any, regionName: string) => {
     XLSX.utils.book_append_sheet(wb, emptyWs, "推薦學校清單");
   }
 
-  XLSX.writeFile(wb, `114年_會考落點分析_${regionName}.xlsx`);
+  XLSX.writeFile(wb, `115年_會考落點分析_${regionName}.xlsx`);
 };
 
 export const printResults = (data: any, regionName: string) => {
@@ -218,19 +218,42 @@ export const printResults = (data: any, regionName: string) => {
           margin: 0;
           padding: 0;
           background: #f1f5f9;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
         .print-wrapper {
+          position: relative;
           max-width: 210mm;
           margin: 20px auto;
           background: #fff;
           padding: 40px;
           border-radius: 12px;
           box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          border-top: 12px solid #2563eb;
+          overflow: hidden;
         }
         @media print {
           body { background: #fff; }
-          .print-wrapper { box-shadow: none; padding: 0; margin: 0; width: 100%; max-width: none; border-radius: 0; }
+          .print-wrapper { box-shadow: none; padding: 0; margin: 0; width: 100%; max-width: none; border-radius: 0; border-top: 8px solid #2563eb; }
           .btn-print { display: none !important; }
+        }
+        /* Optional watermark for a professional look */
+        .watermark {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-30deg);
+          font-size: 120px;
+          color: rgba(226, 232, 240, 0.3);
+          font-weight: 900;
+          white-space: nowrap;
+          pointer-events: none;
+          z-index: 0;
+          user-select: none;
+        }
+        .content-relative {
+          position: relative;
+          z-index: 10;
         }
         .header {
           display: flex;
@@ -242,13 +265,14 @@ export const printResults = (data: any, regionName: string) => {
         }
         .header-left h1 {
           margin: 0 0 8px 0;
-          font-size: 28px;
+          font-size: 32px;
           color: #0f172a;
-          letter-spacing: 1px;
+          letter-spacing: 1.5px;
+          font-weight: 800;
         }
         .header-left p {
           margin: 0;
-          color: #64748b;
+          color: #475569;
           font-size: 14px;
         }
         .header-right {
@@ -259,14 +283,14 @@ export const printResults = (data: any, regionName: string) => {
         }
         .qr-box {
           background: #fff;
-          padding: 4px;
-          border: 1px solid #e2e8f0;
+          padding: 6px;
+          border: 2px solid #e2e8f0;
           border-radius: 8px;
           display: inline-block;
         }
         .qr-box img {
-          width: 80px;
-          height: 80px;
+          width: 76px;
+          height: 76px;
           display: block;
         }
         .site-link {
@@ -275,28 +299,33 @@ export const printResults = (data: any, regionName: string) => {
           margin-top: 6px;
           max-width: 150px;
           word-break: break-all;
+          line-height: 1.3;
         }
-        .section { margin-bottom: 30px; }
+        .section { margin-bottom: 32px; }
         .section-title {
           font-size: 18px;
           font-weight: 700;
-          color: #0f172a;
-          border-left: 4px solid #3b82f6;
-          padding-left: 12px;
+          color: #1e3a8a;
+          background-color: #eff6ff;
+          padding: 8px 16px;
+          border-radius: 6px;
+          border-left: 5px solid #2563eb;
           margin-bottom: 16px;
+          display: inline-block;
+          min-width: 200px;
         }
         .info-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           gap: 16px;
           background: #f8fafc;
-          padding: 20px;
+          padding: 24px;
           border-radius: 12px;
           border: 1px solid #e2e8f0;
         }
         .info-item { display: flex; align-items: center; }
         .info-label { font-weight: 600; color: #64748b; width: 90px; flex-shrink: 0; font-size: 14px; }
-        .info-value { font-weight: 700; color: #0f172a; font-size: 15px; }
+        .info-value { font-weight: 800; color: #0f172a; font-size: 16px; }
         
         .scores-wrapper {
           display: flex;
@@ -321,22 +350,22 @@ export const printResults = (data: any, regionName: string) => {
           border: 1px solid #f1f5f9;
         }
         .score-label { font-size: 13px; color: #64748b; margin-bottom: 4px; font-weight: 600; }
-        .score-val { font-size: 22px; font-weight: 800; color: #3b82f6; }
-        .score-val.comp { color: #8b5cf6; }
+        .score-val { font-size: 24px; font-weight: 800; color: #2563eb; }
+        .score-val.comp { color: #7c3aed; }
         
         .result-summary {
           flex: 1;
           background: #eff6ff;
           border: 1px solid #bfdbfe;
-          padding: 20px;
+          padding: 24px;
           border-radius: 12px;
           display: flex;
           flex-direction: column;
           justify-content: center;
         }
-        .result-summary-title { font-size: 15px; font-weight: 700; color: #1d4ed8; margin-bottom: 12px; }
-        .result-point { font-size: 14px; margin-bottom: 8px; color: #1e3a8a; }
-        .result-point strong { font-size: 28px; color: #2563eb; }
+        .result-summary-title { font-size: 15px; font-weight: 800; color: #1e40af; margin-bottom: 12px; }
+        .result-point { font-size: 15px; margin-bottom: 8px; color: #1e3a8a; font-weight: 600; }
+        .result-point strong { font-size: 32px; color: #1d4ed8; font-weight: 800; margin-left: 8px; }
         
         table {
           width: 100%;
@@ -346,10 +375,17 @@ export const printResults = (data: any, regionName: string) => {
           border-radius: 12px;
           overflow: hidden;
         }
-        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
-        th { background-color: #f8fafc; font-weight: 700; color: #475569; font-size: 13px; border-bottom: 2px solid #e2e8f0; }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        th { 
+          background-color: #f8fafc; 
+          font-weight: 800; 
+          color: #334155; 
+          font-size: 14px; 
+          border-bottom: 2px solid #cbd5e1; 
+        }
         tbody tr:last-child td { border-bottom: none; }
         tbody tr:nth-child(even) { background-color: #fbfcfd; }
+        tbody tr:hover { background-color: #f1f5f9; }
         
         .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
         .eval-safe { background: #dcfce7; color: #166534; }
@@ -381,11 +417,12 @@ export const printResults = (data: any, regionName: string) => {
         
         .footer {
           margin-top: 50px;
-          padding-top: 20px;
+          padding-top: 24px;
           border-top: 2px solid #e2e8f0;
           font-size: 12px;
           color: #64748b;
           text-align: center;
+          line-height: 1.8;
         }
         .footer p { margin: 4px 0; }
         .footer strong { color: #0f172a; }
@@ -398,7 +435,9 @@ export const printResults = (data: any, regionName: string) => {
       </button>
       
       <div class="print-wrapper">
-        <div class="header">
+        <div class="watermark">落點分析</div>
+        <div class="content-relative">
+          <div class="header">
           <div class="header-left">
             <h1>115年會考落點分析報告</h1>
             <p>分析區域：<strong>${regionName}</strong> &nbsp;|&nbsp; 報告產生時間：${new Date().toLocaleString('zh-TW')}</p>
@@ -451,6 +490,7 @@ export const printResults = (data: any, regionName: string) => {
         <div class="footer">
           <p><strong>【系統免責聲明】</strong> 本系統分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因當年度招生政策變化、<br/>考生整體表現、特種身分加分、各校招生名額調整等因素而有所不同。請務必以各校最新官方發布之「免試入學招生簡章」為最終依據。</p>
           <p>TW全國會考落點分析引擎 © ${new Date().getFullYear()} (非政府官方機構) | <a href="${currentUrl}" style="color: #3b82f6; text-decoration: none;">點此返回網站</a></p>
+        </div>
         </div>
       </div>
       
