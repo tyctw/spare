@@ -715,8 +715,8 @@ export default function App() {
                       className="flex-1 sm:flex-none px-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900"
                     >
                       <option value="all">公私立不拘</option>
-                      <option value="公立">public</option>
-                      <option value="私立">private</option>
+                      <option value="public">公立</option>
+                      <option value="private">私立</option>
                     </select>
                     <select 
                       value={resultFilterType} 
