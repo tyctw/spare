@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 
 export const exportTxt = (data: any, regionName: string) => {
   const content = `===============================================
-               114年 會考落點分析報告                
+               115年 會考落點分析報告                
 ===============================================
 【基本資料】
 身份: ${data.identity === 'student' ? '學生' : data.identity === 'teacher' ? '老師' : '家長'}
@@ -27,26 +27,17 @@ export const exportTxt = (data: any, regionName: string) => {
 ===============================================
 【推薦名單 (依序位推薦)】
 ${data.results.eligibleSchools?.map((s: any, i: number) => 
-  `${String(i + 1).padStart(2, ' ')}. ${s.name} ${s.group ? `[${s.group}]` : ''} - 預估分數區間: ${s.minScore || s.points || s.score} / 錄取評估: ${
-    (s.scoreDiff !== undefined && parseFloat(s.scoreDiff) >= 2) || 
-    (s.pointsDiff !== undefined && parseFloat(s.pointsDiff) >= 2) || 
-    ((data.results.totalPoints - parseFloat(s.minScore || s.points || s.score || 0)) >= 2) ? '極高 (安全)' :
-    (s.scoreDiff !== undefined && parseFloat(s.scoreDiff) >= 0.5) || 
-    (s.pointsDiff !== undefined && parseFloat(s.pointsDiff) >= 0.5) || 
-    ((data.results.totalPoints - parseFloat(s.minScore || s.points || s.score || 0)) >= 0.5) ? '穩健 (合理)' :
-    (s.scoreDiff !== undefined && parseFloat(s.scoreDiff) >= -1) || 
-    (s.pointsDiff !== undefined && parseFloat(s.pointsDiff) >= -1) || 
-    ((data.results.totalPoints - parseFloat(s.minScore || s.points || s.score || 0)) >= -1) ? '夢幻 (進取)' : '落後'
-  }`
+  `${String(i + 1).padStart(2, ' ')}. ${s.name} ${s.group ? `[${s.group}]` : ''} - 預估錄取門檻: ${s.minScore || s.points || s.score || '--'}`
 ).join('\n') || '無推薦名單'}
 
 ===============================================
 【系統免責聲明】
 本系統分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因當年度招生政策變化、考生整體表現、特種身分加分、各校招生名額調整等因素而有所不同。請務必以各校最新官方發布之「免試入學招生簡章」為最終依據。
 版權宣告TW全國會考落點分析 © ${new Date().getFullYear()} (我們非政府創建)
+網址: ${window.location.href}
 `;
   const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-  saveAs(blob, `114年_會考落點分析_${regionName}.txt`);
+  saveAs(blob, `115年_會考落點分析_${regionName}.txt`);
 };
 
 export const exportJson = (data: any) => {
@@ -55,6 +46,7 @@ export const exportJson = (data: any) => {
       generatedAt: new Date().toISOString(),
       system: 'TW全國會考落點分析引擎',
       version: '1.5.0',
+      sourceUrl: window.location.href,
       disclaimer: '本系統分析結果僅供參考，不代表實際錄取結果。'
     },
     userProfile: {
@@ -115,7 +107,9 @@ export const exportExcel = (data: any, regionName: string) => {
     ["總積點 (若適用)", data.results.totalCredits || "無"],
     ["", ""],
     ["【免責聲明】"],
-    ["本系統結果僅供參考，不代表最終錄取結果。請務必以發布之簡章為準。"]
+    ["本系統結果僅供參考，不代表最終錄取結果。請務必以發布之簡章為準。"],
+    ["版權宣告", `TW全國會考落點分析 © ${new Date().getFullYear()}`],
+    ["分析來源網址", window.location.href]
   ];
   const summaryWs = XLSX.utils.aoa_to_sheet(summary);
   XLSX.utils.book_append_sheet(wb, summaryWs, "分析摘要與成績");
@@ -165,47 +159,27 @@ export const printResults = (data: any, regionName: string) => {
   const ownershipStr = data.scores.schoolOwnership === 'all' ? '公私立不拘' : data.scores.schoolOwnership === 'public' ? '公立' : '私立';
   const typeStr = data.scores.schoolType === 'all' ? '普通與職業類科' : data.scores.schoolType;
 
+  const currentUrl = window.location.href;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(currentUrl)}`;
+
   let creditsHtml = '';
   if (data.results.totalCredits) {
-    creditsHtml = `<div>總積點：<strong style="color: #059669; font-size: 18px;">${data.results.totalCredits}</strong></div>`;
+    creditsHtml = `<div class="result-point">總積點：<strong>${data.results.totalCredits}</strong></div>`;
   }
 
-  let schoolsHtml = '<p>無符合條件之推薦學校</p>';
+  let schoolsHtml = '<p style="text-align: center; padding: 20px; color: #64748b;">無符合條件之推薦學校</p>';
   if (data.results.eligibleSchools && data.results.eligibleSchools.length > 0) {
     let rowsHtml = '';
     data.results.eligibleSchools.forEach((s: any, i: number) => {
-      let userScore = data.results.totalPoints ? parseFloat(data.results.totalPoints) : 0;
-      let isSafe = false;
-      let isNormal = false;
-      let isReach = false;
-      
-      if (s.scoreDiff !== undefined && parseFloat(s.scoreDiff) >= 2) isSafe = true;
-      else if (s.pointsDiff !== undefined && parseFloat(s.pointsDiff) >= 2) isSafe = true;
-      else if ((userScore - parseFloat(s.minScore || s.points || s.score || 0)) >= 2) isSafe = true;
-      
-      if (!isSafe) {
-        if (s.scoreDiff !== undefined && parseFloat(s.scoreDiff) >= 0.5) isNormal = true;
-        else if (s.pointsDiff !== undefined && parseFloat(s.pointsDiff) >= 0.5) isNormal = true;
-        else if ((userScore - parseFloat(s.minScore || s.points || s.score || 0)) >= 0.5) isNormal = true;
-      }
-      
-      if (!isSafe && !isNormal) {
-         if (s.scoreDiff !== undefined && parseFloat(s.scoreDiff) >= -1) isReach = true;
-         else if (s.pointsDiff !== undefined && parseFloat(s.pointsDiff) >= -1) isReach = true;
-         else if ((userScore - parseFloat(s.minScore || s.points || s.score || 0)) >= -1) isReach = true;
-      }
+      const thresholdScore = s.minScore || s.points || s.score || '--';
 
-      let evalRisk = isSafe ? '<span class="eval-safe">極高 (安全)</span>' :
-                     isNormal ? '<span class="eval-normal">穩健 (合理)</span>' :
-                     isReach ? '<span class="eval-reach">夢幻 (進取)</span>' : '<span class="eval-low">落後</span>';
-      
       rowsHtml += `
       <tr>
-        <td>${i + 1}</td>
-        <td><strong>${s.name}</strong></td>
+        <td style="font-weight: 600; color: #64748b;">#${i + 1}</td>
+        <td style="font-weight: 700; color: #0f172a;">${s.name}</td>
         <td>${s.group || s.type || '-'}</td>
         <td>${s.ownership}</td>
-        <td>${evalRisk}</td>
+        <td style="font-weight: 600;">${thresholdScore}</td>
       </tr>
       `;
     });
@@ -214,11 +188,11 @@ export const printResults = (data: any, regionName: string) => {
       <table>
         <thead>
           <tr>
-            <th>排名</th>
-            <th>學校名稱</th>
-            <th>群別/科系</th>
-            <th>公私立</th>
-            <th>錄取評估</th>
+            <th width="10%">排名</th>
+            <th width="30%">學校名稱</th>
+            <th width="30%">群別/科系/類型</th>
+            <th width="15%">公私立</th>
+            <th width="15%">預估錄取門檻</th>
           </tr>
         </thead>
         <tbody>
@@ -233,155 +207,253 @@ export const printResults = (data: any, regionName: string) => {
     <html lang="zh-TW">
     <head>
       <meta charset="UTF-8">
-      <title>114年 會考落點分析報告 - ${regionName}</title>
+      <title>114年會考落點分析報告 - ${regionName}</title>
       <style>
+        @page { size: A4 portrait; margin: 1cm; }
+        * { box-sizing: border-box; }
         body {
-          font-family: 'Helvetica Neue', Helvetica, Arial, '微軟正黑體', sans-serif;
-          color: #333;
+          font-family: 'Helvetica Neue', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+          color: #1e293b;
           line-height: 1.6;
           margin: 0;
-          padding: 20px;
+          padding: 0;
+          background: #f1f5f9;
         }
-        .container {
-          max-width: 800px;
-          margin: 0 auto;
+        .print-wrapper {
+          max-width: 210mm;
+          margin: 20px auto;
+          background: #fff;
+          padding: 40px;
+          border-radius: 12px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        @media print {
+          body { background: #fff; }
+          .print-wrapper { box-shadow: none; padding: 0; margin: 0; width: 100%; max-width: none; border-radius: 0; }
+          .btn-print { display: none !important; }
         }
         .header {
-          text-align: center;
-          border-bottom: 2px solid #333;
-          padding-bottom: 10px;
-          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          border-bottom: 3px solid #0f172a;
+          padding-bottom: 20px;
+          margin-bottom: 30px;
         }
-        .header h1 {
+        .header-left h1 {
+          margin: 0 0 8px 0;
+          font-size: 28px;
+          color: #0f172a;
+          letter-spacing: 1px;
+        }
+        .header-left p {
           margin: 0;
-          font-size: 24px;
-        }
-        .header p {
-          margin: 5px 0 0;
-          color: #666;
+          color: #64748b;
           font-size: 14px;
         }
-        .section {
-          margin-bottom: 20px;
+        .header-right {
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
         }
+        .qr-box {
+          background: #fff;
+          padding: 4px;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          display: inline-block;
+        }
+        .qr-box img {
+          width: 80px;
+          height: 80px;
+          display: block;
+        }
+        .site-link {
+          font-size: 10px;
+          color: #64748b;
+          margin-top: 6px;
+          max-width: 150px;
+          word-break: break-all;
+        }
+        .section { margin-bottom: 30px; }
         .section-title {
           font-size: 18px;
-          font-weight: bold;
-          background-color: #f0f0f0;
-          padding: 5px 10px;
-          border-left: 4px solid #333;
-          margin-bottom: 10px;
+          font-weight: 700;
+          color: #0f172a;
+          border-left: 4px solid #3b82f6;
+          padding-left: 12px;
+          margin-bottom: 16px;
         }
         .info-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 10px;
-          margin-bottom: 10px;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+          background: #f8fafc;
+          padding: 20px;
+          border-radius: 12px;
+          border: 1px solid #e2e8f0;
         }
-        .info-item {
+        .info-item { display: flex; align-items: center; }
+        .info-label { font-weight: 600; color: #64748b; width: 90px; flex-shrink: 0; font-size: 14px; }
+        .info-value { font-weight: 700; color: #0f172a; font-size: 15px; }
+        
+        .scores-wrapper {
           display: flex;
+          gap: 20px;
+          align-items: stretch;
         }
-        .info-label {
-          font-weight: bold;
-          width: 100px;
+        .scores-grid {
+          flex: 2;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          background: #fff;
+          padding: 20px;
+          border-radius: 12px;
+          border: 1px solid #e2e8f0;
         }
+        .score-item {
+          text-align: center;
+          padding: 12px 8px;
+          background: #f8fafc;
+          border-radius: 8px;
+          border: 1px solid #f1f5f9;
+        }
+        .score-label { font-size: 13px; color: #64748b; margin-bottom: 4px; font-weight: 600; }
+        .score-val { font-size: 22px; font-weight: 800; color: #3b82f6; }
+        .score-val.comp { color: #8b5cf6; }
+        
+        .result-summary {
+          flex: 1;
+          background: #eff6ff;
+          border: 1px solid #bfdbfe;
+          padding: 20px;
+          border-radius: 12px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .result-summary-title { font-size: 15px; font-weight: 700; color: #1d4ed8; margin-bottom: 12px; }
+        .result-point { font-size: 14px; margin-bottom: 8px; color: #1e3a8a; }
+        .result-point strong { font-size: 28px; color: #2563eb; }
+        
         table {
           width: 100%;
-          border-collapse: collapse;
-          margin-top: 10px;
+          border-collapse: separate;
+          border-spacing: 0;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          overflow: hidden;
         }
-        th, td {
-          border: 1px solid #ccc;
-          padding: 8px 12px;
-          text-align: left;
-        }
-        th {
-          background-color: #f9f9f9;
-          font-weight: bold;
-        }
-        .footer {
-          margin-top: 40px;
-          border-top: 1px solid #ccc;
-          padding-top: 10px;
-          text-align: center;
-          font-size: 12px;
-          color: #666;
-        }
-        @media print {
-          body {
-            padding: 0;
-          }
-          .btn-print {
-            display: none !important;
-          }
-        }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        th { background-color: #f8fafc; font-weight: 700; color: #475569; font-size: 13px; border-bottom: 2px solid #e2e8f0; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:nth-child(even) { background-color: #fbfcfd; }
+        
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+        .eval-safe { background: #dcfce7; color: #166534; }
+        .eval-normal { background: #dbeafe; color: #1e40af; }
+        .eval-reach { background: #fef3c7; color: #92400e; }
+        .eval-low { background: #fee2e2; color: #991b1b; }
+        
         .btn-print {
-          display: block;
-          width: 200px;
-          margin: 20px auto;
-          padding: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          width: 180px;
+          margin: 0 auto 30px auto;
+          padding: 12px 24px;
           background-color: #0f172a;
           color: white;
           text-align: center;
-          text-decoration: none;
           border-radius: 8px;
+          font-size: 15px;
           font-weight: bold;
           cursor: pointer;
           border: none;
+          box-shadow: 0 4px 6px rgba(15, 23, 42, 0.2);
+          transition: all 0.2s;
         }
-        .eval-safe { color: #059669; font-weight: bold; }
-        .eval-normal { color: #2563eb; font-weight: bold; }
-        .eval-reach { color: #d97706; font-weight: bold; }
-        .eval-low { color: #dc2626; font-weight: bold; }
+        .btn-print:hover { background-color: #334155; transform: translateY(-1px); }
+        .btn-print svg { width: 18px; height: 18px; }
+        
+        .footer {
+          margin-top: 50px;
+          padding-top: 20px;
+          border-top: 2px solid #e2e8f0;
+          font-size: 12px;
+          color: #64748b;
+          text-align: center;
+        }
+        .footer p { margin: 4px 0; }
+        .footer strong { color: #0f172a; }
       </style>
     </head>
     <body>
-      <div class="container">
-        <button class="btn-print" onclick="window.print()">列印此報告</button>
-        
+      <button class="btn-print" onclick="window.print()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        列印分析報告
+      </button>
+      
+      <div class="print-wrapper">
         <div class="header">
-          <h1>114年 會考落點分析報告</h1>
-          <p>產生時間：${new Date().toLocaleString('zh-TW')}</p>
+          <div class="header-left">
+            <h1>115年會考落點分析報告</h1>
+            <p>分析區域：<strong>${regionName}</strong> &nbsp;|&nbsp; 報告產生時間：${new Date().toLocaleString('zh-TW')}</p>
+          </div>
+          <div class="header-right">
+            <div class="qr-box">
+              <img src="${qrCodeUrl}" alt="QR Code" />
+            </div>
+            <div class="site-link">掃描查看原網站<br/>${currentUrl}</div>
+          </div>
         </div>
 
         <div class="section">
-          <div class="section-title">基本資料</div>
+          <div class="section-title">考生基本設定</div>
           <div class="info-grid">
-            <div class="info-item"><div class="info-label">分析區域</div><div>${regionName}</div></div>
-            <div class="info-item"><div class="info-label">使用者身份</div><div>${identityStr}</div></div>
-            <div class="info-item"><div class="info-label">學校屬性</div><div>${ownershipStr}</div></div>
-            <div class="info-item"><div class="info-label">學校類型</div><div>${typeStr}</div></div>
+            <div class="info-item"><div class="info-label">使用者身份</div><div class="info-value">${identityStr}</div></div>
+            <div class="info-item"><div class="info-label">學校屬性</div><div class="info-value">${ownershipStr}</div></div>
+            <div class="info-item"><div class="info-label">學校類型</div><div class="info-value">${typeStr}</div></div>
+            <div class="info-item"><div class="info-label">系統辨識碼</div><div class="info-value" style="font-family: monospace; color: #64748b;">${data.scores.invitationCode || '---'}</div></div>
           </div>
         </div>
 
         <div class="section">
           <div class="section-title">會考成績與積分試算</div>
-          <div class="info-grid">
-            <div class="info-item"><div class="info-label">國文</div><div>${data.scores.chinese}</div></div>
-            <div class="info-item"><div class="info-label">自然</div><div>${data.scores.science}</div></div>
-            <div class="info-item"><div class="info-label">英文</div><div>${data.scores.english}</div></div>
-            <div class="info-item"><div class="info-label">社會</div><div>${data.scores.social}</div></div>
-            <div class="info-item"><div class="info-label">數學</div><div>${data.scores.math}</div></div>
-            <div class="info-item"><div class="info-label">作文</div><div>${data.scores.composition} 級分</div></div>
-          </div>
-          <div style="margin-top: 15px; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">試算結果</div>
-            <div>總積分：<strong style="color: #4f46e5; font-size: 18px;">${data.results.totalPoints}</strong></div>
-            ${creditsHtml}
-            <div>符合推薦學校：${data.results.eligibleSchools?.length || 0} 所</div>
+          <div class="scores-wrapper">
+            <div class="scores-grid">
+              <div class="score-item"><div class="score-label">國文</div><div class="score-val">${data.scores.chinese}</div></div>
+              <div class="score-item"><div class="score-label">英文</div><div class="score-val">${data.scores.english}</div></div>
+              <div class="score-item"><div class="score-label">數學</div><div class="score-val">${data.scores.math}</div></div>
+              <div class="score-item"><div class="score-label">自然</div><div class="score-val">${data.scores.science}</div></div>
+              <div class="score-item"><div class="score-label">社會</div><div class="score-val">${data.scores.social}</div></div>
+              <div class="score-item"><div class="score-label">寫作測驗</div><div class="score-val comp">${data.scores.composition} 級分</div></div>
+            </div>
+            <div class="result-summary">
+              <div class="result-summary-title">落點分析引擎試算結果</div>
+              <div class="result-point">總積分：<strong>${data.results.totalPoints}</strong></div>
+              ${creditsHtml}
+              <div style="margin-top: 10px; font-size: 13px; color: #1e3a8a;">
+                符合條件推薦學校：<strong>${data.results.eligibleSchools?.length || 0}</strong> 所
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="section">
-          <div class="section-title">推薦學校清單</div>
+          <div class="section-title">精選推薦學校清單 (依序位評估)</div>
           ${schoolsHtml}
         </div>
 
         <div class="footer">
-          <p>【系統免責聲明】本系統分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因當年度招生政策變化、考生整體表現、特種身分加分、各校招生名額調整等因素而有所不同。請務必以各校最新官方發布之「免試入學招生簡章」為最終依據。</p>
-          <p>TW全國會考落點分析 © ${new Date().getFullYear()} (非政府官方機構)</p>
+          <p><strong>【系統免責聲明】</strong> 本系統分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因當年度招生政策變化、<br/>考生整體表現、特種身分加分、各校招生名額調整等因素而有所不同。請務必以各校最新官方發布之「免試入學招生簡章」為最終依據。</p>
+          <p>TW全國會考落點分析引擎 © ${new Date().getFullYear()} (非政府官方機構) | <a href="${currentUrl}" style="color: #3b82f6; text-decoration: none;">點此返回網站</a></p>
         </div>
       </div>
+      
       <script>
         window.onload = function() {
           setTimeout(function() {
