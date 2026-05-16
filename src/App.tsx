@@ -1180,8 +1180,8 @@ export default function App() {
                     {[
                       { href: 'https://cap.rcpet.edu.tw/', icon: Search, label: '會考成績查詢', color: 'text-fuchsia-600', bg: 'bg-fuchsia-100' },
                       { href: 'https://tyctw.github.io/volunteer/', icon: ChartBar, label: '序位查詢', color: 'text-orange-600', bg: 'bg-orange-100' },
-                      { href: 'https://guide.jiooq.com/', icon: Library, label: '全國錄取分享', color: 'text-indigo-600', bg: 'bg-indigo-100' },
-                      { href: 'https://jiooq.com/%E6%9C%83%E8%80%83%E5%BA%8F%E4%BD%8D', icon: List, label: '全國序位分享', color: 'text-emerald-600', bg: 'bg-emerald-100' }
+                      { href: 'https://tyctw.github.io/shared/', icon: Library, label: '全國錄取分享', color: 'text-indigo-600', bg: 'bg-indigo-100' },
+                      { href: 'https://tyctw.github.io/score/', icon: List, label: '全國序位分享', color: 'text-emerald-600', bg: 'bg-emerald-100' }
                     ].map(link => (
                        <a 
                          key={link.label}
