@@ -238,7 +238,7 @@ export default function App() {
         </div>
       </div>
 
-      <main className="max-w-6xl mx-auto px-4 mt-32 space-y-8 relative">
+      <main className="max-w-6xl mx-auto px-4 mt-36 sm:mt-48 space-y-8 relative">
         
         {/* Announcement Banner */}
         <motion.div 
