@@ -35,8 +35,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Debug environment
+        run: |
+          node --version
+          npm --version
+          ls -la dist 2>/dev/null || echo "dist folder does not exist yet"
+
       - name: Build production site
         run: npm run build
+        env:
+          GEMINI_API_KEY: ""
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
