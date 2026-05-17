@@ -4,7 +4,8 @@ import {
   MapPin, User, BookOpen, Calculator, Award, PenTool,
   Search, Building2, Map, Compass, Anchor, Cpu,
   Mountain, Sparkles, AlertCircle, ChevronRight, ChevronDown,
-  Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail
+  Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail,
+  Target, Lightbulb, Flame, ShieldCheck
 } from 'lucide-react';
 import VocationalModal from './components/VocationalModal';
 import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
@@ -74,6 +75,7 @@ export default function App() {
   const [resultFilterText, setResultFilterText] = useState('');
   const [resultFilterOwnership, setResultFilterOwnership] = useState('all');
   const [resultFilterType, setResultFilterType] = useState('all');
+  const [resultFilterZone, setResultFilterZone] = useState('all');
 
   useEffect(() => {
     setActiveModal('disclaimer');
@@ -160,7 +162,7 @@ export default function App() {
         }
       };
 
-      const res = await fetch('https://script.google.com/macros/s/AKfycbxAR0tyczm3-HDjdub3R-Xy1uoZ4T42Athz8VkJN5bk4gcO_GyVmyOiOBV0BCMEPKpeYg/exec', {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
         method: 'POST',
         // use no-cors to avoid CORS preflight, but in this specific environment JSON stringify body might work or fail. 
         // Typically Google Apps Script requires text/plain fetch for simple requests
@@ -633,6 +635,105 @@ export default function App() {
                 <h2 className="text-2xl font-black text-slate-900">落點運算總結報告</h2>
               </div>
 
+              <div className="lg:col-span-12 flex flex-col gap-4 mb-4">
+                {results.analysisReport && (
+                  <div className="bg-slate-900 border-4 border-slate-900 rounded-[32px] p-6 sm:p-8 shadow-[8px_8px_0px_0px_rgba(99,102,241,1)] flex flex-col gap-6 relative overflow-hidden group">
+                    {/* Decorative elements */}
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none translate-x-1/3 -translate-y-1/3 group-hover:bg-indigo-500/30 transition-colors duration-500"></div>
+                    <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -translate-x-1/3 translate-y-1/3 group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
+                    
+                    <div className="relative z-10 flex flex-col gap-6">
+                      <div className="flex items-center justify-between border-b-2 border-slate-800 pb-5">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center -rotate-3 text-white border-4 border-slate-800 shadow-[4px_4px_0px_0px_rgba(30,30,40,1)]">
+                            <Sparkles className="w-7 h-7 fill-indigo-200 text-indigo-400" />
+                          </div>
+                          <div>
+                            <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">AI 智能落點分析</h3>
+                            <p className="text-indigo-300 font-bold text-sm mt-1 tracking-wide uppercase">Personalized Analytics Report</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
+                        <div className="flex flex-col gap-4 h-full">
+                          <div className="bg-slate-800/80 backdrop-blur-sm border-2 border-slate-700 rounded-3xl p-6 flex flex-col h-full hover:border-indigo-500/50 transition-colors">
+                            <h4 className="text-indigo-400 font-black text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
+                              <Target className="w-5 h-5" /> 總結評價
+                            </h4>
+                            <p className="text-white font-bold text-lg sm:text-xl leading-relaxed flex-1">
+                              {results.analysisReport.analysisSummary}
+                            </p>
+                          </div>
+                          <div className="bg-slate-800/80 backdrop-blur-sm border-2 border-slate-700 rounded-3xl p-6 hover:border-emerald-500/50 transition-colors">
+                            <h4 className="text-emerald-400 font-black text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
+                              <Lightbulb className="w-5 h-5" /> 策略建議
+                            </h4>
+                            <p className="text-slate-300 font-bold leading-relaxed">
+                              {results.analysisReport.suggestion}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="bg-slate-800/80 backdrop-blur-sm border-2 border-slate-700 rounded-3xl p-6 sm:p-8 flex flex-col h-full justify-center">
+                          <h4 className="text-slate-400 font-black text-sm uppercase tracking-widest mb-6 text-center">可填校系分佈矩陣</h4>
+                          
+                          <div className="flex flex-col gap-4">
+                            <div className="relative group/item p-4 sm:p-5 bg-slate-900/80 rounded-2xl border-2 border-slate-700/50 overflow-hidden flex items-center justify-between hover:border-rose-500 transition-all shadow-sm shadow-black hover:shadow-rose-500/20 hover:-translate-y-1">
+                              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-rose-500"></div>
+                              <div className="flex items-center gap-4 pl-2">
+                                <div className="w-12 h-12 bg-rose-500/10 border-2 border-rose-500/20 text-rose-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-rose-500/20 transition-all">
+                                  <Flame className="w-6 h-6" strokeWidth={2.5} />
+                                </div>
+                                <div>
+                                  <div className="text-slate-200 font-black text-lg">夢幻區間 <span className="text-xs text-rose-500 font-bold bg-rose-500/10 px-2 py-0.5 rounded-full ml-1">Reach</span></div>
+                                  <div className="text-slate-400 text-sm font-bold mt-1">挑戰性高，可少量選填</div>
+                                </div>
+                              </div>
+                              <div className="text-4xl font-black text-white tracking-tighter">
+                                {results.analysisReport.zoneCounts?.reach || 0}<span className="text-lg text-slate-500 ml-1.5 opacity-50">所</span>
+                              </div>
+                            </div>
+
+                            <div className="relative group/item p-4 sm:p-5 bg-slate-900/80 rounded-2xl border-2 border-slate-700/50 overflow-hidden flex items-center justify-between hover:border-sky-500 transition-all shadow-sm shadow-black hover:shadow-sky-500/20 hover:-translate-y-1">
+                              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-sky-500"></div>
+                              <div className="flex items-center gap-4 pl-2">
+                                <div className="w-12 h-12 bg-sky-500/10 border-2 border-sky-500/20 text-sky-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-sky-500/20 transition-all">
+                                  <Target className="w-6 h-6" strokeWidth={2.5} />
+                                </div>
+                                <div>
+                                  <div className="text-slate-200 font-black text-lg">實際區間 <span className="text-xs text-sky-500 font-bold bg-sky-500/10 px-2 py-0.5 rounded-full ml-1">Target</span></div>
+                                  <div className="text-slate-400 text-sm font-bold mt-1">實力相當，主要選填目標</div>
+                                </div>
+                              </div>
+                              <div className="text-4xl font-black text-white tracking-tighter">
+                                {results.analysisReport.zoneCounts?.target || 0}<span className="text-lg text-slate-500 ml-1.5 opacity-50">所</span>
+                              </div>
+                            </div>
+
+                            <div className="relative group/item p-4 sm:p-5 bg-slate-900/80 rounded-2xl border-2 border-slate-700/50 overflow-hidden flex items-center justify-between hover:border-emerald-500 transition-all shadow-sm shadow-black hover:shadow-emerald-500/20 hover:-translate-y-1">
+                              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-500"></div>
+                              <div className="flex items-center gap-4 pl-2">
+                                <div className="w-12 h-12 bg-emerald-500/10 border-2 border-emerald-500/20 text-emerald-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-emerald-500/20 transition-all">
+                                  <ShieldCheck className="w-6 h-6" strokeWidth={2.5} />
+                                </div>
+                                <div>
+                                  <div className="text-slate-200 font-black text-lg">保守區間 <span className="text-xs text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full ml-1">Safe</span></div>
+                                  <div className="text-slate-400 text-sm font-bold mt-1">錄取率極高，保底選擇</div>
+                                </div>
+                              </div>
+                              <div className="text-4xl font-black text-white tracking-tighter">
+                                {results.analysisReport.zoneCounts?.safe || 0}<span className="text-lg text-slate-500 ml-1.5 opacity-50">所</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="lg:col-span-4 flex flex-col gap-4">
                 <div className="bg-white border-2 border-slate-900 rounded-3xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col">
                   <div className="bg-indigo-300 p-4 border-b-2 border-slate-900 flex justify-between items-center">
@@ -709,7 +810,17 @@ export default function App() {
                       className="w-full pl-9 pr-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 placeholder:text-slate-400 transition-all"
                     />
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    <select 
+                      value={resultFilterZone} 
+                      onChange={e => setResultFilterZone(e.target.value)}
+                      className="flex-1 sm:flex-none px-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900"
+                    >
+                      <option value="all">落點區間不拘</option>
+                      <option value="reach">夢幻區</option>
+                      <option value="target">實際區</option>
+                      <option value="safe">保守區</option>
+                    </select>
                     <select 
                       value={resultFilterOwnership} 
                       onChange={e => setResultFilterOwnership(e.target.value)}
@@ -737,11 +848,12 @@ export default function App() {
                       school.name?.includes(resultFilterText) || 
                       school.type?.includes(resultFilterText) || 
                       school.group?.includes(resultFilterText);
+                    const matchZone = resultFilterZone === 'all' || school.zone === resultFilterZone;
                     const matchOwnership = resultFilterOwnership === 'all' || school.ownership === resultFilterOwnership;
                     const matchType = resultFilterType === 'all' || 
                       (resultFilterType === '普通科' && school.type === '普通科') || 
                       (resultFilterType === '職業類科' && school.type !== '普通科');
-                    return matchText && matchOwnership && matchType;
+                    return matchText && matchZone && matchOwnership && matchType;
                   });
 
                   return filteredSchools.length > 0 ? (
@@ -797,6 +909,30 @@ export default function App() {
 
                           {/* Middle: Tags */}
                           <div className="flex flex-wrap items-stretch gap-2 mt-auto pt-2">
+                            {/* Unmet requirements tag */}
+                            {school.meetsMinRequirements === false && (
+                              <div className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 bg-red-100 text-red-800 border-red-300 flex-none min-w-[80px]">
+                                <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">特別注意</span>
+                                <div className="flex items-center gap-1 font-black text-sm whitespace-nowrap">
+                                  科目未達標
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Zone Tag */}
+                            {school.zone && (
+                              <div className={`flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 ${
+                                school.zone === 'reach' ? 'bg-rose-100 text-rose-800 border-rose-300' : 
+                                school.zone === 'target' ? 'bg-sky-100 text-sky-800 border-sky-300' :
+                                'bg-emerald-100 text-emerald-800 border-emerald-300'
+                              } flex-1 min-w-[70px]`}>
+                                <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">落點區間</span>
+                                <div className="flex items-center gap-1 font-black text-sm whitespace-nowrap">
+                                  {school.zone === 'reach' ? '夢幻區' : school.zone === 'target' ? '實際區' : '保守區'}
+                                </div>
+                              </div>
+                            )}
+
                             {/* Ownership Tag */}
                             <div className={`flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 ${ownershipColor} flex-1 min-w-[70px]`}>
                               <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">屬性</span>
