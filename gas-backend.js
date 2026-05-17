@@ -4,7 +4,7 @@
 
 const INVITATION_SHEET_ID = "1HktioFq3G_3i7tSbSsrCvuH5ucqxKPobFuEqDvtOJP0"; // 替換為你的 Google Sheets ID
 const INVITATION_SHEET_NAME = "InvitationLog"; // 設定工作表名稱
-const LOG_SHEET_ID = '10rBKIqUNRBz8MM5bW5eAeF54FcP0OGO5nLuMJClwj6Q'; // 請確保此 ID 正確，且裡面有「Logs」工作表
+const LOG_SHEET_ID = '1N_uWzj81_ZTX5CCBm3uCReZZU9yX2HMO9TqEcG42JsU'; // 請確保此 ID 正確，且裡面有「Logs」工作表
 
 function doGet(e) {
   // GET 請求處理
@@ -31,14 +31,30 @@ function doPost(e) {
       return validateInvitationCode(params.invitationCode);
     }
 
+    if (action === 'submitFeedback') {
+      const payload = params.payload;
+      logToSheet('全區', '使用者回饋', `評分: ${payload.rating}, 建議: ${payload.feedback}`, params.clientInfo || {}, '-');
+      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (action === 'reportError') {
+      const payload = params.payload;
+      logToSheet('全區', '資料錯誤回報', `問題類型: ${payload.type}, 描述: ${payload.description}, 電子郵件: ${payload.email}`, params.clientInfo || {}, '-');
+      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 處理分數計算 (原始邏輯)
     const scores = params.scores;
     if (scores) {
       const filters = params.filters;
       const region = params.region;
+      const invitationCode = params.invitationCode || '-';
+      const clientInfo = params.clientInfo || {};
 
       // 記錄請求
-      logToSheet(region, '接收請求', JSON.stringify(params));
+      logToSheet(region, '接收請求', JSON.stringify(params), clientInfo, invitationCode);
 
       // 根據地區獲取學校資料和計分邏輯
       const { schoolData, calculateScoresFunc, filterSchoolsFunc } = getRegionConfig(region);
@@ -48,14 +64,17 @@ function doPost(e) {
       const totalPoints = scoreResult.totalPoints;
       const totalCredits = scoreResult.totalCredits || null;
 
-      logToSheet(region, '計算結果', `總分: ${totalPoints}, 學分: ${totalCredits}`);
+      logToSheet(region, '計算結果', `總分: ${totalPoints}, 學分: ${totalCredits}`, clientInfo, invitationCode);
 
       // 過濾符合條件的學校
-      const eligibleSchools = filterSchoolsFunc(schoolData, totalPoints, totalCredits, filters, scores);
-      logToSheet(region, '篩選結果', `符合學校數: ${eligibleSchools.length}`);
+      const eligibleSchools = filterSchoolsFunc(schoolData, totalPoints, totalCredits, filters, scores, region);
+      logToSheet(region, '篩選結果', `符合學校數: ${eligibleSchools.length}`, clientInfo, invitationCode);
 
       // 準備返回結果
-      const response = { totalPoints };
+      const response = { 
+        totalPoints,
+        analysisReport: generateAnalysisReport(totalPoints, region, scores, eligibleSchools)
+      };
       
       // 攔截竹苗區的 totalCredits，不要回傳到前端顯示
       if (totalCredits !== null && region !== 'hsinchu') {
@@ -74,17 +93,57 @@ function doPost(e) {
   } catch (error) {
     // 錯誤處理機制
     let region = '未知';
+    let clientInfo = {};
+    let invitationCode = '-';
     try {
       if (e.postData && e.postData.contents) {
         const p = JSON.parse(e.postData.contents);
         if (p.region) region = p.region;
+        if (p.clientInfo) clientInfo = p.clientInfo;
+        if (p.invitationCode) invitationCode = p.invitationCode;
       }
     } catch (_) {}
 
-    logToSheet(region, '錯誤', `${error.message}\n${error.stack}`);
+    logToSheet(region, '錯誤', `${error.message}\n${error.stack}`, clientInfo, invitationCode);
     return ContentService.createTextOutput(JSON.stringify({ error: error.message }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+// ==========================================
+// 專業落點分析模組
+// ==========================================
+function generateAnalysisReport(totalPoints, region, scores, eligibleSchools) {
+  let summary = "";
+  
+  const aCount = Object.values(scores).filter(s => typeof s === 'string' && s.startsWith('A')).length;
+  const bCount = Object.values(scores).filter(s => typeof s === 'string' && s.startsWith('B')).length;
+  const cCount = Object.values(scores).filter(s => typeof s === 'string' && s === 'C').length;
+
+  // 評語
+  if (aCount === 5) {
+    summary = "您的成績非常優異，已達頂尖群水準，建議可大膽挑戰第一志願或明星高中。";
+  } else if (aCount >= 3) {
+    summary = "成績表現亮眼，具備競爭前段班學校的強大優勢。";
+  } else if (aCount >= 1 || bCount >= 4) {
+    summary = "成績平穩，落點多在中堅學校，建議將符合您特長的學校列為優先排序。";
+  } else if (bCount >= 2 && cCount <= 2) {
+    summary = "建議多放幾所實際區與保守區的學校，可多加利用就近入學或特色招生策略。";
+  } else {
+    summary = "建議審慎選填志願，擴充保守區的學校數量，或者考慮技職體系發展一技之長。";
+  }
+
+  // 統計各落點區間
+  const zoneCounts = { safe: 0, target: 0, reach: 0 };
+  eligibleSchools.forEach(school => {
+    if (school.zone) zoneCounts[school.zone]++;
+  });
+
+  return {
+    analysisSummary: summary,
+    zoneCounts: zoneCounts,
+    suggestion: "志願選填依照順序，可以分成「夢幻」、「實際」、「保守」三大區。前2志願是「夢幻區」，可填自己想要就讀的夢幻學校；第3-4志願是「實際區」，可參考去年錄取狀況後填寫；第5-6志願為「保守區」，可填有把握一定會上的學校。"
+  };
 }
 
 // ==========================================
@@ -155,11 +214,16 @@ function logInvitationToSheet(action, invitationCode, timestamp, status) {
 // ==========================================
 
 // 記錄 log 到試算表
-function logToSheet(region, action, message) {
+function logToSheet(region, action, message, clientInfo, invitationCode) {
   try {
     const sheet = SpreadsheetApp.openById(LOG_SHEET_ID).getSheetByName('Logs');
     if (sheet) {
-      sheet.appendRow([new Date(), region, action, message]);
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(["Timestamp", "Region", "Action", "InvitationCode", "Details", "ClientInfo", "UserAgent"]);
+      }
+      const clientDetails = clientInfo ? JSON.stringify(clientInfo) : '';
+      const userAgent = clientInfo && clientInfo.userAgent ? clientInfo.userAgent : '';
+      sheet.appendRow([new Date(), region || '未知', action, invitationCode || '-', message, clientDetails, userAgent]);
     }
   } catch(e) {
     // 如果紀錄寫入失敗，不影響主程式運行
@@ -259,21 +323,42 @@ function getSchoolData(spreadsheetId) {
 // 3. 學校過濾與排序邏輯
 // ==========================================
 
-function filterSchoolsWithSorting(schools, totalPoints, totalCredits, filters, scores) {
-  return schools.filter(school => {
-    const matchesOwnership = filters.schoolOwnership === 'all' || school.ownership === filters.schoolOwnership;
-    const matchesType = filters.schoolType === 'all' || school.type === filters.schoolType;
+function filterSchoolsWithSorting(schools, totalPoints, totalCredits, filters, scores, region) {
+  let margin = 2; // 預設夢幻區間容許差分
+  if (region === 'central' || region === 'changhua') margin = 3;
+  if (region === 'taipei' || region === 'tainan' || region === 'hsinchu') margin = 1.5;
 
-    let matchesGroup = true;
-    if (filters.vocationalGroups && filters.vocationalGroups.length > 0 && !filters.vocationalGroups.includes('all')) {
-      matchesGroup = filters.vocationalGroups.includes(school.group);
+  return schools.map(school => {
+    const diff = totalPoints - school.points;
+    let zone = 'safe';
+    
+    const hasCredits = school.credits !== null && school.credits !== '';
+
+    if (diff < 0) {
+      zone = 'reach'; 
+    } else if (diff === 0) {
+      if (hasCredits) {
+        const creditDiff = totalCredits - school.credits;
+        if (creditDiff < 0) {
+          zone = 'reach';
+        } else if (creditDiff <= 2) {
+          zone = 'target';
+        } else {
+          zone = 'safe';
+        }
+      } else {
+        zone = 'target';
+      }
+    } else {
+      if (diff <= (margin / 2)) {
+        zone = 'target';
+      } else {
+        zone = 'safe';
+      }
     }
 
-    const pointsMatch = totalPoints >= school.points;
-    const creditsMatch = school.credits === null || school.credits === '' || (pointsMatch && (totalPoints > school.points || totalCredits >= school.credits));
-
     let meetsMinRequirements = true;
-    if (totalPoints === school.points && (school.credits === null || school.credits === '' || totalCredits === school.credits)) {
+    if (totalPoints === school.points && (!hasCredits || totalCredits === school.credits)) {
       const scoreValues = { 'A++': 9, 'A+': 8, 'A': 7, 'B++': 6, 'B+': 5, 'B': 4, 'C': 3 };
 
       meetsMinRequirements =
@@ -284,8 +369,49 @@ function filterSchoolsWithSorting(schools, totalPoints, totalCredits, filters, s
         (!school.minRequirements.social || (scoreValues[scores.social] >= school.minRequirements.social));
     }
 
-    return matchesOwnership && matchesType && matchesGroup && pointsMatch && creditsMatch && meetsMinRequirements;
-  }).sort((a, b) => b.points - a.points);
+    if (!meetsMinRequirements) {
+      zone = 'reach';
+    }
+
+    return {
+      ...school,
+      zone: zone,
+      scoreDiff: diff,
+      meetsMinRequirements: meetsMinRequirements
+    };
+  }).filter(school => {
+    const matchesOwnership = filters.schoolOwnership === 'all' || school.ownership === filters.schoolOwnership;
+    const matchesType = filters.schoolType === 'all' || school.type === filters.schoolType;
+
+    let matchesGroup = true;
+    if (filters.vocationalGroups && filters.vocationalGroups.length > 0 && !filters.vocationalGroups.includes('all')) {
+      matchesGroup = filters.vocationalGroups.includes(school.group);
+    }
+
+    const diff = school.scoreDiff;
+    const isReach = diff < 0 && diff >= -margin;
+    
+    let isCreditReach = false;
+    const hasCredits = school.credits !== null && school.credits !== '';
+    if (diff === 0 && hasCredits) {
+      const creditDiff = totalCredits - school.credits;
+      // Allow slightly lower credits as reach
+      let creditMargin = 3;
+      if (region === 'central') creditMargin = 5;
+      if (creditDiff < 0 && creditDiff >= -creditMargin) {
+        isCreditReach = true;
+      }
+    }
+
+    const pointsMatch = totalPoints >= school.points || isReach;
+    const creditsMatch = !hasCredits || totalPoints > school.points || (totalPoints === school.points && totalCredits >= school.credits) || isReach || isCreditReach;
+
+    return matchesOwnership && matchesType && matchesGroup && pointsMatch && creditsMatch;
+  }).sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.credits !== null && a.credits !== null) return b.credits - a.credits;
+    return 0;
+  });
 }
 
 // ==========================================
