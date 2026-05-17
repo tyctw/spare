@@ -24,6 +24,7 @@ import RegionScoringModal from './components/RegionScoringModal';
 import SharePlatformModal from './components/SharePlatformModal';
 import RatingModal from './components/RatingModal';
 import AdvantagesModal from './components/AdvantagesModal';
+import InstructionsModal from './components/InstructionsModal';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -915,46 +916,10 @@ export default function App() {
         onClose={() => setActiveModal(null)}
       />
 
-      <InfoModal 
+      <InstructionsModal 
         isOpen={activeModal === 'instructions'} 
         onClose={() => setActiveModal(null)}
-        title="使用說明"
-        icon={<Info className="w-8 h-8 text-blue-500" />}
-      >
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4 p-5 bg-sky-50 border-4 border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] items-start">
-             <div className="w-12 h-12 bg-sky-200 text-slate-900 rounded-2xl flex items-center justify-center font-black text-xl flex-shrink-0 border-4 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] -rotate-3">1</div>
-             <div>
-               <h3 className="font-black text-xl text-slate-900 flex items-center gap-2"><KeyRound className="w-5 h-5 text-sky-600" /> 獲取系統授權碼</h3>
-               <p className="text-slate-600 font-bold mt-2 text-sm leading-relaxed">首頁點擊上方「取得邀請碼」快速填寫表單，即可免費獲取最新的分析權限，開啟所有功能。</p>
-             </div>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-4 p-5 bg-rose-50 border-4 border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] items-start">
-             <div className="w-12 h-12 bg-rose-200 text-slate-900 rounded-2xl flex items-center justify-center font-black text-xl flex-shrink-0 border-4 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] rotate-3">2</div>
-             <div>
-               <h3 className="font-black text-xl text-slate-900 flex items-center gap-2"><MapPin className="w-5 h-5 text-rose-600" /> 設定地區與偏好</h3>
-               <p className="text-slate-600 font-bold mt-2 text-sm leading-relaxed">點擊「選擇就學區」並設定您理想的學校屬性（公立/私立）與類型（高中/高職），讓系統知道您的目標。</p>
-             </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 p-5 bg-emerald-50 border-4 border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] items-start">
-             <div className="w-12 h-12 bg-emerald-200 text-slate-900 rounded-2xl flex items-center justify-center font-black text-xl flex-shrink-0 border-4 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] -rotate-3">3</div>
-             <div>
-               <h3 className="font-black text-xl text-slate-900 flex items-center gap-2"><Calculator className="w-5 h-5 text-emerald-600" /> 輸入會考成績</h3>
-               <p className="text-slate-600 font-bold mt-2 text-sm leading-relaxed">如實輸入您的國、英、數、自、社各科等級（A++ ~ C），以及作文級分（0 ~ 6級），引擎即刻開始試算。</p>
-             </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 p-5 bg-purple-50 border-4 border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] items-start">
-             <div className="w-12 h-12 bg-purple-200 text-slate-900 rounded-2xl flex items-center justify-center font-black text-xl flex-shrink-0 border-4 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] rotate-3">4</div>
-             <div>
-               <h3 className="font-black text-xl text-slate-900 flex items-center gap-2"><Award className="w-5 h-5 text-purple-600" /> 檢視與匯出報告</h3>
-               <p className="text-slate-600 font-bold mt-2 text-sm leading-relaxed">查看生成的學校落點分佈。您可以將猶豫不決的學校加入「比較清單」，或將完整報告下載保存（支援 JSON/Excel/TXT）。</p>
-             </div>
-          </div>
-        </div>
-      </InfoModal>
+      />
 
       <ChangelogModal 
         isOpen={activeModal === 'changelog'} 
