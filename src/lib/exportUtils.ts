@@ -27,7 +27,7 @@ export const exportTxt = (data: any, regionName: string) => {
 ===============================================
 【推薦名單 (依序位推薦)】
 ${data.results.eligibleSchools?.map((s: any, i: number) => 
-  `${String(i + 1).padStart(2, ' ')}. ${s.name} ${s.group ? `[${s.group}]` : ''} - 預估錄取門檻: ${s.minScore || s.points || s.score || '--'}`
+  `${String(i + 1).padStart(2, ' ')}. ${s.name} ${s.group ? `[${s.group}]` : ''} - 落點區間: ${s.zone === 'reach' ? '夢幻區' : s.zone === 'target' ? '實際區' : s.zone === 'safe' ? '保守區' : '--'} - 預估錄取門檻: ${s.minScore || s.points || s.score || '--'}`
 ).join('\n') || '無推薦名單'}
 
 ===============================================
@@ -74,6 +74,7 @@ export const exportJson = (data: any) => {
         type: s.type,
         ownership: s.ownership,
         group: s.group || null,
+        zone: s.zone === 'reach' ? '夢幻區' : s.zone === 'target' ? '實際區' : s.zone === 'safe' ? '保守區' : null,
         estimatedThreshold: s.minScore || s.points || s.score || null
       })) || []
     }
@@ -117,13 +118,14 @@ export const exportExcel = (data: any, regionName: string) => {
   // 2. Schools Sheet
   if (data.results.eligibleSchools?.length) {
     const schoolsData = [
-      ["推薦排名", "學校名稱", "群別/科系", "學校類型", "公立/私立", "預估錄取門檻"],
+      ["推薦排名", "學校名稱", "群別/科系", "學校類型", "公立/私立", "落點區間", "預估錄取門檻"],
       ...data.results.eligibleSchools.map((s: any, index: number) => [
         index + 1,
         s.name, 
         s.group || "--",
         s.type, 
         s.ownership === '公立' ? '公立' : s.ownership === '私立' ? '私立' : s.ownership,
+        s.zone === 'reach' ? '夢幻區' : s.zone === 'target' ? '實際區' : s.zone === 'safe' ? '保守區' : "--",
         s.minScore || s.points || s.score || "--"
       ])
     ];
@@ -135,6 +137,7 @@ export const exportExcel = (data: any, regionName: string) => {
       { wch: 25 },
       { wch: 20 },
       { wch: 15 },
+      { wch: 10 },
       { wch: 10 },
       { wch: 15 }
     ];
@@ -172,6 +175,7 @@ export const printResults = (data: any, regionName: string) => {
     let rowsHtml = '';
     data.results.eligibleSchools.forEach((s: any, i: number) => {
       const thresholdScore = s.minScore || s.points || s.score || '--';
+      const zoneText = s.zone === 'reach' ? '夢幻區' : s.zone === 'target' ? '實際區' : s.zone === 'safe' ? '保守區' : '--';
 
       rowsHtml += `
       <tr>
@@ -179,6 +183,7 @@ export const printResults = (data: any, regionName: string) => {
         <td style="font-weight: 700; color: #0f172a;">${s.name}</td>
         <td>${s.group || s.type || '-'}</td>
         <td>${s.ownership}</td>
+        <td><span class="badge eval-${s.zone || 'normal'}">${zoneText}</span></td>
         <td style="font-weight: 600;">${thresholdScore}</td>
       </tr>
       `;
@@ -189,9 +194,10 @@ export const printResults = (data: any, regionName: string) => {
         <thead>
           <tr>
             <th width="10%">排名</th>
-            <th width="30%">學校名稱</th>
-            <th width="30%">群別/科系/類型</th>
-            <th width="15%">公私立</th>
+            <th width="25%">學校名稱</th>
+            <th width="25%">群別/科系/類型</th>
+            <th width="10%">公私立</th>
+            <th width="15%">落點區間</th>
             <th width="15%">預估錄取門檻</th>
           </tr>
         </thead>
@@ -389,8 +395,9 @@ export const printResults = (data: any, regionName: string) => {
         
         .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
         .eval-safe { background: #dcfce7; color: #166534; }
-        .eval-normal { background: #dbeafe; color: #1e40af; }
-        .eval-reach { background: #fef3c7; color: #92400e; }
+        .eval-target { background: #dbeafe; color: #1e40af; }
+        .eval-normal { background: #f1f5f9; color: #475569; }
+        .eval-reach { background: #fee2e2; color: #991b1b; }
         .eval-low { background: #fee2e2; color: #991b1b; }
         
         .btn-print {
