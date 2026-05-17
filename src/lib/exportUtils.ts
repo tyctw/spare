@@ -170,6 +170,36 @@ export const printResults = (data: any, regionName: string) => {
     creditsHtml = `<div class="result-point">總積點：<strong>${data.results.totalCredits}</strong></div>`;
   }
 
+  let analysisReportHtml = '';
+  if (data.results.analysisReport) {
+    const report = data.results.analysisReport;
+    analysisReportHtml = `
+      <div class="report-card">
+        <div class="report-header">
+          <div class="report-badge">AI 智能報告</div>
+          <h3>${report.analysisSummary}</h3>
+        </div>
+        <div class="report-metrics">
+          <div class="metric-item">
+            <span class="metric-label">夢幻區間</span>
+            <span class="metric-val text-reach">${report.zoneCounts?.reach || 0}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">實際區間</span>
+            <span class="metric-val text-target">${report.zoneCounts?.target || 0}</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">保守區間</span>
+            <span class="metric-val text-safe">${report.zoneCounts?.safe || 0}</span>
+          </div>
+        </div>
+        <div class="report-suggestion">
+          <strong>策略建議：</strong>${report.suggestion}
+        </div>
+      </div>
+    `;
+  }
+
   let schoolsHtml = '<p style="text-align: center; padding: 20px; color: #64748b;">無符合條件之推薦學校</p>';
   if (data.results.eligibleSchools && data.results.eligibleSchools.length > 0) {
     let rowsHtml = '';
@@ -373,6 +403,65 @@ export const printResults = (data: any, regionName: string) => {
         .result-point { font-size: 15px; margin-bottom: 8px; color: #1e3a8a; font-weight: 600; }
         .result-point strong { font-size: 32px; color: #1d4ed8; font-weight: 800; margin-left: 8px; }
         
+        /* Report Card Styles */
+        .report-card {
+          background: #f8fafc;
+          border-radius: 16px;
+          border: 2px solid #0f172a;
+          padding: 24px;
+          margin-bottom: 30px;
+          box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        .report-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 16px;
+        }
+        .report-badge {
+          background: #0f172a;
+          color: white;
+          padding: 4px 10px;
+          border-radius: 8px;
+          font-size: 11px;
+          font-weight: 900;
+          text-transform: uppercase;
+        }
+        .report-header h3 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 800;
+          color: #0f172a;
+        }
+        .report-metrics {
+          display: flex;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+        .metric-item {
+          flex: 1;
+          padding: 12px;
+          background: white;
+          border-radius: 12px;
+          border: 2px solid #e2e8f0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .metric-label { font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 4px; }
+        .metric-val { font-size: 20px; font-weight: 900; }
+        .text-reach { color: #f43f5e; }
+        .text-target { color: #0ea5e9; }
+        .text-safe { color: #10b981; }
+        .report-suggestion {
+          background: #f1f5f9;
+          padding: 16px;
+          border-radius: 12px;
+          font-size: 14px;
+          color: #334155;
+          line-height: 1.6;
+        }
+
         table {
           width: 100%;
           border-collapse: separate;
@@ -487,6 +576,11 @@ export const printResults = (data: any, regionName: string) => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">智能落點分析總結</div>
+          ${analysisReportHtml}
         </div>
 
         <div class="section">
