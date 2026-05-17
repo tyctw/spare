@@ -59,7 +59,7 @@ export default function AdvantagesModal({ isOpen, onClose }: AdvantagesModalProp
                 </div>
                 <h3 className="text-xl font-black text-slate-900 mb-2">高精準落點預測</h3>
                 <p className="text-slate-700 font-bold leading-relaxed">
-                  導入歷屆龐大落點數據庫，並加入<span className="text-emerald-700 bg-emerald-200 px-1 rounded-md mx-1">動態演算法</span>，即時對比最新招生名額與考題難易度，精準算出安全、穩健與夢幻區間。
+                  導入歷屆龐大落點數據庫，並加入<span className="text-emerald-700 bg-emerald-200 px-1 rounded-md mx-1">動態演算法</span>，即時對比最新招生名額與考題難易度，精準算出保守、實際與夢幻區間。
                 </p>
               </div>
 
