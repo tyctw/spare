@@ -26,6 +26,7 @@ import SharePlatformModal from './components/SharePlatformModal';
 import RatingModal from './components/RatingModal';
 import AdvantagesModal from './components/AdvantagesModal';
 import InstructionsModal from './components/InstructionsModal';
+import ReportErrorModal from './components/ReportErrorModal';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -58,7 +59,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | null>(null);
+  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -1062,6 +1063,11 @@ export default function App() {
         onClose={() => setActiveModal(null)}
       />
 
+      <ReportErrorModal
+        isOpen={activeModal === 'reportError'}
+        onClose={() => setActiveModal(null)}
+      />
+
       <InfoModal 
         isOpen={activeModal === 'importantDates'} 
         onClose={() => setActiveModal(null)}
@@ -1244,7 +1250,8 @@ export default function App() {
                       { id: 'instructions', icon: Info, label: '使用說明', color: 'text-blue-600', bg: 'bg-blue-100' },
                       { id: 'disclaimer', icon: Shield, label: '免責聲明', color: 'text-amber-600', bg: 'bg-amber-100' },
                       { id: 'importantDates', icon: Map, label: '重要日程', color: 'text-purple-600', bg: 'bg-purple-100' },
-                      { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' }
+                      { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' },
+                      { id: 'reportError', icon: AlertCircle, label: '錯誤回報', color: 'text-red-500', bg: 'bg-red-100' }
                     ].map(btn => (
                       <button
                         key={btn.id}
