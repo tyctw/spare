@@ -207,7 +207,7 @@ export const printResults = (data: any, regionName: string) => {
     <html lang="zh-TW">
     <head>
       <meta charset="UTF-8">
-      <title>114年會考落點分析報告 - ${regionName}</title>
+      <title>115年會考落點分析報告 - ${regionName}</title>
       <style>
         @page { size: A4 portrait; margin: 1cm; }
         * { box-sizing: border-box; }
