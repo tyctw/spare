@@ -1472,7 +1472,7 @@ export default function App() {
               <div className="p-4 bg-slate-900 text-center border-t-4 border-slate-900">
                 <p className="text-slate-400 font-bold text-xs flex items-center justify-center gap-1">
                   <Check className="w-3 h-3 text-emerald-400" />
-                  會考落點分析系統 v1.0
+                  會考落點分析系統 v5.0
                 </p>
               </div>
             </motion.div>
