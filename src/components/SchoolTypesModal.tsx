@@ -39,42 +39,45 @@ export default function SchoolTypesModal({ isOpen, onClose }: SchoolTypesModalPr
             >
               <X className="w-6 h-6" />
             </button>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pr-12">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6 pr-12">
               <div className="flex items-center gap-4 text-slate-900">
                 <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-3">
                   <GraduationCap className="w-6 h-6 text-sky-500" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black tracking-tight">學校類型解析</h2>
               </div>
-              <button 
-                onClick={() => printSchoolTypes()}
-                className="px-4 py-2 bg-slate-900 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.5)] font-bold text-sm flex items-center gap-2 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.5)] active:translate-y-0 active:shadow-none transition-all"
-              >
-                <Target className="w-4 h-4" /> 匯出/列印
-              </button>
             </div>
             
-            {/* Tabs */}
-            <div className="flex gap-2 p-1 bg-slate-900/10 rounded-2xl">
-              <button
-                onClick={() => setActiveTab('types')}
-                className={`flex-1 py-2 sm:py-3 px-4 rounded-xl font-black text-sm sm:text-base transition-all ${
-                  activeTab === 'types' 
-                    ? 'bg-white text-slate-900 shadow-sm border-2 border-slate-900' 
-                    : 'text-slate-800 hover:bg-white/50 border-2 border-transparent'
-                }`}
+            {/* Tabs & Actions Bar */}
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+              <div className="flex-1 flex gap-2 p-1 bg-slate-900/10 rounded-2xl">
+                <button
+                  onClick={() => setActiveTab('types')}
+                  className={`flex-1 py-2 sm:py-3 px-4 rounded-xl font-black text-sm sm:text-base transition-all ${
+                    activeTab === 'types' 
+                      ? 'bg-white text-slate-900 shadow-sm border-2 border-slate-900' 
+                      : 'text-slate-800 hover:bg-white/50 border-2 border-transparent'
+                  }`}
+                >
+                  中等教育四種類型
+                </button>
+                <button
+                  onClick={() => setActiveTab('vs')}
+                  className={`flex-1 py-2 sm:py-3 px-4 rounded-xl font-black text-sm sm:text-base transition-all ${
+                    activeTab === 'vs' 
+                      ? 'bg-white text-slate-900 shadow-sm border-2 border-slate-900' 
+                      : 'text-slate-800 hover:bg-white/50 border-2 border-transparent'
+                  }`}
+                >
+                  高中 vs 高職
+                </button>
+              </div>
+              
+              <button 
+                onClick={() => printSchoolTypes()}
+                className="px-6 py-3 bg-slate-900 text-white rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)] font-black text-sm flex items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.4)] active:translate-y-0 active:shadow-none transition-all whitespace-nowrap"
               >
-                中等教育四種類型
-              </button>
-              <button
-                onClick={() => setActiveTab('vs')}
-                className={`flex-1 py-2 sm:py-3 px-4 rounded-xl font-black text-sm sm:text-base transition-all ${
-                  activeTab === 'vs' 
-                    ? 'bg-white text-slate-900 shadow-sm border-2 border-slate-900' 
-                    : 'text-slate-800 hover:bg-white/50 border-2 border-transparent'
-                }`}
-              >
-                高中 vs 高職
+                <Target className="w-5 h-5" /> 匯出/列印
               </button>
             </div>
           </div>
