@@ -671,6 +671,13 @@ export default function App() {
                             <p className="text-slate-600 font-bold text-sm mt-1 tracking-wide uppercase">Personalized Analytics Strategy</p>
                           </div>
                         </div>
+                        <button
+                          onClick={() => setActiveModal('strategy')}
+                          className="w-full sm:w-auto px-5 py-3 bg-amber-400 text-slate-900 font-bold text-sm sm:text-base rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-2"
+                        >
+                          <Target className="w-5 h-5" />
+                          志願選填攻略
+                        </button>
                       </div>
 
                       {/* Content Section - Bento Grid */}
