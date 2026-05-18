@@ -27,6 +27,7 @@ import RatingModal from './components/RatingModal';
 import AdvantagesModal from './components/AdvantagesModal';
 import InstructionsModal from './components/InstructionsModal';
 import ReportErrorModal from './components/ReportErrorModal';
+import SchoolTypesModal from './components/SchoolTypesModal';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -59,7 +60,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | null>(null);
+  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -401,10 +402,19 @@ export default function App() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-black text-slate-900 flex items-center gap-2 mb-3 mt-4">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 border border-slate-900 inline-block"></span>
-                    偏好學校類型
-                  </label>
+                  <div className="flex items-center justify-between mt-4 mb-3">
+                    <label className="text-sm font-black text-slate-900 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 border border-slate-900 inline-block"></span>
+                      偏好學校類型
+                    </label>
+                    <button 
+                      onClick={() => setActiveModal('schoolTypes')}
+                      className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
+                    >
+                      <Building2 className="w-3 h-3" />
+                      學校類型解析說明
+                    </button>
+                  </div>
                   <div className="relative">
                     <select
                       className="w-full pl-4 pr-10 py-3 rounded-xl bg-white border-2 border-slate-900 appearance-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 transition-all font-bold text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] cursor-pointer"
@@ -1181,6 +1191,11 @@ export default function App() {
         onClose={() => setActiveModal(null)} 
       />
 
+      <SchoolTypesModal 
+        isOpen={activeModal === 'schoolTypes'} 
+        onClose={() => setActiveModal(null)} 
+      />
+
       <SharePlatformModal 
         isOpen={activeModal === 'sharePlatform'}
         onClose={() => setActiveModal(null)}
@@ -1251,6 +1266,7 @@ export default function App() {
                       { id: 'disclaimer', icon: Shield, label: '免責聲明', color: 'text-amber-600', bg: 'bg-amber-100' },
                       { id: 'importantDates', icon: Map, label: '重要日程', color: 'text-purple-600', bg: 'bg-purple-100' },
                       { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' },
+                      { id: 'schoolTypes', icon: Building2, label: '學校類型解析', color: 'text-sky-600', bg: 'bg-sky-100' },
                       { id: 'reportError', icon: AlertCircle, label: '錯誤回報', color: 'text-red-500', bg: 'bg-red-100' }
                     ].map(btn => (
                       <button
