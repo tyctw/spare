@@ -5,7 +5,7 @@ import {
   Search, Building2, Map, Compass, Anchor, Cpu,
   Mountain, Sparkles, AlertCircle, ChevronRight, ChevronDown,
   Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail,
-  Target, Lightbulb, Flame, ShieldCheck
+  Target, Lightbulb, Flame, ShieldCheck, Layers
 } from 'lucide-react';
 import VocationalModal from './components/VocationalModal';
 import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
@@ -649,93 +649,116 @@ export default function App() {
 
               <div className="lg:col-span-12 flex flex-col gap-4 mb-4">
                 {results.analysisReport && (
-                  <div className="bg-slate-900 border-4 border-slate-900 rounded-[32px] p-6 sm:p-8 shadow-[8px_8px_0px_0px_rgba(99,102,241,1)] flex flex-col gap-6 relative overflow-hidden group">
-                    {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none translate-x-1/3 -translate-y-1/3 group-hover:bg-indigo-500/30 transition-colors duration-500"></div>
-                    <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -translate-x-1/3 translate-y-1/3 group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
+                  <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-4 border-slate-900 rounded-[32px] p-6 sm:p-8 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col gap-6 relative overflow-hidden group">
+                    {/* Decorative Background Elements */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none translate-x-1/4 -translate-y-1/4 group-hover:bg-indigo-400/30 transition-colors duration-700"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-400/20 rounded-full blur-3xl pointer-events-none -translate-x-1/4 translate-y-1/4 group-hover:bg-purple-400/30 transition-colors duration-700"></div>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/40 via-transparent to-transparent pointer-events-none blur-xl"></div>
                     
-                    <div className="relative z-10 flex flex-col gap-6">
-                      <div className="flex items-center justify-between border-b-2 border-slate-800 pb-5">
+                    <div className="relative z-10 flex flex-col gap-8">
+                      {/* Header Section */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-slate-900/10 pb-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 bg-indigo-500 rounded-2xl flex items-center justify-center -rotate-3 text-white border-4 border-slate-800 shadow-[4px_4px_0px_0px_rgba(30,30,40,1)]">
-                            <Sparkles className="w-7 h-7 fill-indigo-200 text-indigo-400" />
+                          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center -rotate-3 text-indigo-600 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:rotate-0 transition-transform duration-300">
+                            <Sparkles className="w-7 h-7" />
                           </div>
                           <div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">AI 智能落點分析</h3>
-                            <p className="text-indigo-300 font-bold text-sm mt-1 tracking-wide uppercase">Personalized Analytics Report</p>
+                            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                              AI 智能落點分析
+                              <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-lg uppercase tracking-wider relative -top-2 rotate-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">Beta</span>
+                            </h3>
+                            <p className="text-slate-600 font-bold text-sm mt-1 tracking-wide uppercase">Personalized Analytics Strategy</p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
-                        <div className="flex flex-col gap-4 h-full">
-                          <div className="bg-slate-800/80 backdrop-blur-sm border-2 border-slate-700 rounded-3xl p-6 flex flex-col h-full hover:border-indigo-500/50 transition-colors">
-                            <h4 className="text-indigo-400 font-black text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
-                              <Target className="w-5 h-5" /> 總結評價
+                      {/* Content Section - Bento Grid */}
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-stretch">
+                        
+                        {/* Reports Column */}
+                        <div className="lg:col-span-7 flex flex-col gap-6 h-full">
+                          <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col flex-1 relative overflow-hidden group/feedback">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-rose-100 rounded-bl-[100px] -z-0 opacity-50 group-hover/feedback:opacity-100 transition-opacity"></div>
+                            <h4 className="text-slate-900 font-black text-lg mb-3 flex items-center gap-2 relative z-10">
+                              <div className="bg-rose-100 p-1.5 rounded-lg border-2 border-slate-900">
+                                <Target className="w-5 h-5 text-rose-600" />
+                              </div>
+                              總結評價
                             </h4>
-                            <p className="text-white font-bold text-lg sm:text-xl leading-relaxed flex-1">
+                            <p className="text-slate-700 font-bold text-lg sm:text-xl leading-relaxed flex-1 relative z-10">
                               {results.analysisReport.analysisSummary}
                             </p>
                           </div>
-                          <div className="bg-slate-800/80 backdrop-blur-sm border-2 border-slate-700 rounded-3xl p-6 hover:border-emerald-500/50 transition-colors">
-                            <h4 className="text-emerald-400 font-black text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
-                              <Lightbulb className="w-5 h-5" /> 策略建議
+                          
+                          <div className="bg-indigo-600 border-2 border-slate-900 rounded-3xl p-6 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all relative overflow-hidden group/idea">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none group-hover/idea:bg-white/20 transition-all"></div>
+                            <h4 className="text-white font-black text-lg mb-3 flex items-center gap-2 relative z-10">
+                              <div className="bg-indigo-500 p-1.5 rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                                <Lightbulb className="w-5 h-5 text-amber-300" />
+                              </div>
+                              策略建議
                             </h4>
-                            <p className="text-slate-300 font-bold leading-relaxed">
+                            <p className="text-indigo-50 font-bold leading-relaxed relative z-10 text-[15px]">
                               {results.analysisReport.suggestion}
                             </p>
                           </div>
                         </div>
 
-                        <div className="bg-slate-800/80 backdrop-blur-sm border-2 border-slate-700 rounded-3xl p-6 sm:p-8 flex flex-col h-full justify-center">
-                          <h4 className="text-slate-400 font-black text-sm uppercase tracking-widest mb-6 text-center">可填校系分佈矩陣</h4>
+                        {/* Distribution Matrix Column */}
+                        <div className="lg:col-span-5 bg-white border-2 border-slate-900 rounded-3xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col h-full hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 transition-all">
+                          <h4 className="text-slate-900 font-black text-lg mb-6 flex items-center gap-2 border-b-2 border-slate-100 pb-4">
+                            <div className="bg-slate-100 p-1.5 rounded-lg border-2 border-slate-900">
+                              <Layers className="w-5 h-5 text-slate-700" />
+                            </div>
+                            可填校系分佈矩陣
+                          </h4>
                           
-                          <div className="flex flex-col gap-4">
-                            <div className="relative group/item p-4 sm:p-5 bg-slate-900/80 rounded-2xl border-2 border-slate-700/50 overflow-hidden flex items-center justify-between hover:border-rose-500 transition-all shadow-sm shadow-black hover:shadow-rose-500/20 hover:-translate-y-1">
-                              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-rose-500"></div>
-                              <div className="flex items-center gap-4 pl-2">
-                                <div className="w-12 h-12 bg-rose-500/10 border-2 border-rose-500/20 text-rose-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-rose-500/20 transition-all">
+                          <div className="flex flex-col gap-4 flex-1 justify-center">
+                            {/* Reach */}
+                            <div className="relative group/item p-4 bg-slate-50 rounded-2xl border-2 border-slate-900 overflow-hidden flex items-center justify-between hover:bg-rose-50 transition-colors shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white border-2 border-slate-900 text-rose-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:-rotate-3 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                                   <Flame className="w-6 h-6" strokeWidth={2.5} />
                                 </div>
                                 <div>
-                                  <div className="text-slate-200 font-black text-lg">夢幻區間 <span className="text-xs text-rose-500 font-bold bg-rose-500/10 px-2 py-0.5 rounded-full ml-1">Reach</span></div>
-                                  <div className="text-slate-400 text-sm font-bold mt-1">挑戰性高，可少量選填</div>
+                                  <div className="text-slate-900 font-black text-lg">夢幻區間 <span className="text-[10px] text-white font-black bg-rose-500 px-2 py-0.5 rounded-md border border-slate-900 ml-1 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">REACH</span></div>
+                                  <div className="text-slate-500 text-xs font-bold mt-0.5">挑戰性高，可少量選填</div>
                                 </div>
                               </div>
-                              <div className="text-4xl font-black text-white tracking-tighter">
-                                {results.analysisReport.zoneCounts?.reach || 0}<span className="text-lg text-slate-500 ml-1.5 opacity-50">所</span>
+                              <div className="text-3xl font-black text-rose-600 tracking-tighter drop-shadow-sm">
+                                {results.analysisReport.zoneCounts?.reach || 0}<span className="text-sm text-slate-400 ml-1 font-bold">所</span>
                               </div>
                             </div>
 
-                            <div className="relative group/item p-4 sm:p-5 bg-slate-900/80 rounded-2xl border-2 border-slate-700/50 overflow-hidden flex items-center justify-between hover:border-sky-500 transition-all shadow-sm shadow-black hover:shadow-sky-500/20 hover:-translate-y-1">
-                              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-sky-500"></div>
-                              <div className="flex items-center gap-4 pl-2">
-                                <div className="w-12 h-12 bg-sky-500/10 border-2 border-sky-500/20 text-sky-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-sky-500/20 transition-all">
+                            {/* Target */}
+                            <div className="relative group/item p-4 bg-slate-50 rounded-2xl border-2 border-slate-900 overflow-hidden flex items-center justify-between hover:bg-sky-50 transition-colors shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white border-2 border-slate-900 text-sky-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:rotate-3 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                                   <Target className="w-6 h-6" strokeWidth={2.5} />
                                 </div>
                                 <div>
-                                  <div className="text-slate-200 font-black text-lg">實際區間 <span className="text-xs text-sky-500 font-bold bg-sky-500/10 px-2 py-0.5 rounded-full ml-1">Target</span></div>
-                                  <div className="text-slate-400 text-sm font-bold mt-1">實力相當，主要選填目標</div>
+                                  <div className="text-slate-900 font-black text-lg">實際區間 <span className="text-[10px] text-white font-black bg-sky-500 px-2 py-0.5 rounded-md border border-slate-900 ml-1 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">TARGET</span></div>
+                                  <div className="text-slate-500 text-xs font-bold mt-0.5">實力相當，主要選填目標</div>
                                 </div>
                               </div>
-                              <div className="text-4xl font-black text-white tracking-tighter">
-                                {results.analysisReport.zoneCounts?.target || 0}<span className="text-lg text-slate-500 ml-1.5 opacity-50">所</span>
+                              <div className="text-3xl font-black text-sky-600 tracking-tighter drop-shadow-sm">
+                                {results.analysisReport.zoneCounts?.target || 0}<span className="text-sm text-slate-400 ml-1 font-bold">所</span>
                               </div>
                             </div>
 
-                            <div className="relative group/item p-4 sm:p-5 bg-slate-900/80 rounded-2xl border-2 border-slate-700/50 overflow-hidden flex items-center justify-between hover:border-emerald-500 transition-all shadow-sm shadow-black hover:shadow-emerald-500/20 hover:-translate-y-1">
-                              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-500"></div>
-                              <div className="flex items-center gap-4 pl-2">
-                                <div className="w-12 h-12 bg-emerald-500/10 border-2 border-emerald-500/20 text-emerald-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:bg-emerald-500/20 transition-all">
+                            {/* Safe */}
+                            <div className="relative group/item p-4 bg-slate-50 rounded-2xl border-2 border-slate-900 overflow-hidden flex items-center justify-between hover:bg-emerald-50 transition-colors shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white border-2 border-slate-900 text-emerald-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:-rotate-3 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                                   <ShieldCheck className="w-6 h-6" strokeWidth={2.5} />
                                 </div>
                                 <div>
-                                  <div className="text-slate-200 font-black text-lg">保守區間 <span className="text-xs text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full ml-1">Safe</span></div>
-                                  <div className="text-slate-400 text-sm font-bold mt-1">錄取率極高，保底選擇</div>
+                                  <div className="text-slate-900 font-black text-lg">保守區間 <span className="text-[10px] text-white font-black bg-emerald-500 px-2 py-0.5 rounded-md border border-slate-900 ml-1 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">SAFE</span></div>
+                                  <div className="text-slate-500 text-xs font-bold mt-0.5">錄取率極高，保底選擇</div>
                                 </div>
                               </div>
-                              <div className="text-4xl font-black text-white tracking-tighter">
-                                {results.analysisReport.zoneCounts?.safe || 0}<span className="text-lg text-slate-500 ml-1.5 opacity-50">所</span>
+                              <div className="text-3xl font-black text-emerald-600 tracking-tighter drop-shadow-sm">
+                                {results.analysisReport.zoneCounts?.safe || 0}<span className="text-sm text-slate-400 ml-1 font-bold">所</span>
                               </div>
                             </div>
                           </div>
