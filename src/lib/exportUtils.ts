@@ -610,3 +610,394 @@ export const printResults = (data: any, regionName: string) => {
   printWindow.document.write(html);
   printWindow.document.close();
 };
+
+export const printSchoolTypes = () => {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('無法開啟列印視窗，請檢查是否被瀏覽器阻擋。');
+    return;
+  }
+
+  const currentDate = new Date().toLocaleDateString('zh-TW');
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="zh-TW">
+    <head>
+      <meta charset="UTF-8">
+      <title>學校類型解析 - TW全國會考落點分析</title>
+      <style>
+        body {
+          font-family: "PingFang TC", "Hiragino Sans GB", "Microsoft JhengHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          color: #0f172a;
+          background: #f8fafc;
+        }
+        .print-container {
+          max-width: 900px;
+          margin: 0 auto;
+          background: #ffffff;
+          padding: 40px;
+        }
+        .header {
+          text-align: center;
+          margin-bottom: 40px;
+          padding-bottom: 20px;
+          border-bottom: 4px solid #0f172a;
+        }
+        .header h1 {
+          font-size: 32px;
+          font-weight: 900;
+          margin: 0 0 10px 0;
+          color: #0f172a;
+        }
+        .header p {
+          color: #64748b;
+          font-size: 14px;
+          margin: 0;
+        }
+        
+        .section-title {
+          font-size: 22px;
+          font-weight: 900;
+          color: #0f172a;
+          margin-top: 40px;
+          margin-bottom: 20px;
+          padding-left: 14px;
+          border-left: 6px solid #3b82f6;
+        }
+        
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 30px;
+          border: 2px solid #0f172a;
+        }
+        th, td {
+          border: 1px solid #cbd5e1;
+          padding: 12px 16px;
+          text-align: left;
+        }
+        th {
+          background-color: #f1f5f9;
+          font-weight: 800;
+          color: #0f172a;
+          border-bottom: 3px solid #0f172a;
+        }
+        td {
+          font-weight: 600;
+          color: #334155;
+        }
+        
+        .card-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+          margin-bottom: 40px;
+        }
+        
+        .card {
+          border: 2px solid #0f172a;
+          border-radius: 16px;
+          padding: 24px;
+          break-inside: avoid;
+        }
+        .card h3 {
+          font-size: 20px;
+          font-weight: 900;
+          margin-top: 0;
+          margin-bottom: 16px;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #e2e8f0;
+        }
+        .card p {
+          margin-bottom: 12px;
+          line-height: 1.6;
+          font-weight: 600;
+        }
+        .card p strong {
+          color: #0f172a;
+          font-weight: 900;
+          margin-right: 8px;
+        }
+        
+        .card-full {
+          grid-column: 1 / -1;
+        }
+        
+        ul, ol {
+          margin-top: 4px;
+          margin-bottom: 4px;
+          padding-left: 24px;
+        }
+        
+        .school-pt { border-color: #10b981; background: #ecfdf5; }
+        .school-pt h3 { color: #047857; border-color: #a7f3d0; }
+        
+        .school-zh { border-color: #0ea5e9; background: #f0f9ff; }
+        .school-zh h3 { color: #0369a1; border-color: #bae6fd; }
+        
+        .school-js { border-color: #f59e0b; background: #fffbeb; }
+        .school-js h3 { color: #b45309; border-color: #fde68a; }
+        
+        .school-dk { border-color: #f43f5e; background: #fff1f2; }
+        .school-dk h3 { color: #be123c; border-color: #fecdd3; }
+        
+        .school-wz { border-color: #a855f7; background: #faf5ff; }
+        .school-wz h3 { color: #7e22ce; border-color: #e9d5ff; }
+
+        @media print {
+          body { background: white; }
+          .print-container { padding: 0; max-width: 100%; border: none; box-shadow: none; }
+          .card { border-width: 1px; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="print-container">
+        <div class="header">
+          <h1>學校類型解析指南</h1>
+          <p>列印日期：\${currentDate} | TW全國會考落點分析系統</p>
+        </div>
+
+        <div class="section-title">綜合比較表</div>
+        <table>
+          <thead>
+            <tr>
+              <th>類型</th>
+              <th>就讀年份</th>
+              <th>課程特色</th>
+              <th>適合學生</th>
+              <th>畢業出路</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: #047857; font-weight: 800;">普通型高中</td>
+              <td>3</td>
+              <td>學科為主，重視通識與基礎學科</td>
+              <td>想升大學、探索學術領域</td>
+              <td>大學（含科技大學）</td>
+            </tr>
+            <tr>
+              <td style="color: #0369a1; font-weight: 800;">綜合型高中</td>
+              <td>3</td>
+              <td>學科＋專業技能＋實習</td>
+              <td>對專業技能有興趣</td>
+              <td>就業、科技大學、專科（二專）</td>
+            </tr>
+            <tr>
+              <td style="color: #b45309; font-weight: 800;">技術型高中</td>
+              <td>3</td>
+              <td>普通＋技術並行，提供探索</td>
+              <td>尚未確定方向，希望邊學邊試</td>
+              <td>大學（含科技大學）、專科、就業</td>
+            </tr>
+            <tr>
+              <td style="color: #be123c; font-weight: 800;">單科型高中</td>
+              <td>3</td>
+              <td>專注特定領域（體育、藝術、科學）</td>
+              <td>有明確專長或天賦</td>
+              <td>升讀相關科系或專長發展</td>
+            </tr>
+            <tr>
+              <td style="color: #7e22ce; font-weight: 800;">五專</td>
+              <td>5</td>
+              <td>五年一貫，專業銜接完整</td>
+              <td>已確定專業興趣</td>
+              <td>就業、二技、大學、研究所</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">四種類型詳細解析</div>
+        <div class="card-grid">
+          <div class="card school-pt">
+            <h3>普通型高中</h3>
+            <p><strong>就讀年份:</strong> 需要讀 3 年</p>
+            <p><strong>課程特色:</strong> 以學科課程為主（國文、英文、數學、自然、社會），並搭配通識教育與多元選修。</p>
+            <p><strong>培養方向:</strong> 重視基礎學科能力、人文關懷與社會參與。</p>
+            <p><strong>適合學生:</strong> 想持續探索學術領域，未來以升學為主。</p>
+            <p><strong>畢業出路:</strong> 以升讀大學（含科技大學）為主要方向。</p>
+          </div>
+          
+          <div class="card school-zh">
+            <h3>綜合型高中</h3>
+            <p><strong>就讀年份:</strong> 需要讀 3 年</p>
+            <p><strong>課程特色:</strong> 融合普通型與技術型課程，學生可依興趣選修，逐步找到方向。</p>
+            <p><strong>培養方向:</strong> 兼顧學術與技能，提供探索的空間。</p>
+            <p><strong>適合學生:</strong> 希望邊學邊探索，尚未確定未來發展方向。</p>
+            <p><strong>畢業出路:</strong> 可依選課方向，升讀大學（含科技大學）、專科，或選擇就業。</p>
+          </div>
+          
+          <div class="card school-js">
+            <h3>技術型高中</h3>
+            <p><strong>就讀年份:</strong> 需要讀 3 年</p>
+            <p><strong>課程特色:</strong> 兼顧普通科目與專業技能課程，並設有實習。</p>
+            <p><strong>培養方向:</strong> 強調專業技能、實務操作與科技應用。</p>
+            <p><strong>適合學生:</strong> 對技術或專業領域有興趣，想兼顧升學與就業彈性。</p>
+            <p><strong>畢業出路:</strong> 可直接就業，或繼續升學至科技大學、專科（二專）。</p>
+          </div>
+          
+          <div class="card school-dk">
+            <h3>單科型高中</h3>
+            <p><strong>就讀年份:</strong> 需要讀 3 年</p>
+            <p><strong>課程特色:</strong> 專注於特定領域（如體育、藝術或科學），課程集中深入。</p>
+            <p><strong>培養方向:</strong> 發展學生在專長領域的潛能，強化專業訓練。</p>
+            <p><strong>適合學生:</strong> 對特定領域有明確興趣或天賦，想進一步專精。</p>
+            <p><strong>畢業出路:</strong> 持續升學至相關科系，或直接投身專長領域。</p>
+          </div>
+
+          <div class="card school-wz card-full">
+            <h3>五專 (五年制專科學校)</h3>
+            <div style="display: flex; gap: 24px;">
+              <div style="flex: 1;">
+                <p><strong>學制與定位:</strong> 學制為五年一貫（前3年相當於高中職，後2年為專科後段）。屬於「技專教育體系」，與高中職並列，是國中畢業後的另一種升學選擇。</p>
+                <p><strong>招生方式:</strong> 採全國五專聯合招生，分為：一、優免（優先免試入學）；二、聯免（聯合免試入學）；三、完免（完全免試入學）。</p>
+                <p><strong>課程特色:</strong> 前段兼顧普通科目與專業基礎；後段強化專業知能與實習。畢業可取得副學士學位。</p>
+              </div>
+              <div style="flex: 1;">
+                <p><strong>適合學生:</strong></p>
+                <ul>
+                  <li>已確立專業興趣，想提早進入專業領域學習。</li>
+                  <li>希望縮短專業訓練歷程，及早培養職能。</li>
+                </ul>
+                <p><strong>畢業出路:</strong></p>
+                <ul>
+                  <li>就業：直接進入相關專業領域。</li>
+                  <li>升學：可銜接二技、大學轉學，甚至研究所。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="page-break-before: always;"></div>
+
+        <div class="header" style="margin-top: 40px;">
+          <h1>高中 vs 高職 - 升學與學程差異</h1>
+          <p>附錄指南資料 | TW全國會考落點分析系統</p>
+        </div>
+
+        <div class="section-title">高職與高中學程差異比較</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 20%;">學程制度</th>
+              <th style="width: 40%;">高中</th>
+              <th style="width: 40%;">高職</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>課程內容</strong></td>
+              <td>
+                <ul>
+                  <li style="margin-bottom:8px;">以學術研究為導向，注重學術研究基礎知識課程（如國文、英文、數學等）</li>
+                  <li>依各高中設立不同的特色學程班群</li>
+                </ul>
+              </td>
+              <td>
+                <ul>
+                  <li style="margin-bottom:8px;">以專門技術為導向，注重實務技術方面的實作課程（如實務專題、實習課程等）</li>
+                  <li>一共分成15個專業學群科別</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>考試類型</strong></td>
+              <td>學測、分科</td>
+              <td>學測、統測</td>
+            </tr>
+            <tr>
+              <td><strong>考試科目</strong></td>
+              <td>
+                <div style="color: #4f46e5; font-weight: 800;">▶ 學測: (依各校系規定科目採計)</div>
+                <p style="margin-top: 4px; margin-bottom: 12px; padding-left: 12px;">國文、英文、數學、社會、自然</p>
+                
+                <div style="color: #4f46e5; font-weight: 800;">▶ 分科: (依各校系規定科目採計)</div>
+                <p style="margin-top: 4px; margin-bottom: 0px; padding-left: 12px;">數學甲、物理、化學、生物、歷史、地理、公民</p>
+              </td>
+              <td>
+                <div style="color: #d97706; font-weight: 800;">▶ 學測: (依各校系規定科目採計)</div>
+                <p style="margin-top: 4px; margin-bottom: 12px; padding-left: 12px;">國文、英文、數學、社會、自然</p>
+                
+                <div style="color: #d97706; font-weight: 800;">▶ 統測: (共分20個群別)</div>
+                <p style="margin-top: 4px; margin-bottom: 0px; padding-left: 12px;">國文、英文、數學、專業科目(一)、專業科目(二)</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">升學管道差異</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 20%;">學制</th>
+              <th style="width: 40%;">高中</th>
+              <th style="width: 40%;">高職</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: #4f46e5; font-weight: 800; font-size: 18px;">大學</td>
+              <td>
+                <ol>
+                  <li>特殊選才</li>
+                  <li>繁星推薦</li>
+                  <li>申請入學</li>
+                  <li>考試分發</li>
+                </ol>
+              </td>
+              <td>
+                <ol>
+                  <li>特殊選才</li>
+                  <li>申請入學</li>
+                  <li>考試分發</li>
+                </ol>
+              </td>
+            </tr>
+            <tr>
+              <td style="color: #d97706; font-weight: 800; font-size: 18px;">四技二專</td>
+              <td>
+                <ol>
+                  <li>特殊選才</li>
+                  <li>四技申請入學</li>
+                  <li>技優保送</li>
+                  <li>技優甄審</li>
+                </ol>
+              </td>
+              <td>
+                <ol>
+                  <li>特殊選才</li>
+                  <li>技職繁星</li>
+                  <li>四技甄選</li>
+                  <li>統測分發</li>
+                  <li>技優保送</li>
+                  <li>技優甄審</li>
+                </ol>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top: 40px; text-align: center; color: #94a3b8; font-size: 12px;">
+          <p>本資料表僅供參考，詳情請以官方最新之招生簡章為準。</p>
+        </div>
+      </div>
+      <script>
+        window.onload = function() {
+          setTimeout(function() {
+             window.print();
+          }, 500);
+        }
+      </script>
+    </body>
+    </html>
+  `;
+
+  printWindow.document.open();
+  printWindow.document.write(html);
+  printWindow.document.close();
+};
