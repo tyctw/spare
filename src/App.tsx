@@ -29,6 +29,7 @@ import InstructionsModal from './components/InstructionsModal';
 import ReportErrorModal from './components/ReportErrorModal';
 import SchoolTypesModal from './components/SchoolTypesModal';
 import StrategyModal from './components/StrategyModal';
+import PrivacyTermsModal from './components/PrivacyTermsModal';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -61,7 +62,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | null>(null);
+  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -1233,6 +1234,11 @@ export default function App() {
         onClose={() => setActiveModal(null)} 
       />
 
+      <PrivacyTermsModal 
+        isOpen={activeModal === 'terms'} 
+        onClose={() => setActiveModal(null)} 
+      />
+
       <SharePlatformModal 
         isOpen={activeModal === 'sharePlatform'}
         onClose={() => setActiveModal(null)}
@@ -1393,6 +1399,7 @@ export default function App() {
                             { id: 'advantages', icon: Sparkles, label: '系統優點', color: 'text-indigo-600', bg: 'bg-indigo-100' },
                             { id: 'rating', icon: StarIcon, label: '評分系統', color: 'text-amber-500', bg: 'bg-amber-100' },
                             { id: 'changelog', icon: History, label: '更新日誌', color: 'text-slate-500', bg: 'bg-slate-100' },
+                            { id: 'terms', icon: Shield, label: '隱私權與服務條款', color: 'text-slate-600', bg: 'bg-slate-100' },
                             { id: 'reportError', icon: AlertCircle, label: '錯誤回報', color: 'text-red-500', bg: 'bg-red-100' }
                           ].map(btn => (
                             <button
@@ -1465,7 +1472,7 @@ export default function App() {
               <div className="p-4 bg-slate-900 text-center border-t-4 border-slate-900">
                 <p className="text-slate-400 font-bold text-xs flex items-center justify-center gap-1">
                   <Check className="w-3 h-3 text-emerald-400" />
-                  會考落點分析系統 v3.0
+                  會考落點分析系統 v1.0
                 </p>
               </div>
             </motion.div>
