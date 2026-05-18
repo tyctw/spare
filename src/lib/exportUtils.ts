@@ -618,7 +618,9 @@ export const printSchoolTypes = () => {
     return;
   }
 
-  const currentDate = new Date().toLocaleDateString('zh-TW');
+  const currentDate = new Date().toLocaleString('zh-TW');
+  const currentUrl = window.location.href;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(currentUrl)}`;
 
   const html = `
     <!DOCTYPE html>
@@ -647,21 +649,52 @@ export const printSchoolTypes = () => {
           padding: 0;
         }
         .header {
-          text-align: center;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
           margin-bottom: 12px;
           padding-bottom: 8px;
           border-bottom: 2px solid #0f172a;
         }
-        .header h1 {
+        .header-left h1 {
           font-size: 20px;
           font-weight: 900;
           margin: 0 0 4px 0;
           color: #0f172a;
+          text-align: left;
         }
-        .header p {
+        .header-left p {
           color: #64748b;
           font-size: 11px;
           margin: 0;
+          text-align: left;
+        }
+        .header-right {
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+        .qr-box {
+          background: #fff;
+          padding: 4px;
+          border: 1px solid #e2e8f0;
+          border-radius: 4px;
+          display: inline-block;
+        }
+        .qr-box img {
+          width: 44px;
+          height: 44px;
+          display: block;
+        }
+        .site-link {
+          font-size: 9px;
+          color: #64748b;
+          margin-top: 4px;
+          max-width: 120px;
+          word-break: break-all;
+          line-height: 1.2;
+          text-align: right;
         }
         
         .section-title {
@@ -775,8 +808,16 @@ export const printSchoolTypes = () => {
     <body>
       <div class="print-container">
         <div class="header">
-          <h1>學校類型解析指南</h1>
-          <p>列印日期：\${currentDate} | TW全國會考落點分析系統</p>
+          <div class="header-left">
+            <h1>學校類型解析指南</h1>
+            <p>列印日期：${currentDate} | TW全國會考落點分析系統</p>
+          </div>
+          <div class="header-right">
+            <div class="qr-box">
+              <img src="${qrCodeUrl}" alt="QR Code" />
+            </div>
+            <div class="site-link">掃描查看原網站<br/>${currentUrl}</div>
+          </div>
         </div>
 
         <div class="section-title">綜合比較表</div>
