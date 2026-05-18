@@ -4,7 +4,7 @@ import {
   MapPin, User, BookOpen, Calculator, Award, PenTool,
   Search, Building2, Map, Compass, Anchor, Cpu,
   Mountain, Sparkles, AlertCircle, ChevronRight, ChevronDown,
-  Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail,
+  Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail, Link as LinkIcon,
   Target, Lightbulb, Flame, ShieldCheck, Layers
 } from 'lucide-react';
 import VocationalModal from './components/VocationalModal';
@@ -68,6 +68,7 @@ export default function App() {
   const [vocationalGroups, setVocationalGroups] = useState<string[]>(['all']);
   const [isExternalLinksOpen, setIsExternalLinksOpen] = useState(false);
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
+  const [expandedNavCategory, setExpandedNavCategory] = useState<string | null>('schoolDetails');
   
   // Comparison
   const [comparisonSchools, setComparisonSchools] = useState<any[]>([]);
@@ -1268,100 +1269,191 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8">
-                <div className="space-y-4">
-                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-slate-300"></span>
-                    重要資訊
-                  </h3>
-                  
-                  <div className="flex flex-col gap-3">
-                    <button
-                      onClick={() => { setIsEncyclopediaOpen(true); setIsNavMenuOpen(false); }}
-                      className="w-full text-left p-4 rounded-2xl border-4 border-slate-900 bg-white flex items-center justify-between group active:scale-95 transition-all shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(15,23,42,1)]"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="p-2.5 bg-emerald-100 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] -rotate-3 group-hover:rotate-0 transition-transform">
-                          <BookOpen className="w-6 h-6 text-emerald-600" />
-                        </div>
-                        <span className="font-black text-slate-900 text-lg">職群科系百科</span>
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
+                
+                {/* 學校與科系探索 */}
+                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
+                  <button 
+                    onClick={() => setExpandedNavCategory(prev => prev === 'schoolDetails' ? null : 'schoolDetails')}
+                    className="w-full flex items-center justify-between p-4 bg-sky-50 outline-none hover:bg-sky-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-sky-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                        <Compass className="w-5 h-5 text-sky-700" />
                       </div>
-                      <ChevronRight className="w-6 h-6 text-slate-400 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                    
-                    {[
-                      { id: 'advantages', icon: Sparkles, label: '系統優點', color: 'text-indigo-600', bg: 'bg-indigo-100' },
-                      { id: 'instructions', icon: Info, label: '使用說明', color: 'text-blue-600', bg: 'bg-blue-100' },
-                      { id: 'strategy', icon: Target, label: '志願選填攻略', color: 'text-amber-600', bg: 'bg-amber-100' },
-                      { id: 'disclaimer', icon: Shield, label: '免責聲明', color: 'text-amber-600', bg: 'bg-amber-100' },
-                      { id: 'importantDates', icon: Map, label: '重要日程', color: 'text-purple-600', bg: 'bg-purple-100' },
-                      { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' },
-                      { id: 'schoolTypes', icon: Building2, label: '學校類型解析', color: 'text-sky-600', bg: 'bg-sky-100' },
-                      { id: 'reportError', icon: AlertCircle, label: '錯誤回報', color: 'text-red-500', bg: 'bg-red-100' }
-                    ].map(btn => (
-                      <button
-                        key={btn.id}
-                        onClick={() => { setActiveModal(btn.id as any); setIsNavMenuOpen(false); }}
-                        className="w-full text-left px-4 py-3.5 rounded-2xl border-2 border-slate-900 bg-white flex items-center justify-between group active:scale-95 transition-all hover:bg-slate-100 shadow-sm"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${btn.bg}`}>
-                            <btn.icon className={`w-5 h-5 ${btn.color}`} />
-                          </div>
-                          <span className="font-bold text-slate-700 text-[15px] group-hover:text-slate-900 group-hover:translate-x-1 transition-transform">{btn.label}</span>
+                      <span className="font-black text-slate-900 text-lg">學校與科系探索</span>
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === 'schoolDetails' ? 'rotate-180' : ''}`} />
+                  </button>
+                  <AnimatePresence>
+                    {expandedNavCategory === 'schoolDetails' && (
+                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
+                        <div className="p-3 flex flex-col gap-2">
+                            <button
+                              onClick={() => { setIsEncyclopediaOpen(true); setIsNavMenuOpen(false); }}
+                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="p-1.5 bg-emerald-100 border-2 border-slate-900 rounded-lg">
+                                  <BookOpen className="w-5 h-5 text-emerald-600" />
+                                </div>
+                                <span className="font-bold text-slate-900">職群科系百科</span>
+                              </div>
+                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                            </button>
+                            <button
+                              onClick={() => { setActiveModal('schoolTypes'); setIsNavMenuOpen(false); }}
+                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="p-1.5 bg-sky-100 border-2 border-slate-900 rounded-lg">
+                                  <Building2 className="w-5 h-5 text-sky-600" />
+                                </div>
+                                <span className="font-bold text-slate-900">學校類型解析</span>
+                              </div>
+                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                            </button>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 transition-colors" />
-                      </button>
-                    ))}
-                  </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
-                <div className="space-y-4">
-                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-slate-300"></span>
-                    外部資源與其他
-                  </h3>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button onClick={() => { setActiveModal('rating'); setIsNavMenuOpen(false); }} className="col-span-1 w-full flex flex-col items-start gap-2 p-4 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(15,23,42,1)] transition-all">
-                      <div className="p-2 bg-amber-100 rounded-lg border-2 border-slate-900">
-                        <StarIcon className="w-5 h-5 text-amber-500" />
+                {/* 志願選填與落點 */}
+                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
+                  <button 
+                    onClick={() => setExpandedNavCategory(prev => prev === 'strategy' ? null : 'strategy')}
+                    className="w-full flex items-center justify-between p-4 bg-amber-50 outline-none hover:bg-amber-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-amber-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                        <Target className="w-5 h-5 text-amber-700" />
                       </div>
-                      <span className="font-black text-slate-900">評分系統</span>
-                    </button>
-                    <button onClick={() => { setActiveModal('changelog'); setIsNavMenuOpen(false); }} className="col-span-1 w-full flex flex-col items-start gap-2 p-4 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(15,23,42,1)] transition-all">
-                      <div className="p-2 bg-slate-100 rounded-lg border-2 border-slate-900">
-                        <History className="w-5 h-5 text-slate-500" />
-                      </div>
-                      <span className="font-black text-slate-900">更新日誌</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-3">
-                    {[
-                      { href: 'https://cap.rcpet.edu.tw/', icon: Search, label: '會考成績查詢', color: 'text-fuchsia-600', bg: 'bg-fuchsia-100' },
-                      { href: 'https://tyctw.github.io/volunteer/', icon: ChartBar, label: '序位查詢', color: 'text-orange-600', bg: 'bg-orange-100' },
-                      { href: 'https://tyctw.github.io/shared/', icon: Library, label: '全國錄取分享', color: 'text-indigo-600', bg: 'bg-indigo-100' },
-                      { href: 'https://tyctw.github.io/score/', icon: List, label: '全國序位分享', color: 'text-emerald-600', bg: 'bg-emerald-100' }
-                    ].map(link => (
-                       <a 
-                         key={link.label}
-                         href={link.href} 
-                         target="_blank" 
-                         rel="noreferrer" 
-                         className="w-full flex items-center justify-between px-4 py-3.5 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(15,23,42,1)] transition-all group"
-                       >
-                         <div className="flex items-center gap-3">
-                           <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${link.bg}`}>
-                             <link.icon className={`w-4 h-4 ${link.color}`} />
-                           </div>
-                           <span className="font-bold text-slate-900">{link.label}</span>
-                         </div>
-                         <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 -rotate-45 group-hover:rotate-0 transition-transform" />
-                       </a>
-                    ))}
-                  </div>
+                      <span className="font-black text-slate-900 text-lg">志願選填與落點</span>
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === 'strategy' ? 'rotate-180' : ''}`} />
+                  </button>
+                  <AnimatePresence>
+                    {expandedNavCategory === 'strategy' && (
+                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
+                        <div className="p-3 flex flex-col gap-2">
+                          {[
+                            { id: 'strategy', icon: Target, label: '志願選填攻略', color: 'text-amber-600', bg: 'bg-amber-100' },
+                            { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' },
+                            { id: 'importantDates', icon: Map, label: '重要日程', color: 'text-purple-600', bg: 'bg-purple-100' },
+                            { id: 'disclaimer', icon: Shield, label: '免責聲明', color: 'text-slate-600', bg: 'bg-slate-100' }
+                          ].map(btn => (
+                            <button
+                              key={btn.id}
+                              onClick={() => { setActiveModal(btn.id as any); setIsNavMenuOpen(false); }}
+                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${btn.bg}`}>
+                                  <btn.icon className={`w-5 h-5 ${btn.color}`} />
+                                </div>
+                                <span className="font-bold text-slate-900">{btn.label}</span>
+                              </div>
+                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
+
+                {/* 系統指南與回饋 */}
+                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
+                  <button 
+                    onClick={() => setExpandedNavCategory(prev => prev === 'systemGuide' ? null : 'systemGuide')}
+                    className="w-full flex items-center justify-between p-4 bg-indigo-50 outline-none hover:bg-indigo-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-indigo-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                        <Sparkles className="w-5 h-5 text-indigo-700" />
+                      </div>
+                      <span className="font-black text-slate-900 text-lg">系統指南與回饋</span>
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === 'systemGuide' ? 'rotate-180' : ''}`} />
+                  </button>
+                  <AnimatePresence>
+                    {expandedNavCategory === 'systemGuide' && (
+                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
+                        <div className="p-3 flex flex-col gap-2">
+                          {[
+                            { id: 'instructions', icon: Info, label: '使用說明', color: 'text-blue-600', bg: 'bg-blue-100' },
+                            { id: 'advantages', icon: Sparkles, label: '系統優點', color: 'text-indigo-600', bg: 'bg-indigo-100' },
+                            { id: 'rating', icon: StarIcon, label: '評分系統', color: 'text-amber-500', bg: 'bg-amber-100' },
+                            { id: 'changelog', icon: History, label: '更新日誌', color: 'text-slate-500', bg: 'bg-slate-100' },
+                            { id: 'reportError', icon: AlertCircle, label: '錯誤回報', color: 'text-red-500', bg: 'bg-red-100' }
+                          ].map(btn => (
+                            <button
+                              key={btn.id}
+                              onClick={() => { setActiveModal(btn.id as any); setIsNavMenuOpen(false); }}
+                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${btn.bg}`}>
+                                  <btn.icon className={`w-5 h-5 ${btn.color}`} />
+                                </div>
+                                <span className="font-bold text-slate-900">{btn.label}</span>
+                              </div>
+                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* 外部資源 */}
+                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
+                  <button 
+                    onClick={() => setExpandedNavCategory(prev => prev === 'externalLinks' ? null : 'externalLinks')}
+                     className="w-full flex items-center justify-between p-4 bg-emerald-50 outline-none hover:bg-emerald-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-emerald-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                        <LinkIcon className="w-5 h-5 text-emerald-700" />
+                      </div>
+                      <span className="font-black text-slate-900 text-lg">外部資源與分享</span>
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === 'externalLinks' ? 'rotate-180' : ''}`} />
+                  </button>
+                  <AnimatePresence>
+                    {expandedNavCategory === 'externalLinks' && (
+                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
+                        <div className="p-3 flex flex-col gap-2">
+                          {[
+                            { href: 'https://cap.rcpet.edu.tw/', icon: Search, label: '會考成績查詢', color: 'text-fuchsia-600', bg: 'bg-fuchsia-100' },
+                            { href: 'https://tyctw.github.io/volunteer/', icon: ChartBar, label: '序位查詢', color: 'text-orange-600', bg: 'bg-orange-100' },
+                            { href: 'https://tyctw.github.io/shared/', icon: Library, label: '全國錄取分享', color: 'text-indigo-600', bg: 'bg-indigo-100' },
+                            { href: 'https://tyctw.github.io/score/', icon: List, label: '全國序位分享', color: 'text-emerald-600', bg: 'bg-emerald-100' }
+                          ].map(link => (
+                             <a 
+                               key={link.label}
+                               href={link.href} 
+                               target="_blank" 
+                               rel="noreferrer" 
+                               className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 group active:scale-95 transition-all"
+                             >
+                               <div className="flex items-center gap-3">
+                                 <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${link.bg}`}>
+                                   <link.icon className={`w-4 h-4 ${link.color}`} />
+                                 </div>
+                                 <span className="font-bold text-slate-900">{link.label}</span>
+                               </div>
+                               <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 -rotate-45 group-hover:rotate-0 transition-transform" />
+                             </a>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
               </div>
               <div className="p-4 bg-slate-900 text-center border-t-4 border-slate-900">
                 <p className="text-slate-400 font-bold text-xs flex items-center justify-center gap-1">
