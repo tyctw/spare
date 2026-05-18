@@ -14,7 +14,7 @@ export default function GradeLevelModal({ isOpen, onClose }: GradeLevelModalProp
     <InfoModal 
       isOpen={isOpen} 
       onClose={onClose}
-      title="等級/標示 與 答對題數對照表"
+      title="等級與答對題數對照表"
       icon={<Award className="w-8 h-8 text-rose-500" />}
     >
       <div className="flex overflow-x-auto whitespace-nowrap bg-slate-100 p-1 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] mb-6 gap-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
