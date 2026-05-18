@@ -41,7 +41,7 @@ export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
         url: window.location.href
       };
       
-      await fetch('https://script.google.com/macros/s/AKfycbxAR0tyczm3-HDjdub3R-Xy1uoZ4T42Athz8VkJN5bk4gcO_GyVmyOiOBV0BCMEPKpeYg/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8',
