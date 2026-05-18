@@ -1545,10 +1545,18 @@ export default function App() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto relative z-10">
-            <div className="bg-slate-800 border-2 border-slate-700 rounded-2xl p-5 flex flex-col gap-1.5 shadow-inner">
-              <span className="text-xs font-black text-slate-400 uppercase tracking-wider">版權所有</span>
-              <span className="font-black text-amber-400 text-lg sm:text-xl">© {new Date().getFullYear()}</span>
-            </div>
+            <button 
+              onClick={() => setActiveModal('terms')}
+              className="bg-slate-800 border-2 border-slate-700 hover:border-slate-500 rounded-2xl p-5 flex flex-col justify-between gap-1.5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-none transition-all group text-left outline-none"
+            >
+              <div>
+                <span className="text-xs font-black text-slate-400 group-hover:text-amber-400 uppercase tracking-wider block mb-1 transition-colors">版權所有</span>
+                <span className="font-black text-amber-400 group-hover:text-amber-300 text-lg sm:text-xl transition-colors">© {new Date().getFullYear()}</span>
+              </div>
+              <span className="text-xs font-bold text-slate-400 group-hover:text-white underline underline-offset-2 transition-colors mt-2 flex items-center gap-1">
+                <Shield className="w-3 h-3" /> 隱私權與服務條款
+              </span>
+            </button>
             <a href="mailto:tyctw.analyze@gmail.com" className="bg-indigo-500 hover:bg-indigo-400 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-none rounded-2xl p-5 flex flex-col gap-1.5 group">
               <span className="text-xs font-black text-indigo-200 uppercase tracking-wider flex items-center gap-1.5">
                 <Mail className="w-4 h-4" /> 聯絡信箱
