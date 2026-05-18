@@ -28,6 +28,7 @@ import AdvantagesModal from './components/AdvantagesModal';
 import InstructionsModal from './components/InstructionsModal';
 import ReportErrorModal from './components/ReportErrorModal';
 import SchoolTypesModal from './components/SchoolTypesModal';
+import StrategyModal from './components/StrategyModal';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -60,7 +61,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | null>(null);
+  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -1196,6 +1197,11 @@ export default function App() {
         onClose={() => setActiveModal(null)} 
       />
 
+      <StrategyModal 
+        isOpen={activeModal === 'strategy'} 
+        onClose={() => setActiveModal(null)} 
+      />
+
       <SharePlatformModal 
         isOpen={activeModal === 'sharePlatform'}
         onClose={() => setActiveModal(null)}
@@ -1263,6 +1269,7 @@ export default function App() {
                     {[
                       { id: 'advantages', icon: Sparkles, label: '系統優點', color: 'text-indigo-600', bg: 'bg-indigo-100' },
                       { id: 'instructions', icon: Info, label: '使用說明', color: 'text-blue-600', bg: 'bg-blue-100' },
+                      { id: 'strategy', icon: Target, label: '志願選填攻略', color: 'text-amber-600', bg: 'bg-amber-100' },
                       { id: 'disclaimer', icon: Shield, label: '免責聲明', color: 'text-amber-600', bg: 'bg-amber-100' },
                       { id: 'importantDates', icon: Map, label: '重要日程', color: 'text-purple-600', bg: 'bg-purple-100' },
                       { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' },
