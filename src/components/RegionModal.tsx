@@ -1,16 +1,20 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, MapPin, Building2, Map, Compass, Anchor, Mountain, Cpu, AlertCircle } from 'lucide-react';
+import { X, MapPin, Building2, Map, Compass, Anchor, Mountain, Cpu, TreePine, Sun, Sunrise, Waves, Sprout } from 'lucide-react';
 
 export const ALL_REGIONS = [
   { id: 'taoyuan', name: '桃連區', desc: '130+ 高中', icon: Building2, active: true, color: 'bg-emerald-400' },
-  { id: 'taipei', name: '基北區', desc: '110+ 高中', icon: Map, active: true, color: 'bg-indigo-400' },
-  { id: 'central', name: '中投區', desc: '80+ 高中', icon: Mountain, active: true, color: 'bg-amber-400' },
+  { id: 'taipei', name: '基北區', desc: '220+ 高中', icon: Map, active: true, color: 'bg-indigo-400' },
+  { id: 'central', name: '中投區', desc: '170+ 高中', icon: Mountain, active: true, color: 'bg-amber-400' },
   { id: 'changhua', name: '彰化區', desc: '80+ 高中', icon: MapPin, active: true, color: 'bg-rose-400' },
   { id: 'tainan', name: '台南區', desc: '75+ 高中', icon: Compass, active: true, color: 'bg-sky-400' },
   { id: 'kaohsiung', name: '高雄區', desc: '90+ 高中', icon: Anchor, active: true, color: 'bg-orange-400' },
   { id: 'hsinchu', name: '竹苗區', desc: '70+ 高中', icon: Cpu, active: true, color: 'bg-fuchsia-400' },
-  { id: 'yunlin', name: '雲林區', desc: '籌備中', icon: AlertCircle, active: false, color: 'bg-slate-400' }
+  { id: 'yunlin', name: '雲林區', desc: '籌備中', icon: Sprout, active: false, color: 'bg-slate-400' },
+  { id: 'chiayi', name: '嘉義區', desc: '籌備中', icon: TreePine, active: false, color: 'bg-slate-400' },
+  { id: 'pingtung', name: '屏東區', desc: '籌備中', icon: Sun, active: false, color: 'bg-slate-400' },
+  { id: 'yilan', name: '宜蘭區', desc: '籌備中', icon: Waves, active: false, color: 'bg-slate-400' },
+  { id: 'taitung', name: '台東區', desc: '籌備中', icon: Sunrise, active: false, color: 'bg-slate-400' }
 ];
 
 interface Props {
@@ -72,13 +76,23 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                              ? 'border-indigo-600 bg-indigo-50 shadow-[6px_6px_0px_0px_rgba(79,70,229,1)]' 
                              : region.active 
                                ? 'border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]' 
-                               : 'border-slate-300 bg-slate-100 opacity-60 cursor-not-allowed'
+                               : 'border-dashed border-slate-300 bg-slate-100/50 cursor-not-allowed hover:bg-slate-100/80'
                          }`}
                        >
                          {/* Decoration background element */}
                          {region.active && !isSelected && (
-                             <div className={`absolute top-0 right-0 w-24 h-24 opacity-0 group-hover:opacity-20 transition-opacity transform translate-x-8 -translate-y-8 rounded-full ${region.color}`} />
-                         )}
+                              <div className={`absolute top-0 right-0 w-24 h-24 opacity-0 group-hover:opacity-20 transition-opacity transform translate-x-8 -translate-y-8 rounded-full ${region.color}`} />
+                          )}
+                          
+                          {/* Inactive diagonal stripes pattern */}
+                          {!region.active && (
+                            <div 
+                              className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+                              style={{ 
+                                backgroundImage: 'repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 8px)'
+                              }} 
+                            />
+                          )}
                          
                          {isSelected && (
                            <div className="absolute top-4 right-4 w-6 h-6 bg-indigo-600 rounded-full border-2 border-white flex flex-shrink-0 items-center justify-center text-white shadow-sm">
@@ -86,20 +100,36 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                            </div>
                          )}
 
-                         <div className="flex items-center gap-4 mb-3">
-                           <div className={`w-14 h-14 shrink-0 rounded-xl border-2 border-slate-900 flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${
-                             isSelected ? 'bg-indigo-600 text-white' : region.active ? region.color + ' text-slate-900' : 'bg-slate-300 text-slate-500'
-                           }`}>
-                             <RegionIcon className="w-7 h-7" strokeWidth={2.5} />
+                         <div className="flex items-center gap-4 mb-3 relative z-10">
+                           <div className={`w-14 h-14 shrink-0 rounded-xl flex items-center justify-center transition-colors ${
+                              isSelected 
+                                ? 'border-2 border-slate-900 bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' 
+                                : region.active 
+                                  ? `border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] text-slate-900 ${region.color}` 
+                                  : 'border-2 border-dashed border-slate-300 bg-white text-slate-400'
+                            }`}>
+                             <RegionIcon className="w-7 h-7" strokeWidth={region.active ? 2.5 : 2} />
                            </div>
                            <div className="flex-1">
-                             <h3 className="text-xl font-black text-slate-900">{region.name}</h3>
+                             <h3 className={`text-xl font-black ${region.active ? 'text-slate-900' : 'text-slate-400'}`}>{region.name}</h3>
                              {!region.active && (
-                               <span className="inline-block mt-0.5 text-xs font-bold leading-none bg-slate-200 text-slate-600 px-2 py-1 rounded-md border border-slate-300">建置中</span>
+                               <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-black tracking-widest text-slate-500 uppercase bg-white border border-slate-200 px-2 py-0.5 rounded-md shadow-sm">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                  COMING SOON
+                                </span>
                              )}
                            </div>
                          </div>
-                         <p className={`font-bold ${isSelected ? 'text-indigo-800' : 'text-slate-600'}`}>{region.desc}</p>
+                         <div className="relative z-10">
+                            {region.active ? (
+                              <p className={`font-bold ${isSelected ? 'text-indigo-800' : 'text-slate-600'}`}>{region.desc}</p>
+                            ) : (
+                              <div className="flex flex-col gap-2 opacity-50 mt-1">
+                                <div className="w-2/3 h-2 bg-slate-300 rounded-full animate-pulse" />
+                                <div className="w-1/2 h-2 bg-slate-300 rounded-full animate-pulse" />
+                              </div>
+                            )}
+                          </div>
                        </button>
                      );
                   })}
