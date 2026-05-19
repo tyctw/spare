@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ArrowLeft, Brain, Sparkles, CheckCircle2, ChevronRight, BookOpen, Printer, ShieldAlert } from 'lucide-react';
+import { X, ArrowLeft, Brain, Sparkles, CheckCircle2, ChevronRight, BookOpen, ShieldAlert } from 'lucide-react';
 
 export const HOLLAND_QUESTIONS = [
   { id: 1, type: 'R', text: '喜歡修理腳踏車、五金或家電用品' },
@@ -193,12 +193,12 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 print:absolute print:inset-0 print:p-0 print:bg-white print:z-[9999]">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
           <motion.div
             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }} 
             animate={{ opacity: 1, backdropFilter: 'blur(4px)' }} 
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            className="absolute inset-0 bg-slate-900/60 print:hidden"
+            className="absolute inset-0 bg-slate-900/60"
             onClick={handleClose}
           />
           <motion.div
@@ -206,10 +206,10 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
             animate={{ scale: 1, opacity: 1, y: 0 }} 
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col max-h-[85vh] print:max-h-none print:h-auto print:border-none print:shadow-none print:rounded-none print:w-[190mm] print:mx-auto"
+            className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col max-h-[85vh]"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b-4 border-slate-900 flex items-center justify-between bg-indigo-50 z-10 shrink-0 print:hidden">
+            <div className="px-6 py-4 border-b-4 border-slate-900 flex items-center justify-between bg-indigo-50 z-10 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-indigo-600 rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transform -rotate-3 text-white">
                   <Brain className="w-5 h-5" />
@@ -224,7 +224,7 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 relative print:overflow-visible">
+            <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 relative">
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
 
               {step === 'start' && (
@@ -359,13 +359,11 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
               )}
 
               {step === 'result' && (
-                <>
-                  {/* Interactive UI (Screen) */}
-                  <div className="p-6 md:p-8 print:hidden">
-                    <div className="text-center mb-8">
-                      <div className="inline-block bg-indigo-100 text-indigo-700 font-black px-4 py-1.5 rounded-full mb-4 border-2 border-indigo-200">
-                        專屬分析報告
-                      </div>
+                <div className="p-6 md:p-8">
+                  <div className="text-center mb-8">
+                    <div className="inline-block bg-indigo-100 text-indigo-700 font-black px-4 py-1.5 rounded-full mb-4 border-2 border-indigo-200">
+                      專屬分析報告
+                    </div>
                       <h3 className="text-3xl font-black text-slate-900 mb-2">你的職業性向特質</h3>
                       <p className="text-slate-600 font-bold">根據測驗結果，你的優勢荷倫碼為</p>
                     </div>
@@ -388,9 +386,9 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
                       })}
                     </div>
 
-                    {/* Recommended Groups */}
-                    <div className="bg-white rounded-[2rem] p-6 sm:p-8 border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden">
-                      <div className="absolute -right-8 -top-8 text-[120px] opacity-[0.03] select-none pointer-events-none">🎯</div>
+                  {/* Recommended Groups */}
+                  <div className="bg-white rounded-[2rem] p-6 sm:p-8 border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden">
+                    <div className="absolute -right-8 -top-8 text-[120px] opacity-[0.03] select-none pointer-events-none">🎯</div>
                       <div className="flex items-center gap-3 mb-6 relative z-10">
                         <div className="bg-emerald-100 text-emerald-600 p-2 rounded-xl border-2 border-slate-900 -rotate-3">
                           <Sparkles className="w-5 h-5" />
@@ -416,111 +414,32 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
                         ))}
                       </div>
 
-                      <div className="pt-6 border-t-2 border-slate-100 flex flex-col sm:flex-row gap-3">
-                         <button 
-                           onClick={() => window.print()}
-                           className="px-4 py-3 bg-slate-800 text-white rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-700 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center flex items-center justify-center gap-2"
-                         >
-                           <Printer className="w-4 h-4" /> 列印結果
-                         </button>
-                         <button 
-                           onClick={resetTest}
-                           className="px-4 py-3 bg-white text-slate-700 rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-50 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center"
-                         >
-                           再測一次
-                         </button>
-                         <button 
-                           onClick={() => {
-                             const groups = topGroups.map(g => g.id);
-                             onComplete(groups);
-                             handleClose();
-                           }}
-                           className="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-xl border-2 border-slate-900 font-bold hover:bg-indigo-500 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center"
-                         >
-                           採用推薦群別
-                         </button>
-                         <button 
-                           onClick={onViewEncyclopedia}
-                           className="px-4 py-3 bg-white text-slate-700 rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-50 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center flex items-center justify-center gap-2"
-                         >
-                           去百科看科系 <BookOpen className="w-4 h-4" />
-                         </button>
-                      </div>
+                    <div className="pt-6 border-t-2 border-slate-100 flex flex-col sm:flex-row gap-3">
+                       <button 
+                         onClick={resetTest}
+                         className="px-4 py-3 bg-white text-slate-700 rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-50 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center"
+                       >
+                         再測一次
+                       </button>
+                       <button 
+                         onClick={() => {
+                           const groups = topGroups.map(g => g.id);
+                           onComplete(groups);
+                           handleClose();
+                         }}
+                         className="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-xl border-2 border-slate-900 font-bold hover:bg-indigo-500 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center"
+                       >
+                         採用推薦群別
+                       </button>
+                       <button 
+                         onClick={onViewEncyclopedia}
+                         className="px-4 py-3 bg-white text-slate-700 rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-50 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center flex items-center justify-center gap-2"
+                       >
+                         去百科看科系 <BookOpen className="w-4 h-4" />
+                       </button>
                     </div>
                   </div>
-
-                  {/* Print-Only Report Layout */}
-                  <div className="hidden print:flex flex-col w-[210mm] min-h-[297mm] p-12 bg-white text-black mx-auto">
-                    <div className="flex items-center justify-between border-b-2 border-slate-900 pb-6 mb-8">
-                      <div className="flex items-center gap-3">
-                        <Brain className="w-10 h-10 text-indigo-600" />
-                        <div>
-                          <h1 className="text-3xl font-black text-slate-900 tracking-tight">荷倫碼性向測驗分析報告</h1>
-                          <p className="text-slate-500 font-bold mt-1">Holland Code Career Assessment Report</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-bold text-slate-500">測驗日期</div>
-                        <div className="font-mono font-black text-slate-800">{new Date().toLocaleDateString('zh-TW')}</div>
-                      </div>
-                    </div>
-
-                    <div className="mb-10">
-                      <h2 className="text-2xl font-black text-slate-900 mb-2 border-l-4 border-indigo-600 pl-3">一、你的職業性向特質</h2>
-                      <p className="text-slate-700 font-bold mb-6 mt-2 ml-1">以下是你最突出的三項荷倫碼特質：</p>
-                      
-                      <div className="grid grid-cols-3 gap-6">
-                        {topTypes.map((type, index) => {
-                          const tData = HOLLAND_TYPES[type.type];
-                          return (
-                            <div key={type.type} className="border-2 border-slate-300 rounded-2xl p-5 break-inside-avoid">
-                              <div className="flex items-center justify-between mb-4">
-                                <span className={`text-5xl font-black ${tData.color}`}>{type.type}</span>
-                                {index === 0 && <span className="bg-slate-800 text-white text-sm font-black px-3 py-1 rounded-full">主導特質</span>}
-                              </div>
-                              <h4 className="text-xl font-black text-slate-900 mb-2">{tData.name}</h4>
-                              <p className="text-sm font-bold text-slate-600 leading-relaxed">{tData.desc}</p>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="mb-10">
-                      <h2 className="text-2xl font-black text-slate-900 mb-6 border-l-4 border-emerald-500 pl-3">二、推薦技職群別</h2>
-                      
-                      <div className="grid grid-cols-2 gap-6">
-                        {topGroups.map((group, index) => (
-                          <div key={group.id} className="flex items-center justify-between gap-4 border-2 border-slate-300 p-5 rounded-2xl break-inside-avoid shadow-sm">
-                            <div className="flex items-center gap-4">
-                              <div className="text-4xl">{group.icon}</div>
-                              <div>
-                                <div className="font-black text-xl text-slate-900 mb-1">{group.id}</div>
-                                {index === 0 && <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">✨ 最高整體契合度</span>}
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="font-black text-3xl text-indigo-700 mb-1">{group.matchPercentage}%</div>
-                              <div className="text-xs font-bold text-slate-500">屬性吻合度</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="mt-auto pt-8 border-t-2 border-slate-900 break-inside-avoid">
-                      <h3 className="font-black text-slate-900 mb-3 text-lg flex items-center gap-2">
-                        <ShieldAlert className="w-5 h-5 flex-shrink-0" />
-                        結果說明與評估建議
-                      </h3>
-                      <div className="text-sm font-bold text-slate-700 space-y-2">
-                        <p>1. 本測驗運用荷倫碼 (Holland Codes) 理論進行基礎偏好篩選，分類出「實用 R、研究 I、藝術 A、社會 S、企業 E、常規 C」等六大維度。</p>
-                        <p>2. 各群別的「屬性吻合度」代表你的作答傾向與該職群核心能力的關聯性強度，數值越高表示你在該領域可能比較容易發揮所長或感到適應。</p>
-                        <p>3. <strong>免責聲明：</strong> 本分析報告僅供職涯探索與升學輔助參考，不能完全代表或決定你的未來發展，亦無任何絕對的成功保證。建議你應多元探索並尋求專業教師的輔導建議。</p>
-                      </div>
-                    </div>
-                  </div>
-                </>
+                </div>
               )}
 
             </div>
