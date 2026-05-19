@@ -163,14 +163,26 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
 
     const groupScores = VOCATIONAL_HOLLAND_MAP.map(group => {
       let score = 0;
+      let rawScoreSum = 0;
+      let maxScore = group.codes.length * 10;
+
       group.codes.forEach(c => {
         if (weights[c]) score += weights[c];
+        rawScoreSum += scores[c as keyof typeof scores];
       });
-      return { ...group, score };
+
+      const matchPercentage = Math.round((rawScoreSum / maxScore) * 100);
+
+      return { ...group, score, matchPercentage };
     });
 
     // filter non zero, sort and get top 4
-    const validGroups = groupScores.filter(g => g.score > 0).sort((a, b) => b.score - a.score);
+    const validGroups = groupScores
+      .filter(g => g.score > 0)
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return b.matchPercentage - a.matchPercentage;
+      });
     const topGroupsResult = validGroups.slice(0, 4);
 
     return { topTypes: top3, topGroups: topGroupsResult };
@@ -383,17 +395,29 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10 mb-6">
                       {topGroups.map((group, index) => (
-                        <div key={group.id} className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border-2 border-slate-200">
-                          <div className="text-3xl">{group.icon}</div>
-                          <div>
-                            <div className="font-black text-lg text-slate-800">{group.id}</div>
-                            {index === 0 && <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">最高契合度</span>}
+                        <div key={group.id} className="flex items-center justify-between gap-4 bg-slate-50 p-4 rounded-2xl border-2 border-slate-200">
+                          <div className="flex items-center gap-3">
+                            <div className="text-3xl">{group.icon}</div>
+                            <div>
+                              <div className="font-black text-lg text-slate-800 leading-tight mb-1">{group.id}</div>
+                              {index === 0 && <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-200">最高契合度</span>}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-black text-2xl text-indigo-600 leading-none mb-1">{group.matchPercentage}%</div>
+                            <div className="text-[10px] font-bold text-slate-500">吻合度</div>
                           </div>
                         </div>
                       ))}
                     </div>
 
                     <div className="pt-6 border-t-2 border-slate-100 flex flex-col sm:flex-row gap-3">
+                       <button 
+                         onClick={resetTest}
+                         className="px-4 py-3 bg-white text-slate-700 rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-50 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center"
+                       >
+                         再測一次
+                       </button>
                        <button 
                          onClick={() => {
                            const groups = topGroups.map(g => g.id);
@@ -406,7 +430,7 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
                        </button>
                        <button 
                          onClick={onViewEncyclopedia}
-                         className="flex-1 px-4 py-3 bg-white text-slate-700 rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-50 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center flex items-center justify-center gap-2"
+                         className="px-4 py-3 bg-white text-slate-700 rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-50 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center flex items-center justify-center gap-2"
                        >
                          去百科看科系 <BookOpen className="w-4 h-4" />
                        </button>
