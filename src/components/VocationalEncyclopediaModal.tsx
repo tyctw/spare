@@ -173,9 +173,10 @@ const VOCATIONAL_DATA = [
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  onOpenHollandTest?: () => void;
 }
 
-export default function VocationalEncyclopediaModal({ isOpen, onClose }: Props) {
+export default function VocationalEncyclopediaModal({ isOpen, onClose, onOpenHollandTest }: Props) {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -433,9 +434,17 @@ export default function VocationalEncyclopediaModal({ isOpen, onClose }: Props) 
                     
                     <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full relative overflow-hidden text-left shadow-sm">
                       <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-bl-[100px] -z-10 opacity-50"></div>
-                      <div className="flex items-center gap-3 mb-5 pb-4 border-b-2 border-slate-200">
-                        <div className="text-2xl">💡</div>
-                        <h4 className="text-xl font-black text-slate-800">認識荷倫碼性向</h4>
+                      <div className="flex items-center justify-between mb-5 pb-4 border-b-2 border-slate-200">
+                        <div className="flex items-center gap-3">
+                          <div className="text-2xl">💡</div>
+                          <h4 className="text-xl font-black text-slate-800">認識荷倫碼性向</h4>
+                        </div>
+                        <button 
+                          onClick={onOpenHollandTest}
+                          className="bg-indigo-600 text-white text-sm font-black px-3 py-1.5 rounded-lg hover:bg-indigo-500 border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0.5 active:shadow-none transition-all whitespace-nowrap"
+                        >
+                          立即測驗
+                        </button>
                       </div>
                       
                       <div className="space-y-4">
