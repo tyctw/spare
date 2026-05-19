@@ -25,9 +25,10 @@ interface Props {
   onClose: () => void;
   selectedGroups: string[];
   onChange: (groups: string[]) => void;
+  onOpenHollandTest?: () => void;
 }
 
-export default function VocationalModal({ isOpen, onClose, selectedGroups, onChange }: Props) {
+export default function VocationalModal({ isOpen, onClose, selectedGroups, onChange, onOpenHollandTest }: Props) {
   const isAllSelected = selectedGroups.includes('all');
 
   const toggleGroup = (id: string) => {
@@ -69,11 +70,19 @@ export default function VocationalModal({ isOpen, onClose, selectedGroups, onCha
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="p-4 bg-amber-50 border-b border-slate-200 flex items-start gap-2">
-              <span className="text-xl">💡</span>
-              <p className="text-sm font-bold text-slate-700 leading-relaxed">
-                建議可以先透過「<a href="https://www.google.com/search?q=%E8%8D%B7%E5%80%AB%E7%A2%BC%E6%B8%AC%E9%A9%97" target="_blank" rel="noreferrer" className="text-indigo-600 underline hover:text-indigo-800">荷倫碼(Holland)性向測驗</a>」了解自己的優勢能力（R實用、I研究、A藝術、S社會、E企業、C常規），再來勾選適合的職群喔！
-              </p>
+            <div className="p-4 bg-amber-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start gap-2">
+                <span className="text-xl">💡</span>
+                <p className="text-sm font-bold text-slate-700 leading-relaxed">
+                  不知道怎麼選？透過「荷倫碼(Holland)性向特質測驗」，3分鐘就能測出最適合你的職群方向喔！
+                </p>
+              </div>
+              <button 
+                onClick={onOpenHollandTest}
+                className="shrink-0 bg-amber-400 hover:bg-amber-300 text-amber-900 border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0.5 active:shadow-none transition-all px-4 py-2 rounded-xl font-black text-sm whitespace-nowrap"
+              >
+                前往測驗 👉
+              </button>
             </div>
             <div className="p-6 overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <button
