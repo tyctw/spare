@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import VocationalModal from './components/VocationalModal';
 import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
+import HollandTestModal from './components/HollandTestModal';
 import { InfoModal } from './components/InfoModals';
 import ChangelogModal from './components/ChangelogModal';
 import DisclaimerModal from './components/DisclaimerModal';
@@ -65,6 +66,7 @@ export default function App() {
   const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
+  const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [vocationalGroups, setVocationalGroups] = useState<string[]>(['all']);
   const [isExternalLinksOpen, setIsExternalLinksOpen] = useState(false);
@@ -1064,11 +1066,26 @@ export default function App() {
         onClose={() => setIsVocationalOpen(false)}
         selectedGroups={vocationalGroups}
         onChange={setVocationalGroups}
+        onOpenHollandTest={() => { setIsVocationalOpen(false); setIsHollandTestOpen(true); }}
       />
 
       <VocationalEncyclopediaModal
         isOpen={isEncyclopediaOpen}
         onClose={() => setIsEncyclopediaOpen(false)}
+        onOpenHollandTest={() => { setIsEncyclopediaOpen(false); setIsHollandTestOpen(true); }}
+      />
+      
+      <HollandTestModal 
+        isOpen={isHollandTestOpen}
+        onClose={() => setIsHollandTestOpen(false)}
+        onComplete={(recommendedGroups) => {
+          setVocationalGroups(recommendedGroups);
+          setIsVocationalOpen(true);
+        }}
+        onViewEncyclopedia={() => {
+          setIsHollandTestOpen(false);
+          setIsEncyclopediaOpen(true);
+        }}
       />
 
       <RegionModal 
