@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ArrowLeft, Brain, Sparkles, CheckCircle2, ChevronRight, BookOpen } from 'lucide-react';
+import { X, ArrowLeft, Brain, Sparkles, CheckCircle2, ChevronRight, BookOpen, Printer, ShieldAlert } from 'lucide-react';
 
 export const HOLLAND_QUESTIONS = [
   { id: 1, type: 'R', text: '喜歡修理腳踏車、五金或家電用品' },
@@ -193,12 +193,12 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 print:absolute print:inset-0 print:p-0 print:bg-white print:z-[9999]">
           <motion.div
             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }} 
             animate={{ opacity: 1, backdropFilter: 'blur(4px)' }} 
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            className="absolute inset-0 bg-slate-900/60"
+            className="absolute inset-0 bg-slate-900/60 print:hidden"
             onClick={handleClose}
           />
           <motion.div
@@ -206,11 +206,10 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
             animate={{ scale: 1, opacity: 1, y: 0 }} 
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col"
-            style={{ maxHeight: '85vh' }}
+            className="relative w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col max-h-[85vh] print:max-h-none print:h-auto print:border-none print:shadow-none print:rounded-none print:w-[190mm] print:mx-auto"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b-4 border-slate-900 flex items-center justify-between bg-indigo-50 z-10 shrink-0">
+            <div className="px-6 py-4 border-b-4 border-slate-900 flex items-center justify-between bg-indigo-50 z-10 shrink-0 print:hidden">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-indigo-600 rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transform -rotate-3 text-white">
                   <Brain className="w-5 h-5" />
@@ -225,7 +224,7 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 relative">
+            <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 relative print:overflow-visible">
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
 
               {step === 'start' && (
@@ -242,12 +241,16 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
                     只要花 3 分鐘，透過 30 個簡單的生活情境測試，就能發掘你的關鍵人格特質 (RIASEC)，並推薦你最佳的職業群別！
                   </p>
                   
-                  <div className="bg-slate-100 p-4 rounded-2xl border-2 border-slate-200 w-full mb-8 text-sm font-bold text-slate-600 flex items-center gap-3">
-                    <div className="text-2xl">💡</div>
-                    <div className="text-left">
-                      測驗不計分，請直覺作答。<br/>
-                      這會幫助我們更精準為你推薦職群科系！
+                  <div className="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200 w-full mb-8 text-sm font-bold text-slate-700 flex flex-col gap-3 relative">
+                    <div className="flex items-center gap-2 text-amber-600">
+                       <ShieldAlert className="w-5 h-5" />
+                       <span className="font-black text-amber-900">免責聲明與測驗須知</span>
                     </div>
+                    <ul className="text-left list-disc list-inside space-y-1.5 ml-1">
+                      <li>本測驗僅為輔助探索職業性向之參考工具，不能完全代表您的未來發展。</li>
+                      <li>測驗結果不具任何強制力，建議仍須搭配學校輔導機制與多方實務探索。</li>
+                      <li>測驗不計分且結果會即時計算，請依照最真實的直覺作答以獲得準確結果。</li>
+                    </ul>
                   </div>
 
                   <button 
@@ -384,7 +387,7 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
                   </div>
 
                   {/* Recommended Groups */}
-                  <div className="bg-white rounded-[2rem] p-6 sm:p-8 border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden">
+                  <div className="bg-white rounded-[2rem] p-6 sm:p-8 border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden print:border-2 print:shadow-none print:break-inside-avoid">
                     <div className="absolute -right-8 -top-8 text-[120px] opacity-[0.03] select-none pointer-events-none">🎯</div>
                     <div className="flex items-center gap-3 mb-6 relative z-10">
                       <div className="bg-emerald-100 text-emerald-600 p-2 rounded-xl border-2 border-slate-900 -rotate-3">
@@ -411,7 +414,13 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
                       ))}
                     </div>
 
-                    <div className="pt-6 border-t-2 border-slate-100 flex flex-col sm:flex-row gap-3">
+                    <div className="pt-6 border-t-2 border-slate-100 flex flex-col sm:flex-row gap-3 print:hidden">
+                       <button 
+                         onClick={() => window.print()}
+                         className="px-4 py-3 bg-slate-800 text-white rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-700 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center flex items-center justify-center gap-2"
+                       >
+                         <Printer className="w-4 h-4" /> 列印結果
+                       </button>
                        <button 
                          onClick={resetTest}
                          className="px-4 py-3 bg-white text-slate-700 rounded-xl border-2 border-slate-900 font-bold hover:bg-slate-50 hover:-translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none text-center"
