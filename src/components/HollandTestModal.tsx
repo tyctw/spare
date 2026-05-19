@@ -73,18 +73,22 @@ interface Props {
   onViewEncyclopedia: () => void;
 }
 
-type Step = 'start' | 'testing' | 'loading' | 'result';
+type Step = 'start' | 'testing' | 'loading' | 'result' | 'invalid';
 
 export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEncyclopedia }: Props) {
   const [step, setStep] = useState<Step>('start');
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [startTime, setStartTime] = useState<number>(0);
+  const [validationError, setValidationError] = useState<string>('');
   
   // Resets test state
   const resetTest = () => {
     setStep('start');
     setCurrentQIndex(0);
     setAnswers({});
+    setStartTime(0);
+    setValidationError('');
   };
 
   const handleClose = () => {
@@ -94,6 +98,7 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
 
   const handleStart = () => {
     setStep('testing');
+    setStartTime(Date.now());
   };
 
   const handleAnswer = (score: number) => {
@@ -104,7 +109,21 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
       setTimeout(() => setCurrentQIndex(prev => prev + 1), 50);
     } else {
       setStep('loading');
-      setTimeout(() => setStep('result'), 1500); // Fake calculation loading
+      
+      const timeTaken = Date.now() - startTime;
+      const uniqueAnswers = new Set(Object.values(newAnswers));
+      
+      setTimeout(() => {
+        if (uniqueAnswers.size <= 1) {
+          setValidationError('你的作答選項太過單一，導致無法分析出明顯的特質傾向。建議你能多加區分「符合」與「不符合」的程度作答喔！');
+          setStep('invalid');
+        } else if (timeTaken < 10000) { // less than 10 seconds (approx 300ms per question)
+          setValidationError('你作答的速度似乎異常快喔！為了能獲得更準確的分析報告，請仔細閱讀每道題目後再作答。');
+          setStep('invalid');
+        } else {
+          setStep('result');
+        }
+      }, 1500); // Fake calculation loading
     }
   };
 
@@ -302,6 +321,25 @@ export default function HollandTestModal({ isOpen, onClose, onComplete, onViewEn
                   </div>
                   <h3 className="text-2xl font-black text-slate-900 mb-2">正在分析你的特質...</h3>
                   <p className="text-slate-500 font-bold">比對15大職群資料中</p>
+                </div>
+              )}
+
+              {step === 'invalid' && (
+                <div className="p-8 md:p-12 text-center flex flex-col items-center">
+                  <div className="w-32 h-32 bg-rose-50 rounded-full border-4 border-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex items-center justify-center mb-8 relative">
+                    <div className="text-6xl">🤖</div>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-4">分析遇到了一點困難</h3>
+                  <p className="text-slate-600 font-bold mb-8 max-w-sm leading-relaxed">
+                    {validationError}
+                  </p>
+                  
+                  <button 
+                    onClick={resetTest}
+                    className="w-full sm:w-auto px-10 py-4 bg-rose-600 text-white rounded-2xl border-4 border-slate-900 font-black text-xl hover:bg-rose-500 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center"
+                  >
+                    重新測驗
+                  </button>
                 </div>
               )}
 
