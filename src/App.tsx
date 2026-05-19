@@ -196,7 +196,8 @@ export default function App() {
         alert('最多只能比較 4 所學校');
         return prev;
       }
-      return [...prev, school];
+      const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未知';
+      return [...prev, { ...school, region: regionName }];
     });
   };
 
