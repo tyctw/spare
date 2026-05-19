@@ -178,7 +178,6 @@ interface Props {
 export default function VocationalEncyclopediaModal({ isOpen, onClose }: Props) {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isSelectorOpen, setIsSelectorOpen] = useState(false);
 
   const filteredGroups = VOCATIONAL_DATA.filter(group => {
     const searchLower = searchTerm.toLowerCase();
@@ -196,234 +195,279 @@ export default function VocationalEncyclopediaModal({ isOpen, onClose }: Props) 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
           <motion.div
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }} 
+            animate={{ opacity: 1, backdropFilter: 'blur(4px)' }} 
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            className="absolute inset-0 bg-slate-900/60"
             onClick={onClose}
           />
           <motion.div
-            initial={{ scale: 0.95, opacity: 0 }} 
-            animate={{ scale: 1, opacity: 1 }} 
-            exit={{ scale: 0.95, opacity: 0 }}
-            className="relative w-full max-w-5xl bg-slate-50 rounded-3xl shadow-2xl border-2 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] h-[90vh] flex flex-col"
+            initial={{ scale: 0.95, opacity: 0, y: 20 }} 
+            animate={{ scale: 1, opacity: 1, y: 0 }} 
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="relative w-full max-w-6xl bg-white rounded-[2rem] shadow-2xl border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] h-[90vh] max-h-[850px] flex flex-col"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b-2 border-slate-900 flex items-center justify-between bg-white z-10 relative shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-100 rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hidden sm:block">
+            <div className="px-6 py-5 border-b-4 border-slate-900 flex items-center justify-between bg-indigo-50 z-10 shrink-0 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
+              <div className="flex items-center gap-4 relative z-10">
+                <div className="p-3 bg-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transform -rotate-3 transition-transform hover:rotate-0">
                   <BookOpen className="w-6 h-6 text-indigo-600" />
                 </div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900">職群科系百科</h2>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">職群科系百科</h2>
+                  <p className="text-sm font-bold text-slate-500 hidden sm:block">探索15大職群，找到最適合你的未來方向</p>
+                </div>
               </div>
               <button 
                 onClick={onClose} 
-                className="p-2 hover:bg-slate-100 rounded-xl transition-colors border-2 border-transparent hover:border-slate-900"
+                className="relative z-10 w-10 h-10 flex items-center justify-center bg-white border-2 border-slate-900 rounded-xl hover:bg-slate-100 hover:text-rose-500 hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all"
               >
-                <X className="w-6 h-6 text-slate-600" />
+                <X className="w-6 h-6" />
               </button>
             </div>
 
-            <div className="flex flex-col flex-1 overflow-hidden relative">
-              {/* Main Area: Details */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar relative p-4 sm:p-8">
-                
-                {/* Selector Button */}
-                <div className="max-w-3xl mx-auto mb-6">
-                   <button 
-                     onClick={() => setIsSelectorOpen(true)}
-                     className="w-full sm:w-auto px-6 py-4 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex items-center justify-between gap-4 font-black hover:bg-indigo-50 hover:-translate-y-0.5 active:translate-y-1 active:shadow-none transition-all text-left"
-                   >
-                     <div className="flex items-center gap-3 text-indigo-700">
-                       {activeGroupData ? (
-                          <>
-                            <span className="text-3xl">{activeGroupData.icon}</span>
-                            <span className="text-lg">切換職群：<span className="text-slate-900">{activeGroupData.label}</span></span>
-                          </>
-                       ) : (
-                          <>
-                            <ListIcon className="w-6 h-6" />
-                            <span className="text-lg text-slate-900">請點擊選擇要查看的類群...</span>
-                          </>
-                       )}
-                     </div>
-                     <ChevronRight className="w-6 h-6 text-slate-400 rotate-90 hidden sm:block" />
-                   </button>
+            <div className="flex flex-1 overflow-hidden relative bg-slate-50/50">
+              {/* Sidebar (List) */}
+              <div className={`
+                ${activeGroupData ? 'hidden lg:flex' : 'flex'} 
+                flex-col w-full lg:w-80 xl:w-96 border-r-0 lg:border-r-4 border-slate-900 bg-white shrink-0 h-full z-10
+              `}>
+                <div className="p-4 border-b-2 border-slate-200 bg-slate-50/80 backdrop-blur shrink-0">
+                  <div className="relative">
+                    <Search className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input 
+                      type="text" 
+                      placeholder="搜尋群別、科別或相關職業..." 
+                      value={searchTerm}
+                      onChange={e => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 bg-white rounded-xl border-2 border-slate-300 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all font-bold text-slate-700 placeholder:text-slate-400 shadow-sm"
+                    />
+                  </div>
                 </div>
 
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2 bg-slate-50/50">
+                  {filteredGroups.length === 0 ? (
+                    <div className="text-center py-16 flex flex-col items-center">
+                      <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4 border-2 border-slate-200">
+                        <Search className="w-8 h-8 text-slate-300" />
+                      </div>
+                      <span className="text-slate-500 font-bold">找不到相符的結果</span>
+                      <button onClick={() => setSearchTerm('')} className="mt-2 text-indigo-600 font-bold hover:underline text-sm">清除搜尋</button>
+                    </div>
+                  ) : (
+                    filteredGroups.map(group => {
+                      const isActive = selectedGroup === group.id;
+                      return (
+                        <button
+                          key={group.id}
+                          onClick={() => setSelectedGroup(group.id)}
+                          className={`w-full text-left p-3.5 rounded-2xl flex items-center justify-between transition-all group/btn ${
+                            isActive 
+                              ? 'bg-indigo-600 text-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] border-2 border-slate-900 scale-[0.98]' 
+                              : 'bg-white text-slate-700 hover:bg-indigo-50 border-2 border-slate-200 hover:border-slate-900 shadow-[0_2px_0_0_rgba(226,232,240,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5'
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <span className="text-3xl filter drop-shadow-sm">{group.icon}</span>
+                            <span className={`font-black text-lg ${isActive ? 'text-white' : 'text-slate-700 group-hover/btn:text-slate-900'}`}>{group.label}</span>
+                          </div>
+                          <ChevronRight className={`w-5 h-5 ${isActive ? 'text-indigo-200' : 'text-slate-300 group-hover/btn:text-slate-900'} transition-colors ${isActive ? 'translate-x-1' : ''}`} />
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Main Content (Details) */}
+              <div className={`
+                ${!activeGroupData ? 'hidden lg:flex' : 'flex'} 
+                flex-1 flex-col bg-slate-50 overflow-hidden relative
+              `}>
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+                
                 {activeGroupData ? (
-                  <motion.div
-                    key={activeGroupData.id}
-                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                    className="max-w-3xl mx-auto space-y-6 pb-12"
-                  >
-                    <div className="flex items-center gap-4 mb-8 bg-white p-6 rounded-3xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                      <div className="w-20 h-20 bg-indigo-50 border-2 border-slate-900 rounded-2xl flex items-center justify-center text-4xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-3 shrink-0">
-                        {activeGroupData.icon}
-                      </div>
-                      <div>
-                        <h3 className="text-2xl sm:text-3xl font-black text-slate-900">{activeGroupData.label}</h3>
-                        <p className="text-slate-600 font-bold mt-2 text-sm sm:text-base leading-relaxed">
-                          {activeGroupData.description}
-                        </p>
-                      </div>
-                    </div>
+                  <div className="flex-1 overflow-y-auto custom-scrollbar p-5 md:p-8 relative z-10">
+                    <motion.div
+                      key={activeGroupData.id}
+                      initial={{ opacity: 0, y: 10 }} 
+                      animate={{ opacity: 1, y: 0 }}
+                      className="max-w-4xl mx-auto space-y-6 lg:space-y-8"
+                    >
+                      {/* Mobile Back Button */}
+                      <button 
+                        onClick={() => setSelectedGroup(null)}
+                        className="lg:hidden mb-2 inline-flex items-center gap-2 text-slate-500 font-bold hover:text-slate-900 transition-colors bg-white px-4 py-2 rounded-xl border-2 border-slate-200 hover:border-slate-900 shadow-sm"
+                      >
+                        <ChevronRight className="w-5 h-5 rotate-180" />
+                        返回職群列表
+                      </button>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                      <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col h-full">
-                        <div className="flex items-center gap-2 mb-4">
-                          <div className="p-1.5 bg-blue-100 rounded-lg text-blue-700 border-2 border-slate-900">
-                            <GraduationCap className="w-5 h-5" />
+                      {/* Hero Section */}
+                      <div className="bg-white p-6 md:p-8 rounded-[2rem] border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden group">
+                        <div className="absolute -right-12 -top-12 text-[150px] opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 pointer-events-none select-none">
+                          {activeGroupData.icon}
+                        </div>
+                        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-6">
+                          <div className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-indigo-100 to-purple-100 border-4 border-slate-900 rounded-[1.5rem] flex items-center justify-center text-6xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 shrink-0 group-hover:rotate-0 transition-transform">
+                            {activeGroupData.icon}
                           </div>
-                          <h4 className="text-xl font-black text-slate-900">適合性向 (荷倫碼)</h4>
-                        </div>
-                        <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 flex-1">
-                          <div className="font-black text-indigo-700 text-lg mb-2">{activeGroupData.holland}</div>
-                          <p className="text-slate-600 font-bold text-sm leading-relaxed">{activeGroupData.hollandDesc}</p>
-                        </div>
-                      </div>
-
-                      <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col h-full">
-                        <div className="flex items-center gap-2 mb-4">
-                          <div className="p-1.5 bg-purple-100 rounded-lg text-purple-700 border-2 border-slate-900">
-                            <BookOpen className="w-5 h-5" />
+                          <div>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 text-white rounded-lg font-bold text-xs mb-3 tracking-widest uppercase">
+                              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                              Vocational Category
+                            </div>
+                            <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-3 selection:bg-indigo-200">
+                              {activeGroupData.label}
+                            </h3>
+                            <p className="text-slate-600 font-bold text-base md:text-lg leading-relaxed max-w-2xl selection:bg-indigo-100">
+                              {activeGroupData.description}
+                            </p>
                           </div>
-                          <h4 className="text-xl font-black text-slate-900">具備特質</h4>
-                        </div>
-                        <div className="flex flex-wrap gap-2 mt-auto">
-                          {activeGroupData.attributes.map(attr => (
-                            <span key={attr} className="px-3 py-2 bg-white text-slate-700 border-2 border-slate-900 rounded-xl font-black text-sm shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] flex-1 text-center min-w-[30%]">
-                              {attr}
-                            </span>
-                          ))}
                         </div>
                       </div>
-                    </div>
 
-                    <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="p-1.5 bg-emerald-100 rounded-lg text-emerald-700 border-2 border-slate-900">
-                          <GraduationCap className="w-5 h-5" />
+                      {/* Bento Grid layout */}
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6">
+                        
+                        {/* Holland Code Card - Span 6 */}
+                        <div className="md:col-span-7 bg-white rounded-3xl border-4 border-slate-900 p-6 md:p-7 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col">
+                          <div className="flex items-center gap-3 mb-5 pb-4 border-b-2 border-slate-100">
+                            <div className="bg-blue-100 text-blue-700 p-2.5 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] -rotate-3">
+                              <Search className="w-6 h-6" />
+                            </div>
+                            <h4 className="text-xl md:text-2xl font-black text-slate-900">荷倫碼性向分析</h4>
+                          </div>
+                          <div className="mb-4">
+                            <div className="inline-block px-4 py-2 bg-slate-900 text-white font-black text-lg md:text-xl rounded-xl shadow-inner tracking-widest">
+                              {activeGroupData.holland.split(' / ').map((code, i, arr) => (
+                                <React.Fragment key={code}>
+                                  <span className="text-white">{code.charAt(0)}</span>
+                                  <span className="text-slate-400 font-bold ml-1 text-base">{code.substring(1)}</span>
+                                  {i < arr.length - 1 && <span className="mx-2 text-slate-600">/</span>}
+                                </React.Fragment>
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-slate-600 font-bold text-base leading-relaxed bg-blue-50/50 p-4 rounded-2xl border-2 border-blue-100 flex-1">
+                            {activeGroupData.hollandDesc}
+                          </p>
                         </div>
-                        <h4 className="text-xl font-black text-slate-900">包含科別</h4>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {activeGroupData.majors.map(m => (
-                          <span key={m} className="px-3 py-1.5 bg-emerald-50 text-emerald-900 border-2 border-emerald-200 rounded-lg font-bold text-sm hover:bg-emerald-100 transition-colors cursor-default">
-                            {m}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
 
-                    <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="p-1.5 bg-amber-100 rounded-lg text-amber-700 border-2 border-slate-900">
-                          <Briefcase className="w-5 h-5" />
+                        {/* Attributes Card - Span 5 */}
+                        <div className="md:col-span-5 bg-indigo-600 rounded-3xl border-4 border-slate-900 p-6 md:p-7 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col text-white">
+                          <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-white/20">
+                            <div className="bg-white text-indigo-700 p-2.5 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] rotate-3">
+                              <Briefcase className="w-6 h-6" />
+                            </div>
+                            <h4 className="text-xl md:text-2xl font-black text-white drop-shadow-sm">具備特質</h4>
+                          </div>
+                          
+                          <div className="grid gap-3 flex-1">
+                            {activeGroupData.attributes.map((attr, idx) => (
+                              <div key={attr} className="bg-white/10 backdrop-blur-sm border-2 border-white/20 p-3.5 rounded-2xl font-black text-lg flex items-center justify-between group cursor-default hover:bg-white/20 transition-colors">
+                                <span>{attr}</span>
+                                <span className="text-indigo-200 font-bold text-sm bg-indigo-900/40 px-2 py-1 rounded-lg">#0{idx + 1}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                        <h4 className="text-xl font-black text-slate-900">未來發展方向</h4>
+
+                        {/* Majors Card - Span full */}
+                        <div className="md:col-span-12 bg-emerald-50 rounded-3xl border-4 border-slate-900 p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
+                          <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-emerald-200/50">
+                            <div className="flex items-center gap-3">
+                              <div className="bg-emerald-400 text-slate-900 p-2.5 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] -rotate-3">
+                                <GraduationCap className="w-6 h-6" />
+                              </div>
+                              <h4 className="text-xl md:text-2xl font-black text-slate-900">包含科系</h4>
+                            </div>
+                            <div className="text-sm font-black text-emerald-800 bg-emerald-200/50 px-3 py-1 rounded-xl border-2 border-emerald-300">
+                              共 {activeGroupData.majors.length} 科
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap gap-2.5 md:gap-3">
+                            {activeGroupData.majors.map(m => (
+                              <span key={m} className="px-4 py-2.5 md:py-3 bg-white text-slate-800 border-2 border-slate-900 rounded-xl font-black text-[15px] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all cursor-default">
+                                {m}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Careers Card - Span full */}
+                        <div className="md:col-span-12 bg-white rounded-3xl border-4 border-slate-900 p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] mt-2">
+                           <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-100">
+                              <div className="bg-amber-300 text-slate-900 p-2.5 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] rotate-3">
+                                <Briefcase className="w-6 h-6" />
+                              </div>
+                              <h4 className="text-xl md:text-2xl font-black text-slate-900">未來發展與職業</h4>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {activeGroupData.careers.map((c, i) => (
+                                <div key={c} className="flex items-center gap-4 bg-slate-50 border-2 border-slate-200 p-4 rounded-2xl group hover:border-amber-400 hover:bg-amber-50 transition-colors">
+                                  <div className="w-10 h-10 rounded-xl bg-white border-2 border-slate-200 flex items-center justify-center font-black text-slate-400 group-hover:border-amber-400 group-hover:text-amber-600 group-hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all">
+                                    {i + 1}
+                                  </div>
+                                  <span className="font-bold text-slate-700 text-lg group-hover:text-slate-900">{c}</span>
+                                </div>
+                              ))}
+                            </div>
+                        </div>
                       </div>
-                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {activeGroupData.careers.map(c => (
-                          <li key={c} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0 border border-slate-900"></span>
-                            <span className="text-slate-700 font-bold">{c}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  </div>
                 ) : (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-400 p-8 text-center max-w-sm mx-auto">
-                    <BookOpen className="w-20 h-20 text-slate-300 mb-6 drop-shadow-sm" />
-                    <h3 className="text-xl font-black text-slate-500 mb-2">點擊上方按鈕選擇類群</h3>
-                    <p className="font-bold text-slate-400 text-sm mb-6">各職群包含了許多不同的科別，結合荷倫碼 (Holland Codes) 等探索工具，能幫助你更準確的填寫志願及規劃未來的職涯發展。</p>
+                  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-white m-6 rounded-[2rem] border-4 border-slate-200 border-dashed">
+                    <div className="w-32 h-32 bg-slate-50 text-slate-300 border-4 border-slate-100 rounded-[2rem] flex items-center justify-center rotate-6 mb-8 group-hover:rotate-12 transition-transform shadow-inner">
+                      <BookOpen className="w-16 h-16" />
+                    </div>
+                    <h3 className="text-3xl font-black text-slate-400 mb-4 tracking-tight">選擇左側職群</h3>
+                    <p className="text-slate-400 font-bold text-lg max-w-sm mb-12">
+                      探索15大職群的詳細資訊、適合特質與未來發展方向，幫助你規劃高中學習藍圖！
+                    </p>
                     
-                    <div className="bg-slate-100 p-4 rounded-2xl border-2 border-slate-200 text-left w-full">
-                      <strong className="text-slate-600 block mb-2 text-sm">💡 什麼是荷倫碼 (Holland Codes)？</strong>
-                      <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-xs font-bold w-full">
-                        <div className="flex flex-col"><span className="text-indigo-600">R 實用型</span><span className="text-slate-500">喜歡動手做、操作</span></div>
-                        <div className="flex flex-col"><span className="text-emerald-600">I 研究型</span><span className="text-slate-500">喜歡發掘、思考</span></div>
-                        <div className="flex flex-col"><span className="text-amber-600">A 藝術型</span><span className="text-slate-500">喜歡創作、表達</span></div>
-                        <div className="flex flex-col"><span className="text-rose-600">S 社會型</span><span className="text-slate-500">喜歡幫助別人</span></div>
-                        <div className="flex flex-col"><span className="text-blue-600">E 企業型</span><span className="text-slate-500">喜歡領導、影響</span></div>
-                        <div className="flex flex-col"><span className="text-slate-600">C 常規型</span><span className="text-slate-500">喜歡組織與細節</span></div>
+                    <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full relative overflow-hidden text-left shadow-sm">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-bl-[100px] -z-10 opacity-50"></div>
+                      <div className="flex items-center gap-3 mb-5 pb-4 border-b-2 border-slate-200">
+                        <div className="text-2xl">💡</div>
+                        <h4 className="text-xl font-black text-slate-800">認識荷倫碼性向</h4>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-10 bg-indigo-100 text-indigo-700 font-black rounded-xl flex items-center justify-center border-2 border-indigo-200">R</div>
+                          <span className="font-bold text-slate-600 text-base">實用型<span className="text-slate-400 ml-2 font-medium">喜歡動手做、操作機器</span></span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-10 bg-emerald-100 text-emerald-700 font-black rounded-xl flex items-center justify-center border-2 border-emerald-200">I</div>
+                          <span className="font-bold text-slate-600 text-base">研究型<span className="text-slate-400 ml-2 font-medium">喜歡發掘、思考與分析</span></span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-10 bg-amber-100 text-amber-700 font-black rounded-xl flex items-center justify-center border-2 border-amber-200">A</div>
+                          <span className="font-bold text-slate-600 text-base">藝術型<span className="text-slate-400 ml-2 font-medium">喜歡設計創作與表達自我</span></span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-10 bg-rose-100 text-rose-700 font-black rounded-xl flex items-center justify-center border-2 border-rose-200">S</div>
+                          <span className="font-bold text-slate-600 text-base">社會型<span className="text-slate-400 ml-2 font-medium">喜歡幫助別人、與人互動</span></span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-10 bg-blue-100 text-blue-700 font-black rounded-xl flex items-center justify-center border-2 border-blue-200">E</div>
+                          <span className="font-bold text-slate-600 text-base">企業型<span className="text-slate-400 ml-2 font-medium">喜歡組織、領導與影響他人</span></span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-10 bg-slate-200 text-slate-700 font-black rounded-xl flex items-center justify-center border-2 border-slate-300">C</div>
+                          <span className="font-bold text-slate-600 text-base">常規型<span className="text-slate-400 ml-2 font-medium">喜歡井然有序、處理細節</span></span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
-
-              {/* Group Selector Modal inside the Encyclopedia */}
-              <AnimatePresence>
-                {isSelectorOpen && (
-                  <div className="absolute inset-0 z-20 flex flex-col bg-slate-50">
-                    <motion.div
-                      initial={{ y: '100%' }}
-                      animate={{ y: 0 }}
-                      exit={{ y: '100%' }}
-                      transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                      className="flex-1 flex flex-col w-full h-full bg-white shadow-[-10px_0px_20px_rgba(0,0,0,0.1)]"
-                    >
-                      <div className="p-4 border-b-2 border-slate-900 flex items-center justify-between bg-indigo-50">
-                        <h3 className="font-black text-lg text-slate-900 flex items-center gap-2">
-                          <ListIcon className="w-5 h-5 text-indigo-600" />
-                          選擇職群
-                        </h3>
-                        <button 
-                          onClick={() => setIsSelectorOpen(false)}
-                          className="w-8 h-8 flex items-center justify-center bg-white border-2 border-slate-900 rounded-lg hover:bg-slate-100 active:translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
-                        >
-                          <X className="w-4 h-4 text-slate-900" />
-                        </button>
-                      </div>
-                      
-                      <div className="p-4 border-b border-slate-200">
-                        <div className="relative">
-                          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                          <input 
-                            type="text" 
-                            placeholder="搜尋群別、科別或職業..." 
-                            value={searchTerm}
-                            onChange={e => setSearchTerm(e.target.value)}
-                            className="w-full pl-9 pr-3 py-3 bg-slate-50 rounded-xl border-2 border-slate-300 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all font-bold"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
-                        {filteredGroups.length === 0 ? (
-                          <div className="text-center py-12 text-slate-400 font-bold">找不到相符的職群或科別</div>
-                        ) : (
-                          filteredGroups.map(group => (
-                            <button
-                              key={group.id}
-                              onClick={() => {
-                                setSelectedGroup(group.id);
-                                setIsSelectorOpen(false);
-                              }}
-                              className={`w-full text-left p-4 rounded-xl flex items-center justify-between transition-all group/btn ${
-                                selectedGroup === group.id 
-                                  ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] border-2 border-slate-900' 
-                                  : 'bg-white text-slate-700 hover:bg-indigo-50 border-2 border-slate-200 hover:border-slate-900 shadow-sm hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]'
-                              }`}
-                            >
-                              <div className="flex items-center gap-4">
-                                <span className="text-2xl lg:text-3xl">{group.icon}</span>
-                                <span className="font-black text-lg">{group.label}</span>
-                              </div>
-                              <ChevronRight className={`w-5 h-5 ${selectedGroup === group.id ? 'text-white' : 'text-slate-400 group-hover/btn:text-slate-900'} transition-colors`} />
-                            </button>
-                          ))
-                        )}
-                      </div>
-                    </motion.div>
-                  </div>
-                )}
-              </AnimatePresence>
-
             </div>
           </motion.div>
         </div>
@@ -431,4 +475,5 @@ export default function VocationalEncyclopediaModal({ isOpen, onClose }: Props) 
     </AnimatePresence>
   );
 }
+
 
