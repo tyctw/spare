@@ -3,21 +3,21 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle } from 'lucide-react';
 
 const vocationalGroupsList = [
-  { id: '機械群', label: '機械群', icon: '⚙️' },
-  { id: '動力機械群', label: '動力機械群', icon: '🚗' },
-  { id: '電機與電子群', label: '電機與電子群', icon: '⚡' },
-  { id: '化工群', label: '化工群', icon: '🧪' },
-  { id: '土木與建築群', label: '土木與建築群', icon: '🏗️' },
-  { id: '商業與管理群', label: '商業與管理群', icon: '💼' },
-  { id: '外語群', label: '外語群', icon: '🌍' },
-  { id: '設計群', label: '設計群', icon: '🎨' },
-  { id: '農業群', label: '農業群', icon: '🌱' },
-  { id: '食品群', label: '食品群', icon: '🍔' },
-  { id: '家政群', label: '家政群', icon: '🏠' },
-  { id: '餐旅群', label: '餐旅群', icon: '🏨' },
-  { id: '水產群', label: '水產群', icon: '🐟' },
-  { id: '海事群', label: '海事群', icon: '🚢' },
-  { id: '藝術群', label: '藝術群', icon: '🎭' }
+  { id: '機械群', label: '機械群', icon: '⚙️', holland: 'R / I' },
+  { id: '動力機械群', label: '動力機械群', icon: '🚗', holland: 'R / I' },
+  { id: '電機與電子群', label: '電機與電子群', icon: '⚡', holland: 'R / I / C' },
+  { id: '化工群', label: '化工群', icon: '🧪', holland: 'I / R' },
+  { id: '土木與建築群', label: '土木與建築群', icon: '🏗️', holland: 'R / I / A' },
+  { id: '商業與管理群', label: '商業與管理群', icon: '💼', holland: 'E / C' },
+  { id: '外語群', label: '外語群', icon: '🌍', holland: 'S / A / E' },
+  { id: '設計群', label: '設計群', icon: '🎨', holland: 'A / R' },
+  { id: '農業群', label: '農業群', icon: '🌱', holland: 'R / I' },
+  { id: '食品群', label: '食品群', icon: '🍔', holland: 'R / I / A' },
+  { id: '家政群', label: '家政群', icon: '🏠', holland: 'S / A / R' },
+  { id: '餐旅群', label: '餐旅群', icon: '🏨', holland: 'S / E' },
+  { id: '水產群', label: '水產群', icon: '🐟', holland: 'R / I' },
+  { id: '海事群', label: '海事群', icon: '🚢', holland: 'R / E / C' },
+  { id: '藝術群', label: '藝術群', icon: '🎭', holland: 'A' }
 ];
 
 interface Props {
@@ -69,10 +69,16 @@ export default function VocationalModal({ isOpen, onClose, selectedGroups, onCha
                 <X className="w-6 h-6" />
               </button>
             </div>
+            <div className="p-4 bg-amber-50 border-b border-slate-200 flex items-start gap-2">
+              <span className="text-xl">💡</span>
+              <p className="text-sm font-bold text-slate-700 leading-relaxed">
+                建議可以先透過「<a href="https://www.google.com/search?q=%E8%8D%B7%E5%80%AB%E7%A2%BC%E6%B8%AC%E9%A9%97" target="_blank" rel="noreferrer" className="text-indigo-600 underline hover:text-indigo-800">荷倫碼(Holland)性向測驗</a>」了解自己的優勢能力（R實用、I研究、A藝術、S社會、E企業、C常規），再來勾選適合的職群喔！
+              </p>
+            </div>
             <div className="p-6 overflow-y-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <button
                 onClick={() => toggleGroup('all')}
-                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-2 ${
                   isAllSelected ? 'bg-indigo-600 border-slate-900 text-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]' : 'bg-slate-50 border-slate-200 hover:border-indigo-400 hover:-translate-y-1'
                 }`}
               >
@@ -85,12 +91,15 @@ export default function VocationalModal({ isOpen, onClose, selectedGroups, onCha
                   <button
                     key={group.id}
                     onClick={() => toggleGroup(group.id)}
-                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
                       isSelected && !isAllSelected ? 'bg-indigo-100 border-slate-900 text-indigo-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]' : 'bg-white border-slate-200 hover:border-indigo-400 hover:-translate-y-1'
                     } ${(isAllSelected && group.id !== 'all') && 'opacity-60 grayscale'}`}
                   >
                     <span className="text-3xl mb-1">{group.icon}</span>
                     <span className="font-bold text-slate-700">{group.label}</span>
+                    <div className="mt-1 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px] font-black text-slate-500 mt-auto">
+                      {group.holland}
+                    </div>
                   </button>
                 );
               })}
