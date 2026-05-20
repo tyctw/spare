@@ -104,6 +104,21 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                         {schools.map((s, i) => <td key={s.name} className={`p-5 font-bold border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.type || '未知'}</td>)}
                       </tr>
                       <tr className="border-b border-slate-200">
+                        <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">地理位置</td>
+                        {schools.map((s, i) => (
+                          <td key={s.name} className={`p-5 font-bold border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
+                            <a 
+                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.name)}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 w-fit"
+                            >
+                              <ExternalLink className="w-4 h-4" /> <span>學校地圖</span>
+                            </a>
+                          </td>
+                        ))}
+                      </tr>
+                      <tr className="border-b border-slate-200">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">公立 / 私立</td>
                         {schools.map((s, i) => (
                           <td key={s.name} className={`p-5 font-bold border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
