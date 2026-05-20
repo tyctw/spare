@@ -1554,58 +1554,85 @@ export default function App() {
       </InfoModal>
 
       {/* Footer */}
-      <footer className="mt-32 w-full px-4 mb-8">
-        <div className="max-w-6xl mx-auto rounded-[3rem] bg-slate-900 flex flex-col overflow-hidden relative border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(251,191,36,1)]">
-          {/* Abstract background shapes */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
-
-          <div className="relative z-10 px-8 py-16 md:px-16 md:py-20 flex flex-col xl:flex-row items-center xl:items-start justify-between gap-12">
+      <footer className="mt-24 w-full px-4 sm:px-6 lg:px-8 pb-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-[3rem] border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col">
             
-            <div className="flex flex-col items-center xl:items-start text-center xl:text-left gap-6 max-w-md">
-              <div className="flex items-center gap-4">
-                <div className="bg-amber-400 p-4 rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 hover:rotate-0 transition-transform duration-300">
-                  <Compass className="w-10 h-10 text-slate-900" />
+            {/* Top Section */}
+            <div className="p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row justify-between items-center xl:items-start gap-12 bg-slate-50 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-100 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 opacity-60"></div>
+              <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-100 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 opacity-60"></div>
+
+              <div className="flex flex-col items-center xl:items-start text-center xl:text-left gap-6 max-w-lg relative z-10 w-full">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="bg-indigo-600 p-4 rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 hover:rotate-0 transition-transform duration-300">
+                    <Compass className="w-10 h-10 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-1">TW全國會考</h2>
+                    <div className="inline-block bg-amber-200 px-3 py-1 rounded-lg border-2 border-slate-900 shadow-sm -rotate-2">
+                       <h3 className="text-sm sm:text-base font-black tracking-widest text-slate-800 uppercase">落點分析系統</h3>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-1">TW全國會考</h2>
-                  <h3 className="text-xl md:text-2xl font-bold tracking-widest text-indigo-300 uppercase">落點分析系統</h3>
+                <p className="text-slate-600 font-bold leading-relaxed text-sm sm:text-base">
+                  我們致力於提供最精準的會考落點資訊，幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。
+                </p>
+                <div className="inline-flex items-center justify-center xl:justify-start gap-2 px-4 py-2.5 bg-white rounded-full border-2 border-slate-200 w-fit shadow-sm">
+                  <div className="relative flex h-3 w-3 items-center justify-center">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                  </div>
+                  <span className="text-slate-600 font-bold text-xs sm:text-sm">非政府官方機構 · 運算僅供參考</span>
                 </div>
               </div>
-              <p className="text-slate-400 font-bold leading-relaxed text-sm lg:text-base">
-                我們致力於提供最精準的會考落點資訊，幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。
-              </p>
-              <div className="flex items-center gap-2 px-4 py-2 bg-slate-800/80 rounded-full border border-slate-700/50 backdrop-blur-sm">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-[pulse_2s_ease-in-out_infinite]"></span>
-                <span className="text-slate-300 font-bold text-xs lg:text-sm">非政府官方機構，運算數值僅供參考</span>
+
+              <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto relative z-10">
+                <button 
+                  onClick={() => setActiveModal('terms')}
+                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-6 bg-white border-4 border-slate-900 rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 bg-amber-100 border-2 border-slate-900 rounded-xl mb-4 group-hover:scale-110 transition-transform -rotate-6 group-hover:rotate-0">
+                    <Shield className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <span className="font-black text-slate-900 text-lg sm:text-xl mb-1">隱私與服務條款</span>
+                  <span className="text-sm font-bold text-slate-500 flex items-center gap-1 group-hover:text-amber-600 transition-colors">
+                    閱讀詳細規定 <ArrowRight className="w-4 h-4" />
+                  </span>
+                </button>
+
+                <a 
+                  href="mailto:tyctw.analyze@gmail.com" 
+                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-6 bg-slate-900 border-4 border-slate-900 rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
+                >
+                  <div className="flex items-center justify-center w-12 h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-4 group-hover:scale-110 transition-transform rotate-6 group-hover:rotate-0">
+                    <Mail className="w-6 h-6 text-indigo-400" />
+                  </div>
+                  <span className="font-black text-white text-lg sm:text-xl mb-1">聯絡我們信箱</span>
+                  <span className="text-sm font-bold text-slate-400 group-hover:text-indigo-300 transition-colors break-all">
+                    tyctw.analyze@gmail.com
+                  </span>
+                </a>
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center gap-4 lg:gap-6 w-full xl:w-auto">
-              <button 
-                onClick={() => setActiveModal('terms')}
-                className="w-full xl:w-auto px-8 py-5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 hover:border-slate-500 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all group flex flex-col items-center xl:items-start outline-none"
-              >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Copyright className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors" />
-                  <span className="font-black text-white text-xl">版權所有 © {new Date().getFullYear()}</span>
-                </div>
-                <span className="text-sm font-bold text-slate-400 group-hover:text-white flex items-center gap-1.5 transition-colors underline underline-offset-2">
-                  <Shield className="w-4 h-4" /> 隱私權與服務條款
+            {/* Bottom Copyright Section */}
+            <div className="bg-amber-400 border-t-4 border-slate-900 p-6 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4 overflow-hidden relative">
+              <div className="flex items-center gap-2 z-10 bg-amber-400">
+                <Copyright className="w-5 h-5 text-slate-900" />
+                <span className="font-black text-slate-900 text-lg sm:text-xl tracking-tight">COPYRIGHT {new Date().getFullYear()}</span>
+              </div>
+              <div className="z-10 text-center sm:text-right bg-amber-400">
+                <span className="font-black text-slate-900 text-sm sm:text-base border-b-2 border-slate-900/30 pb-0.5">ALL RIGHTS RESERVED.</span>
+              </div>
+              {/* Marquee text in background */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 overflow-hidden whitespace-nowrap z-0">
+                <span className="text-5xl font-black text-slate-900 tracking-tighter uppercase px-4 select-none">
+                  TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析
                 </span>
-              </button>
-              
-              <a 
-                href="mailto:tyctw.analyze@gmail.com" 
-                className="w-full xl:w-auto px-8 py-5 bg-indigo-600 hover:bg-indigo-500 border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all group flex flex-col items-center xl:items-start text-white outline-none"
-              >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Mail className="w-4 h-4 text-indigo-300" />
-                  <span className="font-black text-sm uppercase tracking-widest text-indigo-200">聯絡信箱</span>
-                </div>
-                <span className="font-black text-lg group-hover:underline">tyctw.analyze@gmail.com</span>
-              </a>
+              </div>
             </div>
+            
           </div>
         </div>
       </footer>
