@@ -423,54 +423,58 @@ export default function VocationalEncyclopediaModal({ isOpen, onClose, onOpenHol
                     </motion.div>
                   </div>
                 ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-white m-6 rounded-[2rem] border-4 border-slate-200 border-dashed">
-                    <div className="w-32 h-32 bg-slate-50 text-slate-300 border-4 border-slate-100 rounded-[2rem] flex items-center justify-center rotate-6 mb-8 group-hover:rotate-12 transition-transform shadow-inner">
-                      <BookOpen className="w-16 h-16" />
-                    </div>
-                    <h3 className="text-3xl font-black text-slate-400 mb-4 tracking-tight">選擇左側職群</h3>
-                    <p className="text-slate-400 font-bold text-lg max-w-sm mb-12">
-                      探索15大職群的詳細資訊、適合特質與未來發展方向，幫助你規劃高中學習藍圖！
-                    </p>
-                    
-                    <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full relative overflow-hidden text-left shadow-sm">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-bl-[100px] -z-10 opacity-50"></div>
-                      <div className="flex items-center justify-between mb-5 pb-4 border-b-2 border-slate-200">
-                        <div className="flex items-center gap-3">
-                          <div className="text-2xl">💡</div>
-                          <h4 className="text-xl font-black text-slate-800">認識荷倫碼性向</h4>
+                  <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6">
+                    <div className="min-h-full flex flex-col bg-white rounded-[2rem] border-4 border-slate-200 border-dashed p-6 sm:p-8">
+                      <div className="my-auto flex flex-col items-center justify-center text-center w-full py-4">
+                        <div className="w-24 h-24 sm:w-32 sm:h-32 bg-slate-50 text-slate-300 border-4 border-slate-100 rounded-[2rem] flex items-center justify-center rotate-6 mb-6 sm:mb-8 group-hover:rotate-12 transition-transform shadow-inner shrink-0">
+                          <BookOpen className="w-12 h-12 sm:w-16 sm:h-16" />
                         </div>
-                        <button 
-                          onClick={onOpenHollandTest}
-                          className="bg-indigo-600 text-white text-sm font-black px-3 py-1.5 rounded-lg hover:bg-indigo-500 border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0.5 active:shadow-none transition-all whitespace-nowrap"
-                        >
-                          立即測驗
-                        </button>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-10 bg-indigo-100 text-indigo-700 font-black rounded-xl flex items-center justify-center border-2 border-indigo-200">R</div>
-                          <span className="font-bold text-slate-600 text-base">實用型<span className="text-slate-400 ml-2 font-medium">喜歡動手做、操作機器</span></span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-10 bg-emerald-100 text-emerald-700 font-black rounded-xl flex items-center justify-center border-2 border-emerald-200">I</div>
-                          <span className="font-bold text-slate-600 text-base">研究型<span className="text-slate-400 ml-2 font-medium">喜歡發掘、思考與分析</span></span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-10 bg-amber-100 text-amber-700 font-black rounded-xl flex items-center justify-center border-2 border-amber-200">A</div>
-                          <span className="font-bold text-slate-600 text-base">藝術型<span className="text-slate-400 ml-2 font-medium">喜歡設計創作與表達自我</span></span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-10 bg-rose-100 text-rose-700 font-black rounded-xl flex items-center justify-center border-2 border-rose-200">S</div>
-                          <span className="font-bold text-slate-600 text-base">社會型<span className="text-slate-400 ml-2 font-medium">喜歡幫助別人、與人互動</span></span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-10 bg-blue-100 text-blue-700 font-black rounded-xl flex items-center justify-center border-2 border-blue-200">E</div>
-                          <span className="font-bold text-slate-600 text-base">企業型<span className="text-slate-400 ml-2 font-medium">喜歡組織、領導與影響他人</span></span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-10 bg-slate-200 text-slate-700 font-black rounded-xl flex items-center justify-center border-2 border-slate-300">C</div>
-                          <span className="font-bold text-slate-600 text-base">常規型<span className="text-slate-400 ml-2 font-medium">喜歡井然有序、處理細節</span></span>
+                        <h3 className="text-2xl sm:text-3xl font-black text-slate-400 mb-3 sm:mb-4 tracking-tight shrink-0">選擇左側職群</h3>
+                        <p className="text-slate-400 font-bold text-base sm:text-lg max-w-sm mb-8 sm:mb-12 shrink-0">
+                          探索15大職群的詳細資訊、適合特質與未來發展方向，幫助你規劃高中學習藍圖！
+                        </p>
+                        
+                        <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full relative overflow-hidden text-left shadow-sm shrink-0">
+                          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-bl-[100px] -z-10 opacity-50"></div>
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-5 pb-4 border-b-2 border-slate-200 gap-4">
+                            <div className="flex items-center gap-3">
+                              <div className="text-2xl hidden sm:block">💡</div>
+                              <h4 className="text-xl font-black text-slate-800">認識荷倫碼性向</h4>
+                            </div>
+                            <button 
+                              onClick={onOpenHollandTest}
+                              className="bg-indigo-600 text-white text-sm font-black px-4 py-2 sm:px-3 sm:py-1.5 rounded-lg hover:bg-indigo-500 border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0.5 active:shadow-none transition-all whitespace-nowrap text-center"
+                            >
+                              立即測驗
+                            </button>
+                          </div>
+                          
+                          <div className="space-y-3 sm:space-y-4">
+                            <div className="flex items-start sm:items-center gap-3">
+                              <div className="w-10 h-10 sm:w-12 sm:h-10 bg-indigo-100 text-indigo-700 font-black rounded-xl flex items-center justify-center border-2 border-indigo-200 flex-shrink-0">R</div>
+                              <span className="font-bold text-slate-600 text-sm sm:text-base flex flex-col sm:flex-row sm:items-center leading-tight sm:leading-normal mt-1 sm:mt-0">實用型<span className="text-slate-400 sm:ml-2 font-medium">喜歡動手做、操作機器</span></span>
+                            </div>
+                            <div className="flex items-start sm:items-center gap-3">
+                              <div className="w-10 h-10 sm:w-12 sm:h-10 bg-emerald-100 text-emerald-700 font-black rounded-xl flex items-center justify-center border-2 border-emerald-200 flex-shrink-0">I</div>
+                              <span className="font-bold text-slate-600 text-sm sm:text-base flex flex-col sm:flex-row sm:items-center leading-tight sm:leading-normal mt-1 sm:mt-0">研究型<span className="text-slate-400 sm:ml-2 font-medium">喜歡發掘、思考與分析</span></span>
+                            </div>
+                            <div className="flex items-start sm:items-center gap-3">
+                              <div className="w-10 h-10 sm:w-12 sm:h-10 bg-amber-100 text-amber-700 font-black rounded-xl flex items-center justify-center border-2 border-amber-200 flex-shrink-0">A</div>
+                              <span className="font-bold text-slate-600 text-sm sm:text-base flex flex-col sm:flex-row sm:items-center leading-tight sm:leading-normal mt-1 sm:mt-0">藝術型<span className="text-slate-400 sm:ml-2 font-medium">喜歡設計創作與表達自我</span></span>
+                            </div>
+                            <div className="flex items-start sm:items-center gap-3">
+                              <div className="w-10 h-10 sm:w-12 sm:h-10 bg-rose-100 text-rose-700 font-black rounded-xl flex items-center justify-center border-2 border-rose-200 flex-shrink-0">S</div>
+                              <span className="font-bold text-slate-600 text-sm sm:text-base flex flex-col sm:flex-row sm:items-center leading-tight sm:leading-normal mt-1 sm:mt-0">社會型<span className="text-slate-400 sm:ml-2 font-medium">喜歡幫助別人、與人互動</span></span>
+                            </div>
+                            <div className="flex items-start sm:items-center gap-3">
+                              <div className="w-10 h-10 sm:w-12 sm:h-10 bg-blue-100 text-blue-700 font-black rounded-xl flex items-center justify-center border-2 border-blue-200 flex-shrink-0">E</div>
+                              <span className="font-bold text-slate-600 text-sm sm:text-base flex flex-col sm:flex-row sm:items-center leading-tight sm:leading-normal mt-1 sm:mt-0">企業型<span className="text-slate-400 sm:ml-2 font-medium">喜歡組織、領導與影響他人</span></span>
+                            </div>
+                            <div className="flex items-start sm:items-center gap-3">
+                              <div className="w-10 h-10 sm:w-12 sm:h-10 bg-slate-200 text-slate-700 font-black rounded-xl flex items-center justify-center border-2 border-slate-300 flex-shrink-0">C</div>
+                              <span className="font-bold text-slate-600 text-sm sm:text-base flex flex-col sm:flex-row sm:items-center leading-tight sm:leading-normal mt-1 sm:mt-0">常規型<span className="text-slate-400 sm:ml-2 font-medium">喜歡井然有序、處理細節</span></span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
