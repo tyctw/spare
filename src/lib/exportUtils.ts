@@ -8,7 +8,7 @@ export const exportTxt = (data: any, regionName: string) => {
 【基本資料】
 身份: ${data.identity === 'student' ? '學生' : data.identity === 'teacher' ? '老師' : '家長'}
 分析區域: ${regionName}
-選取偏好: ${data.scores.schoolOwnership === 'all' ? '公私立不拘' : data.scores.schoolOwnership === 'public' ? '公立' : '私立'} / ${data.scores.schoolType === 'all' ? '普通與職業類科' : data.scores.schoolType}
+選取偏好: ${data.scores.schoolOwnership === 'all' ? '公私立不拘' : data.scores.schoolOwnership === 'public' ? '公立' : '私立'} / ${data.scores.schoolType === 'all' ? '普通與職業類科' : data.scores.schoolType}${data.scores.schoolType === '職業類科' && data.vocationalGroups ? ` (群別: ${data.vocationalGroups.includes('all') ? '全群別不拘' : data.vocationalGroups.join(', ')})` : ''}
 產生時間: ${new Date().toLocaleString('zh-TW')}
 
 【您的會考成績】
@@ -54,7 +54,8 @@ export const exportJson = (data: any) => {
       region: data.scores.region,
       preferences: {
         ownership: data.scores.schoolOwnership,
-        type: data.scores.schoolType
+        type: data.scores.schoolType,
+        vocationalGroups: data.scores.schoolType === '職業類科' ? data.vocationalGroups : undefined
       }
     },
     examScores: {
@@ -93,6 +94,9 @@ export const exportExcel = (data: any, regionName: string) => {
     ["【基本資料】"],
     ["產生日期", new Date().toLocaleString('zh-TW')],
     ["分析區域", regionName],
+    ["選取偏好-公立私立", data.scores.schoolOwnership === 'all' ? '公立與私立整體評選' : data.scores.schoolOwnership === 'public' ? '僅評選公立學校' : '僅評選私立學校'],
+    ["選取偏好-學校類型", data.scores.schoolType === 'all' ? '普通與職業類科' : data.scores.schoolType],
+    ...(data.scores.schoolType === '職業類科' && data.vocationalGroups ? [["選取偏好-職業群別", data.vocationalGroups.includes('all') ? '全群別不拘' : data.vocationalGroups.join(', ')]] : []),
     ["使用者身份", data.identity === 'student' ? '學生' : data.identity === 'teacher' ? '老師' : '家長'],
     ["", ""],
     ["【會考成績】"],
@@ -161,6 +165,7 @@ export const printResults = (data: any, regionName: string) => {
   const identityStr = data.identity === 'student' ? '學生' : data.identity === 'teacher' ? '老師' : '家長';
   const ownershipStr = data.scores.schoolOwnership === 'all' ? '公私立不拘' : data.scores.schoolOwnership === 'public' ? '公立' : '私立';
   const typeStr = data.scores.schoolType === 'all' ? '普通與職業類科' : data.scores.schoolType;
+  const groupStr = data.scores.schoolType === '職業類科' && data.vocationalGroups ? `<div class="info-item"><div class="info-label">職業群別</div><div class="info-value">${data.vocationalGroups.includes('all') ? '全群別不拘' : data.vocationalGroups.join(', ')}</div></div>` : '';
 
   const currentUrl = window.location.href;
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(currentUrl)}`;
@@ -552,6 +557,7 @@ export const printResults = (data: any, regionName: string) => {
             <div class="info-item"><div class="info-label">使用者身份</div><div class="info-value">${identityStr}</div></div>
             <div class="info-item"><div class="info-label">學校屬性</div><div class="info-value">${ownershipStr}</div></div>
             <div class="info-item"><div class="info-label">學校類型</div><div class="info-value">${typeStr}</div></div>
+            ${groupStr}
             <div class="info-item"><div class="info-label">系統辨識碼</div><div class="info-value" style="font-family: monospace; color: #64748b;">${data.scores.invitationCode || '---'}</div></div>
           </div>
         </div>
@@ -873,45 +879,45 @@ export const printSchoolTypes = () => {
         <div class="section-title">四種類型詳細解析</div>
         <div class="card-grid">
           <div class="card school-pt">
-            <h3>普通型高中</h3>
-            <p><strong>適合:</strong> 想持續探索學術領域，未來以升學為主。</p>
-            <p><strong>課程:</strong> 以學科為主（國/英/數/自然/社會）＋多元選修。</p>
-            <p><strong>出路:</strong> 以升讀大學（含科技大學）為主。</p>
+            <h3>普通型高中 (就讀3年)</h3>
+            <p><strong>適合:</strong> 對學術研究有濃厚興趣、尚未決定特定職業方向、想持續探索多元學科領域的學生。</p>
+            <p><strong>課程:</strong> 以學術知能為核心，強調基礎考科（國/英/數/自然/社會），並搭配通識教育與多元選修。</p>
+            <p><strong>出路:</strong> 主要透過學測、分科測驗，升讀<strong>一般大學</strong>。</p>
           </div>
           
           <div class="card school-zh">
-            <h3>綜合型高中</h3>
-            <p><strong>適合:</strong> 希望邊學邊探索，尚未確定發展方向。</p>
-            <p><strong>課程:</strong> 融合普通型與技術型課程，可依興趣選修。</p>
-            <p><strong>出路:</strong> 升讀大學、科大、專科，或選擇就業。</p>
+            <h3>綜合型高中 (就讀3年)</h3>
+            <p><strong>適合:</strong> 畢業前尚未決定要走學術路線或技術路線，希望多一年的時間一邊學習一邊摸索未來的學生。</p>
+            <p><strong>課程:</strong> 高一不分流修習基礎科目；高二起依志向，自由選修「學術學程」(偏高)或「專門學程」(偏職)。</p>
+            <p><strong>出路:</strong> 可報考學測升讀一般大學，或報考統測升讀科大/專科，也可選擇就業。</p>
           </div>
           
           <div class="card school-js">
-            <h3>技術型高中</h3>
-            <p><strong>適合:</strong> 對技術有興趣，想兼顧升學與就業彈性。</p>
-            <p><strong>課程:</strong> 兼顧普通科目與專業技能課程，並設有實習。</p>
-            <p><strong>出路:</strong> 可直接就業，或升學至科大、專科。</p>
+            <h3>技術型高中/高職 (就讀3年)</h3>
+            <p><strong>適合:</strong> 對特定技術領域已有興趣，喜歡動手實作，希望能提早學習一技之長的學生。</p>
+            <p><strong>課程:</strong> 第一年涵蓋共同科目與基礎專業；後兩年著重於進階專業科目與大量實習實作，培養實戰力。</p>
+            <p><strong>出路:</strong> 統測為主，升讀科大、專科學校，或憑技能投入職場就業。</p>
           </div>
           
           <div class="card school-dk">
-            <h3>單科型高中</h3>
-            <p><strong>適合:</strong> 對特定領域(體育/藝術/科學)有興趣或天賦。</p>
-            <p><strong>課程:</strong> 專注於特定領域，課程集中且深入。</p>
-            <p><strong>出路:</strong> 升讀相關科系或直接投身專長領域。</p>
+            <h3>單科型高中 (就讀3年)</h3>
+            <p><strong>適合:</strong> 已具備極高的專長天賦（如術科頂尖）或非常明確的高度興趣，決心深耕單一領域者。</p>
+            <p><strong>課程:</strong> 針對特定領域（如體育/藝術/科學/音樂等）提供高度專業且密集的訓練。</p>
+            <p><strong>出路:</strong> 術科考試或保送甄試為主，升學至特定領域相關學系，或成為職業選手/藝術家。</p>
           </div>
 
           <div class="card school-wz card-full">
-            <h3>五專 (五年制專科學校)</h3>
+            <h3>五專 (五年制專科學校) - 就讀5年</h3>
             <div style="display: flex; gap: 24px;">
               <div style="flex: 1;">
-                <p><strong>學制:</strong> 五年一貫(前3年為高中職，後2年專科)。</p>
-                <p><strong>招生:</strong> 優免、聯免、完免。</p>
-                <p><strong>課程:</strong> 前段為基礎，後段強化專業與實習。畢業得副學士。</p>
+                <p><strong>學制:</strong> 五年一貫(前3年為高中職，後2年專科)，免受升大學階段性考試壓力。</p>
+                <p><strong>招生:</strong> 採全國聯合招生，提供優免、聯免、完免等管道。</p>
+                <p><strong>課程:</strong> 前段為基礎，後段著重專業實務知能與企業實習。修畢五年課程授予<strong>副學士學位</strong>。</p>
               </div>
               <div style="flex: 1;">
-                <p><strong>適合:</strong> 確立興趣想提早進入專業領域、縮短訓練歷程者。</p>
-                <p><strong>就業:</strong> 直接進入相關專業領域。</p>
-                <p><strong>升學:</strong> 銜接二技、插班大學、研究所。</p>
+                <p><strong>適合:</strong> 確立興趣（如護理、外語、資訊等），想避開升學考，盡早培養職場能力者。</p>
+                <p><strong>就業:</strong> 以一技之長提早進入職場，起薪通常具備優勢。</p>
+                <p><strong>升學:</strong> 可報考二技(取得學士)、插考大學轉學考，或畢業滿三年以上可報考研究所。</p>
               </div>
             </div>
           </div>
