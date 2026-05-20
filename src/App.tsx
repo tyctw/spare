@@ -5,7 +5,7 @@ import {
   Search, Building2, Map, Compass, Anchor, Cpu,
   Mountain, Sparkles, AlertCircle, ChevronRight, ChevronDown,
   Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail, Link as LinkIcon,
-  Target, Lightbulb, Flame, ShieldCheck, Layers
+  Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright
 } from 'lucide-react';
 import VocationalModal from './components/VocationalModal';
 import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
@@ -1321,6 +1321,18 @@ export default function App() {
                       <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
                         <div className="p-3 flex flex-col gap-2">
                             <button
+                              onClick={() => { setIsHollandTestOpen(true); setIsNavMenuOpen(false); }}
+                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="p-1.5 bg-purple-100 border-2 border-slate-900 rounded-lg">
+                                  <Brain className="w-5 h-5 text-purple-600" />
+                                </div>
+                                <span className="font-bold text-slate-900">荷倫碼性向測驗</span>
+                              </div>
+                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                            </button>
+                            <button
                               onClick={() => { setIsEncyclopediaOpen(true); setIsNavMenuOpen(false); }}
                               className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
                             >
@@ -1542,45 +1554,58 @@ export default function App() {
       </InfoModal>
 
       {/* Footer */}
-      <footer className="mt-32 max-w-6xl mx-auto px-4 mb-16">
-        <div className="bg-slate-900 border-4 border-slate-900 rounded-[2rem] p-8 sm:p-12 shadow-[8px_8px_0px_0px_rgba(251,191,36,1)] flex flex-col md:flex-row items-center justify-between gap-10 text-white relative overflow-hidden">
-          {/* Background decoration */}
-          <div className="absolute -right-10 -top-10 text-[160px] opacity-10 pointer-events-none select-none">
-            <Award className="w-64 h-64" />
-          </div>
-          
-          <div className="flex flex-col gap-5 relative z-10 w-full md:w-auto">
-            <div className="flex items-center gap-4">
-              <div className="bg-amber-400 p-3 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] rotate-3 hover:rotate-6 transition-transform">
-                <Compass className="w-8 h-8 text-slate-900" />
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-wide text-white">TW全國會考落點分析</h2>
-            </div>
-            <p className="text-slate-300 font-bold flex items-center gap-3 text-sm sm:text-base bg-slate-800/80 px-4 py-2.5 rounded-full border border-slate-700 w-fit">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-[pulse_2s_ease-in-out_infinite]"></span>
-              非政府官方機構，運算數值僅供參考
-            </p>
-          </div>
+      <footer className="mt-32 w-full px-4 mb-8">
+        <div className="max-w-6xl mx-auto rounded-[3rem] bg-slate-900 flex flex-col overflow-hidden relative border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(251,191,36,1)]">
+          {/* Abstract background shapes */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto relative z-10">
-            <button 
-              onClick={() => setActiveModal('terms')}
-              className="bg-slate-800 border-2 border-slate-700 hover:border-slate-500 rounded-2xl p-5 flex flex-col justify-between gap-1.5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-none transition-all group text-left outline-none"
-            >
-              <div>
-                <span className="text-xs font-black text-slate-400 group-hover:text-amber-400 uppercase tracking-wider block mb-1 transition-colors">版權所有</span>
-                <span className="font-black text-amber-400 group-hover:text-amber-300 text-lg sm:text-xl transition-colors">© {new Date().getFullYear()}</span>
+          <div className="relative z-10 px-8 py-16 md:px-16 md:py-20 flex flex-col xl:flex-row items-center xl:items-start justify-between gap-12">
+            
+            <div className="flex flex-col items-center xl:items-start text-center xl:text-left gap-6 max-w-md">
+              <div className="flex items-center gap-4">
+                <div className="bg-amber-400 p-4 rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 hover:rotate-0 transition-transform duration-300">
+                  <Compass className="w-10 h-10 text-slate-900" />
+                </div>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-1">TW全國會考</h2>
+                  <h3 className="text-xl md:text-2xl font-bold tracking-widest text-indigo-300 uppercase">落點分析系統</h3>
+                </div>
               </div>
-              <span className="text-xs font-bold text-slate-400 group-hover:text-white underline underline-offset-2 transition-colors mt-2 flex items-center gap-1">
-                <Shield className="w-3 h-3" /> 隱私權與服務條款
-              </span>
-            </button>
-            <a href="mailto:tyctw.analyze@gmail.com" className="bg-indigo-500 hover:bg-indigo-400 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-none rounded-2xl p-5 flex flex-col gap-1.5 group">
-              <span className="text-xs font-black text-indigo-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Mail className="w-4 h-4" /> 聯絡信箱
-              </span>
-              <span className="font-black text-white group-hover:underline text-sm sm:text-base">tyctw.analyze@gmail.com</span>
-            </a>
+              <p className="text-slate-400 font-bold leading-relaxed text-sm lg:text-base">
+                我們致力於提供最精準的會考落點資訊，幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。
+              </p>
+              <div className="flex items-center gap-2 px-4 py-2 bg-slate-800/80 rounded-full border border-slate-700/50 backdrop-blur-sm">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-[pulse_2s_ease-in-out_infinite]"></span>
+                <span className="text-slate-300 font-bold text-xs lg:text-sm">非政府官方機構，運算數值僅供參考</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row items-center gap-4 lg:gap-6 w-full xl:w-auto">
+              <button 
+                onClick={() => setActiveModal('terms')}
+                className="w-full xl:w-auto px-8 py-5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 hover:border-slate-500 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all group flex flex-col items-center xl:items-start outline-none"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Copyright className="w-5 h-5 text-amber-400 group-hover:text-amber-300 transition-colors" />
+                  <span className="font-black text-white text-xl">版權所有 © {new Date().getFullYear()}</span>
+                </div>
+                <span className="text-sm font-bold text-slate-400 group-hover:text-white flex items-center gap-1.5 transition-colors underline underline-offset-2">
+                  <Shield className="w-4 h-4" /> 隱私權與服務條款
+                </span>
+              </button>
+              
+              <a 
+                href="mailto:tyctw.analyze@gmail.com" 
+                className="w-full xl:w-auto px-8 py-5 bg-indigo-600 hover:bg-indigo-500 border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all group flex flex-col items-center xl:items-start text-white outline-none"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Mail className="w-4 h-4 text-indigo-300" />
+                  <span className="font-black text-sm uppercase tracking-widest text-indigo-200">聯絡信箱</span>
+                </div>
+                <span className="font-black text-lg group-hover:underline">tyctw.analyze@gmail.com</span>
+              </a>
+            </div>
           </div>
         </div>
       </footer>
