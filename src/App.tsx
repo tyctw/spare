@@ -462,7 +462,13 @@ export default function App() {
                     <select
                       className="w-full pl-4 pr-10 py-3 rounded-xl bg-white border-2 border-slate-900 appearance-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 transition-all font-bold text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] cursor-pointer"
                       value={formData.schoolType}
-                      onChange={(e) => updateForm('schoolType', e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        updateForm('schoolType', value);
+                        if (value !== '職業類科') {
+                          setVocationalGroups(['all']);
+                        }
+                      }}
                     >
                       <option value="all">全不拘</option>
                       <option value="普通科">普通科</option>
@@ -1117,6 +1123,7 @@ export default function App() {
         onClose={() => setIsHollandTestOpen(false)}
         onComplete={(recommendedGroups) => {
           setVocationalGroups(recommendedGroups);
+          updateForm('schoolType', '職業類科');
           setIsVocationalOpen(true);
         }}
         onViewEncyclopedia={() => {
