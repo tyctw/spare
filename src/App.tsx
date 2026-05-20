@@ -866,6 +866,22 @@ export default function App() {
                         {formData.schoolType === 'all' ? '全不拘' : formData.schoolType === '普通科' ? '普通科' : '職業類科'}
                       </span>
                     </div>
+                    {formData.schoolType === '職業類科' && (
+                      <div className="bg-white py-3 px-4 rounded-xl border-2 border-slate-900 flex flex-col gap-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                        <span className="text-sm font-bold text-slate-500">職業群別</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {vocationalGroups.length === 1 && vocationalGroups[0] === 'all' ? (
+                            <span className="text-sm font-black text-slate-800">全群別不拘</span>
+                          ) : (
+                            vocationalGroups.map(group => (
+                              <span key={group} className="px-2 py-1 bg-emerald-100 text-emerald-800 border-2 border-emerald-300 rounded-lg text-xs font-black">
+                                {group}
+                              </span>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
