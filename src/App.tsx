@@ -216,14 +216,19 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 pb-32">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 pb-32 overflow-hidden relative">
+      
+      {/* Modern Background Blur Orbs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-300/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-sky-300/20 rounded-full blur-[100px] pointer-events-none"></div>
+
       {/* Dynamic Header */}
       <div className={`fixed top-0 left-0 right-0 z-50 pointer-events-none transition-all duration-300 ${isScrolled ? 'p-2 sm:p-2' : 'p-4 sm:p-6'}`}>
         <div className="max-w-6xl mx-auto pointer-events-auto">
           <header className={`bg-white/90 backdrop-blur-md rounded-3xl flex items-center justify-between transition-all duration-300 will-change-transform ${isScrolled ? 'border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] p-2 sm:p-3' : 'border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] p-3 sm:p-4 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)]'}`}>
             <div className="flex items-center gap-3 sm:gap-4">
               <div className={`bg-indigo-600 border-slate-900 flex items-center justify-center text-white font-black text-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 transform origin-bottom-left hover:rotate-0 transition-all ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 sm:text-xl' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-2xl border-4 sm:text-3xl'}`}>
-                會<span className="text-yellow-300"></span>
+                會
               </div>
               <div className="flex flex-col">
                 <h1 className={`font-black text-slate-900 tracking-tight leading-none uppercase transition-all ${isScrolled ? 'text-lg sm:text-xl' : 'text-xl sm:text-3xl'}`}>會考落點分析</h1>
@@ -257,31 +262,63 @@ export default function App() {
         </div>
       </div>
 
-      <main className="max-w-6xl mx-auto px-4 mt-36 sm:mt-48 space-y-8 relative">
+      <main className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">
         
+        {/* NEW HERO SECTION */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="pt-8 pb-12 sm:pt-12 sm:pb-16 flex flex-col items-center justify-center text-center px-2"
+        >
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 font-black rounded-full mb-8 border-2 border-indigo-200 shadow-sm"
+          >
+            <Sparkles className="w-5 h-5 text-indigo-500" />
+            <span className="tracking-wide">114學年度最新版上線</span>
+          </motion.div>
+          
+          <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
+            探索適合你的<br className="sm:hidden" />
+            <span className="relative inline-block mt-2 sm:mt-0">
+               <span className="relative z-10 text-indigo-600">未來理想校系</span>
+               <span className="absolute bottom-1 sm:bottom-2 left-0 w-full h-4 sm:h-6 bg-amber-300 -z-10 -rotate-1 rounded-sm"></span>
+            </span>
+          </h2>
+          
+          <p className="text-slate-600 font-bold text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
+            我們致力於提供最精準的會考落點資訊，幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。
+          </p>
+        </motion.div>
+
         {/* Announcement Banner */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-indigo-100 border-4 border-slate-900 rounded-2xl p-4 sm:p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden"
+          className="bg-indigo-100 border-4 border-slate-900 rounded-[2rem] p-5 sm:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden"
         >
           <div className="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4">
             <Info className="w-32 h-32 text-indigo-900" />
           </div>
-          <div className="relative z-10 flex flex-col md:flex-row gap-4 items-start md:items-center">
-            <div className="w-12 h-12 bg-indigo-500 text-white rounded-xl border-2 border-slate-900 flex flex-shrink-0 items-center justify-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] -rotate-3">
-               <Info className="w-6 h-6" />
+          <div className="relative z-10 flex flex-col md:flex-row gap-5 items-start md:items-center">
+            <div className="w-14 h-14 bg-indigo-500 text-white rounded-2xl border-4 border-slate-900 flex flex-shrink-0 items-center justify-center shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 hover:rotate-0 transition-transform">
+               <Info className="w-7 h-7" />
             </div>
             <div className="flex-1">
-               <h3 className="font-black text-lg text-slate-900 mb-1">系統公告</h3>
-               <p className="font-bold text-slate-700 text-sm leading-relaxed">
-                 115 學年度最新落點資料將於「公布個人序位區間」後進行全面更新。<br className="hidden md:block"/>
+               <h3 className="font-black text-xl text-slate-900 mb-1.5 flex items-center gap-2">
+                 系統公告 <span className="bg-rose-500 text-white text-[10px] uppercase px-2 py-1 rounded-full animate-pulse border-2 border-slate-900">HOT</span>
+               </h3>
+               <p className="font-bold text-slate-700 text-sm sm:text-base leading-relaxed">
+                 115 學年度最新落點資料將於「公布個人序位區間」後進行全面更新。<br className="hidden lg:block"/>
                  <span className="text-indigo-800">歡迎各高中職校方、補教機構與我們聯繫，提供歷年錄取數據並申請專屬邀請碼！</span>
                </p>
             </div>
-            <a href="mailto:tyctw.analyze@gmail.com" className="w-full md:w-auto text-center px-6 py-3 bg-white border-2 border-slate-900 font-black text-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all">
-              聯絡我們
+            <a href="mailto:tyctw.analyze@gmail.com" className="w-full md:w-auto text-center px-6 py-3 bg-white border-4 border-slate-900 font-black text-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all whitespace-nowrap">
+              提供歷屆數據
             </a>
           </div>
         </motion.div>
