@@ -206,7 +206,7 @@ export default function App() {
   const handleExport = (type: 'txt' | 'excel' | 'json' | 'print') => {
     if (!results) return;
     const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未選擇';
-    const payload = { scores: formData, results, identity: formData.identity };
+    const payload = { scores: formData, results, identity: formData.identity, vocationalGroups };
     switch (type) {
       case 'txt': exportTxt(payload, regionName); break;
       case 'excel': exportExcel(payload, regionName); break;
@@ -1076,21 +1076,32 @@ export default function App() {
                             </div>
                           </div>
 
-                          {/* Compare Button */}
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleComparison(school);
-                            }}
-                            className={`w-full py-2.5 px-4 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-2 transition-all mt-2 ${
-                              isCompared 
-                                ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-indigo-500' 
-                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'
-                            }`}
-                          >
-                            {isCompared ? <Check className="w-4 h-4" /> : <List className="w-4 h-4" />}
-                            {isCompared ? '已加入比較' : '加入比較'}
-                          </button>
+                          {/* Action Buttons */}
+                          <div className="flex gap-2 mt-2">
+                            <a 
+                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex-[2] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-1.5 transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+                            >
+                              <MapPin className="w-4 h-4" /> 學校地圖
+                            </a>
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleComparison(school);
+                              }}
+                              className={`flex-[3] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+                                isCompared 
+                                  ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-indigo-500' 
+                                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'
+                              }`}
+                            >
+                              {isCompared ? <Check className="w-4 h-4" /> : <List className="w-4 h-4" />}
+                              {isCompared ? '已加入比較' : '加入比較'}
+                            </button>
+                          </div>
                         </div>
                       </div>
                       )})}
