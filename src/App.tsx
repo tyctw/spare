@@ -232,7 +232,7 @@ export default function App() {
               </div>
               <div className="flex flex-col">
                 <h1 className={`font-black text-slate-900 tracking-tight leading-none uppercase transition-all ${isScrolled ? 'text-lg sm:text-xl' : 'text-xl sm:text-3xl'}`}>會考落點分析</h1>
-                <span className={`font-bold text-slate-500 hidden sm:block mt-1 transition-all ${isScrolled ? 'text-[10px] sm:text-[10px] h-0 opacity-0 overflow-hidden' : 'text-[10px] sm:text-xs h-auto opacity-100'}`}>114 年最新各區數據分析平台</span>
+                <span className={`font-bold text-slate-500 hidden sm:block mt-1 transition-all ${isScrolled ? 'text-[10px] sm:text-[10px] h-0 opacity-0 overflow-hidden' : 'text-[10px] sm:text-xs h-auto opacity-100'}`}>115 年最新各區數據分析平台</span>
               </div>
             </div>
             <div className="flex items-center gap-3">
