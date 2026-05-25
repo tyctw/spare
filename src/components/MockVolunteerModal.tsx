@@ -248,14 +248,22 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
         <head>
           <title>${regionName} 模擬志願選填清單</title>
           <style>
-            @page { size: A4 portrait; margin: 10mm; }
-            body { font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 0; padding: 0; font-size: 11px; }
-            h1 { text-align: center; color: #0f172a; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 5px; font-size: 18px; }
-            p { margin: 2px 0; font-size: 11px; color: #475569; }
-            table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; table-layout: fixed; }
-            th, td { border: 1px solid #94a3b8; padding: 4px 6px; text-align: left; vertical-align: middle; word-wrap: break-word; }
+            @page { size: A4 portrait; margin: 5mm; }
+            html, body { height: 100%; }
+            body { font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 0; padding: 0; font-size: 10px; }
+            .container { 
+               display: flex; 
+               flex-direction: column; 
+               height: 100%;
+               max-height: 100%;
+               box-sizing: border-box;
+            }
+            h1 { text-align: center; color: #0f172a; border-bottom: 2px solid #0f172a; padding-bottom: 5px; margin-bottom: 5px; font-size: 16px; margin-top: 5px; }
+            p { margin: 2px 0; font-size: 9px; color: #475569; }
+            table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 9px; table-layout: fixed; }
+            th, td { border: 1px solid #94a3b8; padding: 3px 4px; text-align: left; vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.1; }
             th { background-color: #f1f5f9; font-weight: bold; color: #0f172a; border-bottom: 2px solid #64748b; }
-            tr { page-break-inside: avoid; }
+            tr { page-break-inside: avoid; height: 14px; }
             tr:nth-child(even) { background-color: #f8fafc; }
             .seq { text-align: center; font-weight: bold; width: 6%; }
             .col-name { width: 34%; }
@@ -265,6 +273,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
           </style>
         </head>
         <body>
+          <div class="container">
           <h1>${regionName} 模擬志願選填表</h1>
           <div style="display: flex; justify-content: space-between; align-items: flex-end;">
              <p>列印日期: ${new Date().toLocaleDateString()}</p>
@@ -298,7 +307,9 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
     html += `
             </tbody>
           </table>
-          <p style="margin-top: 30px; text-align: center; color: #64748b; font-size: 12px;">本表僅供參考非官方所屬，實際分發結果依各區免試入學委員會公告為準</p>
+          <div style="flex: 1;"></div>
+          <p style="margin-top: 10px; text-align: center; color: #64748b; font-size: 9px; padding-bottom: 5px;">本表僅供參考非官方系統，實際分發結果依各區免試入學委員會公告為準</p>
+          </div>
         </body>
       </html>
     `;
@@ -408,8 +419,10 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
                     <p className="font-bold text-sm sm:text-base">找不到相符的校系</p>
                   </div>
                 ) : (
-                  filteredSchools.map((school, i) => (
-                    <div key={`${school.code}-${school.deptCode}-${i}`} className="bg-white border-2 border-slate-900 rounded-xl p-3 sm:p-4 flex items-center justify-between hover:-translate-y-1 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group">
+                  filteredSchools.map((school, i) => {
+                    const isSelected = selectedChoices.some(c => c.code === school.code && c.deptCode === school.deptCode);
+                    return (
+                    <div key={`${school.code}-${school.deptCode}-${i}`} className={`bg-white border-2 border-slate-900 rounded-xl p-3 sm:p-4 flex items-center justify-between transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group ${isSelected ? 'opacity-50 grayscale select-none pointer-events-none' : 'hover:-translate-y-1'}`}>
                       <div className="min-w-0 pr-3">
                         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                           <span className="text-[10px] font-black bg-slate-100 px-1.5 sm:px-2 py-0.5 rounded-md border border-slate-300 text-slate-600 shrink-0">{school.county}</span>
@@ -422,14 +435,15 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
                         </p>
                       </div>
                       <button 
-                        onClick={() => handleAddChoice(school)}
-                        className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-50 rounded-lg flex items-center justify-center border-2 border-slate-900 hover:bg-sky-400 hover:text-slate-900 active:scale-95 transition-all outline-none flex-shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-none active:translate-y-0.5 text-slate-700"
-                        title="加入志願"
+                        onClick={() => !isSelected && handleAddChoice(school)}
+                        disabled={isSelected}
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center border-2 border-slate-900 transition-all outline-none flex-shrink-0 text-slate-700 ${isSelected ? 'bg-slate-200 cursor-not-allowed shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'bg-slate-50 hover:bg-sky-400 hover:text-slate-900 active:scale-95 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-none active:translate-y-0.5'}`}
+                        title={isSelected ? "已加入" : "加入志願"}
                       >
                         <Plus className="w-4 h-4 sm:w-5 sm:h-5 font-black" />
                       </button>
                     </div>
-                  ))
+                  )})
                 )}
               </div>
             </div>
