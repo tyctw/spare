@@ -298,7 +298,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
     html += `
             </tbody>
           </table>
-          <p style="margin-top: 30px; text-align: center; color: #64748b; font-size: 12px;">本表僅供參考，實際分發結果依各區免試入學委員會公告為準</p>
+          <p style="margin-top: 30px; text-align: center; color: #64748b; font-size: 12px;">本表僅供參考非官方所屬，實際分發結果依各區免試入學委員會公告為準</p>
         </body>
       </html>
     `;
