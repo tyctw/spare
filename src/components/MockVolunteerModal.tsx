@@ -248,16 +248,20 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
         <head>
           <title>${regionName} 模擬志願選填清單</title>
           <style>
-            @page { size: A4; margin: 15mm 20mm; }
-            body { font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 0; padding: 0; font-size: 14px; }
-            h1 { text-align: center; color: #0f172a; border-bottom: 2px solid #0f172a; padding-bottom: 15px; margin-bottom: 10px; font-size: 24px; }
-            p { margin: 5px 0; font-size: 13px; color: #475569; }
-            table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-            th, td { border: 1px solid #94a3b8; padding: 10px 8px; text-align: left; vertical-align: middle; }
+            @page { size: A4 portrait; margin: 10mm; }
+            body { font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 0; padding: 0; font-size: 11px; }
+            h1 { text-align: center; color: #0f172a; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 5px; font-size: 18px; }
+            p { margin: 2px 0; font-size: 11px; color: #475569; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; table-layout: fixed; }
+            th, td { border: 1px solid #94a3b8; padding: 4px 6px; text-align: left; vertical-align: middle; word-wrap: break-word; }
             th { background-color: #f1f5f9; font-weight: bold; color: #0f172a; border-bottom: 2px solid #64748b; }
+            tr { page-break-inside: avoid; }
             tr:nth-child(even) { background-color: #f8fafc; }
-            .score { color: #059669; font-weight: bold; text-align: center; }
-            .seq { text-align: center; font-weight: bold; }
+            .seq { text-align: center; font-weight: bold; width: 6%; }
+            .col-name { width: 34%; }
+            .col-dept { width: 30%; }
+            .col-group { width: 20%; }
+            .col-county { width: 10%; }
           </style>
         </head>
         <body>
@@ -269,12 +273,11 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
           <table>
             <thead>
               <tr>
-                <th width="8%" class="seq">志願序</th>
-                <th width="28%">學校名稱</th>
-                <th width="26%">科系名稱</th>
-                <th width="16%">群別 / 類型</th>
-                <th width="10%">縣市</th>
-                <th width="12%" class="score">預估積分</th>
+                <th class="seq">志願序</th>
+                <th class="col-name">學校名稱</th>
+                <th class="col-dept">科系名稱</th>
+                <th class="col-group">群別 / 類型</th>
+                <th class="col-county">縣市</th>
               </tr>
             </thead>
             <tbody>
@@ -285,10 +288,9 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
         <tr>
           <td class="seq">${i + 1}</td>
           <td><strong>${c.name}</strong></td>
-          <td>${c.deptName} ${c.shift && c.shift !== '日間部' ? `<span style="color:#64748b; font-size: 11px;">(${c.shift})</span>` : ''}</td>
+          <td>${c.deptName} ${c.shift && c.shift !== '日間部' ? `<span style="color:#64748b; font-size: 10px;">(${c.shift})</span>` : ''}</td>
           <td>${c.groupName || c.levelInfo}</td>
           <td>${c.county}</td>
-          <td class="score">${getVolunteerScore(c, i)} 分</td>
         </tr>
       `;
     });
@@ -309,76 +311,6 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
       printWindow.print();
       printWindow.close();
     }, 500);
-  };
-
-  const getVolunteerScore = (schoolChoice: SchoolItem, index: number) => {
-    // 依據各區規則計算志願序 (rank)
-    let rank = 1;
-    for (let i = 1; i <= index; i++) {
-        const curr = selectedChoices[i];
-        const prev = selectedChoices[i-1];
-        
-        let isSameChoice = false;
-        // 依據使用者所在就學區判斷連續選填規則
-        // 基北、高雄、中投、台南、竹苗等：連續選填同校(不論科系/職群)視為同一志願序
-        // 桃連、彰化等：連續選填「同校且同職群」視為同一志願序
-        if (['taipei', 'kaohsiung', 'central', 'tainan', 'hsinchu'].includes(effectiveRegion)) {
-            isSameChoice = (curr.name === prev.name);
-        } else {
-            isSameChoice = (curr.name === prev.name && curr.groupName === prev.groupName);
-        }
-
-        if (!isSameChoice) {
-            rank++;
-        }
-    }
-
-    // 志願積分的給分標準，必須依照「使用者所在的就學區」(即 effectiveRegion 變數)
-    const userRegion = effectiveRegion || 'taipei';
-
-    switch (userRegion) {
-      case 'taoyuan':
-        if (rank <= 3) return 15;
-        if (rank <= 6) return 12;
-        if (rank <= 9) return 9;
-        if (rank <= 12) return 6;
-        if (rank <= 15) return 3;
-        return 1;
-      case 'taipei':
-        if (rank <= 5) return 36;
-        if (rank <= 10) return 35;
-        if (rank <= 15) return 34;
-        if (rank <= 20) return 33;
-        if (rank <= 30) return 32;
-        return 32;
-      case 'central':
-      case 'kaohsiung':
-        if (rank <= 10) return 30;
-        if (rank <= 20) return 29;
-        return 28;
-      case 'changhua':
-        if (rank <= 20) return 45;
-        return 44;
-      case 'tainan': {
-        const tainanRank = Math.floor((rank - 1) / 3) + 1;
-        if (tainanRank === 1) return 10;
-        if (tainanRank === 2) return 9;
-        if (tainanRank === 3) return 8;
-        if (tainanRank === 4) return 7;
-        if (tainanRank === 5) return 6;
-        return 5;
-      }
-      case 'hsinchu':
-        if (rank <= 5) return 10;
-        if (rank <= 10) return 9;
-        if (rank <= 15) return 8;
-        if (rank <= 20) return 7;
-        if (rank <= 25) return 6;
-        return 5;
-      default:
-        // Generic descending logic
-        return Math.max(10 - Math.floor((rank - 1) / 5), 1);
-    }
   };
 
   const [mobileTab, setMobileTab] = useState<'search' | 'selected'>('search');
@@ -557,10 +489,6 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
                 ) : (
                   selectedChoices.map((choice, index) => (
                     <div key={choice.id} className="bg-white border-2 border-slate-900 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] sm:text-xs font-black px-2 py-0.5 border-b-2 border-l-2 border-emerald-200 rounded-bl-lg z-10 shadow-sm transition-colors group-hover:bg-emerald-200">
-                        志願積分: {getVolunteerScore(choice, index)} 分
-                      </div>
-                      
                       <select
                         value={index + 1}
                         onChange={(e) => handleMoveTo(index, parseInt(e.target.value) - 1)}
