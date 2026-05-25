@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, User, BookOpen, Calculator, Award, PenTool,
   Search, Building2, Map, Compass, Anchor, Cpu,
@@ -15,6 +15,7 @@ import ChangelogModal from './components/ChangelogModal';
 import DisclaimerModal from './components/DisclaimerModal';
 import ComparisonModal from './components/ComparisonModal';
 import QRCodeModal from './components/QRCodeModal';
+import MockVolunteerModal from './components/MockVolunteerModal';
 import CyberAuthOverlay from './components/CyberAuthOverlay';
 import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
 import { exportTxt, exportExcel, exportJson, printResults } from './lib/exportUtils';
@@ -63,7 +64,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | null>(null);
+  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'mockVolunteer' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
@@ -895,6 +896,9 @@ export default function App() {
                     <span className="text-xs font-bold text-slate-400 mt-1 block">依據系統運算排序</span>
                   </div>
                   <div className="flex flex-wrap gap-2 relative w-full sm:w-auto">
+                    <button onClick={() => setActiveModal('mockVolunteer')} className="px-3 py-1.5 bg-sky-50 text-sky-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
+                      <Target className="w-4 h-4" /> 模擬選填
+                    </button>
                     <button onClick={() => setIsComparisonOpen(true)} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
                       <List className="w-4 h-4" /> 比較清單 ({comparisonSchools.length})
                     </button>
@@ -1131,6 +1135,12 @@ export default function App() {
         onScan={(code) => { updateForm('invitationCode', code); setActiveModal(null); }} 
       />
       
+      <MockVolunteerModal
+        isOpen={activeModal === 'mockVolunteer'}
+        onClose={() => setActiveModal(null)}
+        region={formData.region}
+      />
+
       <VocationalModal 
         isOpen={isVocationalOpen} 
         onClose={() => setIsVocationalOpen(false)}
@@ -1452,6 +1462,7 @@ export default function App() {
                       <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
                         <div className="p-3 flex flex-col gap-2">
                           {[
+                            { id: 'mockVolunteer', icon: Target, label: '模擬志願選填', color: 'text-sky-600', bg: 'bg-sky-100' },
                             { id: 'strategy', icon: Target, label: '志願選填攻略', color: 'text-amber-600', bg: 'bg-amber-100' },
                             { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' },
                             { id: 'importantDates', icon: Map, label: '重要日程', color: 'text-purple-600', bg: 'bg-purple-100' },
