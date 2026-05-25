@@ -246,7 +246,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${regionName} 模擬志願選填清單</title>
+          <title>${regionName} 個人模擬志願選填清單</title>
           <style>
             @page { size: A4 portrait; margin: 5mm; }
             html, body { height: 100%; }
