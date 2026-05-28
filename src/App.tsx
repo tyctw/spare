@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, User, BookOpen, Calculator, Award, PenTool,
   Search, Building2, Map, Compass, Anchor, Cpu,
@@ -170,10 +170,12 @@ export default function App() {
         }
       };
 
-      const res = await fetch('/api/main', {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
         method: 'POST',
+        // use no-cors to avoid CORS preflight, but in this specific environment JSON stringify body might work or fail. 
+        // Typically Google Apps Script requires text/plain fetch for simple requests
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain;charset=utf-8',
         },
         body: JSON.stringify(payload)
       });

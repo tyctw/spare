@@ -62,10 +62,10 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
     setIsLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/volunteer', {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbxT9ID_TeoeA_Xd46QkeGHnb7sqSWj4sRSKfVP_ygnjrIHlZ2qveSqxVw4Hm2vT48oHNA/exec', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'text/plain;charset=utf-8',
         },
         body: JSON.stringify({ action: 'getVolunteerSchools', region })
       });
@@ -246,7 +246,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${regionName} 模擬志願選填清單</title>
+          <title>${regionName} 個人模擬志願選填清單</title>
           <style>
             @page { size: A4 portrait; margin: 5mm; }
             html, body { height: 100%; }
@@ -308,7 +308,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
             </tbody>
           </table>
           <div style="flex: 1;"></div>
-          <p style="margin-top: 10px; text-align: center; color: #64748b; font-size: 9px; padding-bottom: 5px;">本表僅供參考，實際分發結果依各區免試入學委員會公告為準</p>
+          <p style="margin-top: 10px; text-align: center; color: #64748b; font-size: 9px; padding-bottom: 5px;">本表僅供參考非官方系統，實際分發結果依各區免試入學委員會公告為準</p>
           </div>
         </body>
       </html>
