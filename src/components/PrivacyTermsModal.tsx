@@ -82,36 +82,58 @@ export default function PrivacyTermsModal({ isOpen, onClose }: PrivacyTermsModal
                     <li className="flex gap-3">
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                       <p className="text-slate-700 font-bold leading-relaxed text-sm">
-                        <strong className="text-slate-900">不收集個人身份資訊：</strong> 本系統不會要求您輸入姓名、身分證字號、聯絡方式等可辨識個人的機敏資料。
+                        <strong className="text-slate-900">不收集個人身份資訊：</strong> 本系統不會要求您輸入真實姓名、身分證字號、聯絡電話、詳細居住地址等可直接辨識個人的機敏資料。
                       </p>
                     </li>
                     <li className="flex gap-3">
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                       <p className="text-slate-700 font-bold leading-relaxed text-sm">
-                        <strong className="text-slate-900">成績與志願：</strong> 您所輸入的會考成績、選填區域與偏好設定僅做為即時運算落點分析之用。相關數據僅會在您的瀏覽器中進行處理。
+                        <strong className="text-slate-900">成績與志願偏好：</strong> 您所輸入的會考各科成績、選填熱區、就讀意願與偏好設定等，僅做為本系統即時運算落點分析、排序演算法、與策略建議之用。多數運算過程將在您的個人裝置與瀏覽器中進行。
                       </p>
                     </li>
                     <li className="flex gap-3">
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                       <p className="text-slate-700 font-bold leading-relaxed text-sm">
-                        <strong className="text-slate-900">去識別化分析：</strong> 為改進系統準確度及提供歷屆落點觀察，我們可能會收集去識別化的成績與最終落點資料做為統計基準，這些資料絕不會與特定使用者產生連結。
+                        <strong className="text-slate-900">去識別化與統計分析：</strong> 為改進系統模型準確度、提供歷屆落點觀察趨勢，我們可能會收集並儲存完全去識別化的成績與最終落點資料，做為大數據統計基準。此類資料無法且絕不會與特定使用者產生任何連結。
+                      </p>
+                    </li>
+                    <li className="flex gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                      <p className="text-slate-700 font-bold leading-relaxed text-sm">
+                        <strong className="text-slate-900">使用行為與分析：</strong> 為了提升使用者體驗，我們可能使用第三方分析工具（如 Google Analytics 等）來蒐集去識別化的瀏覽數據、設備資訊與互動點擊紀錄，幫助我們優化平台介面設計。
                       </p>
                     </li>
                   </ul>
                 </div>
-                
-                <div>
-                  <h4 className="text-lg font-black text-slate-900 mb-2">Cookie 與本地儲存 (Local Storage)</h4>
-                  <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
-                    本系統可能使用瀏覽器的 Local Storage 或 Session Storage 功能，來暫存您輸入的成績或設定，以便您在重新整理頁面後無須重新輸入。您可以隨時清除瀏覽器快取來刪除這些資料。
-                  </p>
-                </div>
-                
-                <div>
-                  <h4 className="text-lg font-black text-slate-900 mb-2">第三方服務</h4>
-                  <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
-                    本平台可能會包含連結至外部網站的資源，離開本網站後之行為及資料運用則適用該第三方網站的隱私權政策。
-                  </p>
+
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">資料儲存與傳輸安全</h4>
+                    <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
+                      本平台採用標準的加密傳輸協定（如 SSL/TLS）來保護資料交換的安全性。儘管我們實施了商業上合理的防護措施，但網際網路傳輸無法保證百分之百安全，使用者仍須理解並自行承擔網路傳輸的潛在風險。
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">Cookie 與本地儲存 (Local Storage)</h4>
+                    <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
+                      本系統會使用瀏覽器的 Local Storage 或 Session Storage 功能，來單獨暫存您的邀請碼授權狀態、輸入成績及偏好設定，以便您在一定時間內或重新整理頁面後無須反覆驗證輸入。這些暫存資料會儲存在您的個人裝置上，您可以隨時操作清除瀏覽器快取來將其移除。
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">兒童與青少年隱私保護</h4>
+                    <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
+                      本平台主要面向學生與家長，我們高度重視未成年人的隱私。我們強烈建議未成年學生在您的家長或法定代理人陪同與同意下存取與使用本服務。若家長發現任何未經授權的個人識別資料被意外收集，請盡速聯繫我們進行刪除。
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">第三方網站連結與服務</h4>
+                    <p className="text-slate-700 font-bold text-sm leading-relaxed">
+                      本平台可能會包含連結至外部合作夥伴或官方教育單位的網站資源，當您點擊該連結離開本網站後之所有行為及資料運用，應適用且受限於該第三方網站的隱私權政策與服務規範，本系統不對其資料處理方式負責。
+                    </p>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -119,36 +141,60 @@ export default function PrivacyTermsModal({ isOpen, onClose }: PrivacyTermsModal
                 <div className="bg-amber-50 rounded-2xl p-6 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                   <h3 className="text-xl font-black text-slate-900 mb-4 flex items-center gap-2">
                     <AlertTriangle className="w-6 h-6 text-amber-500" />
-                    免責聲明與使用限制
+                    免責聲明與核心風險
                   </h3>
                   <ul className="space-y-4">
                     <li className="flex gap-3">
                       <div className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-2 shrink-0"></div>
                       <p className="text-slate-700 font-bold leading-relaxed text-sm">
-                        <strong className="text-slate-900 text-rose-600">僅供參考：</strong> 本系統提供的落點分析、預測結果及策略建議，係依據往年數據模型計算得出，<strong className="text-slate-900">結果僅提供同學與家長選填志願之參考，不代表絕對錄取保證</strong>。實際錄取結果仍依各招生委員會及各校之放榜為準。
+                        <strong className="text-slate-900 text-rose-600">結果僅供參考，不具絕對性：</strong> 本系統所提供的所有落點分析、預測結果、序位區間評估及相關之選填策略建議，皆係依據往年歷史數據模型、累計人數區間與演算法推演計算得出。<strong className="text-slate-900 border-b-2 border-rose-400">所有結果均僅提供同學與家長作為選填志願之「輔助參考工具」，絕不代表任何形式之錄取保證。</strong> 考生之最終實際錄取結果，仍須以各區招生委員會及各報考學校官方所發布之正式放榜公告為準。我們概不對您因依賴本系統結果所作出的任何選校決策及最終落榜結果負責。
                       </p>
                     </li>
                     <li className="flex gap-3">
                       <div className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-2 shrink-0"></div>
                       <p className="text-slate-700 font-bold leading-relaxed text-sm">
-                        <strong className="text-slate-900">資料準確性：</strong> 若官方簡章、計分方式或超額比序規則臨時更動，我們將盡力更新系統，但不為資料之絕對準確性或即時性負責。
+                        <strong className="text-slate-900">資料異動與準確性風險：</strong> 各項招生數據、學區超額比序規則、加權計分方式或各校核定名額，皆可能因教育主管機關之臨時決策而有所更動。我們將盡最大努力更新系統資料與參數，但不對本系統所提供之任何資料其絕對性、完整性與即時性作任何明示或默示之擔保。
                       </p>
                     </li>
                   </ul>
                 </div>
 
-                <div>
-                  <h4 className="text-lg font-black text-slate-900 mb-2">服務之變更與終止</h4>
-                  <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
-                    我們保留隨時修改、暫停或永久終止本服務各項功能的權利。
-                  </p>
-                </div>
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">一、 使用者行為規範</h4>
+                    <ul className="list-disc pl-5 space-y-2 text-slate-700 font-bold text-sm leading-relaxed mb-4">
+                      <li>您同意在遵守當地法律規範前提下合法使用本服務，並承諾絕不透過自動化機器人爬蟲程式（如 Bots、Spiders）干擾、破壞或大量抓取本網站與伺服器之任何公開或非公開數據。</li>
+                      <li>邀請碼與驗證機制（如有）為系統防護之一環，由本平台授權發放，嚴禁轉售、濫用或以任何不正當手段繞過系統驗證。違者本平台有權立即鎖定或封鎖您的連線IP與使用權益。</li>
+                    </ul>
+                  </div>
 
-                <div>
-                  <h4 className="text-lg font-black text-slate-900 mb-2">智慧財產權</h4>
-                  <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
-                    本系統的設計、程式碼及內建之圖文素材等版權歸原創作者或其授權者所有。未經許可，禁止商業利用。
-                  </p>
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">二、 系統可用性與中斷</h4>
+                    <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
+                      我們致力於提供穩定的網路服務，但本網站可能因系統維護、軟硬體更新、突發網路故障、天災或不可抗力因素導致服務中斷、延遲或暫時無法使用。我們不保證服務100%全天候無中斷運作，若因中斷致使您在選填志願期間受到影響或遭受任何損害，本平台不負損害賠償責任。
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">三、 服務之變更與終止</h4>
+                    <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
+                      為了因應營運需求或教育政策變動，我們保留「在未預先通知之情況下，隨時修改、暫停、限制或完全永久終止本服務各項功能、分析模組」的絕對權利。
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">四、 智慧財產權聲明</h4>
+                    <p className="text-slate-700 font-bold text-sm leading-relaxed mb-4">
+                      本系統所包含之所有版面設計、視覺元素、程式碼架構、演算法邏輯及附隨之圖文影音素材等，相關智慧財產權與著作權皆歸屬於本平台原創作者或其授權者所有。未經我們以書面授權許可，嚴禁任何人以任何形式重製、改作、散布、逆向工程或將其用於其他商業營利與非營利用途。
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-lg font-black text-slate-900 mb-2">五、 條款修訂與法規遵循</h4>
+                    <p className="text-slate-700 font-bold text-sm leading-relaxed">
+                      我們可能不定時更新與修訂本「隱私權與服務條款」。修訂後的版本若發布於本網站上即屬生效。您的繼續使用將被視為您已閱讀、理解並完全同意接受修訂後之條款約束。本條款之解釋與適用，若未定明者，悉依中華民國相關法律辦理。
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
