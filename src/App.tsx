@@ -277,7 +277,7 @@ export default function App() {
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 font-black rounded-full mb-8 border-2 border-indigo-200 shadow-sm"
           >
             <Sparkles className="w-5 h-5 text-indigo-500" />
-            <span className="tracking-wide">114學年度最新版上線</span>
+            <span className="tracking-wide">115學年度最新版上線</span>
           </motion.div>
           
           <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
