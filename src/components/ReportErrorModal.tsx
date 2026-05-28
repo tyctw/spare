@@ -28,10 +28,10 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
     setError('');
 
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
+      const response = await fetch('/api/main', {
         method: 'POST',
         headers: {
-          'Content-Type': 'text/plain',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           action: 'reportError',
