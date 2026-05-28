@@ -37,9 +37,9 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
         clearInterval(progressInterval);
         
         // Final API validation Check
-        fetch('https://script.google.com/macros/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
+        fetch('/api/auth', {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'validateInvitationCode', invitationCode: code })
         })
         .then(res => res.json())
