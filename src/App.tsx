@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   MapPin, User, BookOpen, Calculator, Award, PenTool,
   Search, Building2, Map, Compass, Anchor, Cpu,
@@ -170,12 +170,10 @@ export default function App() {
         }
       };
 
-      const res = await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
+      const res = await fetch('/api/main', {
         method: 'POST',
-        // use no-cors to avoid CORS preflight, but in this specific environment JSON stringify body might work or fail. 
-        // Typically Google Apps Script requires text/plain fetch for simple requests
         headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload)
       });
@@ -279,7 +277,7 @@ export default function App() {
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 font-black rounded-full mb-8 border-2 border-indigo-200 shadow-sm"
           >
             <Sparkles className="w-5 h-5 text-indigo-500" />
-            <span className="tracking-wide">115學年度最新版上線</span>
+            <span className="tracking-wide">114學年度最新版上線</span>
           </motion.div>
           
           <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
