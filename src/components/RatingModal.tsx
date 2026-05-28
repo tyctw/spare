@@ -41,10 +41,10 @@ export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
         url: window.location.href
       };
       
-      await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
+      await fetch('/api/rating', {
         method: 'POST',
         headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ action: 'submitFeedback', payload, clientInfo })
       });
