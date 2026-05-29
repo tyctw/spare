@@ -5,7 +5,7 @@ import {
   Search, Building2, Map, Compass, Anchor, Cpu,
   Mountain, Sparkles, AlertCircle, ChevronRight, ChevronDown,
   Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail, Link as LinkIcon,
-  Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright
+  Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database
 } from 'lucide-react';
 import VocationalModal from './components/VocationalModal';
 import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
@@ -31,7 +31,8 @@ import InstructionsModal from './components/InstructionsModal';
 import ReportErrorModal from './components/ReportErrorModal';
 import SchoolTypesModal from './components/SchoolTypesModal';
 import StrategyModal from './components/StrategyModal';
-import PrivacyTermsModal from './components/PrivacyTermsModal';
+import PrivacyModal from './components/PrivacyModal';
+import TermsModal from './components/TermsModal';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -64,7 +65,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-  const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'mockVolunteer' | null>(null);
+const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
@@ -1333,7 +1334,11 @@ export default function App() {
         onClose={() => setActiveModal(null)} 
       />
 
-      <PrivacyTermsModal 
+      <PrivacyModal 
+        isOpen={activeModal === 'privacy'} 
+        onClose={() => setActiveModal(null)} 
+      />
+      <TermsModal 
         isOpen={activeModal === 'terms'} 
         onClose={() => setActiveModal(null)} 
       />
@@ -1511,7 +1516,8 @@ export default function App() {
                             { id: 'advantages', icon: Sparkles, label: '系統優點', color: 'text-indigo-600', bg: 'bg-indigo-100' },
                             { id: 'rating', icon: StarIcon, label: '評分系統', color: 'text-amber-500', bg: 'bg-amber-100' },
                             { id: 'changelog', icon: History, label: '更新日誌', color: 'text-slate-500', bg: 'bg-slate-100' },
-                            { id: 'terms', icon: Shield, label: '隱私權與服務條款', color: 'text-slate-600', bg: 'bg-slate-100' },
+                            { id: 'privacy', icon: Database, label: '隱私權政策', color: 'text-emerald-600', bg: 'bg-emerald-100' },
+                            { id: 'terms', icon: Shield, label: '服務條款', color: 'text-slate-600', bg: 'bg-slate-100' },
                             { id: 'reportError', icon: AlertCircle, label: '錯誤回報', color: 'text-red-500', bg: 'bg-red-100' }
                           ].map(btn => (
                             <button
@@ -1669,29 +1675,42 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto relative z-10">
+              <div className="grid grid-cols-2 lg:flex gap-3 sm:gap-4 w-full xl:w-auto relative z-10">
+                <button 
+                  onClick={() => setActiveModal('privacy')}
+                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
+                >
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform -rotate-6 group-hover:rotate-0">
+                    <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
+                  </div>
+                  <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">隱私權政策</span>
+                  <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-emerald-600 transition-colors w-full">
+                    資料授權 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
+                  </span>
+                </button>
+
                 <button 
                   onClick={() => setActiveModal('terms')}
-                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-6 bg-white border-4 border-slate-900 rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
+                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
                 >
-                  <div className="flex items-center justify-center w-12 h-12 bg-amber-100 border-2 border-slate-900 rounded-xl mb-4 group-hover:scale-110 transition-transform -rotate-6 group-hover:rotate-0">
-                    <Shield className="w-6 h-6 text-amber-600" />
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform -rotate-6 group-hover:rotate-0">
+                    <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
                   </div>
-                  <span className="font-black text-slate-900 text-lg sm:text-xl mb-1">隱私與服務條款</span>
-                  <span className="text-sm font-bold text-slate-500 flex items-center gap-1 group-hover:text-amber-600 transition-colors">
-                    閱讀詳細規定 <ArrowRight className="w-4 h-4" />
+                  <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">服務條款</span>
+                  <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-indigo-600 transition-colors w-full">
+                    使用規範 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
                   </span>
                 </button>
 
                 <a 
                   href="mailto:tyctw.analyze@gmail.com" 
-                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-6 bg-slate-900 border-4 border-slate-900 rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
+                  className="col-span-2 lg:col-span-1 group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-slate-900 border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
                 >
-                  <div className="flex items-center justify-center w-12 h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-4 group-hover:scale-110 transition-transform rotate-6 group-hover:rotate-0">
-                    <Mail className="w-6 h-6 text-indigo-400" />
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform rotate-6 group-hover:rotate-0">
+                    <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-400" />
                   </div>
-                  <span className="font-black text-white text-lg sm:text-xl mb-1">聯絡我們信箱</span>
-                  <span className="text-sm font-bold text-slate-400 group-hover:text-indigo-300 transition-colors break-all">
+                  <span className="font-black text-white text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">聯絡我們信箱</span>
+                  <span className="text-xs sm:text-sm font-bold text-slate-400 group-hover:text-indigo-300 transition-colors break-all text-center xl:text-left w-full">
                     tyctw.analyze@gmail.com
                   </span>
                 </a>
@@ -1699,13 +1718,13 @@ export default function App() {
             </div>
 
             {/* Bottom Copyright Section */}
-            <div className="bg-amber-400 border-t-4 border-slate-900 p-6 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4 overflow-hidden relative">
-              <div className="flex items-center gap-2 z-10 bg-amber-400">
-                <Copyright className="w-5 h-5 text-slate-900" />
-                <span className="font-black text-slate-900 text-lg sm:text-xl tracking-tight">COPYRIGHT {new Date().getFullYear()}</span>
+            <div className="bg-amber-400 border-t-4 border-slate-900 p-4 sm:p-6 flex flex-row items-center justify-between gap-2 sm:gap-4 overflow-hidden relative">
+              <div className="flex items-center gap-1.5 sm:gap-2 z-10 bg-amber-400">
+                <Copyright className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900 shrink-0" />
+                <span className="font-black text-slate-900 text-sm sm:text-lg xl:text-xl tracking-tight leading-none pt-0.5">COPYRIGHT {new Date().getFullYear()}</span>
               </div>
-              <div className="z-10 text-center sm:text-right bg-amber-400">
-                <span className="font-black text-slate-900 text-sm sm:text-base border-b-2 border-slate-900/30 pb-0.5">ALL RIGHTS RESERVED.</span>
+              <div className="z-10 text-right bg-amber-400">
+                <span className="font-black text-slate-900 text-[10px] sm:text-sm xl:text-base border-b-2 border-slate-900/30 pb-0.5">ALL RIGHTS RESERVED.</span>
               </div>
               {/* Marquee text in background */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 overflow-hidden whitespace-nowrap z-0">
