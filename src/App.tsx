@@ -1669,12 +1669,12 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
 
               <div className="flex flex-col items-center xl:items-start text-center xl:text-left gap-6 max-w-lg relative z-10 w-full">
                 <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="bg-indigo-600 p-4 rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 hover:rotate-0 transition-transform duration-300">
+                  <div className="bg-indigo-600 p-4 rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-transform duration-300">
                     <Compass className="w-10 h-10 text-white" />
                   </div>
                   <div>
                     <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-1">TW全國會考</h2>
-                    <div className="inline-block bg-amber-200 px-3 py-1 rounded-lg border-2 border-slate-900 shadow-sm -rotate-2">
+                    <div className="inline-block bg-amber-200 px-3 py-1 rounded-lg border-2 border-slate-900 shadow-sm">
                        <h3 className="text-sm sm:text-base font-black tracking-widest text-slate-800 uppercase">落點分析系統</h3>
                     </div>
                   </div>
@@ -1693,7 +1693,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   onClick={() => setActiveModal('privacy')}
                   className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
                 >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform -rotate-6 group-hover:rotate-0">
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
                     <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
                   </div>
                   <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">隱私權政策</span>
@@ -1706,7 +1706,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   onClick={() => setActiveModal('terms')}
                   className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
                 >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform -rotate-6 group-hover:rotate-0">
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
                     <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
                   </div>
                   <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">服務條款</span>
@@ -1719,7 +1719,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   href="mailto:tyctw.analyze@gmail.com" 
                   className="col-span-2 group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-slate-900 border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
                 >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform rotate-6 group-hover:rotate-0">
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
                     <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-400" />
                   </div>
                   <span className="font-black text-white text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">聯絡我們信箱</span>
