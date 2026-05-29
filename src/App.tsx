@@ -580,59 +580,51 @@ export default function App() {
 
               <div className="flex flex-col gap-3 sm:gap-4">
                 {[
-                  { id: 'chinese', label: '國文', icon: BookOpen, color: 'text-rose-600', activeBtn: 'bg-rose-200 border-slate-900 text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]', inactiveBtn: 'bg-white border-slate-300 text-slate-500 hover:border-slate-400 hover:bg-slate-50' },
-                  { id: 'english', label: '英文', icon: PenTool, color: 'text-amber-600', activeBtn: 'bg-amber-200 border-slate-900 text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]', inactiveBtn: 'bg-white border-slate-300 text-slate-500 hover:border-slate-400 hover:bg-slate-50' },
-                  { id: 'math', label: '數學', icon: Calculator, color: 'text-blue-600', activeBtn: 'bg-blue-200 border-slate-900 text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]', inactiveBtn: 'bg-white border-slate-300 text-slate-500 hover:border-slate-400 hover:bg-slate-50' },
-                  { id: 'science', label: '自然', icon: Activity, color: 'text-emerald-600', activeBtn: 'bg-emerald-200 border-slate-900 text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]', inactiveBtn: 'bg-white border-slate-300 text-slate-500 hover:border-slate-400 hover:bg-slate-50' },
-                  { id: 'social', label: '社會', icon: Map, color: 'text-purple-600', activeBtn: 'bg-purple-200 border-slate-900 text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]', inactiveBtn: 'bg-white border-slate-300 text-slate-500 hover:border-slate-400 hover:bg-slate-50' }
+                  { id: 'chinese', label: '國文', icon: BookOpen, color: 'text-rose-600', bgBorder: 'bg-rose-50 border-rose-300 focus:ring-rose-400 focus:border-rose-400 hover:border-rose-400', theme: 'bg-white' },
+                  { id: 'english', label: '英文', icon: PenTool, color: 'text-amber-600', bgBorder: 'bg-amber-50 border-amber-300 focus:ring-amber-400 focus:border-amber-400 hover:border-amber-400', theme: 'bg-white' },
+                  { id: 'math', label: '數學', icon: Calculator, color: 'text-blue-600', bgBorder: 'bg-blue-50 border-blue-300 focus:ring-blue-400 focus:border-blue-400 hover:border-blue-400', theme: 'bg-white' },
+                  { id: 'science', label: '自然', icon: Activity, color: 'text-emerald-600', bgBorder: 'bg-emerald-50 border-emerald-300 focus:ring-emerald-400 focus:border-emerald-400 hover:border-emerald-400', theme: 'bg-white' },
+                  { id: 'social', label: '社會', icon: Map, color: 'text-purple-600', bgBorder: 'bg-purple-50 border-purple-300 focus:ring-purple-400 focus:border-purple-400 hover:border-purple-400', theme: 'bg-white' }
                 ].map(subject => (
-                  <div key={subject.id} className="relative group bg-white border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                    <label className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 w-full sm:w-28 shrink-0">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] bg-slate-50">
-                        <subject.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${subject.color}`} />
+                  <div key={subject.id} className={`relative group ${subject.theme} border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex items-center justify-between gap-4`}>
+                    <label className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 w-24 shrink-0">
+                      <div className={`w-10 h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] bg-slate-50`}>
+                        <subject.icon className={`w-5 h-5 ${subject.color}`} />
                       </div>
                       {subject.label}
                     </label>
-                    <div className="flex-1 flex gap-2 w-full overflow-x-auto pb-1 sm:pb-2 pt-1 scrollbar-hide">
-                      {['A++', 'A+', 'A', 'B++', 'B+', 'B', 'C'].map(val => (
-                        <button
-                          key={val}
-                          onClick={() => updateForm(subject.id, val)}
-                          className={`flex-1 sm:flex-none px-2 sm:px-3 py-2 rounded-xl border-2 font-black text-sm sm:text-base transition-all min-w-[3.5rem] sm:min-w-[4rem] flex items-center justify-center ${
-                            (formData as any)[subject.id] === val 
-                              ? subject.activeBtn
-                              : subject.inactiveBtn
-                          }`}
-                        >
-                          {val}
-                        </button>
-                      ))}
+                    <div className="relative w-full max-w-[200px]">
+                      <select
+                        className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 font-black text-base sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 transition-all cursor-pointer ${subject.bgBorder}`}
+                        value={(formData as any)[subject.id]}
+                        onChange={(e) => updateForm(subject.id, e.target.value)}
+                      >
+                        <option value="" disabled>-- 選擇等級 --</option>
+                        {gradeOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                      </select>
+                      <ChevronRight className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none rotate-90" />
                     </div>
                   </div>
                 ))}
 
                 {/* Composition */}
-                <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                  <label className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 w-full sm:w-28 shrink-0">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(251,191,36,0.2)] bg-slate-800">
-                      <PenTool className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+                <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex items-center justify-between gap-4">
+                  <label className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 w-24 shrink-0">
+                    <div className="w-10 h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(251,191,36,0.2)] bg-slate-800">
+                      <PenTool className="w-5 h-5 text-amber-400" />
                     </div>
                     寫作
                   </label>
-                  <div className="flex-1 flex gap-2 w-full overflow-x-auto pb-1 sm:pb-2 pt-1 scrollbar-hide">
-                    {[6, 5, 4, 3, 2, 1, 0].map(val => (
-                      <button
-                        key={val}
-                        onClick={() => updateForm('composition', val.toString())}
-                        className={`flex-1 sm:flex-none px-2 sm:px-3 py-2 rounded-xl border-2 font-black text-sm sm:text-base transition-all min-w-[3.5rem] sm:min-w-[4rem] flex items-center justify-center ${
-                          formData.composition === val.toString()
-                            ? 'bg-amber-400 border-slate-900 text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]'
-                            : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'
-                        }`}
-                      >
-                        {val}級
-                      </button>
-                    ))}
+                  <div className="relative w-full max-w-[200px]">
+                    <select
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 border-slate-700 bg-slate-800 text-amber-400 font-black text-base sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 focus:ring-amber-400/50 hover:border-amber-500/50 transition-all cursor-pointer"
+                      value={formData.composition}
+                      onChange={(e) => updateForm('composition', e.target.value)}
+                    >
+                      <option value="" disabled>-- 選擇級分 --</option>
+                      {[6, 5, 4, 3, 2, 1, 0].map(s => <option key={s} value={s}>{s} 級分</option>)}
+                    </select>
+                    <ChevronRight className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-500/50 pointer-events-none rotate-90" />
                   </div>
                 </div>
 
