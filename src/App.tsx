@@ -5,7 +5,7 @@ import {
   Search, Building2, Map, Compass, Anchor, Cpu,
   Mountain, Sparkles, AlertCircle, ChevronRight, ChevronDown,
   Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail, Link as LinkIcon,
-  Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database
+  Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database, Instagram, AtSign
 } from 'lucide-react';
 import VocationalModal from './components/VocationalModal';
 import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
@@ -1587,7 +1587,15 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                 </div>
 
               </div>
-              <div className="p-4 bg-slate-900 text-center border-t-4 border-slate-900">
+              <div className="p-5 bg-slate-900 border-t-4 border-slate-900">
+                <div className="flex gap-3 justify-center w-full mb-4">
+                  <a href="https://www.instagram.com/115.rcpet/" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center hover:bg-slate-700 hover:scale-110 active:scale-95 transition-all text-pink-400 group">
+                    <Instagram className="w-6 h-6 group-hover:scale-110 transition-transform -rotate-6 group-hover:rotate-0" />
+                  </a>
+                  <a href="https://www.threads.com/@115.rcpet" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center hover:bg-slate-700 hover:scale-110 active:scale-95 transition-all text-slate-300 group">
+                    <AtSign className="w-6 h-6 group-hover:scale-110 transition-transform rotate-6 group-hover:rotate-0" />
+                  </a>
+                </div>
                 <p className="text-slate-400 font-bold text-xs flex items-center justify-center gap-1">
                   <Check className="w-3 h-3 text-emerald-400" />
                   會考落點分析系統 v5.0
@@ -1663,9 +1671,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                     </div>
                   </div>
                 </div>
-                <p className="text-slate-600 font-bold leading-relaxed text-sm sm:text-base">
-                  我們致力於提供最精準的會考落點資訊，幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。
-                </p>
                 <div className="inline-flex items-center justify-center xl:justify-start gap-2 px-4 py-2.5 bg-white rounded-full border-2 border-slate-200 w-fit shadow-sm">
                   <div className="relative flex h-3 w-3 items-center justify-center">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
@@ -1704,7 +1709,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
 
                 <a 
                   href="mailto:tyctw.analyze@gmail.com" 
-                  className="col-span-2 lg:col-span-1 group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-slate-900 border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
+                  className="col-span-2 group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-slate-900 border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
                 >
                   <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform rotate-6 group-hover:rotate-0">
                     <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-400" />
