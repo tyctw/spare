@@ -239,7 +239,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
             </div>
             <div className="flex items-center gap-3">
               <a
-                href="https://forms.gle/F4EunXCwcfmWiLZD8"
+                href="https://tyctw.github.io/form/"
                 target="_blank"
                 rel="noreferrer"
                 className={`flex items-center gap-2 bg-amber-400 text-slate-900 border-slate-900 font-black transition hover:bg-amber-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'px-3 py-2 sm:px-4 sm:py-2 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
