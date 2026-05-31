@@ -374,7 +374,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
               </div>
               <div className="mt-3 relative z-10 flex justify-end">
                 <a 
-                  href="https://docs.google.com/forms/d/e/1FAIpQLSdPGrqFkGqmI8Nhu2LONgPtNtvikLjTvbQ1foyTgQnV1Sstqg/viewform?usp=send_form" 
+                  href="https://tyctw.github.io/form/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-xs font-bold text-amber-600 hover:text-amber-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
