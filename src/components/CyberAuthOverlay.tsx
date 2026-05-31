@@ -29,6 +29,21 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       return;
     }
 
+    let progressVal = 0;
+    const progressInterval = setInterval(() => {
+      progressVal += 1.5;
+      if (progressVal >= 99) {
+        progressVal = 99;
+      }
+      
+      setProgress(progressVal);
+      if (progressVal < 25) setCurrentStep(0);
+      else if (progressVal < 50) setCurrentStep(1);
+      else if (progressVal < 75) setCurrentStep(2);
+      else setCurrentStep(3);
+      
+    }, 25);
+
     // Execute validation immediately
     fetch('https://script.google.com/macros/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
       method: 'POST',
@@ -37,6 +52,8 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
     })
     .then(res => res.json())
     .then(res => {
+      clearInterval(progressInterval);
+      setProgress(100);
       if (res.valid) {
         setStatus('success');
         onSuccess();
@@ -46,10 +63,16 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       }
     })
     .catch(err => {
+      clearInterval(progressInterval);
+      setProgress(100);
       console.error(err);
       setStatus('fail');
       onFail();
     });
+
+    return () => {
+      clearInterval(progressInterval);
+    };
   }, [isOpen, code]);
 
   return (
