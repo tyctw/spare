@@ -29,47 +29,27 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       return;
     }
 
-    let progressVal = 0;
-    const progressInterval = setInterval(() => {
-      progressVal += 1.5;
-      if (progressVal >= 100) {
-        progressVal = 100;
-        clearInterval(progressInterval);
-        
-        // Final API validation Check
-        fetch('https://script.google.com/macros/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'validateInvitationCode', invitationCode: code })
-        })
-        .then(res => res.json())
-        .then(res => {
-          if (res.valid) {
-            setStatus('success');
-            setTimeout(() => onSuccess(), 1500);
-          } else {
-            setStatus('fail');
-            setTimeout(() => onFail(), 2000);
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          setStatus('fail');
-          setTimeout(() => onFail(), 2000);
-        });
+    // Execute validation immediately
+    fetch('https://script.google.com/macros/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'validateInvitationCode', invitationCode: code })
+    })
+    .then(res => res.json())
+    .then(res => {
+      if (res.valid) {
+        setStatus('success');
+        onSuccess();
+      } else {
+        setStatus('fail');
+        onFail();
       }
-      
-      setProgress(progressVal);
-      if (progressVal < 25) setCurrentStep(0);
-      else if (progressVal < 50) setCurrentStep(1);
-      else if (progressVal < 75) setCurrentStep(2);
-      else setCurrentStep(3);
-      
-    }, 25);
-
-    return () => {
-      clearInterval(progressInterval);
-    };
+    })
+    .catch(err => {
+      console.error(err);
+      setStatus('fail');
+      onFail();
+    });
   }, [isOpen, code]);
 
   return (
