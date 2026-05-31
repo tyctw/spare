@@ -1,1770 +1,1153 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  MapPin, User, BookOpen, Calculator, Award, PenTool,
-  Search, Building2, Map, Compass, Anchor, Cpu,
-  Mountain, Sparkles, AlertCircle, ChevronRight, ChevronDown,
-  Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail, Link as LinkIcon,
-  Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database, Instagram, AtSign
+import { Header } from './components/Header';
+import { 
+  Building2, 
+  GraduationCap, 
+  BookOpen, 
+  Calculator, 
+  Globe, 
+  Atom, 
+  PenTool, 
+  Percent, 
+  ListOrdered, 
+  Mail, 
+  ArrowRight,
+  CheckCircle2,
+  ExternalLink,
+  Clock,
+  Copy,
+  AlertCircle,
+  HelpCircle,
+  X,
+  Ticket,
+  Info,
+  Share2,
+  QrCode,
+  ChevronDown,
+  MapPin,
+  User,
+  Users
 } from 'lucide-react';
-import VocationalModal from './components/VocationalModal';
-import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
-import HollandTestModal from './components/HollandTestModal';
-import { InfoModal } from './components/InfoModals';
-import ChangelogModal from './components/ChangelogModal';
-import DisclaimerModal from './components/DisclaimerModal';
-import ComparisonModal from './components/ComparisonModal';
-import QRCodeModal from './components/QRCodeModal';
-import MockVolunteerModal from './components/MockVolunteerModal';
-import CyberAuthOverlay from './components/CyberAuthOverlay';
-import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
-import { exportTxt, exportExcel, exportJson, printResults } from './lib/exportUtils';
-import RegionModal, { ALL_REGIONS } from './components/RegionModal';
-import ExportModal from './components/ExportModal';
-import GradeLevelModal from './components/GradeLevelModal';
-import AuthFailModal from './components/AuthFailModal';
-import RegionScoringModal from './components/RegionScoringModal';
-import SharePlatformModal from './components/SharePlatformModal';
-import RatingModal from './components/RatingModal';
-import AdvantagesModal from './components/AdvantagesModal';
-import InstructionsModal from './components/InstructionsModal';
-import ReportErrorModal from './components/ReportErrorModal';
-import SchoolTypesModal from './components/SchoolTypesModal';
-import StrategyModal from './components/StrategyModal';
-import PrivacyModal from './components/PrivacyModal';
-import TermsModal from './components/TermsModal';
+import { QRCodeSVG } from 'qrcode.react';
+import { QuestionnaireData, SubjectScore, EssayScoreType } from './types';
 
-const gradeOptions = [
-  { value: 'A++', label: 'A++ (精熟)' },
-  { value: 'A+', label: 'A+ (精熟)' },
-  { value: 'A', label: 'A (精熟)' },
-  { value: 'B++', label: 'B++ (基礎)' },
-  { value: 'B+', label: 'B+ (基礎)' },
-  { value: 'B', label: 'B (基礎)' },
-  { value: 'C', label: 'C (待加強)' }
+// Constants for dropdowns
+const REGIONS = [
+  "基北區", "桃園區", "竹苗區", "中投區", "彰化區", 
+  "雲林區", "嘉義區", "台南區", "高雄區", "屏東區", 
+  "宜蘭區", "花蓮區", "台東區", "澎湖區", "金門區", "其他"
 ];
+const EXAM_YEARS = ["115", "114", "113", "112", "111", "110"];
+const IDENTITIES = ["學生", "家長", "老師", "補教業"];
+const SCORES: SubjectScore[] = ['A++', 'A+', 'A', 'B++', 'B+', 'B', 'C'];
+const ESSAY_SCORES: EssayScoreType[] = ['6', '5', '4', '3', '2', '1', '0'];
+
+function generateInvitationCode() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hour = String(now.getHours()).padStart(2, '0');
+  return "SH" + year + month + day + hour;
+}
+
+function calculateExpirationTime() {
+  const now = new Date();
+  const expiration = new Date(now);
+  expiration.setMinutes(59, 59, 999);
+  return expiration;
+}
+
+const initialData: QuestionnaireData = {
+  region: '',
+  examYear: '115',
+  identity: '',
+  chineseScore: '',
+  mathScore: '',
+  englishScore: '',
+  socialScore: '',
+  scienceScore: '',
+  essayScore: '',
+  minRatio: '',
+  maxRatio: '',
+  minRankInterval: '',
+  maxRankInterval: '',
+  email: '',
+  skipRanking: false
+};
 
 export default function App() {
-  const [formData, setFormData] = useState({
-    invitationCode: '',
-    region: '',
-    identity: 'student',
-    schoolOwnership: 'all',
-    schoolType: 'all',
-    chinese: '',
-    english: '',
-    math: '',
-    science: '',
-    social: '',
-    composition: ''
-  });
+  const [formData, setFormData] = useState<QuestionnaireData>(initialData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [inviteResult, setInviteResult] = useState<{code: string, expiration: Date} | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showRegionModal, setShowRegionModal] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
-  const [status, setStatus] = useState<'idle' | 'auth' | 'quantum' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [missingFields, setMissingFields] = useState<string[]>([]);
-  const [results, setResults] = useState<any>(null);
-  
-  // Modals state
-const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | null>(null);
-  const [isVocationalOpen, setIsVocationalOpen] = useState(false);
-  const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
-  const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
-  const [isRegionOpen, setIsRegionOpen] = useState(false);
-  const [vocationalGroups, setVocationalGroups] = useState<string[]>(['all']);
-  const [isExternalLinksOpen, setIsExternalLinksOpen] = useState(false);
-  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
-  const [expandedNavCategory, setExpandedNavCategory] = useState<string | null>('schoolDetails');
-  
-  // Comparison
-  const [comparisonSchools, setComparisonSchools] = useState<any[]>([]);
-  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  
-  // Custom Result Filters
-  const [resultFilterText, setResultFilterText] = useState('');
-  const [resultFilterOwnership, setResultFilterOwnership] = useState('all');
-  const [resultFilterType, setResultFilterType] = useState('all');
-  const [resultFilterZone, setResultFilterZone] = useState('all');
+  const isBeforeAnnouncement = new Date() < new Date('2026-06-16T12:00:00+08:00');
+  const forceSkipRanking = formData.examYear === '115' && isBeforeAnnouncement;
+  const effectiveSkipRanking = formData.skipRanking || forceSkipRanking;
 
   useEffect(() => {
-    setActiveModal('disclaimer');
-
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code') || params.get('invitationCode') || params.get('invite');
-    if (code) {
-      setFormData(prev => ({ ...prev, invitationCode: code }));
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const updateForm = (key: string, value: string) => {
-    setFormData(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleAnalyze = async () => {
-    const missing: string[] = [];
-    if (!formData.invitationCode) missing.push('系統授權碼');
-    if (!formData.region) missing.push('就學考區');
-    if (!formData.chinese) missing.push('國文成績');
-    if (!formData.english) missing.push('英文成績');
-    if (!formData.math) missing.push('數學成績');
-    if (!formData.science) missing.push('自然成績');
-    if (!formData.social) missing.push('社會成績');
-    if (!formData.composition) missing.push('作文成績');
-
-    if (missing.length > 0) {
-      setMissingFields(missing);
-      setActiveModal('validationFailed');
-      return;
-    }
-    
-    setErrorMessage('');
-    
-    // Check if 10min cached auth exists
-    const lastAuthSuccess = localStorage.getItem('lastInvitationAuthSuccess');
-    const now = Date.now();
-    const tenMinutes = 10 * 60 * 1000;
-    
-    // Always call executeAnalysis since it runs async. 
-    if (lastAuthSuccess && (now - parseInt(lastAuthSuccess) < tenMinutes)) {
-      setStatus('quantum');
-      executeAnalysis();
-    } else {
-      setStatus('auth');
-    }
-  };
-
-  const executeAnalysis = async () => {
-    try {
-      const payload = {
-        scores: {
-          chinese: formData.chinese,
-          english: formData.english,
-          math: formData.math,
-          science: formData.science,
-          social: formData.social,
-          composition: parseInt(formData.composition, 10) || 0
-        },
-        filters: {
-          schoolOwnership: formData.schoolOwnership,
-          schoolType: formData.schoolType,
-          vocationalGroups: vocationalGroups,
-          analysisIdentity: formData.identity
-        },
-        region: formData.region,
-        invitationCode: formData.invitationCode,
-        timestamp: new Date().toISOString(),
-        action: 'analyzeScores',
-        clientInfo: {
-          userAgent: navigator.userAgent,
-          language: navigator.language,
-          screenResolution: `${window.screen.width}x${window.screen.height}`,
-          viewport: `${window.innerWidth}x${window.innerHeight}`,
-          url: window.location.href
+    let timer: NodeJS.Timeout;
+    if (isSuccess && inviteResult) {
+      const checkExpiration = () => {
+        if (new Date() >= inviteResult.expiration) {
+          setIsSuccess(false);
+          setInviteResult(null);
         }
       };
+      
+      // Check every second
+      timer = setInterval(checkExpiration, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isSuccess, inviteResult]);
 
-      const res = await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
-        method: 'POST',
-        // use no-cors to avoid CORS preflight, but in this specific environment JSON stringify body might work or fail. 
-        // Typically Google Apps Script requires text/plain fetch for simple requests
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      const data = await res.json();
-      setResults(data);
-      
-      // Delay status change to allow Quantum overlay to finish
-      // QuantumLoadingOverlay handles it internally calling onComplete which will set status to success
-    } catch (e: any) {
-      setStatus('error');
-      setErrorMessage('分析過程中發生錯誤，這可能是由於 CORS 或網路連線問題。');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const target = e.target;
+    if (target.type === 'checkbox') {
+      const { name, checked } = target as HTMLInputElement;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else {
+      const { name, value } = target;
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
-  const toggleComparison = (school: any) => {
-    setComparisonSchools(prev => {
-      const exists = prev.find(s => s.name === school.name);
-      if (exists) return prev.filter(s => s.name !== school.name);
-      if (prev.length >= 4) {
-        alert('最多只能比較 4 所學校');
-        return prev;
+  const handleScoreClick = (name: keyof QuestionnaireData, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const errors: string[] = [];
+    if (!formData.region) errors.push('招生區');
+    if (!formData.examYear) errors.push('會考年度');
+    if (!formData.identity) errors.push('分析身分');
+    if (!formData.chineseScore) errors.push('國文成績');
+    if (!formData.mathScore) errors.push('數學成績');
+    if (!formData.englishScore) errors.push('英文成績');
+    if (!formData.socialScore) errors.push('社會成績');
+    if (!formData.scienceScore) errors.push('自然成績');
+    if (!formData.essayScore) errors.push('作文級分');
+    
+    if (!effectiveSkipRanking) {
+      if (!formData.minRatio) errors.push('全區序位最小比率 (%)');
+      if (!formData.maxRatio) errors.push('全區序位最大比率 (%)');
+      if (!formData.minRankInterval) errors.push('全區序位最小區間');
+      if (!formData.maxRankInterval) errors.push('全區序位最大區間');
+      
+      if (Number(formData.minRatio) > Number(formData.maxRatio)) errors.push('「最小比率」不能大於「最大比率」');
+      if (Number(formData.minRankInterval) > Number(formData.maxRankInterval)) errors.push('「最小區間」不能大於「最大區間」');
+    }
+
+    if (!formData.email) errors.push('Email 信箱');
+    else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) errors.push('有效的 Email 格式');
+    }
+
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors([]);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    setShowConfirmModal(false);
+    setIsSubmitting(true);
+    try {
+      const gasUrl = import.meta.env.VITE_GAS_WEB_APP_URL;
+
+      if (!gasUrl) {
+        throw new Error("尚未設定系統連線 (未配置後端網址)，請聯絡管理員。");
       }
-      const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未知';
-      return [...prev, { ...school, region: regionName }];
-    });
-  };
 
-  const handleExport = (type: 'txt' | 'excel' | 'json' | 'print') => {
-    if (!results) return;
-    const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未選擇';
-    const payload = { scores: formData, results, identity: formData.identity, vocationalGroups };
-    switch (type) {
-      case 'txt': exportTxt(payload, regionName); break;
-      case 'excel': exportExcel(payload, regionName); break;
-      case 'json': exportJson(payload); break;
-      case 'print': printResults(payload, regionName); break;
+      const payload = {
+        ...formData,
+        skipRanking: effectiveSkipRanking,
+        timestamp: new Date().toISOString()
+      };
+      
+      let serverInviteCode = '';
+
+      // Retry logic for high concurrency stability
+      let retries = 3;
+      let success = false;
+      let lastError = null;
+
+      while (retries > 0 && !success) {
+        try {
+          const response = await fetch(gasUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'text/plain',
+            },
+            body: JSON.stringify(payload)
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          // Handle JSON response
+          const responseText = await response.text();
+          let result;
+          try {
+            result = JSON.parse(responseText);
+          } catch(e) {
+             // Ignore non-json parsing error that sometimes happens with google scripts
+          }
+          if (result && result.status === 'error') {
+            throw new Error(result.message);
+          }
+          
+          if (result && result.inviteCode) {
+            serverInviteCode = result.inviteCode;
+          }
+          
+          success = true;
+        } catch (err) {
+          lastError = err;
+          retries--;
+          if (retries > 0) {
+            // Exponential backoff
+            await new Promise(r => setTimeout(r, (3 - retries) * 1000));
+          }
+        }
+      }
+
+      if (!success) {
+        throw lastError;
+      }
+
+      setInviteResult({
+        code: serverInviteCode || generateInvitationCode(),
+        expiration: calculateExpirationTime()
+      });
+      setIsSuccess(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+      console.error("Submission failed:", error);
+      const errorMessage = error instanceof Error && error.message.includes("尚未設定系統連線") 
+        ? error.message 
+        : "伺服器繁忙，多次提交失敗，請稍後再試。";
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  const handleCopyLink = () => {
+    if (!inviteResult) return;
+    const link = `https://tyctw.github.io/spare/?invite=${inviteResult.code}`;
+    navigator.clipboard.writeText(link);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (isSuccess && inviteResult) {
+    const linkUrl = `https://tyctw.github.io/spare/?invite=${inviteResult.code}`;
+    return (
+      <>
+        <Header onShareClick={() => setShowShareModal(true)} />
+        <div className="min-h-screen grid-pattern pt-28 pb-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+          <div className="max-w-4xl w-full">
+            <div className="bg-white border-4 border-slate-900 shadow-[12px_12px_0_#0F172A] flex flex-col md:flex-row animate-in fade-in zoom-in-95 duration-500 overflow-hidden">
+              
+              {/* Left Column: Code & Data */}
+              <div className="flex-1 p-8 sm:p-12 border-b-4 md:border-b-0 md:border-r-4 border-slate-900 bg-[size:20px_20px] bg-slate-50 flex flex-col justify-center relative">
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-400 via-blue-500 to-emerald-400"></div>
+                
+                <div className="flex items-center space-x-3 mb-8">
+                  <div className="w-10 h-10 bg-slate-900 text-emerald-400 flex items-center justify-center font-black shadow-[4px_4px_0_#34D399]">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black tracking-[0.2em] text-slate-400 uppercase">System Response</div>
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">落點分析邀請碼</h2>
+                  </div>
+                </div>
+
+                <div className="bg-white border-2 border-slate-900 shadow-[4px_4px_0_#0F172A] p-6 mb-8 group hover:shadow-[8px_8px_0_#0F172A] hover:-translate-y-1 transition-all duration-300">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-2 bg-emerald-400"></div>
+                    <Ticket className="w-6 h-6 text-slate-300 group-hover:text-emerald-500 transition-colors" />
+                  </div>
+                  <div className="font-mono text-4xl sm:text-5xl font-black tracking-tighter text-slate-900 mb-2 select-all">
+                    {inviteResult.code}
+                  </div>
+                  <div className="inline-flex items-center px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300 shadow-sm">
+                    此代碼為系統自動帶入
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="flex items-center text-xs font-black tracking-widest text-slate-500 uppercase mb-2">
+                    <Clock className="w-4 h-4 mr-2" />
+                    失效時間
+                  </div>
+                  <div className="font-mono text-2xl font-black text-rose-600 mb-2">
+                    {inviteResult.expiration.toLocaleTimeString('zh-TW', { hour12: false })}
+                  </div>
+                  <p className="text-xs font-bold text-slate-500">代碼於填寫當小時末失效，請盡速使用</p>
+                </div>
+              </div>
+
+              {/* Right Column: Instructions & Actions */}
+              <div className="flex-1 p-8 sm:p-12 bg-slate-900 text-white flex flex-col justify-between relative overflow-hidden">
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-slate-800 rounded-full blur-3xl opacity-50"></div>
+                
+                <div className="relative z-10 space-y-6">
+                  <div className="inline-flex items-center justify-center p-3 bg-blue-500 text-white shadow-[4px_4px_0_#FFFFFF] mb-2">
+                    <Info className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-black text-white tracking-wide">邀請碼使用說明</h3>
+                  <p className="text-slate-300 leading-relaxed font-medium text-sm sm:text-base">
+                    獲取邀請碼後，您可以直接點擊下方按鈕前往「落點分析系統」進行進階數據比對。本系統數據僅供參考，實際分發請依正式簡章為準。
+                  </p>
+                </div>
+
+                <div className="relative z-10 mt-12 space-y-4">
+                  <a 
+                    href={linkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full group relative flex items-center justify-center py-4 px-6 bg-emerald-400 text-slate-900 font-black text-lg border-2 border-emerald-400 shadow-[4px_4px_0_#FFFFFF] hover:bg-emerald-300 hover:translate-y-1 hover:shadow-none transition-all"
+                  >
+                    進入分析系統
+                    <ExternalLink className="ml-3 w-5 h-5 group-hover:rotate-12 transition-transform" />
+                  </a>
+                  
+                  <button 
+                    onClick={handleCopyLink}
+                    className="w-full group flex items-center justify-center py-4 px-6 bg-slate-800 text-white font-bold text-base hover:bg-slate-700 transition-all border border-slate-700 hover:border-slate-500"
+                  >
+                    {copied ? (
+                      <span className="flex items-center text-emerald-400"><CheckCircle2 className="w-5 h-5 mr-2" /> 已複製專屬連結</span>
+                    ) : (
+                      <span className="flex items-center text-slate-300 group-hover:text-white"><Copy className="w-5 h-5 mr-2" /> 複製專屬連結</span>
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setIsSuccess(false);
+                      setInviteResult(null);
+                    }}
+                    className="w-full text-slate-400 hover:text-white font-medium text-sm transition-colors mt-4 py-2"
+                  >
+                    返回填寫頁面
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* 分享系統彈窗 */}
+        {showShareModal && (
+          <div className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div className="bg-white border-4 border-slate-900 shadow-[8px_8px_0_#0F172A] p-6 sm:p-8 max-w-sm w-full animate-in fade-in zoom-in duration-200">
+              <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-100">
+                <h3 className="text-2xl font-extrabold flex items-center text-slate-900">
+                  <Share2 className="w-6 h-6 mr-3 text-slate-900" />
+                  分享系統
+                </h3>
+                <button 
+                  onClick={() => setShowShareModal(false)}
+                  className="p-2 hover:bg-slate-100 transition-colors border-2 border-transparent hover:border-slate-900 geometric-card !border-slate-900 !shadow-[2px_2px_0_#0F172A] active:!translate-y-0.5 active:!shadow-none"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="flex flex-col items-center justify-center space-y-6">
+                <p className="text-slate-600 font-medium text-sm text-center">
+                  掃描下方 QR Code 或複製連結，分享「全國會考分析系統」給需要的朋友與同學。
+                </p>
+                
+                <div className="p-4 bg-white border-4 border-slate-900 shadow-[4px_4px_0_#0F172A]">
+                  <QRCodeSVG 
+                    value={window.location.href} 
+                    size={200}
+                    bgColor={"#ffffff"}
+                    fgColor={"#0f172a"}
+                    level={"H"}
+                    includeMargin={false}
+                  />
+                </div>
+                
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  className="w-full group flex items-center justify-center py-3 px-4 bg-slate-50 text-slate-900 font-bold text-sm hover:bg-slate-100 transition-all border-2 border-slate-900 shadow-[4px_4px_0_#0F172A] active:translate-y-1 active:shadow-none"
+                >
+                  {copied ? (
+                    <span className="flex items-center text-emerald-600"><CheckCircle2 className="w-5 h-5 mr-2" /> 已複製連結</span>
+                  ) : (
+                    <span className="flex items-center text-slate-900"><Copy className="w-5 h-5 mr-2" /> 複製系統連結</span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 pb-32 overflow-hidden relative">
-      
-      {/* Modern Background Blur Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-300/20 rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-sky-300/20 rounded-full blur-[100px] pointer-events-none"></div>
-
-      {/* Dynamic Header */}
-      <div className={`fixed top-0 left-0 right-0 z-50 pointer-events-none transition-all duration-300 ${isScrolled ? 'p-2 sm:p-2' : 'p-4 sm:p-6'}`}>
-        <div className="max-w-6xl mx-auto pointer-events-auto">
-          <header className={`bg-white/90 backdrop-blur-md rounded-3xl flex items-center justify-between transition-all duration-300 will-change-transform ${isScrolled ? 'border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] p-2 sm:p-3' : 'border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] p-3 sm:p-4 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)]'}`}>
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className={`bg-indigo-600 border-slate-900 flex items-center justify-center text-white font-black text-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 transform origin-bottom-left hover:rotate-0 transition-all ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 sm:text-xl' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-2xl border-4 sm:text-3xl'}`}>
-                會
-              </div>
-              <div className="flex flex-col">
-                <h1 className={`font-black text-slate-900 tracking-tight leading-none uppercase transition-all ${isScrolled ? 'text-lg sm:text-xl' : 'text-xl sm:text-3xl'}`}>會考落點分析</h1>
-                <span className={`font-bold text-slate-500 hidden sm:block mt-1 transition-all ${isScrolled ? 'text-[10px] sm:text-[10px] h-0 opacity-0 overflow-hidden' : 'text-[10px] sm:text-xs h-auto opacity-100'}`}>115 年最新各區數據分析平台</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <a
-                href="https://tyctw.github.io/form/"
-                target="_blank"
-                rel="noreferrer"
-                className={`flex items-center gap-2 bg-amber-400 text-slate-900 border-slate-900 font-black transition hover:bg-amber-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'px-3 py-2 sm:px-4 sm:py-2 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
-              >
-                <KeyRound className={`w-5 h-5 ${isScrolled ? 'sm:w-4 sm:h-4' : 'sm:w-6 sm:h-6'}`} />
-                <span className={`hidden md:inline uppercase tracking-wide ${isScrolled ? 'text-xs' : ''}`}>取得邀請碼</span>
-              </a>
-              <button
-                onClick={() => setActiveModal('sharePlatform')}
-                className={`bg-emerald-200 flex items-center justify-center border-slate-900 transition hover:bg-emerald-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
-              >
-                <Share2 className={`text-slate-900 ${isScrolled ? 'w-5 h-5 sm:w-5 sm:h-5' : 'w-6 h-6 sm:w-8 sm:h-8'}`} />
-              </button>
-              <button
-                onClick={() => setIsNavMenuOpen(true)}
-                className={`bg-sky-200 flex items-center justify-center border-slate-900 transition hover:bg-sky-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
-              >
-                <Menu className={`text-slate-900 ${isScrolled ? 'w-5 h-5 sm:w-5 sm:h-5' : 'w-6 h-6 sm:w-8 sm:h-8'}`} />
-              </button>
-            </div>
-          </header>
-        </div>
-      </div>
-
-      <main className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">
+    <>
+      <Header onShareClick={() => setShowShareModal(true)} />
+      <div className="min-h-screen grid-pattern pt-28 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-3xl mx-auto geometric-card bg-white overflow-hidden">
         
-        {/* NEW HERO SECTION */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="pt-8 pb-12 sm:pt-12 sm:pb-16 flex flex-col items-center justify-center text-center px-2"
-        >
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 font-black rounded-full mb-8 border-2 border-indigo-200 shadow-sm"
+        <div className="p-8 sm:p-10 border-b-2 border-slate-900 border-dashed relative">
+          <div className="status-badge mb-4">Survey Mode v1.0.4</div>
+          <button 
+            type="button" 
+            onClick={() => setShowHelpModal(true)}
+            className="absolute top-8 right-8 text-slate-500 hover:text-blue-600 transition-colors flex items-center gap-1 font-bold text-sm"
           >
-            <Sparkles className="w-5 h-5 text-indigo-500" />
-            <span className="tracking-wide">115學年度最新版上線</span>
-          </motion.div>
-          
-          <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
-            探索適合你的<br className="sm:hidden" />
-            <span className="relative inline-block mt-2 sm:mt-0">
-               <span className="relative z-10 text-indigo-600">未來理想校系</span>
-               <span className="absolute bottom-1 sm:bottom-2 left-0 w-full h-4 sm:h-6 bg-amber-300 -z-10 -rotate-1 rounded-sm"></span>
-            </span>
-          </h2>
-          
-          <p className="text-slate-600 font-bold text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            我們致力於提供最精準的會考落點資訊，幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。
+            <HelpCircle className="w-5 h-5" />
+            <span className="hidden sm:inline">使用說明</span>
+          </button>
+          <h1 className="text-4xl font-extrabold tracking-tight mb-3 text-slate-900">會考序位調查問卷</h1>
+          <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
+            為提供更精準的落點分析數據，請填寫您的會考成績與序位區間。<br className="hidden sm:block"/>
+            填寫完成後，系統將自動產生您的專屬邀請碼供登入使用。
           </p>
-        </motion.div>
+        </div>
 
-        {/* Announcement Banner */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-indigo-100 border-4 border-slate-900 rounded-[2rem] p-5 sm:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden"
-        >
-          <div className="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4">
-            <Info className="w-32 h-32 text-indigo-900" />
-          </div>
-          <div className="relative z-10 flex flex-col md:flex-row gap-5 items-start md:items-center">
-            <div className="w-14 h-14 bg-indigo-500 text-white rounded-2xl border-4 border-slate-900 flex flex-shrink-0 items-center justify-center shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 hover:rotate-0 transition-transform">
-               <Info className="w-7 h-7" />
+        {isBeforeAnnouncement ? (
+          <div className="mx-8 mt-8 bg-slate-100 text-slate-800 p-4 border-2 border-slate-900 flex items-start">
+            <AlertCircle className="w-5 h-5 mt-0.5 mr-3 shrink-0 text-slate-900" />
+            <div className="text-sm">
+              <strong className="font-bold block mb-1">公告：序位區間尚未開放查詢</strong>
+              <p>115年度個人序位區間將於 2026/06/16 12:00 正式公告。在此之前，您可以先填寫成績獲取邀請碼。</p>
             </div>
-            <div className="flex-1">
-               <h3 className="font-black text-xl text-slate-900 mb-1.5 flex items-center gap-2">
-                 系統公告 <span className="bg-rose-500 text-white text-[10px] uppercase px-2 py-1 rounded-full animate-pulse border-2 border-slate-900">HOT</span>
-               </h3>
-               <p className="font-bold text-slate-700 text-sm sm:text-base leading-relaxed">
-                 115 學年度最新落點資料將於「公布個人序位區間」後進行全面更新。<br className="hidden lg:block"/>
-                 <span className="text-indigo-800">歡迎各高中職校方、補教機構與我們聯繫，提供歷年錄取數據並申請專屬邀請碼！</span>
-               </p>
-            </div>
-            <a href="mailto:tyctw.analyze@gmail.com" className="w-full md:w-auto text-center px-6 py-3 bg-white border-4 border-slate-900 font-black text-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all whitespace-nowrap">
-              提供歷屆數據
-            </a>
           </div>
-        </motion.div>
-
-        {errorMessage && (
-          <div className="p-4 bg-red-50 text-red-700 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] font-bold flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            <span>{errorMessage}</span>
+        ) : (
+          <div className="mx-8 mt-8 bg-blue-50 text-blue-900 p-4 border-2 border-blue-600 flex items-start geometric-card !shadow-[4px_4px_0_#2563EB]">
+            <Info className="w-5 h-5 mt-0.5 mr-3 shrink-0 text-blue-600" />
+            <div className="text-sm">
+              <strong className="font-bold block mb-1">公告：115年度序位區間已開放查詢</strong>
+              <p className="mb-2">請先前往系統查詢您的序位資訊，再回來完整填寫，以獲得更準確的落點分析。</p>
+              <a 
+                href="https://tyctw.github.io/volunteer/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-700 hover:text-blue-900 font-bold transition-colors underline underline-offset-2"
+              >
+                <ExternalLink className="w-4 h-4 mr-1.5" />
+                前往查詢序位區間
+              </a>
+            </div>
           </div>
         )}
 
-        {/* Bento Grid Form Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Left Column: Basic Info & Region */}
-          <div className="lg:col-span-4 space-y-4">
+        <div className="p-8 sm:p-10">
+          <form onSubmit={handleSubmit} className="space-y-10">
             
-            {/* Card: Auth */}
-            <motion.section 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="relative p-6 bg-[#fffbea] border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
-            >
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-200 rounded-bl-full -z-0 opacity-50 border-b-4 border-l-4 border-slate-900 pointer-events-none"></div>
-              <div className="absolute top-4 right-4 bg-amber-400 border-2 border-slate-900 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded-full rotate-12 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] z-10 pointer-events-none select-none">VIP ONLY</div>
-
-              <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2 relative z-10">
-                <div className="w-8 h-8 rounded-full bg-amber-100 border-2 border-slate-900 flex items-center justify-center">
-                  <KeyRound className="w-4 h-4 text-amber-600" />
-                </div>
-                <span>系統授權碼</span>
+            {/* 基本資料 */}
+            <section>
+              <h2 className="text-xl font-bold text-slate-900 mb-6 pb-2 border-b-2 border-slate-100 flex items-center uppercase tracking-wider">
+                <span className="w-8 h-8 geometric-card bg-slate-900 text-white flex items-center justify-center mr-3 text-sm font-bold">1</span>
+                基本資料
               </h2>
-              <p className="text-xs font-bold text-slate-600 mb-4 relative z-10">請輸入由主辦單位提供之專屬邀請碼以解鎖進階分析</p>
               
-              <div className="flex gap-2 relative z-10">
-                <input
-                  type="text"
-                  placeholder="請輸入您的邀請碼"
-                  value={formData.invitationCode}
-                  onChange={(e) => updateForm('invitationCode', e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-xl bg-white border-2 border-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-400/30 transition-all font-black text-slate-900 shadow-[inset_2px_2px_0px_rgba(0,0,0,0.05)] placeholder-slate-400 tracking-wide"
-                />
-                <button 
-                  onClick={() => setActiveModal('qrcode')}
-                  className="px-4 py-3 bg-slate-900 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(251,191,36,1)] hover:bg-slate-800 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center group"
-                  title="掃描 QR Code"
-                >
-                  <QrCode className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                </button>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="region" className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-1">
+                    <Building2 className="w-4 h-4 mr-1.5 text-slate-400" /> 招生區域 <span className="text-slate-900 ml-1">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowRegionModal(true)}
+                    className="geo-input w-full text-left bg-white flex justify-between items-center"
+                  >
+                    <span className={formData.region ? 'text-slate-900 font-bold' : 'text-slate-500'}>
+                      {formData.region || '請選擇招生區'}
+                    </span>
+                    <ChevronDown className="w-5 h-5 text-slate-500" />
+                  </button>
+                </div>
+
+                <div>
+                  <label htmlFor="examYear" className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-1">
+                    <GraduationCap className="w-4 h-4 mr-1.5 text-slate-400" /> 會考年度 <span className="text-slate-900 ml-1">*</span>
+                  </label>
+                  <select
+                    id="examYear"
+                    name="examYear"
+                    value={formData.examYear}
+                    onChange={handleChange}
+                    className="geo-input"
+                  >
+                    {EXAM_YEARS.map(y => <option key={y} value={y}>{y}年度</option>)}
+                  </select>
+                </div>
               </div>
-              <div className="mt-3 relative z-10 flex justify-end">
-                <a 
-                  href="https://tyctw.github.io/form/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-xs font-bold text-amber-600 hover:text-amber-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
-                >
-                  點此獲取邀請碼
-                </a>
-              </div>
-            </motion.section>
 
-             {/* Card: Profile Identity */}
-             <motion.section 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-              className="p-6 bg-emerald-50 border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] space-y-6 relative overflow-hidden"
-            >
-              <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-emerald-200 rounded-tr-[40px] opacity-40 border-t-4 border-r-4 border-slate-900 pointer-events-none"></div>
-
-              <div className="relative z-10">
-                <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 border-2 border-slate-900 flex items-center justify-center">
-                    <User className="w-4 h-4 text-emerald-600" />
-                  </div>
-                  <span>使用者身份設定</span>
-                </h2>
-                <p className="text-xs font-bold text-slate-500 mb-4">我們將根據您的身分提供合適的落點建議</p>
-
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { id: 'student', label: '我是學生', icon: '🎓' },
-                    { id: 'teacher', label: '我是老師', icon: '👩‍🏫' },
-                    { id: 'parent', label: '我是家長', icon: '👨‍👩‍👧' }
-                  ].map(opt => (
+              <div className="mt-6">
+                <label className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-2">
+                  <span className="w-4 h-4 mr-1.5 flex items-center justify-center font-black">
+                    <User className="w-4 h-4 text-slate-400" />
+                  </span>
+                  分析身分 <span className="text-slate-900 ml-1">*</span>
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {IDENTITIES.map(identity => (
                     <button
-                      key={opt.id}
-                      onClick={() => updateForm('identity', opt.id)}
-                      className={`flex flex-col items-center justify-center gap-1 py-3 px-1 rounded-xl border-2 font-black transition-all ${
-                        formData.identity === opt.id 
-                          ? 'bg-emerald-400 text-slate-900 border-slate-900 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.5)] -translate-y-1' 
-                          : 'bg-white text-slate-600 border-slate-300 hover:border-slate-900 hover:bg-slate-50 hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]'
+                      key={identity}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, identity }))}
+                      className={`py-3 px-2 font-bold transition-all border-2 geometric-card active:translate-y-0.5 active:shadow-none flex items-center justify-center ${
+                        formData.identity === identity
+                          ? 'bg-slate-900 text-white border-slate-900 shadow-[3px_3px_0_#0F172A]' 
+                          : 'bg-white text-slate-700 border-slate-200 hover:border-slate-900 shadow-[2px_2px_0_transparent] hover:shadow-[3px_3px_0_#0F172A]'
                       }`}
                     >
-                      <span className="text-xl">{opt.icon}</span>
-                      <span className="text-xs">{opt.label}</span>
+                      {identity}
                     </button>
                   ))}
                 </div>
               </div>
+            </section>
 
-              <div className="space-y-4 pt-6 relative z-10">
-                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
-                <div>
-                  <label className="text-sm font-black text-slate-900 flex items-center gap-2 mb-3">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 border border-slate-900 inline-block"></span>
-                    偏好學校屬性
-                  </label>
-                  <div className="relative">
-                    <select
-                      className="w-full pl-4 pr-10 py-3 rounded-xl bg-white border-2 border-slate-900 appearance-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 transition-all font-bold text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] cursor-pointer"
-                      value={formData.schoolOwnership}
-                      onChange={(e) => updateForm('schoolOwnership', e.target.value)}
-                    >
-                      <option value="all">公/私立不拘</option>
-                      <option value="public">僅公立學校</option>
-                      <option value="private">僅私立學校</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none bg-emerald-100 p-1 rounded-md border border-slate-900">
-                      <ChevronDown className="w-4 h-4 text-emerald-700" />
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mt-4 mb-3">
-                    <label className="text-sm font-black text-slate-900 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 border border-slate-900 inline-block"></span>
-                      偏好學校類型
-                    </label>
-                    <button 
-                      onClick={() => setActiveModal('schoolTypes')}
-                      className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
-                    >
-                      <Building2 className="w-3 h-3" />
-                      學校類型解析說明
-                    </button>
-                  </div>
-                  <div className="relative">
-                    <select
-                      className="w-full pl-4 pr-10 py-3 rounded-xl bg-white border-2 border-slate-900 appearance-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 transition-all font-bold text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] cursor-pointer"
-                      value={formData.schoolType}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        updateForm('schoolType', value);
-                        if (value !== '職業類科') {
-                          setVocationalGroups(['all']);
-                        }
-                      }}
-                    >
-                      <option value="all">全不拘</option>
-                      <option value="普通科">普通科</option>
-                      <option value="職業類科">職業類科</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none bg-emerald-100 p-1 rounded-md border border-slate-900">
-                      <ChevronDown className="w-4 h-4 text-emerald-700" />
-                    </div>
-                  </div>
-                </div>
-                {formData.schoolType === '職業類科' && (
-                  <div>
-                    <div className="flex items-center justify-between mt-4 mb-3">
-                      <label className="text-sm font-black text-slate-900 flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 border border-slate-900 inline-block"></span>
-                        職業群別選擇
-                      </label>
-                      <button 
-                        onClick={() => setIsEncyclopediaOpen(true)}
-                        className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
-                      >
-                        <BookOpen className="w-3 h-3" />
-                        職群/科系深入介紹百科
-                      </button>
-                    </div>
-                    <button
-                      onClick={() => setIsVocationalOpen(true)}
-                      className="w-full px-4 py-3 rounded-xl bg-white border-2 border-slate-900 focus:outline-none transition-all font-bold text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-emerald-50 active:translate-y-1 active:shadow-none flex justify-between items-center"
-                    >
-                      <span className="text-slate-900">{vocationalGroups.includes('all') ? '全部選擇' : `已選擇 ${vocationalGroups.length} 項群別`}</span>
-                      <ChevronRight className="w-4 h-4 text-slate-500" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </motion.section>
-
-          </div>
-
-          {/* Center/Right Column: Region & Scores */}
-          <div className="lg:col-span-8 flex flex-col gap-4">
-            
-            {/* Region Select Button */}
-            <motion.section 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="p-6 bg-white border-2 border-slate-900 rounded-3xl shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
-            >
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-1">
-                    <MapPin className="w-6 h-6 text-rose-500" /> 分析區域
-                  </h2>
-                  <p className="text-sm font-bold text-slate-500">請選擇您要探索的高中職就學區域</p>
-                </div>
-                
-                <div className="flex flex-row gap-2 sm:gap-3 w-full">
-                  <button
-                    onClick={() => setIsRegionOpen(true)}
-                    className="flex-1 px-4 sm:px-6 py-4 rounded-2xl border-2 border-slate-900 flex items-center justify-between gap-2 sm:gap-4 font-black transition-all bg-amber-100 text-amber-900 hover:bg-amber-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
-                  >
-                    <div className="flex items-center gap-3">
-                      {formData.region ? (
-                        <>
-                          <span className="text-lg sm:text-xl">{ALL_REGIONS.find(r => r.id === formData.region)?.name || '未知區域'}</span>
-                        </>
-                      ) : (
-                        <span className="text-lg sm:text-xl">選擇就學區</span>
-                      )}
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-slate-900 shrink-0" />
-                  </button>
-                  {formData.region && (
-                    <button
-                      onClick={() => setActiveModal('scoringMethod')}
-                      className="shrink-0 px-3 sm:px-4 py-4 rounded-2xl border-2 border-slate-900 flex items-center justify-center gap-1 sm:gap-2 font-black transition-all bg-white text-slate-900 hover:bg-slate-100 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
-                    >
-                      <Info className="w-5 h-5 text-indigo-500 shrink-0" />
-                      <span className="shrink-0 text-sm sm:text-base">計分方式</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            </motion.section>
-
-            {/* Scores Configuration */}
-            <motion.section 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="p-6 sm:p-8 bg-sky-100 border-2 border-slate-900 rounded-3xl shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
-            >
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                <div>
-                  <h2 className="text-xl font-black flex items-center gap-2 text-slate-900 mb-1">
-                    <Calculator className="w-6 h-6 text-indigo-600" /> 會考成績評估
-                  </h2>
-                  <p className="text-sm font-bold text-slate-600">請設定各科成績等級，系統將即時分析</p>
-                </div>
-                
-                {/* Result quick look or decoration */}
-                <div className="bg-white border-2 border-slate-900 px-4 py-2 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hidden sm:flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-emerald-500 animate-pulse" />
-                  <span className="font-black text-sm text-slate-900">即刻演算</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:gap-4">
+            {/* 各科成績 */}
+            <section>
+              <h2 className="text-xl font-bold text-slate-900 mb-6 pb-2 border-b-2 border-slate-100 flex items-center uppercase tracking-wider">
+                <span className="w-8 h-8 geometric-card bg-slate-900 text-white flex items-center justify-center mr-3 text-sm font-bold">2</span>
+                各科會考成績
+              </h2>
+              
+              <div className="flex flex-col space-y-6">
                 {[
-                  { id: 'chinese', label: '國文', icon: BookOpen, color: 'text-rose-600', bgBorder: 'bg-rose-50 border-rose-300 focus:ring-rose-400 focus:border-rose-400 hover:border-rose-400', theme: 'bg-white' },
-                  { id: 'english', label: '英文', icon: PenTool, color: 'text-amber-600', bgBorder: 'bg-amber-50 border-amber-300 focus:ring-amber-400 focus:border-amber-400 hover:border-amber-400', theme: 'bg-white' },
-                  { id: 'math', label: '數學', icon: Calculator, color: 'text-blue-600', bgBorder: 'bg-blue-50 border-blue-300 focus:ring-blue-400 focus:border-blue-400 hover:border-blue-400', theme: 'bg-white' },
-                  { id: 'science', label: '自然', icon: Activity, color: 'text-emerald-600', bgBorder: 'bg-emerald-50 border-emerald-300 focus:ring-emerald-400 focus:border-emerald-400 hover:border-emerald-400', theme: 'bg-white' },
-                  { id: 'social', label: '社會', icon: Map, color: 'text-purple-600', bgBorder: 'bg-purple-50 border-purple-300 focus:ring-purple-400 focus:border-purple-400 hover:border-purple-400', theme: 'bg-white' }
-                ].map(subject => (
-                  <div key={subject.id} className={`relative group ${subject.theme} border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex items-center justify-between gap-4`}>
-                    <label className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 w-24 shrink-0">
-                      <div className={`w-10 h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] bg-slate-50`}>
-                        <subject.icon className={`w-5 h-5 ${subject.color}`} />
-                      </div>
-                      {subject.label}
+                  { id: 'chineseScore', label: '國文', icon: BookOpen },
+                  { id: 'mathScore', label: '數學', icon: Calculator },
+                  { id: 'englishScore', label: '英文', icon: Globe },
+                  { id: 'socialScore', label: '社會', icon: Building2 },
+                  { id: 'scienceScore', label: '自然', icon: Atom },
+                ].map((subject, index) => (
+                  <div key={subject.id} className={`relative ${index !== 0 ? 'pt-6 border-t-2 border-slate-100' : ''}`}>
+                    <label className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-2">
+                      <subject.icon className="w-4 h-4 mr-1.5 text-slate-400" /> {subject.label}成績 <span className="text-slate-900 ml-1">*</span>
                     </label>
-                    <div className="relative w-full max-w-[200px]">
-                      <select
-                        className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 font-black text-base sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 transition-all cursor-pointer ${subject.bgBorder}`}
-                        value={(formData as any)[subject.id]}
-                        onChange={(e) => updateForm(subject.id, e.target.value)}
-                      >
-                        <option value="" disabled>-- 選擇等級 --</option>
-                        {gradeOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                      </select>
-                      <ChevronRight className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none rotate-90" />
+                    <div className="flex flex-row gap-1.5 sm:gap-2 w-full">
+                      {SCORES.map(s => {
+                        const isSelected = (formData as any)[subject.id] === s;
+                        return (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => handleScoreClick(subject.id as keyof QuestionnaireData, s)}
+                            className={`flex-1 py-2 sm:py-2.5 border-2 font-bold text-xs sm:text-sm transition-all text-center focus:outline-none
+                              ${isSelected 
+                                ? 'border-slate-900 bg-slate-900 text-white shadow-[inset_0_3px_6px_rgba(0,0,0,0.6)]' 
+                                : 'border-slate-300 bg-white text-slate-700 shadow-[2px_2px_0_#94a3b8] hover:border-slate-900 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_#0F172A]'
+                              }`}
+                          >
+                            {s}
+                          </button>
+                        );
+                      })}
                     </div>
+                    {/* Native validation hidden select */}
+                    <select
+                      id={subject.id}
+                      name={subject.id}
+                      value={(formData as any)[subject.id]}
+                      onChange={handleChange}
+                      className="absolute bottom-0 left-1/2 w-px h-px opacity-0 pointer-events-none"
+                      tabIndex={-1}
+                    >
+                      <option value="" disabled></option>
+                      {SCORES.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
                   </div>
                 ))}
-
-                {/* Composition */}
-                <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex items-center justify-between gap-4">
-                  <label className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 w-24 shrink-0">
-                    <div className="w-10 h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(251,191,36,0.2)] bg-slate-800">
-                      <PenTool className="w-5 h-5 text-amber-400" />
-                    </div>
-                    寫作
+                
+                <div className="relative pt-6 border-t-2 border-slate-100">
+                  <label className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-2">
+                    <PenTool className="w-4 h-4 mr-1.5 text-slate-400" /> 作文級分 <span className="text-slate-900 ml-1">*</span>
                   </label>
-                  <div className="relative w-full max-w-[200px]">
-                    <select
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 border-slate-700 bg-slate-800 text-amber-400 font-black text-base sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 focus:ring-amber-400/50 hover:border-amber-500/50 transition-all cursor-pointer"
-                      value={formData.composition}
-                      onChange={(e) => updateForm('composition', e.target.value)}
-                    >
-                      <option value="" disabled>-- 選擇級分 --</option>
-                      {[6, 5, 4, 3, 2, 1, 0].map(s => <option key={s} value={s}>{s} 級分</option>)}
-                    </select>
-                    <ChevronRight className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-500/50 pointer-events-none rotate-90" />
+                  <div className="flex flex-row gap-1.5 sm:gap-2 w-full">
+                    {ESSAY_SCORES.map(s => {
+                      const isSelected = formData.essayScore === s;
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => handleScoreClick('essayScore', s)}
+                          className={`flex-1 py-2 sm:py-2.5 border-2 font-bold text-xs sm:text-sm transition-all text-center focus:outline-none
+                            ${isSelected 
+                              ? 'border-slate-900 bg-slate-900 text-white shadow-[inset_0_3px_6px_rgba(0,0,0,0.6)]' 
+                              : 'border-slate-300 bg-white text-slate-700 shadow-[2px_2px_0_#94a3b8] hover:border-slate-900 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_#0F172A]'
+                            }`}
+                        >
+                          {s}
+                        </button>
+                      );
+                    })}
                   </div>
+                  {/* Native validation hidden select */}
+                  <select
+                    id="essayScore"
+                    name="essayScore"
+                    value={formData.essayScore}
+                    onChange={handleChange}
+                    className="absolute bottom-0 left-1/2 w-px h-px opacity-0 pointer-events-none"
+                    tabIndex={-1}
+                  >
+                    <option value="" disabled></option>
+                    {ESSAY_SCORES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            {/* 隱藏序位區間選項 */}
+            <div className={`flex flex-col items-start bg-slate-50 p-4 border-2 border-slate-900 geometric-card ${forceSkipRanking ? 'opacity-90 bg-slate-100' : ''} ${effectiveSkipRanking ? '!mb-20 mt-4' : 'mb-12'}`}>
+              <div className="flex items-center w-full">
+                <input
+                  type="checkbox"
+                  id="skipRanking"
+                  name="skipRanking"
+                  checked={effectiveSkipRanking}
+                  disabled={forceSkipRanking}
+                  onChange={handleChange}
+                  className={`w-5 h-5 accent-slate-900 border-2 border-slate-900 bg-white ${forceSkipRanking ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}`}
+                />
+                <label htmlFor="skipRanking" className={`ml-3 block text-sm font-bold text-slate-900 select-none ${forceSkipRanking ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+                  不想提供序位資訊，直接獲取邀請碼
+                </label>
+              </div>
+              {forceSkipRanking && (
+                <p className="mt-3 text-xs font-bold text-rose-600 pl-8">
+                  ※ 115年度個人序位區間公告前（2026/06/16 12:00），自動略過填寫序位資訊。
+                </p>
+              )}
+            </div>
+
+            {/* 序位區間 */}
+            {!effectiveSkipRanking && (
+            <section>
+              <div className="flex justify-between items-end mb-6 pb-2 border-b-2 border-slate-100">
+                <h2 className="text-xl font-bold text-slate-900 flex items-center uppercase tracking-wider">
+                  <span className="w-8 h-8 geometric-card bg-slate-900 text-white flex items-center justify-center mr-3 text-sm font-bold">3</span>
+                  全區序位數據
+                </h2>
+                <a 
+                  href="https://tyctw.github.io/volunteer/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center bg-blue-100 text-blue-700 px-4 py-2 border-2 border-blue-600 hover:bg-blue-600 hover:text-white font-bold text-sm transition-all geometric-card !shadow-[3px_3px_0_#2563EB] active:!translate-y-1 active:!shadow-none"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  序位這裡查詢
+                </a>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="minRatio" className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-1">
+                    <Percent className="w-4 h-4 mr-1.5 text-slate-400" /> 最小比率 (%) <span className="text-slate-900 ml-1">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    id="minRatio"
+                    name="minRatio"
+                    placeholder="例: 1.54"
+                    value={formData.minRatio}
+                    onChange={handleChange}
+                    className="geo-input"
+                  />
                 </div>
 
+                <div>
+                  <label htmlFor="maxRatio" className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-1">
+                    <Percent className="w-4 h-4 mr-1.5 text-slate-400" /> 最大比率 (%) <span className="text-slate-900 ml-1">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    id="maxRatio"
+                    name="maxRatio"
+                    placeholder="例: 1.82"
+                    value={formData.maxRatio}
+                    onChange={handleChange}
+                    className="geo-input"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="minRankInterval" className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-1">
+                    <ListOrdered className="w-4 h-4 mr-1.5 text-slate-400" /> 最小區間 <span className="text-slate-900 ml-1">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    id="minRankInterval"
+                    name="minRankInterval"
+                    placeholder="例: 101"
+                    value={formData.minRankInterval}
+                    onChange={handleChange}
+                    className="geo-input"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="maxRankInterval" className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-1">
+                    <ListOrdered className="w-4 h-4 mr-1.5 text-slate-400" /> 最大區間 <span className="text-slate-900 ml-1">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    id="maxRankInterval"
+                    name="maxRankInterval"
+                    placeholder="例: 200"
+                    value={formData.maxRankInterval}
+                    onChange={handleChange}
+                    className="geo-input"
+                  />
+                </div>
               </div>
-            </motion.section>
-
-          </div>
-        </div>
-      </main>
-
-      {/* Floating Action Bar */}
-      <div className="sticky bottom-6 left-0 right-0 w-full px-4 z-50 pointer-events-none mt-8">
-        <div className="max-w-2xl mx-auto pointer-events-auto">
-          <button
-            onClick={handleAnalyze}
-            disabled={status === 'auth' || status === 'quantum'}
-            className="w-full flex items-center justify-center gap-3 bg-indigo-500 border-2 border-slate-900 text-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] rounded-2xl py-4 px-8 text-xl font-black transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(15,23,42,1)] disabled:bg-slate-400 group"
-          >
-            {status === 'quantum' ? (
-              <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                <Activity className="w-6 h-6" />
-              </motion.div>
-            ) : (
-              <>
-                開始落點分析 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-              </>
+            </section>
             )}
+
+            {/* 聯絡資訊 */}
+            <section>
+              <h2 className="text-xl font-bold text-slate-900 mb-6 pb-2 border-b-2 border-slate-100 flex items-center uppercase tracking-wider">
+                <span className="w-8 h-8 geometric-card bg-slate-900 text-white flex items-center justify-center mr-3 text-sm font-bold">
+                  {effectiveSkipRanking ? '3' : '4'}
+                </span>
+                聯絡資訊
+              </h2>
+              <div>
+                <label htmlFor="email" className="text-[11px] font-bold uppercase text-slate-400 flex items-center mb-1">
+                  <Mail className="w-4 h-4 mr-1.5 text-slate-400" /> Email信箱 <span className="text-slate-900 ml-1">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="name@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="geo-input max-w-md"
+                />
+                <p className="mt-2 text-[11px] uppercase font-bold text-slate-400">此信箱僅用於驗證及補發分析報告使用。</p>
+              </div>
+            </section>
+
+            <div className="pt-6 border-t border-slate-100">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-5 mt-8 border-4 border-slate-900 transition-all flex items-center justify-center group ${isSubmitting ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-emerald-400 text-slate-900 font-black text-lg shadow-[8px_8px_0_#0F172A] hover:bg-emerald-300 hover:-translate-y-1 hover:shadow-[10px_10px_0_#0F172A] active:translate-y-2 active:shadow-none'}`}
+              >
+                {isSubmitting ? '資料提交中...' : '提交資料並獲取邀請碼'}
+                {!isSubmitting && <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-2 transition-transform" />}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      {/* 頁尾版權與聯絡資訊 */}
+      <footer className="max-w-3xl mx-auto mt-8 text-center pb-8">
+        <p className="text-slate-500 font-bold text-sm tracking-widest uppercase mb-1">
+          © {new Date().getFullYear()} 全國會考分析系統
+        </p>
+        <p className="text-slate-400 font-medium text-xs mb-5">
+          非政府官方架設，由民間團隊營運
+        </p>
+        <div className="flex items-center justify-center gap-6 mb-2">
+          <button 
+            type="button" 
+            onClick={() => setShowShareModal(true)}
+            className="inline-flex items-center text-slate-600 hover:text-slate-900 font-bold text-sm transition-colors underline underline-offset-4"
+          >
+            <Share2 className="w-4 h-4 mr-1.5" />
+            分享系統
+          </button>
+          <button 
+            type="button" 
+            onClick={() => setShowPrivacyModal(true)}
+            className="inline-flex items-center text-slate-600 hover:text-slate-900 font-bold text-sm transition-colors underline underline-offset-4"
+          >
+            <BookOpen className="w-4 h-4 mr-1.5" />
+            隱私權政策
+          </button>
+          <a href="mailto:tyctw.analyze@gmail.com" className="inline-flex items-center text-slate-600 hover:text-slate-900 font-bold text-sm transition-colors underline underline-offset-4 pointer-events-auto">
+            <Mail className="w-4 h-4 mr-1.5" />
+            聯絡我們
+          </a>
+        </div>
+      </footer>
+    </div>
+
+    {/* 防呆錯誤彈窗 */}
+    {validationErrors.length > 0 && (
+      <div className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div className="bg-white border-4 border-slate-900 shadow-[8px_8px_0_#0F172A] p-6 max-w-sm w-full animate-in fade-in zoom-in duration-200">
+          <h3 className="text-xl font-bold flex items-center text-rose-600 mb-4">
+            <AlertCircle className="w-6 h-6 mr-2 shrink-0" />
+            資料未完整填寫或格式有誤
+          </h3>
+          <div className="bg-rose-50 p-4 mb-6 border-2 border-rose-100 max-h-[40vh] overflow-y-auto">
+            <p className="text-rose-800 font-bold mb-2 text-sm">請檢查以下欄位：</p>
+            <ul className="text-rose-700 font-medium text-sm list-disc pl-5 space-y-1">
+              {validationErrors.map((error, idx) => (
+                <li key={idx}>{error}</li>
+              ))}
+            </ul>
+          </div>
+          <button
+            onClick={() => setValidationErrors([])}
+            className="w-full py-3 bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors border-2 border-slate-900 shadow-[4px_4px_0_#0F172A] active:translate-y-1 active:shadow-[2px_2px_0_#0F172A]"
+          >
+            我知道了，返回修改
           </button>
         </div>
       </div>
+    )}
 
-      <CyberAuthOverlay 
-        isOpen={status === 'auth'}
-        code={formData.invitationCode}
-        onSuccess={() => {
-          localStorage.setItem('lastInvitationAuthSuccess', Date.now().toString());
-          setStatus('quantum');
-          executeAnalysis();
-        }}
-        onFail={() => {
-          setStatus('idle');
-          setActiveModal('authFail');
-        }}
-      />
-
-      <QuantumLoadingOverlay 
-        isOpen={status === 'quantum'}
-        onComplete={() => {
-          setStatus('success');
-          setTimeout(() => {
-            document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' });
-          }, 300);
-        }}
-      />
-
-      {/* Results Section */}
-      <AnimatePresence>
-        {status === 'success' && results && (
-          <motion.div 
-            id="results-section"
-            initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} 
-            className="max-w-6xl mx-auto px-4 pt-10"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-              <div className="lg:col-span-12 flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center text-white border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  <Award className="w-6 h-6" />
-                </div>
-                <h2 className="text-2xl font-black text-slate-900">落點運算總結報告</h2>
-              </div>
-
-              <div className="lg:col-span-12 flex flex-col gap-4 mb-4">
-                {results.analysisReport && (
-                  <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-4 border-slate-900 rounded-[32px] p-6 sm:p-8 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col gap-6 relative overflow-hidden group">
-                    {/* Decorative Background Elements */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none translate-x-1/4 -translate-y-1/4 group-hover:bg-indigo-400/30 transition-colors duration-700"></div>
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-400/20 rounded-full blur-3xl pointer-events-none -translate-x-1/4 translate-y-1/4 group-hover:bg-purple-400/30 transition-colors duration-700"></div>
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/40 via-transparent to-transparent pointer-events-none blur-xl"></div>
-                    
-                    <div className="relative z-10 flex flex-col gap-8">
-                      {/* Header Section */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-slate-900/10 pb-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center -rotate-3 text-indigo-600 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:rotate-0 transition-transform duration-300">
-                            <Sparkles className="w-7 h-7" />
-                          </div>
-                          <div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                              AI 智能落點分析
-                              <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-lg uppercase tracking-wider relative -top-2 rotate-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">Beta</span>
-                            </h3>
-                            <p className="text-slate-600 font-bold text-sm mt-1 tracking-wide uppercase">Personalized Analytics Strategy</p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => setActiveModal('strategy')}
-                          className="w-full sm:w-auto px-5 py-3 bg-amber-400 text-slate-900 font-bold text-sm sm:text-base rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-2"
-                        >
-                          <Target className="w-5 h-5" />
-                          志願選填攻略
-                        </button>
-                      </div>
-
-                      {/* Content Section - Bento Grid */}
-                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-stretch">
-                        
-                        {/* Reports Column */}
-                        <div className="lg:col-span-7 flex flex-col gap-6 h-full">
-                          <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col flex-1 relative overflow-hidden group/feedback">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-rose-100 rounded-bl-[100px] -z-0 opacity-50 group-hover/feedback:opacity-100 transition-opacity"></div>
-                            <h4 className="text-slate-900 font-black text-lg mb-3 flex items-center gap-2 relative z-10">
-                              <div className="bg-rose-100 p-1.5 rounded-lg border-2 border-slate-900">
-                                <Target className="w-5 h-5 text-rose-600" />
-                              </div>
-                              總結評價
-                            </h4>
-                            <p className="text-slate-700 font-bold text-lg sm:text-xl leading-relaxed flex-1 relative z-10">
-                              {results.analysisReport.analysisSummary}
-                            </p>
-                          </div>
-                          
-                          <div className="bg-indigo-600 border-2 border-slate-900 rounded-3xl p-6 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all relative overflow-hidden group/idea">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none group-hover/idea:bg-white/20 transition-all"></div>
-                            <h4 className="text-white font-black text-lg mb-3 flex items-center gap-2 relative z-10">
-                              <div className="bg-indigo-500 p-1.5 rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                                <Lightbulb className="w-5 h-5 text-amber-300" />
-                              </div>
-                              策略建議
-                            </h4>
-                            <p className="text-indigo-50 font-bold leading-relaxed relative z-10 text-[15px]">
-                              {results.analysisReport.suggestion}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Distribution Matrix Column */}
-                        <div className="lg:col-span-5 bg-white border-2 border-slate-900 rounded-3xl p-6 sm:p-8 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col h-full hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 transition-all">
-                          <h4 className="text-slate-900 font-black text-lg mb-6 flex items-center gap-2 border-b-2 border-slate-100 pb-4">
-                            <div className="bg-slate-100 p-1.5 rounded-lg border-2 border-slate-900">
-                              <Layers className="w-5 h-5 text-slate-700" />
-                            </div>
-                            可填校系分佈矩陣
-                          </h4>
-                          
-                          <div className="flex flex-col gap-4 flex-1 justify-center">
-                            {/* Reach */}
-                            <div className="relative group/item p-4 bg-slate-50 rounded-2xl border-2 border-slate-900 overflow-hidden flex items-center justify-between hover:bg-rose-50 transition-colors shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                              <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-white border-2 border-slate-900 text-rose-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:-rotate-3 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                                  <Flame className="w-6 h-6" strokeWidth={2.5} />
-                                </div>
-                                <div>
-                                  <div className="text-slate-900 font-black text-lg">夢幻區間 <span className="text-[10px] text-white font-black bg-rose-500 px-2 py-0.5 rounded-md border border-slate-900 ml-1 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">REACH</span></div>
-                                  <div className="text-slate-500 text-xs font-bold mt-0.5">挑戰性高，可少量選填</div>
-                                </div>
-                              </div>
-                              <div className="text-3xl font-black text-rose-600 tracking-tighter drop-shadow-sm">
-                                {results.analysisReport.zoneCounts?.reach || 0}<span className="text-sm text-slate-400 ml-1 font-bold">所</span>
-                              </div>
-                            </div>
-
-                            {/* Target */}
-                            <div className="relative group/item p-4 bg-slate-50 rounded-2xl border-2 border-slate-900 overflow-hidden flex items-center justify-between hover:bg-sky-50 transition-colors shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                              <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-white border-2 border-slate-900 text-sky-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:rotate-3 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                                  <Target className="w-6 h-6" strokeWidth={2.5} />
-                                </div>
-                                <div>
-                                  <div className="text-slate-900 font-black text-lg">實際區間 <span className="text-[10px] text-white font-black bg-sky-500 px-2 py-0.5 rounded-md border border-slate-900 ml-1 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">TARGET</span></div>
-                                  <div className="text-slate-500 text-xs font-bold mt-0.5">實力相當，主要選填目標</div>
-                                </div>
-                              </div>
-                              <div className="text-3xl font-black text-sky-600 tracking-tighter drop-shadow-sm">
-                                {results.analysisReport.zoneCounts?.target || 0}<span className="text-sm text-slate-400 ml-1 font-bold">所</span>
-                              </div>
-                            </div>
-
-                            {/* Safe */}
-                            <div className="relative group/item p-4 bg-slate-50 rounded-2xl border-2 border-slate-900 overflow-hidden flex items-center justify-between hover:bg-emerald-50 transition-colors shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                              <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-white border-2 border-slate-900 text-emerald-500 rounded-xl flex items-center justify-center group-hover/item:scale-110 group-hover/item:-rotate-3 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                                  <ShieldCheck className="w-6 h-6" strokeWidth={2.5} />
-                                </div>
-                                <div>
-                                  <div className="text-slate-900 font-black text-lg">保守區間 <span className="text-[10px] text-white font-black bg-emerald-500 px-2 py-0.5 rounded-md border border-slate-900 ml-1 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">SAFE</span></div>
-                                  <div className="text-slate-500 text-xs font-bold mt-0.5">錄取率極高，保底選擇</div>
-                                </div>
-                              </div>
-                              <div className="text-3xl font-black text-emerald-600 tracking-tighter drop-shadow-sm">
-                                {results.analysisReport.zoneCounts?.safe || 0}<span className="text-sm text-slate-400 ml-1 font-bold">所</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="lg:col-span-4 flex flex-col gap-4">
-                <div className="bg-white border-2 border-slate-900 rounded-3xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col">
-                  <div className="bg-indigo-300 p-4 border-b-2 border-slate-900 flex justify-between items-center">
-                    <h3 className="font-black text-slate-900 flex items-center gap-2">
-                      <Calculator className="w-5 h-5" /> 總分換算
-                    </h3>
-                  </div>
-                  <div className="p-5 flex flex-col gap-3 bg-slate-50">
-                    <div className="bg-white p-4 rounded-xl border-2 border-slate-900 flex justify-between items-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all">
-                      <span className="font-bold text-slate-600">區域總積分</span>
-                      <span className="text-3xl font-black text-indigo-600">{results.totalPoints || '無'}</span>
-                    </div>
-                    {results.totalCredits && (
-                      <div className="bg-white p-4 rounded-xl border-2 border-slate-900 flex justify-between items-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all mt-1">
-                        <span className="font-bold text-slate-600">區域總積點</span>
-                        <span className="text-3xl font-black text-emerald-600">{results.totalCredits}</span>
-                      </div>
-                    )}
-                    <div className="mt-2 p-4 bg-slate-900 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] flex justify-between items-center">
-                      <div className="font-bold text-slate-300">合適學校總數</div>
-                      <div className="text-2xl font-black text-emerald-400">{results.eligibleSchools?.length || 0} <span className="text-sm font-bold text-slate-300">所</span></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-amber-100 border-2 border-slate-900 rounded-3xl p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col">
-                  <h3 className="text-sm font-black text-slate-900 mb-3 flex items-center gap-2 opacity-80">
-                    <Filter className="w-4 h-4" /> 篩選偏好
-                  </h3>
-                  <div className="flex flex-col gap-3">
-                    <div className="bg-white py-3 px-4 rounded-xl border-2 border-slate-900 flex items-center justify-between shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                      <span className="text-sm font-bold text-slate-500">學校屬性</span>
-                      <span className="font-black text-slate-800 text-sm">
-                        {formData.schoolOwnership === 'all' ? '公/私立不拘' : formData.schoolOwnership === 'public' ? '僅公立學校' : '僅私立學校'}
-                      </span>
-                    </div>
-                    <div className="bg-white py-3 px-4 rounded-xl border-2 border-slate-900 flex items-center justify-between shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                      <span className="text-sm font-bold text-slate-500">學校類型</span>
-                      <span className="font-black text-slate-800 text-sm">
-                        {formData.schoolType === 'all' ? '全不拘' : formData.schoolType === '普通科' ? '普通科' : '職業類科'}
-                      </span>
-                    </div>
-                    {formData.schoolType === '職業類科' && (
-                      <div className="bg-white py-3 px-4 rounded-xl border-2 border-slate-900 flex flex-col gap-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                        <span className="text-sm font-bold text-slate-500">職業群別</span>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {vocationalGroups.length === 1 && vocationalGroups[0] === 'all' ? (
-                            <span className="text-sm font-black text-slate-800">全群別不拘</span>
-                          ) : (
-                            vocationalGroups.map(group => (
-                              <span key={group} className="px-2 py-1 bg-emerald-100 text-emerald-800 border-2 border-emerald-300 rounded-lg text-xs font-black">
-                                {group}
-                              </span>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="lg:col-span-8 bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-4 gap-4">
-                  <div className="w-full sm:w-auto">
-                    <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
-                      <Building2 className="w-6 h-6 text-indigo-500" /> 最適推薦志願
-                    </h3>
-                    <span className="text-xs font-bold text-slate-400 mt-1 block">依據系統運算排序</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2 relative w-full sm:w-auto">
-                    <button onClick={() => setActiveModal('mockVolunteer')} className="px-3 py-1.5 bg-sky-50 text-sky-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
-                      <Target className="w-4 h-4" /> 模擬選填
-                    </button>
-                    <button onClick={() => setIsComparisonOpen(true)} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
-                      <List className="w-4 h-4" /> 比較清單 ({comparisonSchools.length})
-                    </button>
-                    <button onClick={() => setActiveModal('export')} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
-                      <Download className="w-4 h-4" /> 匯出報告
-                    </button>
-                  </div>
-                </div>
-
-                {/* Filter Bar */}
-                <div className="flex flex-col sm:flex-row gap-3 mb-4 bg-slate-50 p-3 rounded-2xl border-2 border-slate-200">
-                  <div className="flex-1 relative">
-                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input 
-                      type="text" 
-                      placeholder="搜尋學校、科別關鍵字..." 
-                      value={resultFilterText}
-                      onChange={e => setResultFilterText(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 placeholder:text-slate-400 transition-all"
-                    />
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <select 
-                      value={resultFilterZone} 
-                      onChange={e => setResultFilterZone(e.target.value)}
-                      className="flex-1 sm:flex-none px-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900"
-                    >
-                      <option value="all">落點區間不拘</option>
-                      <option value="reach">夢幻區</option>
-                      <option value="target">實際區</option>
-                      <option value="safe">保守區</option>
-                    </select>
-                    <select 
-                      value={resultFilterOwnership} 
-                      onChange={e => setResultFilterOwnership(e.target.value)}
-                      className="flex-1 sm:flex-none px-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900"
-                    >
-                      <option value="all">公私立不拘</option>
-                      <option value="public">公立</option>
-                      <option value="private">私立</option>
-                    </select>
-                    <select 
-                      value={resultFilterType} 
-                      onChange={e => setResultFilterType(e.target.value)}
-                      className="flex-1 sm:flex-none px-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900"
-                    >
-                      <option value="all">科別不拘</option>
-                      <option value="普通科">普通科</option>
-                      <option value="職業類科">職業類科</option>
-                    </select>
-                  </div>
-                </div>
-                
-                {(() => {
-                  const filteredSchools = (results.eligibleSchools || []).filter((school: any) => {
-                    const matchText = !resultFilterText || 
-                      school.name?.includes(resultFilterText) || 
-                      school.type?.includes(resultFilterText) || 
-                      school.group?.includes(resultFilterText);
-                    const matchZone = resultFilterZone === 'all' || school.zone === resultFilterZone;
-                    const matchOwnership = resultFilterOwnership === 'all' || school.ownership === resultFilterOwnership;
-                    const matchType = resultFilterType === 'all' || 
-                      (resultFilterType === '普通科' && school.type === '普通科') || 
-                      (resultFilterType === '職業類科' && school.type !== '普通科');
-                    return matchText && matchZone && matchOwnership && matchType;
-                  });
-
-                  return filteredSchools.length > 0 ? (
-                    <div className="flex-1 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4">
-                      {filteredSchools.map((school: any, i: number) => {
-                        const isCompared = !!comparisonSchools.find(s => s.name === school.name);
-
-                      
-                      const userScore = results.totalPoints ? parseFloat(results.totalPoints) : 0;
-                      let numDiff: number | null = null;
-                      
-                      if (school.scoreDiff !== undefined && school.scoreDiff !== null && school.scoreDiff !== '') {
-                        numDiff = parseFloat(school.scoreDiff);
-                      } else if (school.pointsDiff !== undefined && school.pointsDiff !== null && school.pointsDiff !== '') {
-                        numDiff = parseFloat(school.pointsDiff);
-                      } else if (school.diff !== undefined && school.diff !== null && school.diff !== '') {
-                        numDiff = parseFloat(school.diff);
-                      } else if (school.points !== undefined && school.points !== null && school.points !== '') {
-                        numDiff = parseFloat((userScore - parseFloat(school.points)).toFixed(2));
-                      } else if (school.minScore !== undefined && !isNaN(parseFloat(school.minScore))) {
-                        numDiff = parseFloat((userScore - parseFloat(school.minScore)).toFixed(2));
-                      } else if (school.score !== undefined && !isNaN(parseFloat(school.score))) {
-                        numDiff = parseFloat((userScore - parseFloat(school.score)).toFixed(2));
-                      }
-
-                      const diffDisplay = numDiff !== null 
-                        ? (numDiff > 0 ? '+' : '') + (Number.isInteger(numDiff) ? numDiff : numDiff.toFixed(2))
-                        : '?';
-
-                      const ownership = school.ownership || '公立';
-                      const ownershipColor = ownership === '私立' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
-                      const OwnershipIcon = ownership === '私立' ? Building2 : Library;
-
-                      return (
-                      <div key={i} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
-                        {/* Decorative rank number */}
-                        <div className={`absolute -right-2 -bottom-4 text-8xl font-black opacity-[0.03] select-none pointer-events-none transition-opacity group-hover:opacity-10 ${i < 3 ? 'text-amber-600' : 'text-slate-900'}`}>{i + 1}</div>
-                        
-                        <div className="flex flex-col gap-4 relative z-10 flex-1">
-                          
-                          {/* Top: School Info */}
-                          <div className="flex items-start gap-4">
-                            <div className={`w-12 h-12 shrink-0 rounded-2xl border-2 border-slate-900 flex items-center justify-center font-black text-lg shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${i < 3 ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900' : 'bg-slate-100 text-slate-700'}`}>
-                              {i + 1}
-                            </div>
-                            <div className="pt-1">
-                              <h4 className="font-black text-xl text-slate-900 leading-tight">
-                                {school.name}
-                              </h4>
-                            </div>
-                          </div>
-
-                          {/* Middle: Tags */}
-                          <div className="flex flex-wrap items-stretch gap-2 mt-auto pt-2">
-                            {/* Unmet requirements tag */}
-                            {school.meetsMinRequirements === false && (
-                              <div className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 bg-red-100 text-red-800 border-red-300 flex-none min-w-[80px]">
-                                <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">特別注意</span>
-                                <div className="flex items-center gap-1 font-black text-sm whitespace-nowrap">
-                                  科目未達標
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Zone Tag */}
-                            {school.zone && (
-                              <div className={`flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 ${
-                                school.zone === 'reach' ? 'bg-rose-100 text-rose-800 border-rose-300' : 
-                                school.zone === 'target' ? 'bg-sky-100 text-sky-800 border-sky-300' :
-                                'bg-emerald-100 text-emerald-800 border-emerald-300'
-                              } flex-1 min-w-[70px]`}>
-                                <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">落點區間</span>
-                                <div className="flex items-center gap-1 font-black text-sm whitespace-nowrap">
-                                  {school.zone === 'reach' ? '夢幻區' : school.zone === 'target' ? '實際區' : '保守區'}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Ownership Tag */}
-                            <div className={`flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 ${ownershipColor} flex-1 min-w-[70px]`}>
-                              <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">屬性</span>
-                              <div className="flex items-center gap-1 font-black text-sm whitespace-nowrap">
-                                <OwnershipIcon className="w-3.5 h-3.5" /> {ownership}
-                              </div>
-                            </div>
-
-                            {/* Department Tag */}
-                            <div className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 bg-emerald-100 text-emerald-800 border-emerald-300 flex-1 min-w-[70px]">
-                              <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">科別</span>
-                              <div className="flex items-center gap-1 font-black text-sm whitespace-nowrap">
-                                {school.type || '普通科'}
-                              </div>
-                            </div>
-
-                            {/* Group Tag */}
-                            {school.group && (
-                              <div className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 bg-amber-100 text-amber-800 border-amber-300 flex-1 min-w-[70px]">
-                                <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">群別</span>
-                                <div className="flex items-center gap-1 font-black text-sm whitespace-nowrap">
-                                  {school.group}
-                                </div>
-                              </div>
-                            )}
-                            
-                            {/* Diff Score Box */}
-                            <div className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] flex-1 min-w-[70px]">
-                              <span className="text-[10px] font-black uppercase text-slate-500 mb-0.5 whitespace-nowrap">分差</span>
-                              <div className="font-black flex items-baseline gap-0.5 whitespace-nowrap text-sm">
-                                <span className={numDiff !== null ? (numDiff > 0 ? "text-emerald-500" : numDiff < 0 ? "text-rose-500" : "text-slate-700") : "text-slate-400"}>
-                                  {diffDisplay}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Action Buttons */}
-                          <div className="flex gap-2 mt-2">
-                            <a 
-                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="flex-[2] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-1.5 transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
-                            >
-                              <MapPin className="w-4 h-4" /> 學校地圖
-                            </a>
-                            <button 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleComparison(school);
-                              }}
-                              className={`flex-[3] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-2 transition-all ${
-                                isCompared 
-                                  ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-indigo-500' 
-                                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'
-                              }`}
-                            >
-                              {isCompared ? <Check className="w-4 h-4" /> : <List className="w-4 h-4" />}
-                              {isCompared ? '已加入比較' : '加入比較'}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      )})}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center py-12 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-300">
-                    <Search className="w-16 h-16 text-slate-300 mb-4" />
-                    <p className="text-xl font-black text-slate-500">目前沒有符合條件的推薦學校</p>
-                  </div>
-                );
-                })()}
-              </div>
+    {/* 確認資料彈窗 */}
+    {showConfirmModal && (
+      <div className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-sm">
+        <div className="bg-white border-4 border-slate-900 shadow-[8px_8px_0_#0F172A] p-6 max-w-lg w-full my-8 animate-in fade-in zoom-in duration-200">
+          <h3 className="text-2xl font-bold flex items-center text-slate-900 mb-4 border-b-2 border-slate-200 pb-2">
+            <CheckCircle2 className="w-6 h-6 mr-2 text-blue-600" />
+            最後確認資料是否正確！
+          </h3>
+          <div className="space-y-4 mb-6 max-h-[50vh] overflow-y-auto pr-2">
+            <div className="grid grid-cols-2 gap-2 text-sm border-b-2 border-slate-100 pb-2">
+              <span className="text-slate-500 font-bold">區域</span>
+              <span className="font-bold text-slate-900 text-right">{formData.region}</span>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Modals Rendering */}
-      <AdvantagesModal 
-        isOpen={activeModal === 'advantages'} 
-        onClose={() => setActiveModal(null)} 
-      />
-      <QRCodeModal 
-        isOpen={activeModal === 'qrcode'} 
-        onClose={() => setActiveModal(null)} 
-        onScan={(code) => { updateForm('invitationCode', code); setActiveModal(null); }} 
-      />
-      
-      <MockVolunteerModal
-        isOpen={activeModal === 'mockVolunteer'}
-        onClose={() => setActiveModal(null)}
-        region={formData.region}
-      />
-
-      <VocationalModal 
-        isOpen={isVocationalOpen} 
-        onClose={() => setIsVocationalOpen(false)}
-        selectedGroups={vocationalGroups}
-        onChange={setVocationalGroups}
-        onOpenHollandTest={() => { setIsVocationalOpen(false); setIsHollandTestOpen(true); }}
-      />
-
-      <VocationalEncyclopediaModal
-        isOpen={isEncyclopediaOpen}
-        onClose={() => setIsEncyclopediaOpen(false)}
-        onOpenHollandTest={() => { setIsEncyclopediaOpen(false); setIsHollandTestOpen(true); }}
-      />
-      
-      <HollandTestModal 
-        isOpen={isHollandTestOpen}
-        onClose={() => setIsHollandTestOpen(false)}
-        onComplete={(recommendedGroups) => {
-          setVocationalGroups(recommendedGroups);
-          updateForm('schoolType', '職業類科');
-          setIsVocationalOpen(true);
-        }}
-        onViewEncyclopedia={() => {
-          setIsHollandTestOpen(false);
-          setIsEncyclopediaOpen(true);
-        }}
-      />
-
-      <RegionModal 
-        isOpen={isRegionOpen} 
-        onClose={() => setIsRegionOpen(false)}
-        selectedRegion={formData.region}
-        onSelect={(region) => updateForm('region', region)} 
-      />
-      
-      <ComparisonModal
-        isOpen={isComparisonOpen}
-        onClose={() => setIsComparisonOpen(false)}
-        schools={comparisonSchools}
-        onRemove={name => setComparisonSchools(prev => prev.filter(s => s.name !== name))}
-        onClear={() => setComparisonSchools([])}
-      />
-
-      <ExportModal
-        isOpen={activeModal === 'export'}
-        onClose={() => setActiveModal(null)}
-        onExport={handleExport}
-      />
-
-      <DisclaimerModal 
-        isOpen={activeModal === 'disclaimer'} 
-        onClose={() => setActiveModal(null)}
-      />
-
-      <InstructionsModal 
-        isOpen={activeModal === 'instructions'} 
-        onClose={() => setActiveModal(null)}
-      />
-
-      <ChangelogModal 
-        isOpen={activeModal === 'changelog'} 
-        onClose={() => setActiveModal(null)}
-      />
-
-      <ReportErrorModal
-        isOpen={activeModal === 'reportError'}
-        onClose={() => setActiveModal(null)}
-      />
-
-      <InfoModal 
-        isOpen={activeModal === 'importantDates'} 
-        onClose={() => setActiveModal(null)}
-        title="重要日程"
-        icon={<Map className="w-8 h-8 text-purple-500" />}
-      >
-        <div className="space-y-6">
-          <div className="bg-slate-900 rounded-3xl p-6 text-white border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rotate-1 hover:rotate-0 transition-transform">
-            <h3 className="font-black text-2xl mb-2 flex items-center gap-2 text-lime-400">
-              <Sparkles className="w-6 h-6" /> 115 學年度
-            </h3>
-            <p className="text-slate-300 font-bold text-sm">國中教育會考重要時程表，請各位考生及家長密切留意。</p>
+            <div className="grid grid-cols-2 gap-2 text-sm border-b-2 border-slate-100 pb-2">
+              <span className="text-slate-500 font-bold">會考年度</span>
+              <span className="font-bold text-slate-900 text-right">{formData.examYear}年度</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-sm border-b-2 border-slate-100 pb-2">
+              <span className="text-slate-500 font-bold">分析身分</span>
+              <span className="font-bold text-slate-900 text-right">{formData.identity}</span>
+            </div>
+            <div className="flex flex-col gap-1 border-b-2 border-slate-100 pb-2">
+              <span className="text-slate-500 font-bold text-sm">各科成績</span>
+              <span className="font-bold text-slate-900 text-base">
+                國 {formData.chineseScore} / 數 {formData.mathScore} / 英 {formData.englishScore} / 
+                社 {formData.socialScore} / 自 {formData.scienceScore}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-sm border-b-2 border-slate-100 pb-2">
+              <span className="text-slate-500 font-bold">作文級分</span>
+              <span className="font-bold text-slate-900 text-right">{formData.essayScore} 級分</span>
+            </div>
+            {effectiveSkipRanking ? (
+              <div className="bg-slate-100 p-3 text-sm font-bold text-slate-600 text-center border-2 border-dashed border-slate-300">
+                已略過序位區間資訊
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-2 text-sm border-b-2 border-slate-100 pb-2">
+                  <span className="text-slate-500 font-bold">全區比率</span>
+                  <span className="font-bold text-slate-900 text-right">{formData.minRatio}% ~ {formData.maxRatio}%</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm border-b-2 border-slate-100 pb-2">
+                  <span className="text-slate-500 font-bold">全區區間</span>
+                  <span className="font-bold text-slate-900 text-right">{formData.minRankInterval} ~ {formData.maxRankInterval}</span>
+                </div>
+              </>
+            )}
+            <div className="grid grid-cols-1 gap-2 text-sm pt-2">
+              <span className="text-slate-500 font-bold">聯絡 Email</span>
+              <span className="font-bold text-slate-900 truncate">{formData.email}</span>
+            </div>
           </div>
-          
-          <div className="relative border-l-4 border-slate-900 ml-6 py-4 space-y-8">
-            
-            <div className="relative pl-8 group">
-              <div className="absolute -left-[14px] top-4 w-6 h-6 bg-amber-400 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-              <div className="bg-white border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-amber-100 text-amber-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 -rotate-2">
-                  03/05 ~ 03/07
-                </div>
-                <h4 className="font-black text-xl text-slate-900">國中會考報名</h4>
-              </div>
-            </div>
-
-            <div className="relative pl-8 group">
-              <div className="absolute -left-[14px] top-4 w-6 h-6 bg-slate-200 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-              <div className="bg-white border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-slate-100 text-slate-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 rotate-1">
-                  04/10
-                </div>
-                <h4 className="font-black text-xl text-slate-900">寄發准考證</h4>
-              </div>
-            </div>
-
-            <div className="relative pl-8 group">
-              <div className="absolute -left-[14px] top-4 w-6 h-6 bg-purple-500 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-              <div className="bg-purple-100 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all relative overflow-hidden">
-                <div className="absolute -right-4 -bottom-4 opacity-10">
-                  <Award className="w-24 h-24 text-purple-900" />
-                </div>
-                <div className="inline-block px-3 py-1 bg-purple-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 -rotate-1 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  05/16 ~ 05/17
-                </div>
-                <h4 className="font-black text-2xl text-purple-900">國中會考日期</h4>
-              </div>
-            </div>
-
-            <div className="relative pl-8 group">
-              <div className="absolute -left-[14px] top-4 w-6 h-6 bg-blue-500 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-              <div className="bg-blue-100 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all relative overflow-hidden">
-                <div className="absolute -right-4 -bottom-4 opacity-10">
-                  <ChartBar className="w-24 h-24 text-blue-900" />
-                </div>
-                <div className="inline-block px-3 py-1 bg-blue-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 rotate-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  06/05
-                </div>
-                <h4 className="font-black text-2xl text-blue-900">會考成績公布</h4>
-              </div>
-            </div>
-
-            <div className="relative pl-8 group">
-              <div className="absolute -left-[14px] top-4 w-6 h-6 bg-rose-500 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-              <div className="bg-white border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-rose-100 text-rose-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 -rotate-1">
-                  06/18
-                </div>
-                <h4 className="font-black text-xl text-slate-900">個人序位區間公告</h4>
-              </div>
-            </div>
-
-            <div className="relative pl-8 group">
-              <div className="absolute -left-[14px] top-4 w-6 h-6 bg-emerald-400 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-              <div className="bg-emerald-50 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-emerald-400 text-slate-900 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  06/18 開始
-                </div>
-                <h4 className="font-black text-xl text-emerald-900">免試入學填志願</h4>
-                <p className="text-xs font-bold text-slate-500 mt-1">（結束時間依各地區為主）</p>
-              </div>
-            </div>
-
-            <div className="relative pl-8 group">
-              <div className="absolute -left-[14px] top-4 w-6 h-6 bg-sky-400 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-              <div className="bg-sky-100 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-sky-400 text-slate-900 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 rotate-1 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  07/07
-                </div>
-                <h4 className="font-black text-xl text-sky-900">免試入學放榜</h4>
-                <p className="text-xs font-bold text-slate-500 mt-1">（放榜時間依各地區為主）</p>
-              </div>
-            </div>
-
-            <div className="relative pl-8 group">
-              <div className="absolute -left-[14px] top-4 w-6 h-6 bg-indigo-500 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-              <div className="bg-indigo-100 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-indigo-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 -rotate-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  07/09
-                </div>
-                <h4 className="font-black text-xl text-indigo-900">免試入學報到</h4>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </InfoModal>
-
-      <GradeLevelModal 
-        isOpen={activeModal === 'gradeLevel'} 
-        onClose={() => setActiveModal(null)} 
-      />
-
-      <SchoolTypesModal 
-        isOpen={activeModal === 'schoolTypes'} 
-        onClose={() => setActiveModal(null)} 
-      />
-
-      <StrategyModal 
-        isOpen={activeModal === 'strategy'} 
-        onClose={() => setActiveModal(null)} 
-      />
-
-      <PrivacyModal 
-        isOpen={activeModal === 'privacy'} 
-        onClose={() => setActiveModal(null)} 
-      />
-      <TermsModal 
-        isOpen={activeModal === 'terms'} 
-        onClose={() => setActiveModal(null)} 
-      />
-
-      <SharePlatformModal 
-        isOpen={activeModal === 'sharePlatform'}
-        onClose={() => setActiveModal(null)}
-      />
-
-      <RatingModal 
-        isOpen={activeModal === 'rating'} 
-        onClose={() => setActiveModal(null)}
-      />
-
-      {/* Navigation Drawer */}
-      <AnimatePresence>
-        {isNavMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsNavMenuOpen(false)}
-              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100]"
-            />
-            {/* Drawer */}
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-[380px] max-w-full border-l-4 border-slate-900 bg-slate-50 shadow-[-8px_0px_0px_0px_rgba(15,23,42,0.1)] z-[110] flex flex-col overflow-hidden"
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={() => setShowConfirmModal(false)}
+              className="flex-1 py-3 bg-white text-slate-900 font-bold border-2 border-slate-900 shadow-[4px_4px_0_#0F172A] hover:bg-slate-50 active:translate-y-1 active:shadow-[2px_2px_0_#0F172A] transition-all"
+              disabled={isSubmitting}
             >
-              <div className="p-5 bg-amber-400 border-b-4 border-slate-900 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-3">
-                  <Menu className="w-6 h-6 text-slate-900" />
-                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">主選單</h2>
-                </div>
-                <button
-                  onClick={() => setIsNavMenuOpen(false)}
-                  className="w-10 h-10 bg-white flex items-center justify-center border-4 border-slate-900 rounded-xl hover:bg-slate-100 transition shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-none"
-                >
-                  <X className="w-6 h-6 text-slate-900" />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
-                
-                {/* 學校與科系探索 */}
-                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
-                  <button 
-                    onClick={() => setExpandedNavCategory(prev => prev === 'schoolDetails' ? null : 'schoolDetails')}
-                    className="w-full flex items-center justify-between p-4 bg-sky-50 outline-none hover:bg-sky-100 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-sky-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                        <Compass className="w-5 h-5 text-sky-700" />
-                      </div>
-                      <span className="font-black text-slate-900 text-lg">學校與科系探索</span>
-                    </div>
-                    <ChevronDown className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === 'schoolDetails' ? 'rotate-180' : ''}`} />
-                  </button>
-                  <AnimatePresence>
-                    {expandedNavCategory === 'schoolDetails' && (
-                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
-                        <div className="p-3 flex flex-col gap-2">
-                            <button
-                              onClick={() => { setIsHollandTestOpen(true); setIsNavMenuOpen(false); }}
-                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="p-1.5 bg-purple-100 border-2 border-slate-900 rounded-lg">
-                                  <Brain className="w-5 h-5 text-purple-600" />
-                                </div>
-                                <span className="font-bold text-slate-900">荷倫碼性向測驗</span>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                            </button>
-                            <button
-                              onClick={() => { setIsEncyclopediaOpen(true); setIsNavMenuOpen(false); }}
-                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="p-1.5 bg-emerald-100 border-2 border-slate-900 rounded-lg">
-                                  <BookOpen className="w-5 h-5 text-emerald-600" />
-                                </div>
-                                <span className="font-bold text-slate-900">職群科系百科</span>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                            </button>
-                            <button
-                              onClick={() => { setActiveModal('schoolTypes'); setIsNavMenuOpen(false); }}
-                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="p-1.5 bg-sky-100 border-2 border-slate-900 rounded-lg">
-                                  <Building2 className="w-5 h-5 text-sky-600" />
-                                </div>
-                                <span className="font-bold text-slate-900">學校類型解析</span>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                            </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* 志願選填與落點 */}
-                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
-                  <button 
-                    onClick={() => setExpandedNavCategory(prev => prev === 'strategy' ? null : 'strategy')}
-                    className="w-full flex items-center justify-between p-4 bg-amber-50 outline-none hover:bg-amber-100 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-amber-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                        <Target className="w-5 h-5 text-amber-700" />
-                      </div>
-                      <span className="font-black text-slate-900 text-lg">志願選填與落點</span>
-                    </div>
-                    <ChevronDown className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === 'strategy' ? 'rotate-180' : ''}`} />
-                  </button>
-                  <AnimatePresence>
-                    {expandedNavCategory === 'strategy' && (
-                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
-                        <div className="p-3 flex flex-col gap-2">
-                          {[
-                            { id: 'mockVolunteer', icon: Target, label: '模擬志願選填', color: 'text-sky-600', bg: 'bg-sky-100' },
-                            { id: 'strategy', icon: Target, label: '志願選填攻略', color: 'text-amber-600', bg: 'bg-amber-100' },
-                            { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' },
-                            { id: 'importantDates', icon: Map, label: '重要日程', color: 'text-purple-600', bg: 'bg-purple-100' },
-                            { id: 'disclaimer', icon: Shield, label: '免責聲明', color: 'text-slate-600', bg: 'bg-slate-100' }
-                          ].map(btn => (
-                            <button
-                              key={btn.id}
-                              onClick={() => { setActiveModal(btn.id as any); setIsNavMenuOpen(false); }}
-                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${btn.bg}`}>
-                                  <btn.icon className={`w-5 h-5 ${btn.color}`} />
-                                </div>
-                                <span className="font-bold text-slate-900">{btn.label}</span>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                            </button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* 系統指南與回饋 */}
-                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
-                  <button 
-                    onClick={() => setExpandedNavCategory(prev => prev === 'systemGuide' ? null : 'systemGuide')}
-                    className="w-full flex items-center justify-between p-4 bg-indigo-50 outline-none hover:bg-indigo-100 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-indigo-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                        <Sparkles className="w-5 h-5 text-indigo-700" />
-                      </div>
-                      <span className="font-black text-slate-900 text-lg">系統指南與回饋</span>
-                    </div>
-                    <ChevronDown className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === 'systemGuide' ? 'rotate-180' : ''}`} />
-                  </button>
-                  <AnimatePresence>
-                    {expandedNavCategory === 'systemGuide' && (
-                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
-                        <div className="p-3 flex flex-col gap-2">
-                          {[
-                            { id: 'instructions', icon: Info, label: '使用說明', color: 'text-blue-600', bg: 'bg-blue-100' },
-                            { id: 'advantages', icon: Sparkles, label: '系統優點', color: 'text-indigo-600', bg: 'bg-indigo-100' },
-                            { id: 'rating', icon: StarIcon, label: '評分系統', color: 'text-amber-500', bg: 'bg-amber-100' },
-                            { id: 'changelog', icon: History, label: '更新日誌', color: 'text-slate-500', bg: 'bg-slate-100' },
-                            { id: 'privacy', icon: Database, label: '隱私權政策', color: 'text-emerald-600', bg: 'bg-emerald-100' },
-                            { id: 'terms', icon: Shield, label: '服務條款', color: 'text-slate-600', bg: 'bg-slate-100' },
-                            { id: 'reportError', icon: AlertCircle, label: '錯誤回報', color: 'text-red-500', bg: 'bg-red-100' }
-                          ].map(btn => (
-                            <button
-                              key={btn.id}
-                              onClick={() => { setActiveModal(btn.id as any); setIsNavMenuOpen(false); }}
-                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${btn.bg}`}>
-                                  <btn.icon className={`w-5 h-5 ${btn.color}`} />
-                                </div>
-                                <span className="font-bold text-slate-900">{btn.label}</span>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                            </button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* 外部資源 */}
-                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
-                  <button 
-                    onClick={() => setExpandedNavCategory(prev => prev === 'externalLinks' ? null : 'externalLinks')}
-                     className="w-full flex items-center justify-between p-4 bg-emerald-50 outline-none hover:bg-emerald-100 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-emerald-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                        <LinkIcon className="w-5 h-5 text-emerald-700" />
-                      </div>
-                      <span className="font-black text-slate-900 text-lg">外部資源與分享</span>
-                    </div>
-                    <ChevronDown className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === 'externalLinks' ? 'rotate-180' : ''}`} />
-                  </button>
-                  <AnimatePresence>
-                    {expandedNavCategory === 'externalLinks' && (
-                      <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
-                        <div className="p-3 flex flex-col gap-2">
-                          {[
-                            { href: 'https://cap.rcpet.edu.tw/', icon: Search, label: '會考成績查詢', color: 'text-fuchsia-600', bg: 'bg-fuchsia-100' },
-                            { href: 'https://tyctw.github.io/volunteer/', icon: ChartBar, label: '序位查詢', color: 'text-orange-600', bg: 'bg-orange-100' },
-                            { href: 'https://tyctw.github.io/shared/', icon: Library, label: '全國錄取分享', color: 'text-indigo-600', bg: 'bg-indigo-100' },
-                            { href: 'https://tyctw.github.io/score/', icon: List, label: '全國序位分享', color: 'text-emerald-600', bg: 'bg-emerald-100' }
-                          ].map(link => (
-                             <a 
-                               key={link.label}
-                               href={link.href} 
-                               target="_blank" 
-                               rel="noreferrer" 
-                               className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 group active:scale-95 transition-all"
-                             >
-                               <div className="flex items-center gap-3">
-                                 <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${link.bg}`}>
-                                   <link.icon className={`w-4 h-4 ${link.color}`} />
-                                 </div>
-                                 <span className="font-bold text-slate-900">{link.label}</span>
-                               </div>
-                               <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 -rotate-45 group-hover:rotate-0 transition-transform" />
-                             </a>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] p-4 flex justify-center gap-4">
-                  <a href="https://www.instagram.com/115.rcpet/" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
-                    <div className="w-10 h-10 rounded-xl bg-pink-50 border-2 border-slate-900 flex items-center justify-center group-hover:bg-pink-100 group-hover:scale-110 active:scale-95 transition-all text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                      <Instagram className="w-5 h-5 group-hover:-rotate-6 transition-transform group-hover:rotate-0" />
-                    </div>
-                    <span className="font-bold text-slate-700 text-sm">Instagram</span>
-                  </a>
-                  <div className="w-0.5 h-10 bg-slate-200 rounded-full mx-2"></div>
-                  <a href="https://www.threads.com/@115.rcpet" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 border-2 border-slate-900 flex items-center justify-center group-hover:bg-slate-100 group-hover:scale-110 active:scale-95 transition-all text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                      <AtSign className="w-5 h-5 group-hover:rotate-6 transition-transform group-hover:rotate-0" />
-                    </div>
-                    <span className="font-bold text-slate-700 text-sm">Threads</span>
-                  </a>
-                </div>
-
-              </div>
-              <div className="p-4 bg-slate-900 border-t-4 border-slate-900 text-center">
-                <p className="text-slate-400 font-bold text-xs flex items-center justify-center gap-1">
-                  <Check className="w-3 h-3 text-emerald-400" />
-                  會考落點分析系統 v5.0
-                </p>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      <AuthFailModal 
-        isOpen={activeModal === 'authFail'}
-        onClose={() => setActiveModal(null)}
-      />
-
-      <RegionScoringModal
-        isOpen={activeModal === 'scoringMethod'}
-        onClose={() => setActiveModal(null)}
-        selectedRegion={formData.region}
-      />
-
-      <InfoModal 
-        isOpen={activeModal === 'validationFailed'} 
-        onClose={() => setActiveModal(null)}
-        title="資料不齊全"
-        icon={<AlertCircle className="w-8 h-8 text-rose-500" />}
-      >
-        <div className="space-y-4 text-center">
-          <div className="bg-rose-50 border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] text-slate-900 p-6 rounded-3xl font-bold flex flex-col gap-4 items-center mx-auto">
-            <div className="w-16 h-16 bg-white border-4 border-slate-900 rounded-2xl flex items-center justify-center -rotate-6 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-              <span className="text-3xl">⚠️</span>
-            </div>
-            <div>
-              <p className="text-lg font-black mb-2">請填寫完整的資訊</p>
-              <p className="text-sm font-bold text-slate-600 mb-4">系統需要完整的資料才能為您進行最準確的落點分析運算。</p>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {missingFields.map((field, index) => (
-                  <span key={index} className="inline-flex items-center gap-1 bg-white border-2 border-slate-900 px-3 py-1 rounded-xl text-sm font-black text-rose-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                    {field}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <button 
-              onClick={() => setActiveModal(null)}
-              className="mt-4 px-8 py-3 bg-slate-900 text-white rounded-xl border-2 border-slate-900 font-black shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:bg-slate-800 transition-all active:translate-y-1 active:shadow-none inline-block w-full"
+              返回修改
+            </button>
+            <button
+              onClick={handleConfirmSubmit}
+              className="flex-1 py-3 bg-blue-600 text-white font-bold border-2 border-blue-900 shadow-[4px_4px_0_#1E3A8A] hover:bg-blue-700 active:translate-y-1 active:shadow-[2px_2px_0_#1E3A8A] transition-all flex justify-center items-center"
+              disabled={isSubmitting}
             >
-              我知道了，繼續填寫
+              {isSubmitting ? '傳送中...' : '確認無誤送出'}
             </button>
           </div>
         </div>
-      </InfoModal>
+      </div>
+    )}
 
-      {/* Footer */}
-      <footer className="mt-24 w-full px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-[3rem] border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col">
+    {/* 隱私權政策彈窗 */}
+    {showPrivacyModal && (
+      <div className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-sm">
+        <div className="bg-white border-4 border-slate-900 shadow-[8px_8px_0_#0F172A] p-6 sm:p-8 max-w-2xl w-full my-8 animate-in fade-in zoom-in duration-200">
+          <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-100">
+            <h3 className="text-2xl font-extrabold flex items-center text-slate-900">
+              <BookOpen className="w-6 h-6 mr-3 text-slate-900" />
+              隱私權政策
+            </h3>
+            <button 
+              onClick={() => setShowPrivacyModal(false)}
+              className="p-2 hover:bg-slate-100 transition-colors border-2 border-transparent hover:border-slate-900 geometric-card !border-slate-900 !shadow-[2px_2px_0_#0F172A] active:!translate-y-0.5 active:!shadow-none"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2 pb-4">
+            <p className="text-slate-600 font-medium leading-relaxed">
+              本系統非常重視用戶的隱私權，為保障您的權益，請詳閱以下隱私權規範：
+            </p>
             
-            {/* Top Section */}
-            <div className="p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row justify-between items-center xl:items-start gap-12 bg-slate-50 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-100 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 opacity-60"></div>
-              <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-100 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 opacity-60"></div>
-
-              <div className="flex flex-col items-center xl:items-start text-center xl:text-left gap-6 max-w-lg relative z-10 w-full">
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="bg-indigo-600 p-4 rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-transform duration-300">
-                    <Compass className="w-10 h-10 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-1">TW全國會考</h2>
-                    <div className="inline-block bg-amber-200 px-3 py-1 rounded-lg border-2 border-slate-900 shadow-sm">
-                       <h3 className="text-sm sm:text-base font-black tracking-widest text-slate-800 uppercase">落點分析系統</h3>
-                    </div>
-                  </div>
-                </div>
-                <div className="inline-flex items-center justify-center xl:justify-start gap-2 px-4 py-2.5 bg-white rounded-full border-2 border-slate-200 w-fit shadow-sm">
-                  <div className="relative flex h-3 w-3 items-center justify-center">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                  </div>
-                  <span className="text-slate-600 font-bold text-xs sm:text-sm">非政府官方機構 · 運算僅供參考</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 lg:flex gap-3 sm:gap-4 w-full xl:w-auto relative z-10">
-                <button 
-                  onClick={() => setActiveModal('privacy')}
-                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
-                >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                    <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
-                  </div>
-                  <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">隱私權政策</span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-emerald-600 transition-colors w-full">
-                    資料授權 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
-                  </span>
-                </button>
-
-                <button 
-                  onClick={() => setActiveModal('terms')}
-                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
-                >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                    <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
-                  </div>
-                  <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">服務條款</span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-indigo-600 transition-colors w-full">
-                    使用規範 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
-                  </span>
-                </button>
-
-                <a 
-                  href="mailto:tyctw.analyze@gmail.com" 
-                  className="col-span-2 group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-slate-900 border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
-                >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                    <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-400" />
-                  </div>
-                  <span className="font-black text-white text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">聯絡我們信箱</span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-400 group-hover:text-indigo-300 transition-colors break-all text-center xl:text-left w-full">
-                    tyctw.analyze@gmail.com
-                  </span>
-                </a>
-              </div>
-            </div>
-
-            {/* Bottom Copyright Section */}
-            <div className="bg-amber-400 border-t-4 border-slate-900 p-4 sm:p-6 flex flex-row items-center justify-between gap-2 sm:gap-4 overflow-hidden relative">
-              <div className="flex items-center gap-1.5 sm:gap-2 z-10 bg-amber-400">
-                <Copyright className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900 shrink-0" />
-                <span className="font-black text-slate-900 text-sm sm:text-lg xl:text-xl tracking-tight leading-none pt-0.5">COPYRIGHT {new Date().getFullYear()}</span>
-              </div>
-              <div className="z-10 text-right bg-amber-400">
-                <span className="font-black text-slate-900 text-[10px] sm:text-sm xl:text-base border-b-2 border-slate-900/30 pb-0.5">ALL RIGHTS RESERVED.</span>
-              </div>
-              {/* Marquee text in background */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 overflow-hidden whitespace-nowrap z-0">
-                <span className="text-5xl font-black text-slate-900 tracking-tighter uppercase px-4 select-none">
-                  TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析
-                </span>
-              </div>
+            <div className="space-y-2">
+              <h4 className="font-bold text-lg text-slate-900 flex items-center">
+                <span className="w-2 h-2 rounded-full bg-slate-900 mr-2"></span>
+                資料收集與目的
+              </h4>
+              <p className="text-slate-600 pl-4 leading-relaxed text-sm font-medium">
+                本系統收集的資料（包含成績、序位及 Email）僅用於落點分析統計及系統防呆運作。Email 僅做為防止惡意填入與系統寄送通知之用，不會移作他用。
+              </p>
             </div>
             
+            <div className="space-y-2">
+              <h4 className="font-bold text-lg text-slate-900 flex items-center">
+                <span className="w-2 h-2 rounded-full bg-slate-900 mr-2"></span>
+                資料保護與去識別化
+              </h4>
+              <p className="text-slate-600 pl-4 leading-relaxed text-sm font-medium">
+                收集之數據將進行去識別化處理。所有成績與序位數據皆做為整體趨勢分析之用，無法直接連結或反查至您個人身份。
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-bold text-lg text-slate-900 flex items-center">
+                <span className="w-2 h-2 rounded-full bg-slate-900 mr-2"></span>
+                資料分享政策
+              </h4>
+              <p className="text-slate-600 pl-4 leading-relaxed text-sm font-medium">
+                本系統承諾絕不將您的個人資訊出售、交換或出租給任何第三方。於發布相關數據分析時，皆不會包含任何可辨識個人的資訊。
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-bold text-lg text-slate-900 flex items-center">
+                <span className="w-2 h-2 rounded-full bg-slate-900 mr-2"></span>
+                免責聲明
+              </h4>
+              <p className="text-slate-600 pl-4 leading-relaxed text-sm font-medium">
+                本系統之各式分析結果僅供參考。實際分發規定與錄取狀況，應以當年度各區官方所發布之免試入學簡章與正式分發結果為準。
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-6 pt-6 border-t-2 border-slate-100 flex justify-end">
+            <button
+              onClick={() => setShowPrivacyModal(false)}
+              className="px-8 py-3 bg-slate-900 text-white font-bold border-2 border-slate-900 shadow-[4px_4px_0_#0F172A] hover:bg-slate-800 active:translate-y-1 active:shadow-[2px_2px_0_#0F172A] transition-all"
+            >
+              我知道了
+            </button>
           </div>
         </div>
-      </footer>
+      </div>
+    )}
 
-    </div>
+    {/* 使用說明彈窗 */}
+    {showHelpModal && (
+      <div className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-sm">
+        <div className="bg-white border-4 border-slate-900 shadow-[8px_8px_0_#0F172A] p-6 sm:p-8 max-w-2xl w-full my-8 animate-in fade-in zoom-in duration-200">
+          <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-100">
+            <h3 className="text-2xl font-extrabold flex items-center text-slate-900">
+              <HelpCircle className="w-6 h-6 mr-3 text-blue-600" />
+              使用說明與常見問題
+            </h3>
+            <button 
+              onClick={() => setShowHelpModal(false)}
+              className="p-2 hover:bg-slate-100 transition-colors border-2 border-transparent hover:border-slate-900 geometric-card !border-slate-900 !shadow-[2px_2px_0_#0F172A] active:!translate-y-0.5 active:!shadow-none"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2 pb-4">
+            <div className="space-y-2">
+              <h4 className="font-bold text-lg text-slate-900 flex items-center">
+                <span className="w-6 h-6 geometric-card bg-slate-900 text-white flex items-center justify-center mr-3 text-xs font-bold">1</span>
+                什麼是會考序位調查問卷？
+              </h4>
+              <p className="text-slate-600 pl-9 leading-relaxed text-sm font-medium">
+                本問卷旨在收集當年度會考考生的成績與序位區間資料。為幫助後續的落點分析更為精準，您的成績資料將成為分析系統的參考基底。
+              </p>
+            </div>
+            
+             <div className="space-y-2">
+              <h4 className="font-bold text-lg text-slate-900 flex items-center">
+                <span className="w-6 h-6 geometric-card bg-slate-900 text-white flex items-center justify-center mr-3 text-xs font-bold">2</span>
+                獲取邀請碼有什麼用？
+              </h4>
+              <p className="text-slate-600 pl-9 leading-relaxed text-sm font-medium">
+                填寫完成並成功送出後，系統會自動核發一組專屬邀請碼。您可以憑此邀請碼進入「會考落點分析系統」，系統會自動帶入您的成績並進行落點比對。邀請碼設有時效，請於當下取得後盡量於時效內使用。
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-bold text-lg text-slate-900 flex items-center">
+                <span className="w-6 h-6 geometric-card bg-slate-900 text-white flex items-center justify-center mr-3 text-xs font-bold">3</span>
+                序位區間該去哪裡查詢？
+              </h4>
+              <p className="text-slate-600 pl-9 leading-relaxed text-sm font-medium">
+                各招生區會於特定時間開放序位區間查詢。請登入您所在招生區的「免試入學報名分發系統」進行查詢。如果您尚未能查詢到序位資訊，系統提供「略過序位」之選項。
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-bold text-lg text-slate-900 flex items-center">
+                <span className="w-6 h-6 geometric-card bg-slate-900 text-white flex items-center justify-center mr-3 text-xs font-bold">4</span>
+                系統如何保護我的資料？
+              </h4>
+              <p className="text-slate-600 pl-9 leading-relaxed text-sm font-medium">
+                本系統採去識別化處理，資料僅作地區性、整體性的統計與分析使用，絕不會外洩您的個人辨識資訊。您的 Email 僅作為防呆與後續系統通知備用。
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-6 pt-6 border-t-2 border-slate-100 flex justify-end">
+            <button
+              onClick={() => setShowHelpModal(false)}
+              className="px-8 py-3 bg-slate-900 text-white font-bold border-2 border-slate-900 shadow-[4px_4px_0_#0F172A] hover:bg-slate-800 active:translate-y-1 active:shadow-[2px_2px_0_#0F172A] transition-all"
+            >
+              我知道了
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    {/* 分享系統彈窗 */}
+    {showShareModal && (
+      <div className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div className="bg-white border-4 border-slate-900 shadow-[8px_8px_0_#0F172A] p-6 sm:p-8 max-w-sm w-full animate-in fade-in zoom-in duration-200">
+          <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-100">
+            <h3 className="text-2xl font-extrabold flex items-center text-slate-900">
+              <Share2 className="w-6 h-6 mr-3 text-slate-900" />
+              分享系統
+            </h3>
+            <button 
+              onClick={() => setShowShareModal(false)}
+              className="p-2 hover:bg-slate-100 transition-colors border-2 border-transparent hover:border-slate-900 geometric-card !border-slate-900 !shadow-[2px_2px_0_#0F172A] active:!translate-y-0.5 active:!shadow-none"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="flex flex-col items-center justify-center space-y-6">
+            <p className="text-slate-600 font-medium text-sm text-center">
+              掃描下方 QR Code 或複製連結，分享「全國會考分析系統」給需要的朋友與同學。
+            </p>
+            
+            <div className="p-4 bg-white border-4 border-slate-900 shadow-[4px_4px_0_#0F172A]">
+              <QRCodeSVG 
+                value={window.location.href} 
+                size={200}
+                bgColor={"#ffffff"}
+                fgColor={"#0f172a"}
+                level={"H"}
+                includeMargin={false}
+              />
+            </div>
+            
+            <button 
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className="w-full group flex items-center justify-center py-3 px-4 bg-slate-50 text-slate-900 font-bold text-sm hover:bg-slate-100 transition-all border-2 border-slate-900 shadow-[4px_4px_0_#0F172A] active:translate-y-1 active:shadow-none"
+            >
+              {copied ? (
+                <span className="flex items-center text-emerald-600"><CheckCircle2 className="w-5 h-5 mr-2" /> 已複製連結</span>
+              ) : (
+                <span className="flex items-center text-slate-900"><Copy className="w-5 h-5 mr-2" /> 複製系統連結</span>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* 招生區彈窗 */}
+    {showRegionModal && (
+      <div className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div className="bg-white border-4 border-slate-900 shadow-[8px_8px_0_#0F172A] p-6 sm:p-8 max-w-md w-full animate-in fade-in zoom-in duration-200 flex flex-col max-h-[85vh]">
+          <div className="flex justify-between items-center mb-6 pb-4 border-b-2 border-slate-100 shrink-0">
+            <h3 className="text-2xl font-extrabold flex items-center text-slate-900">
+              <MapPin className="w-6 h-6 mr-3 text-slate-900" />
+              選擇招生區域
+            </h3>
+            <button 
+              onClick={() => setShowRegionModal(false)}
+              className="p-2 hover:bg-slate-100 transition-colors border-2 border-transparent hover:border-slate-900 geometric-card !border-slate-900 !shadow-[2px_2px_0_#0F172A] active:!translate-y-0.5 active:!shadow-none"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          <div className="overflow-y-auto overflow-x-hidden flex-1 scrollbar-hide -mx-2 px-2 pb-2">
+            <div className="grid grid-cols-2 gap-3 pb-2">
+              {REGIONS.map(r => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => {
+                    setFormData(prev => ({ ...prev, region: r }));
+                    setShowRegionModal(false);
+                  }}
+                  className={`py-3 px-4 text-left font-bold transition-all border-2 geometric-card active:translate-y-0.5 active:shadow-[1px_1px_0_#0F172A] flex items-center justify-between group ${
+                    formData.region === r 
+                      ? 'bg-slate-900 text-white border-slate-900 shadow-[3px_3px_0_#0F172A]' 
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-slate-900 shadow-[3px_3px_0_transparent] hover:shadow-[3px_3px_0_#0F172A] hover:text-slate-900'
+                  }`}
+                >
+                  <span className="truncate">{r}</span>
+                  {formData.region === r && <CheckCircle2 className="w-4 h-4 ml-2 shrink-0" />}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    </>
   );
 }
 
-// Dummy icon components since lucide-react exports specific names and I want to cover fallback safety
-const StarIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-  </svg>
-)
-
-const PieChartIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-  </svg>
-)
