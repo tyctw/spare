@@ -242,22 +242,22 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                 href="https://tyctw.github.io/form/"
                 target="_blank"
                 rel="noreferrer"
-                className={`flex items-center gap-2 bg-amber-400 text-slate-900 border-slate-900 font-black transition hover:bg-amber-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'px-3 py-2 sm:px-4 sm:py-2 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
+                className={`flex items-center justify-center gap-2 bg-amber-400 text-slate-900 border-slate-900 font-black transition hover:bg-amber-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'px-3 h-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'px-4 sm:px-5 h-12 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
               >
-                <KeyRound className={`w-5 h-5 ${isScrolled ? 'sm:w-4 sm:h-4' : 'sm:w-6 sm:h-6'}`} />
+                <KeyRound className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
                 <span className={`hidden md:inline uppercase tracking-wide ${isScrolled ? 'text-xs' : ''}`}>取得邀請碼</span>
               </a>
               <button
                 onClick={() => setActiveModal('sharePlatform')}
                 className={`bg-emerald-200 flex items-center justify-center border-slate-900 transition hover:bg-emerald-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
               >
-                <Share2 className={`text-slate-900 ${isScrolled ? 'w-5 h-5 sm:w-5 sm:h-5' : 'w-6 h-6 sm:w-8 sm:h-8'}`} />
+                <Share2 className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
               </button>
               <button
                 onClick={() => setIsNavMenuOpen(true)}
                 className={`bg-sky-200 flex items-center justify-center border-slate-900 transition hover:bg-sky-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
               >
-                <Menu className={`text-slate-900 ${isScrolled ? 'w-5 h-5 sm:w-5 sm:h-5' : 'w-6 h-6 sm:w-8 sm:h-8'}`} />
+                <Menu className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
               </button>
             </div>
           </header>
