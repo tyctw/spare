@@ -61,7 +61,7 @@ export default function AuthFailModal({ isOpen, onClose }: AuthFailModalProps) {
 
               <div className="text-center space-y-4">
                 <a 
-                  href="https://forms.gle/R1fXvtiu4kPEYL5E6" 
+                  href="https://tyctw.github.io/form/" 
                   target="_blank" 
                   rel="noreferrer" 
                   className="group flex flex-col items-center justify-center gap-2 bg-indigo-400 border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] rounded-2xl p-6 transition-all hover:bg-indigo-300 hover:-translate-y-1 active:translate-y-0 active:shadow-none -rotate-1 relative overflow-hidden"
