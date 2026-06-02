@@ -363,7 +363,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   <span className="text-lg">📢</span> 限時公告
                 </h3>
                 <p className="text-xs font-bold text-amber-800 leading-relaxed">
-                  慶祝更新！即日起至 <span className="inline-block bg-amber-200 text-amber-900 px-1 py-0.5 rounded font-black border border-amber-300/50">2026/06/05</span> 前，提供體驗。<br className="hidden sm:block" />
+                  慶祝上線！即日起至 <span className="inline-block bg-amber-200 text-amber-900 px-1 py-0.5 rounded font-black border border-amber-300/50">2026/06/05</span> 前，提供限時免費體驗。<br className="hidden sm:block" />
                   請於下方輸入邀請碼 <span className="inline-block bg-white text-indigo-700 font-mono text-sm px-1.5 py-0.5 rounded border-2 border-indigo-200 shadow-[2px_2px_0px_rgba(199,210,254,1)] mx-0.5 select-all">TYCTW</span> 即可一鍵解鎖所有進階功能。
                 </p>
               </div>
@@ -1230,7 +1230,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         icon={<Map className="w-8 h-8 text-purple-500" />}
       >
         <div className="space-y-6">
-          <div className="bg-slate-900 rounded-3xl p-6 text-white border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rotate-1 hover:rotate-0 transition-transform">
+          <div className="bg-slate-900 rounded-3xl p-6 text-white border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] transition-transform">
             <h3 className="font-black text-2xl mb-2 flex items-center gap-2 text-lime-400">
               <Sparkles className="w-6 h-6" /> 115 學年度
             </h3>
@@ -1242,7 +1242,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
             <div className="relative pl-8 group">
               <div className="absolute -left-[14px] top-4 w-6 h-6 bg-amber-400 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
               <div className="bg-white border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-amber-100 text-amber-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 -rotate-2">
+                <div className="inline-block px-3 py-1 bg-amber-100 text-amber-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2">
                   03/05 ~ 03/07
                 </div>
                 <h4 className="font-black text-xl text-slate-900">國中會考報名</h4>
@@ -1252,7 +1252,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
             <div className="relative pl-8 group">
               <div className="absolute -left-[14px] top-4 w-6 h-6 bg-slate-200 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
               <div className="bg-white border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-slate-100 text-slate-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 rotate-1">
+                <div className="inline-block px-3 py-1 bg-slate-100 text-slate-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2">
                   04/10
                 </div>
                 <h4 className="font-black text-xl text-slate-900">寄發准考證</h4>
@@ -1265,7 +1265,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                 <div className="absolute -right-4 -bottom-4 opacity-10">
                   <Award className="w-24 h-24 text-purple-900" />
                 </div>
-                <div className="inline-block px-3 py-1 bg-purple-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 -rotate-1 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                <div className="inline-block px-3 py-1 bg-purple-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                   05/16 ~ 05/17
                 </div>
                 <h4 className="font-black text-2xl text-purple-900">國中會考日期</h4>
@@ -1278,7 +1278,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                 <div className="absolute -right-4 -bottom-4 opacity-10">
                   <ChartBar className="w-24 h-24 text-blue-900" />
                 </div>
-                <div className="inline-block px-3 py-1 bg-blue-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 rotate-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                <div className="inline-block px-3 py-1 bg-blue-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                   06/05
                 </div>
                 <h4 className="font-black text-2xl text-blue-900">會考成績公布</h4>
@@ -1288,7 +1288,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
             <div className="relative pl-8 group">
               <div className="absolute -left-[14px] top-4 w-6 h-6 bg-rose-500 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
               <div className="bg-white border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-rose-100 text-rose-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 -rotate-1">
+                <div className="inline-block px-3 py-1 bg-rose-100 text-rose-800 border-2 border-slate-900 rounded-xl font-black text-sm mb-2">
                   06/18
                 </div>
                 <h4 className="font-black text-xl text-slate-900">個人序位區間公告</h4>
@@ -1309,7 +1309,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
             <div className="relative pl-8 group">
               <div className="absolute -left-[14px] top-4 w-6 h-6 bg-sky-400 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
               <div className="bg-sky-100 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-sky-400 text-slate-900 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 rotate-1 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                <div className="inline-block px-3 py-1 bg-sky-400 text-slate-900 border-2 border-slate-900 rounded-xl font-black text-sm mb-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                   07/07
                 </div>
                 <h4 className="font-black text-xl text-sky-900">免試入學放榜</h4>
@@ -1320,7 +1320,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
             <div className="relative pl-8 group">
               <div className="absolute -left-[14px] top-4 w-6 h-6 bg-indigo-500 border-4 border-slate-900 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
               <div className="bg-indigo-100 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all">
-                <div className="inline-block px-3 py-1 bg-indigo-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 -rotate-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                <div className="inline-block px-3 py-1 bg-indigo-500 text-white border-2 border-slate-900 rounded-xl font-black text-sm mb-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                   07/09
                 </div>
                 <h4 className="font-black text-xl text-indigo-900">免試入學報到</h4>
