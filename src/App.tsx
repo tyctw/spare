@@ -363,7 +363,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   <span className="text-lg">📢</span> 限時公告
                 </h3>
                 <p className="text-xs font-bold text-amber-800 leading-relaxed">
-                  慶祝上線！即日起至 <span className="inline-block bg-amber-200 text-amber-900 px-1 py-0.5 rounded font-black border border-amber-300/50">2026/06/05</span> 前，提供限時免費體驗。<br className="hidden sm:block" />
+                  慶祝更新！即日起至 <span className="inline-block bg-amber-200 text-amber-900 px-1 py-0.5 rounded font-black border border-amber-300/50">2026/06/05</span> 前，提供體驗。<br className="hidden sm:block" />
                   請於下方輸入邀請碼 <span className="inline-block bg-white text-indigo-700 font-mono text-sm px-1.5 py-0.5 rounded border-2 border-indigo-200 shadow-[2px_2px_0px_rgba(199,210,254,1)] mx-0.5 select-all">TYCTW</span> 即可一鍵解鎖所有進階功能。
                 </p>
               </div>
