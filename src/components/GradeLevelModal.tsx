@@ -14,7 +14,7 @@ export default function GradeLevelModal({ isOpen, onClose }: GradeLevelModalProp
     <InfoModal 
       isOpen={isOpen} 
       onClose={onClose}
-      title="等級與答對題數對照表"
+      title="等級/標示 與 答對題數對照表"
       icon={<Award className="w-8 h-8 text-rose-500" />}
     >
       <div className="flex overflow-x-auto whitespace-nowrap bg-slate-100 p-1 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] mb-6 gap-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -104,14 +104,85 @@ export default function GradeLevelModal({ isOpen, onClose }: GradeLevelModalProp
       )}
 
       {activeTab === '115' && (
-        <div className="py-8 text-center space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-100 rounded-full border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6">
-            <span className="text-3xl">🗓️</span>
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div>
+            <div className="overflow-x-auto rounded-xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+              <table className="w-full text-center border-collapse whitespace-nowrap text-sm">
+                <thead>
+                  <tr className="bg-slate-900 text-white">
+                    <th className="p-3 border-r border-slate-700">成績等級</th>
+                    <th className="p-3 border-r border-slate-700">標示</th>
+                    <th className="p-3 border-r border-slate-700">國文</th>
+                    <th className="p-3 border-r border-slate-700">社會</th>
+                    <th className="p-3 border-r border-slate-700">自然</th>
+                    <th className="p-3 border-r border-slate-700">英文(加權成績)</th>
+                    <th className="p-3">數學(加權成績)</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  <tr className="border-b border-slate-200">
+                    <td className="p-3 font-bold border-r border-slate-200" rowSpan={3}>精熟</td>
+                    <td className="p-3 font-black text-indigo-600 border-r border-slate-200">A++</td>
+                    <td className="p-3 border-r border-slate-200">答對 40-42 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 52-54 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 47-50 題</td>
+                    <td className="p-3 border-r border-slate-200 font-mono">98.14-100.00</td>
+                    <td className="p-3 font-mono">91.60-100.00</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-3 font-black text-indigo-600 border-r border-slate-200">A+</td>
+                    <td className="p-3 border-r border-slate-200">答對 39 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 51 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 46 題</td>
+                    <td className="p-3 border-r border-slate-200 font-mono">96.28-98.13</td>
+                    <td className="p-3 font-mono">85.70-91.59</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-3 font-black text-indigo-600 border-r border-slate-200">A</td>
+                    <td className="p-3 border-r border-slate-200">答對 36-38 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 48-50 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 43-45 題</td>
+                    <td className="p-3 border-r border-slate-200 font-mono">90.70-96.27</td>
+                    <td className="p-3 font-mono">77.10-85.69</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-3 font-bold border-r border-slate-200" rowSpan={3}>基礎</td>
+                    <td className="p-3 font-black text-emerald-600 border-r border-slate-200">B++</td>
+                    <td className="p-3 border-r border-slate-200">答對 32-35 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 41-47 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 36-42 題</td>
+                    <td className="p-3 border-r border-slate-200 font-mono">82.30-90.69</td>
+                    <td className="p-3 font-mono">68.70-77.09</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-3 font-black text-emerald-600 border-r border-slate-200">B+</td>
+                    <td className="p-3 border-r border-slate-200">答對 28-31 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 34-40 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 29-35 題</td>
+                    <td className="p-3 border-r border-slate-200 font-mono">69.28-82.29</td>
+                    <td className="p-3 font-mono">59.40-68.69</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="p-3 font-black text-emerald-600 border-r border-slate-200">B</td>
+                    <td className="p-3 border-r border-slate-200">答對 17-27 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 20-33 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 19-28 題</td>
+                    <td className="p-3 border-r border-slate-200 font-mono">38.43-69.27</td>
+                    <td className="p-3 font-mono">39.00-59.39</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-bold border-r border-slate-200">待加強</td>
+                    <td className="p-3 font-black text-rose-600 border-r border-slate-200">C</td>
+                    <td className="p-3 border-r border-slate-200">答對 0-16 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 0-19 題</td>
+                    <td className="p-3 border-r border-slate-200">答對 0-18 題</td>
+                    <td className="p-3 border-r border-slate-200 font-mono">00.00-38.42</td>
+                    <td className="p-3 font-mono">00.00-38.99</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <h3 className="font-black text-xl text-slate-900">目前尚未公布</h3>
-          <p className="text-sm font-bold text-slate-500">
-            教育局尚未公布 115 年會考各科答對題數對照表。<br />系統將在官方公布後進行資料更新。
-          </p>
         </div>
       )}
 
