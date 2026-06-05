@@ -35,6 +35,7 @@ import PrivacyModal from './components/PrivacyModal';
 import TermsModal from './components/TermsModal';
 import HistoricalStatsModal from './components/HistoricalStatsModal';
 import ScoreInquiryModal from './components/ScoreInquiryModal';
+import DataProviderModal from './components/DataProviderModal';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -67,7 +68,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | 'historicalStats' | 'scoreInquiry' | null>(null);
+const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | 'historicalStats' | 'scoreInquiry' | 'dataProvider' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
@@ -321,9 +322,9 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                  <span className="text-indigo-800">歡迎各高中職校方、補教機構與我們聯繫，提供歷年錄取數據並申請專屬邀請碼！</span>
                </p>
             </div>
-            <a href="mailto:tyctw.analyze@gmail.com" className="w-full md:w-auto text-center px-6 py-3 bg-white border-4 border-slate-900 font-black text-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all whitespace-nowrap">
+            <button onClick={() => setActiveModal('dataProvider')} className="w-full md:w-auto text-center px-6 py-3 bg-white border-4 border-slate-900 font-black text-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all whitespace-nowrap">
               提供歷屆數據
-            </a>
+            </button>
           </div>
         </motion.div>
 
@@ -1355,6 +1356,11 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
 
       <ScoreInquiryModal 
         isOpen={activeModal === 'scoreInquiry'}
+        onClose={() => setActiveModal(null)}
+      />
+
+      <DataProviderModal 
+        isOpen={activeModal === 'dataProvider'}
         onClose={() => setActiveModal(null)}
       />
 
