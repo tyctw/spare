@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Search, Plus, Trash2, ArrowUp, ArrowDown, Building2, Target, AlertCircle, Loader2, Printer, Filter, ChevronDown, AlertTriangle } from 'lucide-react';
 import { ALL_REGIONS } from './RegionModal';
-import AdBanner from './AdBanner';
 
 interface SchoolItem {
   id: string;
@@ -247,7 +246,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${regionName} 模擬志願選填清單</title>
+          <title>${regionName} 個人模擬志願選填清單</title>
           <style>
             @page { size: A4 portrait; margin: 5mm; }
             html, body { height: 100%; }
@@ -309,7 +308,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
             </tbody>
           </table>
           <div style="flex: 1;"></div>
-          <p style="margin-top: 10px; text-align: center; color: #64748b; font-size: 9px; padding-bottom: 5px;">本表僅供參考，實際分發結果依各區免試入學委員會公告為準</p>
+          <p style="margin-top: 10px; text-align: center; color: #64748b; font-size: 9px; padding-bottom: 5px;">本表僅供參考非官方系統，實際分發結果依各區免試入學委員會公告為準</p>
           </div>
         </body>
       </html>
@@ -362,10 +361,6 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
             >
               <X className="w-5 h-5 text-slate-900" />
             </button>
-          </div>
-
-          <div className="w-full bg-slate-50 border-b-4 border-slate-900 shrink-0">
-            <AdBanner className="scale-90 origin-top" />
           </div>
 
           {/* Mobile Tabs */}
