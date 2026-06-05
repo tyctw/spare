@@ -35,6 +35,7 @@ import PrivacyModal from './components/PrivacyModal';
 import TermsModal from './components/TermsModal';
 import HistoricalStatsModal from './components/HistoricalStatsModal';
 import ScoreInquiryModal from './components/ScoreInquiryModal';
+import AdBanner from './components/AdBanner';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -646,6 +647,10 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
               </div>
             </motion.section>
 
+            <div className="max-w-2xl mx-auto mt-8">
+              <AdBanner />
+            </div>
+
           </div>
         </div>
       </main>
@@ -838,6 +843,10 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                     </div>
                   </div>
                 )}
+              </div>
+
+              <div className="lg:col-span-12 flex justify-center py-4">
+                <AdBanner />
               </div>
 
               <div className="lg:col-span-4 flex flex-col gap-4">
