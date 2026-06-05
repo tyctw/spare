@@ -107,6 +107,29 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Check if user has entered data
+      const hasData = results !== null || 
+                      formData.chinese !== '' ||
+                      formData.english !== '' ||
+                      formData.math !== '' ||
+                      formData.science !== '' ||
+                      formData.social !== '' ||
+                      formData.composition !== '';
+      
+      if (hasData) {
+        e.preventDefault();
+        // The dialog message can't be customized in modern browsers, 
+        // but returning a string activates the standard warning.
+        e.returnValue = ''; 
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [formData, results]);
+
   const updateForm = (key: string, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
