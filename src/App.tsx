@@ -33,6 +33,8 @@ import SchoolTypesModal from './components/SchoolTypesModal';
 import StrategyModal from './components/StrategyModal';
 import PrivacyModal from './components/PrivacyModal';
 import TermsModal from './components/TermsModal';
+import HistoricalStatsModal from './components/HistoricalStatsModal';
+import ScoreInquiryModal from './components/ScoreInquiryModal';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -65,7 +67,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | null>(null);
+const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | 'historicalStats' | 'scoreInquiry' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
@@ -1346,6 +1348,16 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         onClose={() => setActiveModal(null)} 
       />
 
+      <HistoricalStatsModal 
+        isOpen={activeModal === 'historicalStats'}
+        onClose={() => setActiveModal(null)}
+      />
+
+      <ScoreInquiryModal 
+        isOpen={activeModal === 'scoreInquiry'}
+        onClose={() => setActiveModal(null)}
+      />
+
       <PrivacyModal 
         isOpen={activeModal === 'privacy'} 
         onClose={() => setActiveModal(null)} 
@@ -1482,6 +1494,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                             { id: 'mockVolunteer', icon: Target, label: '模擬志願選填', color: 'text-sky-600', bg: 'bg-sky-100' },
                             { id: 'strategy', icon: Target, label: '志願選填攻略', color: 'text-amber-600', bg: 'bg-amber-100' },
                             { id: 'gradeLevel', icon: Award, label: '等級對照表', color: 'text-rose-600', bg: 'bg-rose-100' },
+                            { id: 'historicalStats', icon: ChartBar, label: '歷年會考統計', color: 'text-indigo-600', bg: 'bg-indigo-100' },
                             { id: 'importantDates', icon: Map, label: '重要日程', color: 'text-purple-600', bg: 'bg-purple-100' },
                             { id: 'disclaimer', icon: Shield, label: '免責聲明', color: 'text-slate-600', bg: 'bg-slate-100' }
                           ].map(btn => (
@@ -1571,26 +1584,45 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                       <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
                         <div className="p-3 flex flex-col gap-2">
                           {[
-                            { href: 'https://cap.rcpet.edu.tw/', icon: Search, label: '會考成績查詢', color: 'text-fuchsia-600', bg: 'bg-fuchsia-100' },
-                            { href: 'https://tyctw.github.io/volunteer/', icon: ChartBar, label: '序位查詢', color: 'text-orange-600', bg: 'bg-orange-100' },
-                            { href: 'https://tyctw.github.io/shared/', icon: Library, label: '全國錄取分享', color: 'text-indigo-600', bg: 'bg-indigo-100' },
-                            { href: 'https://tyctw.github.io/score/', icon: List, label: '全國序位分享', color: 'text-emerald-600', bg: 'bg-emerald-100' }
+                            { type: 'modal', id: 'scoreInquiry', icon: Search, label: '會考成績查詢', color: 'text-fuchsia-600', bg: 'bg-fuchsia-100' },
+                            { type: 'link', href: 'https://tyctw.github.io/volunteer/', icon: ChartBar, label: '序位查詢', color: 'text-orange-600', bg: 'bg-orange-100' },
+                            { type: 'link', href: 'https://tyctw.github.io/shared/', icon: Library, label: '全國錄取分享', color: 'text-indigo-600', bg: 'bg-indigo-100' },
+                            { type: 'link', href: 'https://tyctw.github.io/score/', icon: List, label: '全國序位分享', color: 'text-emerald-600', bg: 'bg-emerald-100' }
                           ].map(link => (
-                             <a 
-                               key={link.label}
-                               href={link.href} 
-                               target="_blank" 
-                               rel="noreferrer" 
-                               className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 group active:scale-95 transition-all"
-                             >
-                               <div className="flex items-center gap-3">
-                                 <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${link.bg}`}>
-                                   <link.icon className={`w-4 h-4 ${link.color}`} />
-                                 </div>
-                                 <span className="font-bold text-slate-900">{link.label}</span>
-                               </div>
-                               <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 -rotate-45 group-hover:rotate-0 transition-transform" />
-                             </a>
+                            link.type === 'link' ? (
+                              <a 
+                                key={link.label}
+                                href={link.href} 
+                                target="_blank" 
+                                rel="noreferrer" 
+                                className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 group active:scale-95 transition-all"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${link.bg}`}>
+                                    <link.icon className={`w-4 h-4 ${link.color}`} />
+                                  </div>
+                                  <span className="font-bold text-slate-900">{link.label}</span>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 -rotate-45 group-hover:rotate-0 transition-transform" />
+                              </a>
+                            ) : (
+                              <button 
+                                key={link.label}
+                                onClick={() => {
+                                  setActiveModal(link.id as any);
+                                  setIsNavMenuOpen(false);
+                                }}
+                                className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 group active:scale-95 transition-all outline-none"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={`p-1.5 rounded-lg border-2 border-slate-900 ${link.bg}`}>
+                                    <link.icon className={`w-4 h-4 ${link.color}`} />
+                                  </div>
+                                  <span className="font-bold text-slate-900">{link.label}</span>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                              </button>
+                            )
                           ))}
                         </div>
                       </motion.div>
