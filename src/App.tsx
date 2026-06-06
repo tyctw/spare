@@ -300,7 +300,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
               <p className="text-xs font-bold text-slate-600 mb-4 relative z-10">請輸入由主辦單位提供之專屬邀請碼以解鎖進階分析</p>
 
               {/* Announcement */}
-              <div className="mb-4 p-3 bg-amber-100/80 border-2 border-amber-400 rounded-xl relative z-10 overflow-hidden group">
+              <div className="mb-4 p-4 bg-gradient-to-r from-amber-200 to-amber-100 border-4 border-slate-900 rounded-xl relative z-10 overflow-hidden group shadow-[4px_4px_0px_0px_rgba(251,191,36,1)]">
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none"></div>
                 {(() => {
                   const now = new Date();
@@ -311,13 +311,13 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   if (isDuringInterval) {
                     return (
                       <>
-                        <h3 className="text-sm font-black text-amber-900 flex items-center gap-1.5 mb-1.5">
-                          <span className="text-lg">📢</span> 期間邀請碼
+                        <h3 className="text-base font-black text-slate-900 flex items-center gap-1.5 mb-1.5">
+                          <span className="text-xl animate-bounce">📢</span> 期間邀請碼
                         </h3>
-                        <p className="text-xs font-bold text-amber-800 leading-relaxed">
+                        <p className="text-sm font-bold text-slate-800 leading-relaxed">
                           需填寫序位分享才可獲取邀請碼：<br />
-                          <a href="https://tyctw.github.io/form/" target="_blank" rel="noopener noreferrer" className="inline-block mt-1 text-indigo-700 bg-white px-2 py-1 rounded border-2 border-indigo-200 shadow-[2px_2px_0px_rgba(199,210,254,1)] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_rgba(199,210,254,1)] active:translate-y-0 active:shadow-none transition-all">
-                            https://tyctw.github.io/form/
+                          <a href="https://tyctw.github.io/form/" target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-white bg-indigo-600 px-3 py-1.5 rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[4px_4px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all">
+                            前往填寫表單獲取
                           </a>
                         </p>
                       </>
@@ -326,12 +326,12 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   
                   return (
                     <>
-                      <h3 className="text-sm font-black text-amber-900 flex items-center gap-1.5 mb-1.5">
-                        <span className="text-lg">📢</span> 限時公告
+                      <h3 className="text-base font-black text-slate-900 flex items-center gap-1.5 mb-1.5">
+                        <span className="text-xl animate-bounce">📢</span> 限時公告
                       </h3>
-                      <p className="text-xs font-bold text-amber-800 leading-relaxed">
-                        慶祝上線！即日起至 <span className="inline-block bg-amber-200 text-amber-900 px-1 py-0.5 rounded font-black border border-amber-300/50">2026/06/17</span> 前，提供限時免費體驗。<br className="hidden sm:block" />
-                        請於下方輸入邀請碼 <span className="inline-block bg-white text-indigo-700 font-mono text-sm px-1.5 py-0.5 rounded border-2 border-indigo-200 shadow-[2px_2px_0px_rgba(199,210,254,1)] mx-0.5 select-all">TYCTW</span> 即可一鍵解鎖所有進階功能。
+                      <p className="text-sm font-bold text-slate-800 leading-relaxed">
+                        慶祝上線！即日起至 <span className="inline-block bg-white text-rose-600 px-1.5 py-0.5 rounded font-black border-2 border-slate-900 shadow-[2px_2px_0px_rgba(15,23,42,1)]">2026/06/17</span> 前，提供限時免費體驗。<br className="hidden sm:block" />
+                        請於下方輸入邀請碼 <span className="inline-block bg-indigo-600 text-white font-mono text-sm px-2 py-0.5 rounded border-2 border-slate-900 shadow-[2px_2px_0px_rgba(15,23,42,1)] mx-0.5 select-all hover:-translate-y-0.5 transition-transform">TYCTW</span> 即可一鍵解鎖所有進階功能。
                       </p>
                     </>
                   );
