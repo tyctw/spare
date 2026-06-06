@@ -36,6 +36,10 @@ import TermsModal from './components/TermsModal';
 import HistoricalStatsModal from './components/HistoricalStatsModal';
 import ScoreInquiryModal from './components/ScoreInquiryModal';
 import DataProviderModal from './components/DataProviderModal';
+// Layout Components
+import AppHeader from './components/layout/AppHeader';
+import Footer from './components/layout/Footer';
+import HeroBanner from './components/layout/HeroBanner';
 
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
@@ -254,106 +258,15 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-300/20 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-sky-300/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-      {/* Dynamic Header */}
-      <div className={`fixed top-0 left-0 right-0 z-50 pointer-events-none transition-all duration-300 ${isScrolled ? 'p-2 sm:p-2' : 'p-4 sm:p-6'}`}>
-        <div className="max-w-6xl mx-auto pointer-events-auto">
-          <header className={`bg-white/90 backdrop-blur-md rounded-3xl flex items-center justify-between transition-all duration-300 will-change-transform ${isScrolled ? 'border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] p-2 sm:p-3' : 'border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] p-3 sm:p-4 hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)]'}`}>
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className={`bg-indigo-600 border-slate-900 flex items-center justify-center text-white font-black text-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 transform origin-bottom-left hover:rotate-0 transition-all ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 sm:text-xl' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-2xl border-4 sm:text-3xl'}`}>
-                會
-              </div>
-              <div className="flex flex-col">
-                <h1 className={`font-black text-slate-900 tracking-tight leading-none uppercase transition-all ${isScrolled ? 'text-lg sm:text-xl' : 'text-xl sm:text-3xl'}`}>會考落點分析</h1>
-                <span className={`font-bold text-slate-500 hidden sm:block mt-1 transition-all ${isScrolled ? 'text-[10px] sm:text-[10px] h-0 opacity-0 overflow-hidden' : 'text-[10px] sm:text-xs h-auto opacity-100'}`}>115 年最新各區數據分析平台</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <a
-                href="https://tyctw.github.io/form/"
-                target="_blank"
-                rel="noreferrer"
-                className={`flex items-center justify-center gap-2 bg-amber-400 text-slate-900 border-slate-900 font-black transition hover:bg-amber-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'px-3 h-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'px-4 sm:px-5 h-12 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
-              >
-                <KeyRound className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
-                <span className={`hidden md:inline uppercase tracking-wide ${isScrolled ? 'text-xs' : ''}`}>取得邀請碼</span>
-              </a>
-              <button
-                onClick={() => setActiveModal('sharePlatform')}
-                className={`bg-emerald-200 flex items-center justify-center border-slate-900 transition hover:bg-emerald-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
-              >
-                <Share2 className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
-              </button>
-              <button
-                onClick={() => setIsNavMenuOpen(true)}
-                className={`bg-sky-200 flex items-center justify-center border-slate-900 transition hover:bg-sky-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
-              >
-                <Menu className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
-              </button>
-            </div>
-          </header>
-        </div>
-      </div>
+      <AppHeader 
+        isScrolled={isScrolled} 
+        onShareClick={() => setActiveModal('sharePlatform')} 
+        onMenuClick={() => setIsNavMenuOpen(true)} 
+      />
 
       <main className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">
         
-        {/* NEW HERO SECTION */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="pt-8 pb-12 sm:pt-12 sm:pb-16 flex flex-col items-center justify-center text-center px-2"
-        >
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-700 font-black rounded-full mb-8 border-2 border-indigo-200 shadow-sm"
-          >
-            <Sparkles className="w-5 h-5 text-indigo-500" />
-            <span className="tracking-wide">115學年度最新版上線</span>
-          </motion.div>
-          
-          <h2 className="text-5xl sm:text-6xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
-            探索適合你的<br className="sm:hidden" />
-            <span className="relative inline-block mt-2 sm:mt-0">
-               <span className="relative z-10 text-indigo-600">未來理想校系</span>
-               <span className="absolute bottom-1 sm:bottom-2 left-0 w-full h-4 sm:h-6 bg-amber-300 -z-10 -rotate-1 rounded-sm"></span>
-            </span>
-          </h2>
-          
-          <p className="text-slate-600 font-bold text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            我們致力於提供最精準的會考落點資訊，幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。
-          </p>
-        </motion.div>
-
-        {/* Announcement Banner */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-indigo-100 border-4 border-slate-900 rounded-[2rem] p-5 sm:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden"
-        >
-          <div className="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4">
-            <Info className="w-32 h-32 text-indigo-900" />
-          </div>
-          <div className="relative z-10 flex flex-col md:flex-row gap-5 items-start md:items-center">
-            <div className="w-14 h-14 bg-indigo-500 text-white rounded-2xl border-4 border-slate-900 flex flex-shrink-0 items-center justify-center shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-6 hover:rotate-0 transition-transform">
-               <Info className="w-7 h-7" />
-            </div>
-            <div className="flex-1">
-               <h3 className="font-black text-xl text-slate-900 mb-1.5 flex items-center gap-2">
-                 系統公告 <span className="bg-rose-500 text-white text-[10px] uppercase px-2 py-1 rounded-full animate-pulse border-2 border-slate-900">HOT</span>
-               </h3>
-               <p className="font-bold text-slate-700 text-sm sm:text-base leading-relaxed">
-                 115 學年度最新落點資料將於「公布個人序位區間」後進行全面更新。<br className="hidden lg:block"/>
-                 <span className="text-indigo-800">歡迎各高中職校方、補教機構與我們聯繫，提供歷年錄取數據並申請專屬邀請碼！</span>
-               </p>
-            </div>
-            <button onClick={() => setActiveModal('dataProvider')} className="w-full md:w-auto text-center px-6 py-3 bg-white border-4 border-slate-900 font-black text-slate-900 rounded-xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all whitespace-nowrap">
-              提供歷屆數據
-            </button>
-          </div>
-        </motion.div>
+        <HeroBanner onDataProviderClick={() => setActiveModal('dataProvider')} />
 
         {errorMessage && (
           <div className="p-4 bg-red-50 text-red-700 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] font-bold flex items-center gap-3">
@@ -1755,99 +1668,10 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         </div>
       </InfoModal>
 
-      {/* Footer */}
-      <footer className="mt-24 w-full px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-[3rem] border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col">
-            
-            {/* Top Section */}
-            <div className="p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row justify-between items-center xl:items-start gap-12 bg-slate-50 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-100 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 opacity-60"></div>
-              <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-100 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 opacity-60"></div>
-
-              <div className="flex flex-col items-center xl:items-start text-center xl:text-left gap-6 max-w-lg relative z-10 w-full">
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div className="bg-indigo-600 p-4 rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-transform duration-300">
-                    <Compass className="w-10 h-10 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-1">TW全國會考</h2>
-                    <div className="inline-block bg-amber-200 px-3 py-1 rounded-lg border-2 border-slate-900 shadow-sm">
-                       <h3 className="text-sm sm:text-base font-black tracking-widest text-slate-800 uppercase">落點分析系統</h3>
-                    </div>
-                  </div>
-                </div>
-                <div className="inline-flex items-center justify-center xl:justify-start gap-2 px-4 py-2.5 bg-white rounded-full border-2 border-slate-200 w-fit shadow-sm">
-                  <div className="relative flex h-3 w-3 items-center justify-center">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                  </div>
-                  <span className="text-slate-600 font-bold text-xs sm:text-sm">非政府官方機構 · 運算僅供參考</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 lg:flex gap-3 sm:gap-4 w-full xl:w-auto relative z-10">
-                <button 
-                  onClick={() => setActiveModal('privacy')}
-                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
-                >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                    <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
-                  </div>
-                  <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">隱私權政策</span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-emerald-600 transition-colors w-full">
-                    資料授權 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
-                  </span>
-                </button>
-
-                <button 
-                  onClick={() => setActiveModal('terms')}
-                  className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
-                >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                    <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
-                  </div>
-                  <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">服務條款</span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-indigo-600 transition-colors w-full">
-                    使用規範 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
-                  </span>
-                </button>
-
-                <a 
-                  href="mailto:tyctw.analyze@gmail.com" 
-                  className="col-span-2 group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-slate-900 border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
-                >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                    <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-400" />
-                  </div>
-                  <span className="font-black text-white text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">聯絡我們信箱</span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-400 group-hover:text-indigo-300 transition-colors break-all text-center xl:text-left w-full">
-                    tyctw.analyze@gmail.com
-                  </span>
-                </a>
-              </div>
-            </div>
-
-            {/* Bottom Copyright Section */}
-            <div className="bg-amber-400 border-t-4 border-slate-900 p-4 sm:p-6 flex flex-row items-center justify-between gap-2 sm:gap-4 overflow-hidden relative">
-              <div className="flex items-center gap-1.5 sm:gap-2 z-10 bg-amber-400">
-                <Copyright className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900 shrink-0" />
-                <span className="font-black text-slate-900 text-sm sm:text-lg xl:text-xl tracking-tight leading-none pt-0.5">COPYRIGHT {new Date().getFullYear()}</span>
-              </div>
-              <div className="z-10 text-right bg-amber-400">
-                <span className="font-black text-slate-900 text-[10px] sm:text-sm xl:text-base border-b-2 border-slate-900/30 pb-0.5">ALL RIGHTS RESERVED.</span>
-              </div>
-              {/* Marquee text in background */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 overflow-hidden whitespace-nowrap z-0">
-                <span className="text-5xl font-black text-slate-900 tracking-tighter uppercase px-4 select-none">
-                  TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析
-                </span>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-      </footer>
+      <Footer 
+        onPrivacyClick={() => setActiveModal('privacy')} 
+        onTermsClick={() => setActiveModal('terms')} 
+      />
 
     </div>
   );
