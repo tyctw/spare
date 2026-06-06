@@ -23,7 +23,7 @@ import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import ExportModal from './components/ExportModal';
 import GradeLevelModal from './components/GradeLevelModal';
 import AuthFailModal from './components/AuthFailModal';
-import RegionScoringModal from './components/RegionScoringModal';
+import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
 import SharePlatformModal from './components/SharePlatformModal';
 import RatingModal from './components/RatingModal';
 import AdvantagesModal from './components/AdvantagesModal';
@@ -569,46 +569,108 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   { id: 'science', label: '自然', icon: Activity, color: 'text-emerald-600', bgBorder: 'bg-emerald-50 border-emerald-300 focus:ring-emerald-400 focus:border-emerald-400 hover:border-emerald-400', theme: 'bg-white' },
                   { id: 'social', label: '社會', icon: Map, color: 'text-purple-600', bgBorder: 'bg-purple-50 border-purple-300 focus:ring-purple-400 focus:border-purple-400 hover:border-purple-400', theme: 'bg-white' }
                 ].map(subject => (
-                  <div key={subject.id} className={`relative group ${subject.theme} border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex items-center justify-between gap-4`}>
-                    <label className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 w-24 shrink-0">
-                      <div className={`w-10 h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] bg-slate-50`}>
-                        <subject.icon className={`w-5 h-5 ${subject.color}`} />
+                  <div key={subject.id} className={`relative group ${subject.theme} border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3`}>
+                    <div className="flex items-center justify-between gap-2 sm:gap-4">
+                      <label className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 shrink-0">
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] bg-slate-50`}>
+                          <subject.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${subject.color}`} />
+                        </div>
+                        {subject.label}
+                      </label>
+                      <div className="relative w-full max-w-[180px] sm:max-w-[200px]">
+                        <select
+                          className={`w-full px-2 sm:px-4 py-2 sm:py-3 rounded-xl border-2 font-black text-sm sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 transition-all cursor-pointer ${subject.bgBorder}`}
+                          value={(formData as any)[subject.id]}
+                          onChange={(e) => updateForm(subject.id, e.target.value)}
+                        >
+                          <option value="" disabled>-- 選擇等級 --</option>
+                          {gradeOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                        </select>
+                        <ChevronRight className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400 pointer-events-none rotate-90" />
                       </div>
-                      {subject.label}
-                    </label>
-                    <div className="relative w-full max-w-[200px]">
-                      <select
-                        className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 font-black text-base sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 transition-all cursor-pointer ${subject.bgBorder}`}
-                        value={(formData as any)[subject.id]}
-                        onChange={(e) => updateForm(subject.id, e.target.value)}
-                      >
-                        <option value="" disabled>-- 選擇等級 --</option>
-                        {gradeOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                      </select>
-                      <ChevronRight className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none rotate-90" />
                     </div>
+                    {formData.region && (formData as any)[subject.id] && (() => {
+                      const scoreData = REGION_SCORING_DATA[formData.region];
+                      let scoreText: string | null = null;
+                      const grade = (formData as any)[subject.id];
+                      
+                      if (scoreData?.examDetail) {
+                        if (['tainan', 'hsinchu'].includes(formData.region)) {
+                          if (grade.startsWith('A')) scoreText = '6分';
+                          else if (grade.startsWith('B')) scoreText = '4分';
+                          else if (grade === 'C') scoreText = '2分';
+                        } else {
+                          const match = scoreData.examDetail.find((d: any) => d.level === grade);
+                          if (match) scoreText = match.score;
+                        }
+                      }
+
+                      return scoreText ? (
+                        <div className="w-full flex items-center justify-center bg-indigo-50 border-2 border-indigo-200 text-indigo-700 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
+                          獲得積分：{scoreText}
+                        </div>
+                      ) : null;
+                    })()}
                   </div>
                 ))}
 
                 {/* Composition */}
-                <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex items-center justify-between gap-4">
-                  <label className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 w-24 shrink-0">
-                    <div className="w-10 h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(251,191,36,0.2)] bg-slate-800">
-                      <PenTool className="w-5 h-5 text-amber-400" />
+                <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3">
+                  <div className="flex items-center justify-between gap-2 sm:gap-4">
+                    <label className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 shrink-0">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(251,191,36,0.2)] bg-slate-800">
+                        <PenTool className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+                      </div>
+                      寫作
+                    </label>
+                    <div className="relative w-full max-w-[180px] sm:max-w-[200px]">
+                      <select
+                        className="w-full px-2 sm:px-4 py-2 sm:py-3 rounded-xl border-2 border-slate-700 bg-slate-800 text-amber-400 font-black text-sm sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 focus:ring-amber-400/50 hover:border-amber-500/50 transition-all cursor-pointer"
+                        value={formData.composition}
+                        onChange={(e) => updateForm('composition', e.target.value)}
+                      >
+                        <option value="" disabled>-- 選擇級分 --</option>
+                        {[6, 5, 4, 3, 2, 1, 0].map(s => <option key={s} value={s}>{s} 級分</option>)}
+                      </select>
+                      <ChevronRight className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-amber-500/50 pointer-events-none rotate-90" />
                     </div>
-                    寫作
-                  </label>
-                  <div className="relative w-full max-w-[200px]">
-                    <select
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 border-slate-700 bg-slate-800 text-amber-400 font-black text-base sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 focus:ring-amber-400/50 hover:border-amber-500/50 transition-all cursor-pointer"
-                      value={formData.composition}
-                      onChange={(e) => updateForm('composition', e.target.value)}
-                    >
-                      <option value="" disabled>-- 選擇級分 --</option>
-                      {[6, 5, 4, 3, 2, 1, 0].map(s => <option key={s} value={s}>{s} 級分</option>)}
-                    </select>
-                    <ChevronRight className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-500/50 pointer-events-none rotate-90" />
                   </div>
+                  {formData.region && formData.composition && (() => {
+                    let compScore: string | null = null;
+                    const comp = parseInt(formData.composition, 10);
+                    switch(formData.region) {
+                      case 'taipei':
+                         if (comp === 6) compScore = '1分';
+                         else if (comp === 5) compScore = '0.8分';
+                         else if (comp === 4) compScore = '0.6分';
+                         else if (comp === 3) compScore = '0.4分';
+                         else if (comp === 2) compScore = '0.2分';
+                         else if (comp === 1) compScore = '0.1分';
+                         else compScore = '0分';
+                         break;
+                      case 'taoyuan':
+                         if (comp >= 4) compScore = '3分';
+                         else if (comp >= 2) compScore = '2分';
+                         else if (comp === 1) compScore = '1分';
+                         else compScore = '0分';
+                         break;
+                      case 'central':
+                         compScore = `${comp}點`;
+                         break;
+                      case 'kaohsiung':
+                         compScore = `${comp}級分 (優先比序)`;
+                         break;
+                      default:
+                         compScore = '同分比序用';
+                         break;
+                    }
+                    
+                    return compScore ? (
+                      <div className="w-full flex items-center justify-center bg-slate-800 border-2 border-slate-700 text-amber-400 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
+                        獲得積分：{compScore}
+                      </div>
+                    ) : null;
+                  })()}
                 </div>
 
               </div>
