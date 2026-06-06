@@ -606,8 +606,17 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                       }
 
                       return scoreText ? (
-                        <div className="w-full flex items-center justify-center bg-indigo-50 border-2 border-indigo-200 text-indigo-700 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
-                          獲得積分：{scoreText}
+                        <div className="flex items-center justify-between mt-1 pt-3.5 border-t-[3px] border-dashed border-slate-200/80 animate-in fade-in slide-in-from-top-2 duration-300">
+                          <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                            就學區換算積分
+                          </span>
+                          <div className={`flex items-center gap-2 bg-white border-2 border-slate-900 px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] shrink-0 hover:-translate-y-0.5 transition-transform`}>
+                             <div className="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                               <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                             </div>
+                             <span className="text-sm sm:text-base font-black text-slate-900 tracking-tight">{scoreText}</span>
+                          </div>
                         </div>
                       ) : null;
                     })()}
@@ -666,8 +675,17 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                     }
                     
                     return compScore ? (
-                      <div className="w-full flex items-center justify-center bg-slate-800 border-2 border-slate-700 text-amber-400 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
-                        獲得積分：{compScore}
+                      <div className="flex items-center justify-between mt-1 pt-3.5 border-t-[3px] border-dashed border-slate-700 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <span className="text-xs sm:text-sm font-bold text-slate-400 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                          就學區換算積分
+                        </span>
+                        <div className={`flex items-center gap-2 bg-slate-800 border-2 border-slate-700 px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_0px_rgba(251,191,36,0.3)] shrink-0 hover:-translate-y-0.5 transition-transform`}>
+                           <div className="w-5 h-5 rounded-full bg-amber-400/20 flex items-center justify-center border border-amber-400/30">
+                             <Award className="w-3.5 h-3.5 text-amber-400" />
+                           </div>
+                           <span className="text-sm sm:text-base font-black text-amber-400 tracking-tight">{compScore}</span>
+                        </div>
                       </div>
                     ) : null;
                   })()}
