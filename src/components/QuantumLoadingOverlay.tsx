@@ -4,10 +4,9 @@ import { Calculator, Target, Award, BrainCircuit, Activity } from 'lucide-react'
 
 interface Props {
   isOpen: boolean;
-  onComplete: () => void;
 }
 
-export default function QuantumLoadingOverlay({ isOpen, onComplete }: Props) {
+export default function QuantumLoadingOverlay({ isOpen }: Props) {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [metrics, setMetrics] = useState({ schools: 0, combinations: 0 });
@@ -30,28 +29,22 @@ export default function QuantumLoadingOverlay({ isOpen, onComplete }: Props) {
     let progressVal = 0;
     
     const progressInterval = setInterval(() => {
-      progressVal += Math.random() * 2 + 0.5;
-      if (progressVal >= 100) {
-        progressVal = 100;
-        clearInterval(progressInterval);
-        
-        setProgress(100);
-        setCurrentStep(4);
-        
-        setTimeout(() => onComplete(), 1000);
-      } else {
-        setProgress(progressVal);
-        if (progressVal < 20) setCurrentStep(0);
-        else if (progressVal < 40) setCurrentStep(1);
-        else if (progressVal < 60) setCurrentStep(2);
-        else if (progressVal < 80) setCurrentStep(3);
-        else setCurrentStep(4);
-        
-        setMetrics({
-          schools: Math.floor(progressVal * 1.5) + 120,
-          combinations: Math.floor(progressVal * 1450)
-        });
+      progressVal += Math.random() * 2 + 1.5;
+      if (progressVal >= 99) {
+        progressVal = 99;
       }
+      
+      setProgress(progressVal);
+      if (progressVal < 20) setCurrentStep(0);
+      else if (progressVal < 40) setCurrentStep(1);
+      else if (progressVal < 60) setCurrentStep(2);
+      else if (progressVal < 80) setCurrentStep(3);
+      else setCurrentStep(4);
+      
+      setMetrics({
+        schools: Math.floor(progressVal * 1.5) + 120,
+        combinations: Math.floor(progressVal * 1450)
+      });
     }, 45);
 
     return () => {
