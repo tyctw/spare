@@ -209,6 +209,10 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
       
       const data = await res.json();
       setResults(data);
+      setStatus('success');
+      setTimeout(() => {
+        document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
       
       // Delay status change to allow Quantum overlay to finish
       // QuantumLoadingOverlay handles it internally calling onComplete which will set status to success
@@ -738,12 +742,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
 
       <QuantumLoadingOverlay 
         isOpen={status === 'quantum'}
-        onComplete={() => {
-          setStatus('success');
-          setTimeout(() => {
-            document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' });
-          }, 300);
-        }}
       />
 
       {/* Results Section */}
