@@ -9,7 +9,7 @@ interface Props {
   selectedRegion: string;
 }
 
-const REGION_SCORING_DATA: Record<string, {
+export const REGION_SCORING_DATA: Record<string, {
   total: string;
   items: { label: string; score: string; desc: string }[];
   examDetail?: { level: string; score: string }[];
