@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Search, Plus, Trash2, ArrowUp, ArrowDown, Building2, Target, AlertCircle, Loader2, Printer, Filter, ChevronDown, AlertTriangle } from 'lucide-react';
 import { ALL_REGIONS } from './RegionModal';
+import { callBackend } from '../lib/api';
 
 interface SchoolItem {
   id: string;
@@ -62,15 +63,10 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
     setIsLoading(true);
     setError('');
     try {
-      const res = await fetch('https://script.google.com/macros/s/AKfycbxT9ID_TeoeA_Xd46QkeGHnb7sqSWj4sRSKfVP_ygnjrIHlZ2qveSqxVw4Hm2vT48oHNA/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify({ action: 'getVolunteerSchools', region })
+      const data = await callBackend<{ schools: SchoolItem[] }>({
+        action: 'getVolunteerSchools',
+        region,
       });
-      
-      const data = await res.json();
       if (data && data.schools && Array.isArray(data.schools)) {
         setSchools(data.schools);
       } else if (Array.isArray(data) && data.length > 0) {

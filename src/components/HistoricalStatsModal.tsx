@@ -55,7 +55,7 @@ const table114 = [
   ["0A0B5C", "9999", "5.80%", "1", "0.01%", "0.00%", "48", "0.48%", "0.03%", "2510", "25.10%", "1.46%", "7440", "74.41%", "4.31%"],
 ];
 
-const RowComponent = ({ row, index }: { row: string[], index: number }) => {
+const RowComponent = ({ row, index }: { row: string[], index: number, key?: React.Key }) => {
   return (
     <tr className={`border-b-2 border-slate-200 hover:bg-indigo-50/50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}>
       <td className="px-3 py-2 font-black text-slate-800 border-r-2 border-slate-200 whitespace-nowrap sticky left-0 z-10 w-24" style={{ backgroundColor: index % 2 === 0 ? '#ffffff' : '#f8fafc' }}>

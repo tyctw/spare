@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { KeyRound, Check, ShieldAlert, Zap } from 'lucide-react';
+import { callBackend } from '../lib/api';
 
 interface Props {
   isOpen: boolean;
@@ -45,12 +46,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
     }, 25);
 
     // Execute validation immediately
-    fetch('https://script.google.com/macros/s/AKfycbxGOW2caEmqW51hNmTe3Kq24D-UzfhKuhtS3xMP0OB9WNCjxKvwSGU5W4VnszDjfdZw/exec', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'validateInvitationCode', invitationCode: code })
-    })
-    .then(res => res.json())
+    callBackend<{ valid: boolean }>({ action: 'validateInvitationCode', invitationCode: code })
     .then(res => {
       clearInterval(progressInterval);
       setProgress(100);

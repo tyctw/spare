@@ -19,6 +19,7 @@ import MockVolunteerModal from './components/MockVolunteerModal';
 import CyberAuthOverlay from './components/CyberAuthOverlay';
 import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
 import { exportTxt, exportExcel, exportJson, printResults } from './lib/exportUtils';
+import { callBackend } from './lib/api';
 import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import ExportModal from './components/ExportModal';
 import GradeLevelModal from './components/GradeLevelModal';
@@ -201,17 +202,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         }
       };
 
-      const res = await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
-        method: 'POST',
-        // use no-cors to avoid CORS preflight, but in this specific environment JSON stringify body might work or fail. 
-        // Typically Google Apps Script requires text/plain fetch for simple requests
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      const data = await res.json();
+      const data = await callBackend<any>(payload);
       setResults(data);
       setStatus('success');
       setTimeout(() => {
@@ -222,7 +213,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
       // QuantumLoadingOverlay handles it internally calling onComplete which will set status to success
     } catch (e: any) {
       setStatus('error');
-      setErrorMessage('分析過程中發生錯誤，這可能是由於 CORS 或網路連線問題。');
+      setErrorMessage(e?.message || '分析過程中發生錯誤，請稍後再試。');
     }
   };
 

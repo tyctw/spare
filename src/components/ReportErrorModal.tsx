@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AlertCircle, X, Send, Loader2 } from 'lucide-react';
+import { callBackend } from '../lib/api';
 
 interface ReportErrorModalProps {
   isOpen: boolean;
@@ -28,19 +29,13 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
     setError('');
 
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbwGbahUGJP18GWmkPsTF9KbNG-KSu26lgAHOXoSIk3y2DEbuhAM_la3-DwkDDQghM-j/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-        body: JSON.stringify({
-          action: 'reportError',
-          payload: {
-            type,
-            description,
-            email
-          }
-        })
+      await callBackend({
+        action: 'reportError',
+        payload: {
+          type,
+          description,
+          email
+        }
       });
 
       setSubmitting(false);

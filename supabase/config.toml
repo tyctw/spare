@@ -1,0 +1,4 @@
+project_id = "spare-main"
+
+[functions.backend]
+verify_jwt = false
