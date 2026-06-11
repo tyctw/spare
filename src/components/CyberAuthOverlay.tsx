@@ -31,6 +31,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
     }
 
     let progressVal = 0;
+    let completionTimer: ReturnType<typeof setTimeout> | undefined;
     const progressInterval = setInterval(() => {
       progressVal += 1.5;
       if (progressVal >= 99) {
@@ -52,7 +53,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       setProgress(100);
       if (res.valid) {
         setStatus('success');
-        onSuccess();
+        completionTimer = setTimeout(onSuccess, 700);
       } else {
         setStatus('fail');
         onFail();
@@ -68,6 +69,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
 
     return () => {
       clearInterval(progressInterval);
+      if (completionTimer) clearTimeout(completionTimer);
     };
   }, [isOpen, code]);
 
@@ -116,11 +118,13 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
                 {status === 'validating' ? <><Zap className="w-4 h-4 text-amber-500 fill-amber-500" /> {steps[currentStep]}</> : status === 'success' ? '歡迎使用系統，準備進入...' : '存取被拒，邀請碼錯誤或過期'}
               </div>
 
-              {status === 'validating' && (
+              {status !== 'fail' && (
                 <div className="w-full">
                   <div className="w-full h-8 bg-slate-50 rounded-xl border-4 border-slate-900 p-0.5 overflow-hidden shadow-[inset_2px_2px_0px_rgba(0,0,0,0.1)] relative">
                     <motion.div 
-                      className="h-full bg-indigo-500 rounded-md border-r-4 border-slate-900 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,0.1)_10px,rgba(0,0,0,0.1)_20px)]"
+                      className={`h-full rounded-md border-r-4 border-slate-900 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,0.1)_10px,rgba(0,0,0,0.1)_20px)] ${
+                        status === 'success' ? 'bg-emerald-500' : 'bg-indigo-500'
+                      }`}
                       style={{ width: `${progress}%` }}
                     />
                   </div>
