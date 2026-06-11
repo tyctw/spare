@@ -45,8 +45,8 @@ jobs:
         run: npm run build
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          VITE_SUPABASE_URL: https://ujltpbzlspbustqjqnar.supabase.co
-          VITE_SUPABASE_ANON_KEY: sb_publishable_KA2sZAxoB-W3M6eu3QoaTA_4sTbjhrB
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
