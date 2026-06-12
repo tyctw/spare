@@ -14,6 +14,7 @@ export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [hasRated, setHasRated] = useState(false);
+  const [error, setError] = useState(''); // 新增錯誤狀態
 
   React.useEffect(() => {
     if (isOpen) {
@@ -26,11 +27,12 @@ export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
   const handleSubmit = async () => {
     if (rating === 0) return;
     setSubmitting(true);
+    setError(''); // 每次送出前清空錯誤訊息
     
     try {
       const payload = {
         rating,
-        feedback: '', // Removed feedback area
+        feedback: '', 
         timestamp: new Date().toISOString()
       };
       
@@ -55,16 +57,8 @@ export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
     } catch (e) {
       console.error(e);
       setSubmitting(false);
-      // fallback even if fetch fails to just visually show success
-      setSubmitted(true);
-      localStorage.setItem('hasRatedApplet', 'true');
-      setTimeout(() => {
-        onClose();
-        setTimeout(() => {
-            setSubmitted(false);
-            setRating(0);
-        }, 500);
-      }, 2000);
+      // 絕對不造假，誠實顯示錯誤訊息
+      setError('評分傳送失敗，請檢查網路連線後重試。');
     }
   };
 
@@ -169,8 +163,15 @@ export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
                     ))}
                   </div>
 
+                  {/* 顯示錯誤訊息的區塊 */}
+                  {error && (
+                    <div className="w-full mb-4 p-3 bg-rose-100 text-rose-600 font-bold text-sm rounded-xl border-2 border-rose-300">
+                      {error}
+                    </div>
+                  )}
+
                   {!submitting && (
-                    <div className="flex w-full gap-3 mt-4">
+                    <div className="flex w-full gap-3">
                       <button 
                         onClick={onClose}
                         className="flex-1 py-3 px-4 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
