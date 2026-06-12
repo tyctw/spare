@@ -19,7 +19,7 @@ import MockVolunteerModal from './components/MockVolunteerModal';
 import CyberAuthOverlay from './components/CyberAuthOverlay';
 import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
 import { exportTxt, exportExcel, exportJson, printResults } from './lib/exportUtils';
-import { callBackend } from './lib/api';
+import { callBackend, isBackendError, normalizeInvitationCode } from './lib/api';
 import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import ExportModal from './components/ExportModal';
 import GradeLevelModal from './components/GradeLevelModal';
@@ -140,8 +140,9 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
   };
 
   const handleAnalyze = async () => {
+    const invitationCode = normalizeInvitationCode(formData.invitationCode);
     const missing: string[] = [];
-    if (!formData.invitationCode) missing.push('系統授權碼');
+    if (!invitationCode) missing.push('系統授權碼');
     if (!formData.region) missing.push('就學考區');
     if (!formData.chinese) missing.push('國文成績');
     if (!formData.english) missing.push('英文成績');
@@ -157,14 +158,29 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
     }
     
     setErrorMessage('');
+
+    if (invitationCode !== formData.invitationCode) {
+      setFormData(prev => ({ ...prev, invitationCode }));
+    }
     
-    // Check if 10min cached auth exists
-    const lastAuthSuccess = localStorage.getItem('lastInvitationAuthSuccess');
+    const cachedAuth = localStorage.getItem('invitationAuthCache');
     const now = Date.now();
     const tenMinutes = 10 * 60 * 1000;
+    let hasValidAuthCache = false;
+
+    if (cachedAuth) {
+      try {
+        const parsed = JSON.parse(cachedAuth) as { code?: string; timestamp?: number };
+        hasValidAuthCache =
+          parsed.code === invitationCode &&
+          typeof parsed.timestamp === 'number' &&
+          now - parsed.timestamp < tenMinutes;
+      } catch {
+        localStorage.removeItem('invitationAuthCache');
+      }
+    }
     
-    // Always call executeAnalysis since it runs async. 
-    if (lastAuthSuccess && (now - parseInt(lastAuthSuccess) < tenMinutes)) {
+    if (hasValidAuthCache) {
       setStatus('quantum');
       executeAnalysis();
     } else {
@@ -190,7 +206,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
           analysisIdentity: formData.identity
         },
         region: formData.region,
-        invitationCode: formData.invitationCode,
+        invitationCode: normalizeInvitationCode(formData.invitationCode),
         timestamp: new Date().toISOString(),
         action: 'analyzeScores',
         clientInfo: {
@@ -211,14 +227,17 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
       
       // Delay status change to allow Quantum overlay to finish
       // QuantumLoadingOverlay handles it internally calling onComplete which will set status to success
-    } catch (e: any) {
+    } catch (e: unknown) {
       setStatus('error');
-      const msg = e?.message || '分析過程中發生錯誤，請稍後再試。';
-      if (msg.includes('邀請碼無效') || msg.includes('邀請碼錯誤')) {
+      if (isBackendError(e) && e.code === 'INVALID_INVITATION_CODE') {
+        localStorage.removeItem('invitationAuthCache');
         setErrorMessage('');
         setActiveModal('authFail');
       } else {
-        setErrorMessage(msg);
+        const requestId = isBackendError(e) && e.requestId ? `（錯誤編號：${e.requestId}）` : '';
+        setErrorMessage(
+          `${e instanceof Error ? e.message : '分析過程中發生錯誤，請稍後再試。'}${requestId}`,
+        );
       }
     }
   };
@@ -720,13 +739,21 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         isOpen={status === 'auth'}
         code={formData.invitationCode}
         onSuccess={() => {
-          localStorage.setItem('lastInvitationAuthSuccess', Date.now().toString());
+          localStorage.setItem('invitationAuthCache', JSON.stringify({
+            code: normalizeInvitationCode(formData.invitationCode),
+            timestamp: Date.now(),
+          }));
           setStatus('quantum');
           executeAnalysis();
         }}
-        onFail={() => {
+        onFail={(reason, message) => {
           setStatus('idle');
-          setActiveModal('authFail');
+          if (reason === 'invalid') {
+            localStorage.removeItem('invitationAuthCache');
+            setActiveModal('authFail');
+          } else {
+            setErrorMessage(message || '驗證服務暫時無法使用，請稍後再試。');
+          }
         }}
       />
 
