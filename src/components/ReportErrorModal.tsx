@@ -42,7 +42,8 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
       setSubmitted(true);
     } catch (err) {
       setSubmitting(false);
-      setSubmitted(true);
+      setError('回報傳送失敗，請檢查網路連線或稍後再試。'); 
+      console.error('Report error failed:', err); 
     }
   };
 
