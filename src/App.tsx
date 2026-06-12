@@ -213,7 +213,13 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
       // QuantumLoadingOverlay handles it internally calling onComplete which will set status to success
     } catch (e: any) {
       setStatus('error');
-      setErrorMessage(e?.message || '分析過程中發生錯誤，請稍後再試。');
+      const msg = e?.message || '分析過程中發生錯誤，請稍後再試。';
+      if (msg.includes('邀請碼無效') || msg.includes('邀請碼錯誤')) {
+        setErrorMessage('');
+        setActiveModal('authFail');
+      } else {
+        setErrorMessage(msg);
+      }
     }
   };
 
