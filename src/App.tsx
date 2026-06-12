@@ -586,36 +586,23 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                   { id: 'social', label: '社會', icon: Map, color: 'text-purple-600', bgBorder: 'bg-purple-50 border-purple-300 focus:ring-purple-400 focus:border-purple-400 hover:border-purple-400', theme: 'bg-white' }
                 ].map(subject => (
                   <div key={subject.id} className={`relative group ${subject.theme} border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3`}>
-                    <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
+                    <div className="flex items-center justify-between gap-2 sm:gap-4">
                       <label className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 shrink-0">
                         <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] bg-slate-50`}>
                           <subject.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${subject.color}`} />
                         </div>
                         {subject.label}
                       </label>
-                      <div
-                        className="grid grid-cols-7 gap-0.5 sm:gap-1.5 flex-1 min-w-0"
-                        role="group"
-                        aria-label={`${subject.label}成績`}
-                      >
-                        {gradeOptions.map(opt => {
-                          const selected = (formData as any)[subject.id] === opt.value;
-                          return (
-                            <button
-                              key={opt.value}
-                              type="button"
-                              aria-pressed={selected}
-                              onClick={() => updateForm(subject.id, opt.value)}
-                              className={`min-w-0 h-9 sm:h-11 rounded-lg border-2 font-black text-[10px] sm:text-sm leading-none transition-all active:translate-y-0.5 ${
-                                selected
-                                  ? 'bg-slate-900 border-slate-900 text-white shadow-none'
-                                  : `${subject.bgBorder} text-slate-700 hover:-translate-y-0.5`
-                              }`}
-                            >
-                              {opt.value}
-                            </button>
-                          );
-                        })}
+                      <div className="relative w-full max-w-[180px] sm:max-w-[200px]">
+                        <select
+                          className={`w-full px-2 sm:px-4 py-2 sm:py-3 rounded-xl border-2 font-black text-sm sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 transition-all cursor-pointer ${subject.bgBorder}`}
+                          value={(formData as any)[subject.id]}
+                          onChange={(e) => updateForm(subject.id, e.target.value)}
+                        >
+                          <option value="" disabled>-- 選擇等級 --</option>
+                          {gradeOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                        </select>
+                        <ChevronRight className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400 pointer-events-none rotate-90" />
                       </div>
                     </div>
                     {formData.region && (formData as any)[subject.id] && (() => {
@@ -654,36 +641,23 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
 
                 {/* Composition */}
                 <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3">
-                  <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
+                  <div className="flex items-center justify-between gap-2 sm:gap-4">
                     <label className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 shrink-0">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(251,191,36,0.2)] bg-slate-800">
                         <PenTool className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
                       </div>
                       寫作
                     </label>
-                    <div
-                      className="grid grid-cols-7 gap-0.5 sm:gap-1.5 flex-1 min-w-0"
-                      role="group"
-                      aria-label="寫作級分"
-                    >
-                      {[6, 5, 4, 3, 2, 1, 0].map(score => {
-                        const selected = formData.composition === String(score);
-                        return (
-                          <button
-                            key={score}
-                            type="button"
-                            aria-pressed={selected}
-                            onClick={() => updateForm('composition', String(score))}
-                            className={`min-w-0 h-9 sm:h-11 rounded-lg border-2 font-black text-xs sm:text-sm leading-none transition-all active:translate-y-0.5 ${
-                              selected
-                                ? 'bg-amber-400 border-amber-400 text-slate-900'
-                                : 'border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-400/70 hover:text-amber-400'
-                            }`}
-                          >
-                            {score}
-                          </button>
-                        );
-                      })}
+                    <div className="relative w-full max-w-[180px] sm:max-w-[200px]">
+                      <select
+                        className="w-full px-2 sm:px-4 py-2 sm:py-3 rounded-xl border-2 border-slate-700 bg-slate-800 text-amber-400 font-black text-sm sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 focus:ring-amber-400/50 hover:border-amber-500/50 transition-all cursor-pointer"
+                        value={formData.composition}
+                        onChange={(e) => updateForm('composition', e.target.value)}
+                      >
+                        <option value="" disabled>-- 選擇級分 --</option>
+                        {[6, 5, 4, 3, 2, 1, 0].map(s => <option key={s} value={s}>{s} 級分</option>)}
+                      </select>
+                      <ChevronRight className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-amber-500/50 pointer-events-none rotate-90" />
                     </div>
                   </div>
                   {formData.region && formData.composition && (() => {
