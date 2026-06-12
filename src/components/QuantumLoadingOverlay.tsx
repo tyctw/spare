@@ -7,9 +7,7 @@ interface Props {
 }
 
 export default function QuantumLoadingOverlay({ isOpen }: Props) {
-  const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
-  const [metrics, setMetrics] = useState({ schools: 0, combinations: 0 });
 
   const steps = [
     { text: "啟動落點分析引擎...", icon: BrainCircuit, color: "bg-amber-400" },
@@ -21,34 +19,16 @@ export default function QuantumLoadingOverlay({ isOpen }: Props) {
 
   useEffect(() => {
     if (!isOpen) {
-      setProgress(0);
       setCurrentStep(0);
       return;
     }
 
-    let progressVal = 0;
-    
-    const progressInterval = setInterval(() => {
-      progressVal += Math.random() * 2 + 1.5;
-      if (progressVal >= 99) {
-        progressVal = 99;
-      }
-      
-      setProgress(progressVal);
-      if (progressVal < 20) setCurrentStep(0);
-      else if (progressVal < 40) setCurrentStep(1);
-      else if (progressVal < 60) setCurrentStep(2);
-      else if (progressVal < 80) setCurrentStep(3);
-      else setCurrentStep(4);
-      
-      setMetrics({
-        schools: Math.floor(progressVal * 1.5) + 120,
-        combinations: Math.floor(progressVal * 1450)
-      });
-    }, 45);
+    const stepInterval = setInterval(() => {
+      setCurrentStep(step => (step + 1) % steps.length);
+    }, 1100);
 
     return () => {
-      clearInterval(progressInterval);
+      clearInterval(stepInterval);
     };
   }, [isOpen]);
 
@@ -93,7 +73,7 @@ export default function QuantumLoadingOverlay({ isOpen }: Props) {
 
              {/* Progress Box */}
              <div className="relative z-10 w-full bg-slate-50 border-4 border-slate-900 rounded-2xl p-4 mb-8 text-left">
-               <div className="flex justify-between items-center mb-3">
+               <div className="flex items-center mb-3">
                  <span className="font-bold text-slate-700 text-sm flex items-center gap-2">
                    <motion.div
                      animate={{ scale: [1, 1.2, 1] }}
@@ -102,25 +82,32 @@ export default function QuantumLoadingOverlay({ isOpen }: Props) {
                    />
                    {steps[currentStep].text}
                  </span>
-                 <span className="font-black text-xl text-slate-900">{Math.floor(progress)}%</span>
                </div>
-               <div className="w-full h-8 bg-white rounded-xl border-4 border-slate-900 p-0.5 overflow-hidden">
-                 <motion.div 
-                   className="h-full bg-indigo-500 rounded-lg border-r-4 border-slate-900 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,0.1)_10px,rgba(0,0,0,0.1)_20px)]"
-                   style={{ width: `${progress}%` }}
+               <div
+                 className="w-full h-8 bg-white rounded-xl border-4 border-slate-900 p-0.5 overflow-hidden"
+                 role="progressbar"
+                 aria-label="正在進行落點分析"
+               >
+                 <motion.div
+                   className="h-full w-1/3 bg-indigo-500 rounded-lg border-x-4 border-slate-900 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,0.1)_10px,rgba(0,0,0,0.1)_20px)]"
+                   animate={{ x: ['-120%', '320%'] }}
+                   transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
                  />
+               </div>
+               <div className="mt-3 text-center text-xs font-black tracking-widest text-slate-500">
+                 系統持續運算中，請稍候
                </div>
              </div>
 
-             {/* Metrics Stats */}
+             {/* Analysis status */}
              <div className="relative z-10 w-full grid grid-cols-2 gap-4">
                <div className="bg-emerald-50 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col items-center text-center">
-                 <div className="text-xs font-black text-slate-600 uppercase mb-1">比對校系數</div>
-                 <div className="text-3xl font-black text-emerald-600 border-b-4 border-emerald-200 pb-1 w-full">{metrics.schools}</div>
+                 <div className="text-sm font-black text-slate-600 mb-1">校系資料</div>
+                 <div className="text-lg font-black text-emerald-600 border-b-4 border-emerald-200 pb-1 w-full">持續比對中</div>
                </div>
                <div className="bg-rose-50 border-4 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col items-center text-center">
-                 <div className="text-xs font-black text-slate-600 uppercase mb-1">運算組合(次)</div>
-                 <div className="text-3xl font-black text-rose-600 border-b-4 border-rose-200 pb-1 w-full">{metrics.combinations.toLocaleString()}</div>
+                 <div className="text-sm font-black text-slate-600 mb-1">分析建議</div>
+                 <div className="text-lg font-black text-rose-600 border-b-4 border-rose-200 pb-1 w-full">整理產生中</div>
                </div>
              </div>
           </motion.div>
