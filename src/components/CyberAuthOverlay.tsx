@@ -11,7 +11,6 @@ interface Props {
 }
 
 export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Props) {
-  const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<'validating' | 'success' | 'fail'>('validating');
   const [currentStep, setCurrentStep] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
@@ -25,35 +24,22 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
 
   useEffect(() => {
     if (!isOpen) {
-      setProgress(0);
       setStatus('validating');
       setCurrentStep(0);
       setErrorMsg('');
       return;
     }
 
-    let progressVal = 0;
     let completionTimer: ReturnType<typeof setTimeout> | undefined;
-    const progressInterval = setInterval(() => {
-      progressVal += 1.5;
-      if (progressVal >= 99) {
-        progressVal = 99;
-      }
-      
-      setProgress(progressVal);
-      if (progressVal < 25) setCurrentStep(0);
-      else if (progressVal < 50) setCurrentStep(1);
-      else if (progressVal < 75) setCurrentStep(2);
-      else setCurrentStep(3);
-      
-    }, 25);
+    const stepInterval = setInterval(() => {
+      setCurrentStep(step => (step + 1) % steps.length);
+    }, 900);
 
     const controller = new AbortController();
     const normalizedCode = normalizeInvitationCode(code);
 
     if (!normalizedCode) {
-      clearInterval(progressInterval);
-      setProgress(100);
+      clearInterval(stepInterval);
       setStatus('fail');
       setErrorMsg('請輸入邀請碼');
       onFail('invalid');
@@ -65,8 +51,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       invitationCode: normalizedCode,
     }, { timeoutMs: 12_000, signal: controller.signal })
     .then(res => {
-      clearInterval(progressInterval);
-      setProgress(100);
+      clearInterval(stepInterval);
       if (res.valid) {
         setStatus('success');
         completionTimer = setTimeout(onSuccess, 700);
@@ -78,8 +63,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
     })
     .catch((err: unknown) => {
       if (controller.signal.aborted) return;
-      clearInterval(progressInterval);
-      setProgress(100);
+      clearInterval(stepInterval);
       console.error(err);
       setStatus('fail');
       const message = isBackendError(err) ? err.message : '驗證服務暫時無法使用，請稍後再試';
@@ -88,7 +72,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
     });
 
     return () => {
-      clearInterval(progressInterval);
+      clearInterval(stepInterval);
       controller.abort();
       if (completionTimer) clearTimeout(completionTimer);
     };
@@ -141,16 +125,23 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
 
               {status !== 'fail' && (
                 <div className="w-full">
-                  <div className="w-full h-8 bg-slate-50 rounded-xl border-4 border-slate-900 p-0.5 overflow-hidden shadow-[inset_2px_2px_0px_rgba(0,0,0,0.1)] relative">
-                    <motion.div 
-                      className={`h-full rounded-md border-r-4 border-slate-900 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,0.1)_10px,rgba(0,0,0,0.1)_20px)] ${
+                  <div
+                    className="w-full h-8 bg-slate-50 rounded-xl border-4 border-slate-900 p-0.5 overflow-hidden shadow-[inset_2px_2px_0px_rgba(0,0,0,0.1)] relative"
+                    role="progressbar"
+                    aria-label={status === 'success' ? '邀請碼驗證完成' : '正在驗證邀請碼'}
+                  >
+                    <motion.div
+                      className={`h-full w-1/3 rounded-md border-x-4 border-slate-900 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,0.1)_10px,rgba(0,0,0,0.1)_20px)] ${
                         status === 'success' ? 'bg-emerald-500' : 'bg-indigo-500'
                       }`}
-                      style={{ width: `${progress}%` }}
+                      animate={status === 'success' ? { x: '200%' } : { x: ['-120%', '320%'] }}
+                      transition={status === 'success'
+                        ? { duration: 0.35, ease: 'easeOut' }
+                        : { repeat: Infinity, duration: 1.15, ease: 'linear' }}
                     />
                   </div>
-                  <div className="mt-3 text-right font-black text-slate-900 text-xl tracking-tight">
-                    {Math.floor(progress)}%
+                  <div className="mt-3 text-center font-black text-slate-600 text-sm tracking-widest">
+                    {status === 'success' ? '驗證完成' : '安全驗證進行中'}
                   </div>
                 </div>
               )}
