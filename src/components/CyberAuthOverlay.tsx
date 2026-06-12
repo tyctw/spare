@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { KeyRound, Check, ShieldAlert, Zap } from 'lucide-react';
-import { callBackend } from '../lib/api';
+import { callBackend, isBackendError, normalizeInvitationCode } from '../lib/api';
 
 interface Props {
   isOpen: boolean;
   code: string;
   onSuccess: () => void;
-  onFail: () => void;
+  onFail: (reason: 'invalid' | 'service', message?: string) => void;
 }
 
 export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Props) {
@@ -48,8 +48,22 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       
     }, 25);
 
-    // Execute validation immediately
-    callBackend<{ valid: boolean }>({ action: 'validateInvitationCode', invitationCode: code })
+    const controller = new AbortController();
+    const normalizedCode = normalizeInvitationCode(code);
+
+    if (!normalizedCode) {
+      clearInterval(progressInterval);
+      setProgress(100);
+      setStatus('fail');
+      setErrorMsg('請輸入邀請碼');
+      onFail('invalid');
+      return () => controller.abort();
+    }
+
+    callBackend<{ valid: boolean }>({
+      action: 'validateInvitationCode',
+      invitationCode: normalizedCode,
+    }, { timeoutMs: 12_000, signal: controller.signal })
     .then(res => {
       clearInterval(progressInterval);
       setProgress(100);
@@ -58,21 +72,24 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
         completionTimer = setTimeout(onSuccess, 700);
       } else {
         setStatus('fail');
-        setErrorMsg('存取被拒，邀請碼錯誤或過期');
-        onFail();
+        setErrorMsg('邀請碼無效或已過期');
+        onFail('invalid');
       }
     })
-    .catch(err => {
+    .catch((err: unknown) => {
+      if (controller.signal.aborted) return;
       clearInterval(progressInterval);
       setProgress(100);
       console.error(err);
       setStatus('fail');
-      setErrorMsg(err.message || '連線伺服器失敗，請稍後再試');
-      onFail();
+      const message = isBackendError(err) ? err.message : '驗證服務暫時無法使用，請稍後再試';
+      setErrorMsg(message);
+      onFail('service', message);
     });
 
     return () => {
       clearInterval(progressInterval);
+      controller.abort();
       if (completionTimer) clearTimeout(completionTimer);
     };
   }, [isOpen, code]);
