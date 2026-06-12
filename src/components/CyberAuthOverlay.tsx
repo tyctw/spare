@@ -14,6 +14,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<'validating' | 'success' | 'fail'>('validating');
   const [currentStep, setCurrentStep] = useState(0);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const steps = [
     "解析授權碼格式...",
@@ -27,6 +28,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       setProgress(0);
       setStatus('validating');
       setCurrentStep(0);
+      setErrorMsg('');
       return;
     }
 
@@ -56,6 +58,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
         completionTimer = setTimeout(onSuccess, 700);
       } else {
         setStatus('fail');
+        setErrorMsg('存取被拒，邀請碼錯誤或過期');
         onFail();
       }
     })
@@ -64,6 +67,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       setProgress(100);
       console.error(err);
       setStatus('fail');
+      setErrorMsg(err.message || '連線伺服器失敗，請稍後再試');
       onFail();
     });
 
@@ -115,7 +119,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
                 {status === 'success' ? '授權成功！' : status === 'fail' ? '憑證無效！' : '驗證邀請碼中...'}
               </h2>
               <div className="text-slate-500 font-bold mb-8 h-6 flex items-center justify-center gap-2">
-                {status === 'validating' ? <><Zap className="w-4 h-4 text-amber-500 fill-amber-500" /> {steps[currentStep]}</> : status === 'success' ? '歡迎使用系統，準備進入...' : '存取被拒，邀請碼錯誤或過期'}
+                {status === 'validating' ? <><Zap className="w-4 h-4 text-amber-500 fill-amber-500" /> {steps[currentStep]}</> : status === 'success' ? '歡迎使用系統，準備進入...' : (errorMsg || '存取被拒')}
               </div>
 
               {status !== 'fail' && (
