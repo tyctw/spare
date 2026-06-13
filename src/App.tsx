@@ -1074,7 +1074,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                       const ownership = school.ownership || '公立';
                       const ownershipColor = ownership === '私立' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
                       const OwnershipIcon = ownership === '私立' ? Building2 : Library;
-                      const schoolRegionName = ALL_REGIONS.find(r => r.id === (school.region || formData.region))?.name || school.region || '未知區域';
+                      const schoolDistrictName = school.district || ALL_REGIONS.find(r => r.id === (school.region || formData.region))?.name || school.region || '未知區域';
 
                       return (
                       <div key={i} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
@@ -1152,7 +1152,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                               <span className="text-[10px] font-black uppercase text-slate-500 mb-0.5 whitespace-nowrap">區域</span>
                               <div className="font-black flex items-baseline gap-0.5 whitespace-nowrap text-sm">
                                 <span className="text-slate-700">
-                                  {schoolRegionName}
+                                  {schoolDistrictName}
                                 </span>
                               </div>
                             </div>
