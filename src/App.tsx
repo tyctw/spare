@@ -1071,30 +1071,10 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                         const isCompared = !!comparisonSchools.find(s => s.name === school.name);
 
                       
-                      const userScore = results.totalPoints ? parseFloat(results.totalPoints) : 0;
-                      let numDiff: number | null = null;
-                      
-                      if (school.scoreDiff !== undefined && school.scoreDiff !== null && school.scoreDiff !== '') {
-                        numDiff = parseFloat(school.scoreDiff);
-                      } else if (school.pointsDiff !== undefined && school.pointsDiff !== null && school.pointsDiff !== '') {
-                        numDiff = parseFloat(school.pointsDiff);
-                      } else if (school.diff !== undefined && school.diff !== null && school.diff !== '') {
-                        numDiff = parseFloat(school.diff);
-                      } else if (school.points !== undefined && school.points !== null && school.points !== '') {
-                        numDiff = parseFloat((userScore - parseFloat(school.points)).toFixed(2));
-                      } else if (school.minScore !== undefined && !isNaN(parseFloat(school.minScore))) {
-                        numDiff = parseFloat((userScore - parseFloat(school.minScore)).toFixed(2));
-                      } else if (school.score !== undefined && !isNaN(parseFloat(school.score))) {
-                        numDiff = parseFloat((userScore - parseFloat(school.score)).toFixed(2));
-                      }
-
-                      const diffDisplay = numDiff !== null 
-                        ? (numDiff > 0 ? '+' : '') + (Number.isInteger(numDiff) ? numDiff : numDiff.toFixed(2))
-                        : '?';
-
                       const ownership = school.ownership || '公立';
                       const ownershipColor = ownership === '私立' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
                       const OwnershipIcon = ownership === '私立' ? Building2 : Library;
+                      const schoolRegionName = ALL_REGIONS.find(r => r.id === (school.region || formData.region))?.name || school.region || '未知區域';
 
                       return (
                       <div key={i} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
@@ -1167,12 +1147,12 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                               </div>
                             )}
                             
-                            {/* Diff Score Box */}
+                            {/* Region Box */}
                             <div className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] flex-1 min-w-[70px]">
-                              <span className="text-[10px] font-black uppercase text-slate-500 mb-0.5 whitespace-nowrap">分差</span>
+                              <span className="text-[10px] font-black uppercase text-slate-500 mb-0.5 whitespace-nowrap">區域</span>
                               <div className="font-black flex items-baseline gap-0.5 whitespace-nowrap text-sm">
-                                <span className={numDiff !== null ? (numDiff > 0 ? "text-emerald-500" : numDiff < 0 ? "text-rose-500" : "text-slate-700") : "text-slate-400"}>
-                                  {diffDisplay}
+                                <span className="text-slate-700">
+                                  {schoolRegionName}
                                 </span>
                               </div>
                             </div>
