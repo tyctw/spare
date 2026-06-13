@@ -936,25 +936,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                         </p>
                       </div>
                     )}
-                    {results.analysisReport?.riskNotes && (
-                      <div className="bg-white p-4 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                        <div className="text-xs font-black text-slate-500 mb-3">風險分布</div>
-                        <div className="grid grid-cols-3 gap-2 text-center">
-                          <div className="rounded-lg bg-rose-50 border-2 border-rose-200 p-2">
-                            <div className="text-lg font-black text-rose-600">{results.analysisReport.riskNotes.reachRatio}%</div>
-                            <div className="text-[11px] font-bold text-rose-800">夢幻</div>
-                          </div>
-                          <div className="rounded-lg bg-sky-50 border-2 border-sky-200 p-2">
-                            <div className="text-lg font-black text-sky-600">{results.analysisReport.riskNotes.targetRatio}%</div>
-                            <div className="text-[11px] font-bold text-sky-800">實際</div>
-                          </div>
-                          <div className="rounded-lg bg-emerald-50 border-2 border-emerald-200 p-2">
-                            <div className="text-lg font-black text-emerald-600">{results.analysisReport.riskNotes.safeRatio}%</div>
-                            <div className="text-[11px] font-bold text-emerald-800">保守</div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -1195,11 +1176,31 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
 
                           {school.analysisNote && (
                             <div className="rounded-xl border-2 border-slate-200 bg-slate-50 px-3 py-2">
-                              <div className="text-[10px] font-black text-slate-500 mb-1">落點判讀</div>
+                              <div className="flex items-center justify-between gap-2 mb-1">
+                                <div className="text-[10px] font-black text-slate-500">落點判讀</div>
+                                {school.confidenceScore !== undefined && (
+                                  <div className={`text-[11px] font-black px-2 py-0.5 rounded-full border ${
+                                    school.confidenceScore >= 75 ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
+                                    school.confidenceScore >= 55 ? 'bg-sky-100 text-sky-800 border-sky-300' :
+                                    'bg-rose-100 text-rose-800 border-rose-300'
+                                  }`}>
+                                    信心 {school.confidenceScore}%
+                                  </div>
+                                )}
+                              </div>
                               <p className="text-xs font-bold text-slate-700 leading-relaxed">{school.analysisNote}</p>
                               {school.creditDiff !== null && school.creditDiff !== undefined && school.scoreDiff === 0 && (
                                 <div className="text-[11px] font-bold text-emerald-700 mt-1">
                                   同分積點差：{school.creditDiff > 0 ? '+' : ''}{school.creditDiff}
+                                </div>
+                              )}
+                              {school.riskTags?.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {school.riskTags.slice(0, 3).map((tag: string) => (
+                                    <span key={tag} className="text-[10px] font-black px-2 py-0.5 rounded-full bg-white border border-slate-300 text-slate-600">
+                                      {tag}
+                                    </span>
+                                  ))}
                                 </div>
                               )}
                             </div>
