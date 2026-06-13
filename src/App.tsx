@@ -1056,7 +1056,8 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                     return matchText && matchZone && matchOwnership && matchType;
                   }).sort((a: any, b: any) =>
                     (zoneOrder[a.zone] ?? 99) - (zoneOrder[b.zone] ?? 99) ||
-                    (b.distanceScore ?? b.scoreDiff ?? 0) - (a.distanceScore ?? a.scoreDiff ?? 0) ||
+                    Math.abs(b.scoreDiff ?? b.pointsDiff ?? b.distanceScore ?? 0) -
+                      Math.abs(a.scoreDiff ?? a.pointsDiff ?? a.distanceScore ?? 0) ||
                     (b.points ?? 0) - (a.points ?? 0)
                   );
 
