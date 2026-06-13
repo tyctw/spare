@@ -936,25 +936,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                         </p>
                       </div>
                     )}
-                    {(results.scoreBreakdown || results.analysisReport?.scoreBreakdown) && (
-                      <div className="bg-white p-4 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                        <div className="text-xs font-black text-slate-500 mb-3">各科換算明細</div>
-                        <div className="grid grid-cols-2 gap-2">
-                          {(results.scoreBreakdown || results.analysisReport.scoreBreakdown).map((item: any) => (
-                            <div key={item.subject} className="rounded-lg border-2 border-slate-200 bg-slate-50 p-2">
-                              <div className="text-[11px] font-black text-slate-500">{item.label}</div>
-                              <div className="flex items-end justify-between gap-2">
-                                <span className="text-sm font-black text-slate-900">{item.grade}</span>
-                                <span className="text-sm font-black text-indigo-600">{item.points}分</span>
-                              </div>
-                              {item.credits !== null && item.credits !== undefined && (
-                                <div className="text-[11px] font-bold text-emerald-700 mt-1">積點 {item.credits}</div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                     {results.analysisReport?.riskNotes && (
                       <div className="bg-white p-4 rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                         <div className="text-xs font-black text-slate-500 mb-3">風險分布</div>
@@ -1080,6 +1061,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                 </div>
                 
                 {(() => {
+                  const zoneOrder: Record<string, number> = { reach: 0, target: 1, safe: 2 };
                   const filteredSchools = (results.eligibleSchools || []).filter((school: any) => {
                     const matchText = !resultFilterText || 
                       school.name?.includes(resultFilterText) || 
@@ -1091,7 +1073,11 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                       (resultFilterType === '普通科' && school.type === '普通科') || 
                       (resultFilterType === '職業類科' && school.type !== '普通科');
                     return matchText && matchZone && matchOwnership && matchType;
-                  });
+                  }).sort((a: any, b: any) =>
+                    (zoneOrder[a.zone] ?? 99) - (zoneOrder[b.zone] ?? 99) ||
+                    (b.distanceScore ?? b.scoreDiff ?? 0) - (a.distanceScore ?? a.scoreDiff ?? 0) ||
+                    (b.points ?? 0) - (a.points ?? 0)
+                  );
 
                   return filteredSchools.length > 0 ? (
                     <div className="flex-1 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
