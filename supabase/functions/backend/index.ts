@@ -498,10 +498,7 @@ function analysisReportV2(scores: Scores, schools: AnalyzedSchool[], calculated:
     summaryParts.push(`${unmetRequirementCount} 所學校有單科門檻未達，系統已提高風險判定。`);
   }
   const suggestionParts = [
-    '建議志願配置可抓夢幻區 20% 至 30%、實際區 40% 至 50%、保守區至少 20%。',
-    `目前夢幻區占 ${reachRatio}%、實際區占 ${targetRatio}%、保守區占 ${safeRatio}%。`,
-    reachRatio > 35 ? '夢幻區比例偏高，建議補入更多實際區與保守區校系。' : '夢幻區比例尚可，可保留少量最想就讀的挑戰校。',
-    safeRatio < 20 ? '保守區偏少，志願序尾段應再增加錄取穩定度高的選項。' : '保守區配置足夠，尾段志願已有基本防守。',
+    '填寫115會考志願時，建議依「夢幻、落點、安全」三層配置。前段可放幾個想挑戰、分數略高的夢幻志願；中段以歷年錄取分數與自身成績相近的落點志願為主；後段則保留2至3個錄取機率較高的安全志願，降低落榜風險。安排時也要考量通勤時間、校風、學習壓力與升學風氣，選擇真正適合自己的高中。',
   ];
   return {
     analysisSummary: summaryParts.join(''),
