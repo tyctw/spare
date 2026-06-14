@@ -16,6 +16,7 @@ type Filters = {
 };
 
 type SchoolRow = {
+  id?: string;
   region: string;
   name: string;
   district: string | null;
@@ -29,6 +30,8 @@ type SchoolRow = {
   min_math: number | null;
   min_science: number | null;
   min_social: number | null;
+  created_at?: string;
+  updated_at?: string;
 };
 
 type ScoreBreakdownItem = {
@@ -143,6 +146,36 @@ async function validateInvitationCode(code: unknown, request: Request, consume =
   });
 
   return valid;
+}
+
+async function validateAdminCode(code: unknown, request: Request) {
+  const adminCode = Deno.env.get('ADMIN_ACCESS_CODE')?.trim();
+  const requestedCode = String(code || '').trim();
+
+  if (adminCode) {
+    const valid = requestedCode === adminCode;
+    await supabase.from('invitation_logs').insert({
+      action: 'admin',
+      invitation_code: requestedCode ? '[admin-code]' : null,
+      success: valid,
+      ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+      user_agent: request.headers.get('user-agent'),
+    });
+    return valid;
+  }
+
+  return validateInvitationCode(requestedCode, request);
+}
+
+function assertAdmin(valid: boolean) {
+  if (!valid) throw new Error('管理驗證碼無效或已過期');
+}
+
+function nullableNumber(value: unknown) {
+  if (value === null || value === undefined || value === '') return null;
+  const number = Number(value);
+  if (!Number.isFinite(number)) throw new Error('數字欄位格式不正確');
+  return number;
 }
 
 function assertScores(value: unknown): asserts value is Scores {
@@ -546,6 +579,81 @@ async function handleAction(payload: Record<string, any>, request: Request) {
           deptName: school.dept_name,
         })),
       };
+    }
+    case 'adminListSchools': {
+      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+
+      const pageSize = 1000;
+      const rows: SchoolRow[] = [];
+      const region = String(payload.region || 'all');
+
+      for (let from = 0; ; from += pageSize) {
+        let query = supabase
+          .from('schools')
+          .select('id, region, name, district, points, credits, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at')
+          .order('region')
+          .order('points', { ascending: false });
+
+        if (region !== 'all') query = query.eq('region', region);
+
+        const { data, error } = await query.range(from, from + pageSize - 1);
+        if (error) throw error;
+        rows.push(...((data || []) as SchoolRow[]));
+        if (!data || data.length < pageSize) break;
+      }
+
+      return { schools: rows };
+    }
+    case 'adminUpsertSchool': {
+      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+
+      const school = payload.school || {};
+      const validRegions = new Set(['taoyuan', 'kaohsiung', 'central', 'changhua', 'taipei', 'tainan', 'hsinchu']);
+      const region = String(school.region || '');
+      const name = String(school.name || '').trim();
+      const points = Number(school.points);
+      const credits = nullableNumber(school.credits);
+
+      if (!validRegions.has(region)) throw new Error('區域格式不正確');
+      if (!name) throw new Error('請輸入學校名稱');
+      if (!Number.isFinite(points)) throw new Error('請輸入分數門檻');
+      if (credits !== null && !Number.isFinite(credits)) throw new Error('請輸入正確積分');
+
+      const row = {
+        ...(school.id ? { id: school.id } : {}),
+        region,
+        name,
+        district: String(school.district || '').trim() || null,
+        points,
+        credits,
+        type: String(school.type || '').trim() || null,
+        ownership: String(school.ownership || '').trim() || null,
+        vocational_group: String(school.vocational_group || '').trim() || null,
+        min_chinese: nullableNumber(school.min_chinese),
+        min_english: nullableNumber(school.min_english),
+        min_math: nullableNumber(school.min_math),
+        min_science: nullableNumber(school.min_science),
+        min_social: nullableNumber(school.min_social),
+        updated_at: new Date().toISOString(),
+      };
+
+      const { data, error } = await supabase
+        .from('schools')
+        .upsert(row)
+        .select('id, region, name, district, points, credits, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at')
+        .single();
+
+      if (error) throw error;
+      return { school: data };
+    }
+    case 'adminDeleteSchool': {
+      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+
+      const id = String(payload.id || '');
+      if (!id) throw new Error('缺少資料 ID');
+      const { error } = await supabase.from('schools').delete().eq('id', id);
+      if (error) throw error;
+      return { success: true };
     }
     case 'analyzeScores': {
       assertScores(payload.scores);
