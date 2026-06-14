@@ -30,7 +30,6 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       return;
     }
 
-    let completionTimer: ReturnType<typeof setTimeout> | undefined;
     const stepInterval = setInterval(() => {
       setCurrentStep(step => (step + 1) % steps.length);
     }, 900);
@@ -54,7 +53,7 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
         clearInterval(stepInterval);
         if (res.valid) {
           setStatus('success');
-          completionTimer = setTimeout(onSuccess, 700);
+          onSuccess();
         } else {
           setStatus('fail');
           setErrorMsg('\u9080\u8acb\u78bc\u7121\u6548\u6216\u5df2\u904e\u671f');
@@ -74,7 +73,6 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
     return () => {
       clearInterval(stepInterval);
       controller.abort();
-      if (completionTimer) clearTimeout(completionTimer);
     };
   }, [isOpen, code]);
 
