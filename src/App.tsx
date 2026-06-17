@@ -320,7 +320,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none"></div>
                 {(() => {
                   const now = new Date();
-                  const start = new Date('2026-06-18T00:00:00+08:00');
+                  const start = new Date('2026-06-18T11:55:00+08:00');
                   const end = new Date('2026-06-30T23:59:59+08:00');
                   const isDuringInterval = now >= start && now <= end;
                   
