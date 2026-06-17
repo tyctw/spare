@@ -328,7 +328,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                     return (
                       <>
                         <h3 className="text-base font-black text-slate-900 flex items-center gap-1.5 mb-1.5">
-                          <span className="text-xl animate-bounce">📢</span> 🔥 分享序位，免費拿邀請碼！
+                          <span className="text-xl animate-bounce">📢</span>分享序位，免費拿邀請碼！
                         </h3>
                         <p className="text-sm font-bold text-slate-800 leading-relaxed">
                           填寫序位分享表單後，即可免費獲得邀請碼！<br />
