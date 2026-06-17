@@ -328,10 +328,10 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                     return (
                       <>
                         <h3 className="text-base font-black text-slate-900 flex items-center gap-1.5 mb-1.5">
-                          <span className="text-xl animate-bounce">📢</span> 期間邀請碼
+                          <span className="text-xl animate-bounce">📢</span> 🔥 分享序位，免費拿邀請碼！
                         </h3>
                         <p className="text-sm font-bold text-slate-800 leading-relaxed">
-                          填寫序位分享表單並提交後，即可免費獲取邀請碼：<br />
+                          填寫序位分享表單後，即可免費獲得邀請碼！<br />
                           <a href="https://tyctw.github.io/form/" target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-white bg-indigo-600 px-3 py-1.5 rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[4px_4px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all">
                             前往填寫表單獲取
                           </a>
