@@ -42,6 +42,134 @@ import AppHeader from './components/layout/AppHeader';
 import Footer from './components/layout/Footer';
 import HeroBanner from './components/layout/HeroBanner';
 
+const normalizeHistoricalScores = (scores: any[] = []) =>
+  scores
+    .filter((item) => item && item.points !== null && item.points !== undefined)
+    .map((item) => ({
+      ...item,
+      year: String(item.year || '歷年'),
+      numericYear: Number.parseInt(String(item.year || '').replace(/\D/g, ''), 10),
+      numericPoints: Number(item.points),
+    }))
+    .sort((a, b) => (Number.isFinite(b.numericYear) ? b.numericYear : 0) - (Number.isFinite(a.numericYear) ? a.numericYear : 0));
+
+const historicalScoresPendingText = '資料建置中';
+
+const formatHistoricalScore = (item: any) => {
+  const points = item?.points ?? '--';
+  const credits = item?.credits ?? null;
+  return `積分 ${points}${credits !== null && credits !== undefined ? ` / 積點 ${credits}` : ''}`;
+};
+
+const getHistoricalTrend = (scores: any[]) => {
+  const [latest, previous] = scores;
+  if (!latest || !previous || !Number.isFinite(latest.numericPoints) || !Number.isFinite(previous.numericPoints)) {
+    return { label: '資料建置中', tone: 'text-slate-500 bg-slate-100 border-slate-200' };
+  }
+  const diff = Math.round((latest.numericPoints - previous.numericPoints) * 10) / 10;
+  if (diff > 0) return { label: `較前一年 +${diff}`, tone: 'text-rose-700 bg-rose-50 border-rose-200' };
+  if (diff < 0) return { label: `較前一年 ${diff}`, tone: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+  return { label: '與前一年持平', tone: 'text-sky-700 bg-sky-50 border-sky-200' };
+};
+
+function HistoricalScoresModal({ school, onClose }: { school: any | null; onClose: () => void }) {
+  const scores = normalizeHistoricalScores(school?.historicalScores || []).slice(0, 6);
+  const latest = scores[0];
+  const trend = getHistoricalTrend(scores);
+  const maxPoint = Math.max(...scores.map((item: any) => Number(item.points) || 0), 1);
+
+  return (
+    <AnimatePresence>
+      {school && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ scale: 0.94, opacity: 0, y: 18 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.94, opacity: 0, y: 18 }}
+            className="relative w-full max-w-xl max-h-[88vh] overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)] flex flex-col"
+          >
+            <div className="bg-amber-300 border-b-4 border-slate-900 p-5 sm:p-6 flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3 min-w-0">
+                <div className="w-12 h-12 rounded-2xl border-4 border-slate-900 bg-white flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] shrink-0 -rotate-3">
+                  <History className="w-6 h-6 text-amber-700" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-black text-amber-900">歷年錄取成績</div>
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight break-words">{school.name}</h3>
+                  <div className="mt-2">
+                    <span className={`inline-flex rounded-lg border px-2.5 py-1 text-xs font-black ${scores.length > 0 ? trend.tone : 'border-slate-200 bg-slate-100 text-slate-500'}`}>
+                      {scores.length > 0 ? trend.label : historicalScoresPendingText}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="w-10 h-10 rounded-xl border-4 border-slate-900 bg-white flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-slate-100 active:translate-y-0.5 active:shadow-none transition-all shrink-0"
+                aria-label="關閉歷年成績"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-5 sm:p-6 overflow-y-auto custom-scrollbar bg-slate-50">
+              {scores.length === 0 ? (
+                <div className="rounded-2xl border-2 border-dashed border-amber-300 bg-white p-8 text-center">
+                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-100 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                    <Database className="h-7 w-7 text-amber-700" />
+                  </div>
+                  <div className="text-xl font-black text-slate-900">{historicalScoresPendingText}</div>
+                  <div className="mt-2 text-sm font-bold text-slate-500">後端尚未提供此校歷年錄取成績，完成建置後會自動顯示。</div>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                      <div className="text-[11px] font-black text-slate-500">{latest?.year || '最新'} 年積分</div>
+                      <div className="mt-1 text-4xl font-black text-slate-900 leading-none">{latest?.points ?? '--'}</div>
+                    </div>
+                    <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                      <div className="text-[11px] font-black text-slate-500">{latest?.year || '最新'} 年積點</div>
+                      <div className="mt-1 text-4xl font-black text-slate-900 leading-none">{latest?.credits ?? '--'}</div>
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                    <div className="mb-4 flex items-center justify-between gap-3">
+                      <div className="font-black text-slate-900">年度趨勢</div>
+                      <div className="text-[11px] font-bold text-slate-500">points=積分，credits=積點</div>
+                    </div>
+                    <div className="space-y-3">
+                      {scores.map((item: any) => {
+                        const width = `${Math.max(14, Math.round(((Number(item.points) || 0) / maxPoint) * 100))}%`;
+                        return (
+                          <div key={`${item.year}-${item.points}-${item.credits ?? 'none'}`} className="grid grid-cols-[48px_1fr_auto] items-center gap-3">
+                            <div className="font-black text-slate-500 text-sm">{item.year}</div>
+                            <div className="h-4 rounded-full border border-slate-200 bg-slate-100 overflow-hidden">
+                              <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-sky-300 to-indigo-400" style={{ width }} />
+                            </div>
+                            <div className="text-xs sm:text-sm font-black text-slate-800 whitespace-nowrap">{formatHistoricalScore(item)}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 const gradeOptions = [
   { value: 'A++', label: 'A++ (精熟)' },
   { value: 'A+', label: 'A+ (精熟)' },
@@ -82,6 +210,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
   const [isExternalLinksOpen, setIsExternalLinksOpen] = useState(false);
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const [expandedNavCategory, setExpandedNavCategory] = useState<string | null>('schoolDetails');
+  const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
   
   // Comparison
   const [comparisonSchools, setComparisonSchools] = useState<any[]>([]);
@@ -1075,6 +1204,9 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                       const ownershipColor = ownership === '私立' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
                       const OwnershipIcon = ownership === '私立' ? Building2 : Library;
                       const schoolDistrictName = school.district || ALL_REGIONS.find(r => r.id === (school.region || formData.region))?.name || school.region || '未知區域';
+                      const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 4);
+                      const latestHistoricalScore = historicalScores[0];
+                      const historicalTrend = getHistoricalTrend(historicalScores);
 
                       return (
                       <div key={i} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
@@ -1169,6 +1301,52 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                               )}
                             </div>
                           )}
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setHistoricalScoreSchool(school);
+                            }}
+                            className={`rounded-2xl border-2 border-slate-900 px-3 py-3 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all ${historicalScores.length > 0 ? 'bg-amber-50' : 'bg-slate-50'}`}
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-9 h-9 rounded-xl border-2 border-slate-900 bg-white flex items-center justify-center shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] shrink-0">
+                                  {historicalScores.length > 0 ? (
+                                    <History className="w-4 h-4 text-amber-700" />
+                                  ) : (
+                                    <Database className="w-4 h-4 text-slate-500" />
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs font-black text-slate-900">歷年錄取成績</div>
+                                  <div className="text-[11px] font-bold text-slate-600 truncate">
+                                    {historicalScores.length > 0 ? (
+                                      <>
+                                        最新 {latestHistoricalScore?.year || '--'} 年：積分 {latestHistoricalScore?.points ?? '--'}
+                                        {latestHistoricalScore?.credits !== null && latestHistoricalScore?.credits !== undefined ? ` / 積點 ${latestHistoricalScore.credits}` : ''}
+                                      </>
+                                    ) : (
+                                      historicalScoresPendingText
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex flex-col items-end gap-1 shrink-0">
+                                {historicalScores.length > 0 ? (
+                                  <span className={`rounded-lg border px-2 py-0.5 text-[10px] font-black ${historicalTrend.tone}`}>
+                                    {historicalTrend.label}
+                                  </span>
+                                ) : (
+                                  <span className="rounded-lg border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-500">
+                                    建置中
+                                  </span>
+                                )}
+                                <span className="text-[10px] font-black text-amber-700">點擊查看</span>
+                              </div>
+                            </div>
+                          </button>
 
                           {/* Action Buttons */}
                           <div className="flex gap-2 mt-2">
@@ -1272,6 +1450,11 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         schools={comparisonSchools}
         onRemove={name => setComparisonSchools(prev => prev.filter(s => s.name !== name))}
         onClear={() => setComparisonSchools([])}
+      />
+
+      <HistoricalScoresModal
+        school={historicalScoreSchool}
+        onClose={() => setHistoricalScoreSchool(null)}
       />
 
       <ExportModal

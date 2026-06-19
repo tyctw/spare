@@ -22,6 +22,7 @@ type SchoolRow = {
   district: string | null;
   points: number | string;
   credits: number | string | null;
+  historical_scores?: unknown;
   type: string | null;
   ownership: string | null;
   vocational_group: string | null;
@@ -49,10 +50,18 @@ type ScoreResult = {
   scoringMethod: string;
 };
 
+type HistoricalScore = {
+  year: string;
+  points: number;
+  credits: number | null;
+  note?: string;
+};
+
 type AnalyzedSchool = {
   name: string;
   points: number;
   credits: number | null;
+  historicalScores: HistoricalScore[];
   type: string | null;
   ownership: string | null;
   group: string | null;
@@ -281,6 +290,41 @@ function nullableNumber(value: unknown) {
   return number;
 }
 
+function parseHistoricalScores(value: unknown): HistoricalScore[] {
+  if (!value) return [];
+  try {
+    const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+    if (!Array.isArray(parsed)) return [];
+    const scores: HistoricalScore[] = [];
+
+    parsed.forEach((item) => {
+      if (!item || typeof item !== 'object') return;
+      const record = item as Record<string, unknown>;
+      const points = nullableNumber(record.points);
+      if (points === null) return;
+      const year = String(record.year || '').trim();
+      if (!year) return;
+
+      scores.push({
+        year,
+        points,
+        credits: nullableNumber(record.credits),
+        note: String(record.note || '').trim() || undefined,
+      });
+    });
+
+    return scores;
+  } catch {
+    return [];
+  }
+}
+
+function normalizeHistoricalScores(value: unknown) {
+  if (value === null || value === undefined || value === '') return null;
+  const scores = parseHistoricalScores(value).filter((item) => Number.isFinite(item.points));
+  return scores.length ? scores : null;
+}
+
 function assertScores(value: unknown): asserts value is Scores {
   const scores = value as Scores;
   const grades = new Set(['A++', 'A+', 'A', 'B++', 'B+', 'B', 'C']);
@@ -457,6 +501,7 @@ function filterSchools(
         district: row.district,
         points: Number(row.points),
         credits: row.credits === null || row.credits === '' ? null : Number(row.credits),
+        historicalScores: parseHistoricalScores(row.historical_scores),
         type: row.type,
         ownership: row.ownership,
         group: row.vocational_group,
@@ -799,7 +844,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         let query = supabase
           .from('schools')
           .select(
-            'id, region, name, district, points, credits, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at',
+            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at',
           )
           .order('region')
           .order('points', { ascending: false });
@@ -853,6 +898,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         district: String(school.district || '').trim() || null,
         points,
         credits,
+        historical_scores: normalizeHistoricalScores(school.historical_scores ?? school.historicalScores),
         type: String(school.type || '').trim() || null,
         ownership: String(school.ownership || '').trim() || null,
         vocational_group: String(school.vocational_group || '').trim() || null,
@@ -869,7 +915,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
           .from('schools')
           .upsert(row)
           .select(
-            'id, region, name, district, points, credits, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at',
+            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at',
           )
           .single(),
         5000,
@@ -918,7 +964,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
           supabase
             .from('schools')
             .select(
-              'region, name, district, points, credits, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social',
+              'region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social',
             )
             .eq('region', region),
           5000,
