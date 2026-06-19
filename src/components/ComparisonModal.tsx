@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ExternalLink, Trash2, List } from 'lucide-react';
+import { X, ExternalLink, Trash2, List, History } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
@@ -9,6 +9,44 @@ interface Props {
   onRemove: (name: string) => void;
   onClear: () => void;
 }
+
+const normalizeHistoricalScores = (scores: any[] = []) =>
+  scores
+    .filter((item) => item && item.points !== null && item.points !== undefined)
+    .map((item) => ({
+      ...item,
+      year: String(item.year || '歷年'),
+      numericYear: Number.parseInt(String(item.year || '').replace(/\D/g, ''), 10),
+    }))
+    .sort((a, b) => (Number.isFinite(b.numericYear) ? b.numericYear : 0) - (Number.isFinite(a.numericYear) ? a.numericYear : 0))
+    .slice(0, 4);
+
+const HistoricalScoresCell = ({ school }: { school: any }) => {
+  const scores = normalizeHistoricalScores(school.historicalScores || []);
+  if (!scores.length) {
+    return (
+      <span className="inline-flex rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-500">
+        資料建置中
+      </span>
+    );
+  }
+
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {scores.map((item: any) => (
+        <span
+          key={`${item.year}-${item.points}-${item.credits ?? 'none'}`}
+          className="inline-flex flex-col rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 leading-tight"
+        >
+          <span className="text-[10px] font-black text-amber-700">{item.year}</span>
+          <span className="text-xs font-black text-slate-800">
+            積分 {item.points}{item.credits !== null && item.credits !== undefined ? ` / 積點 ${item.credits}` : ''}
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+};
 
 export default function ComparisonModal({ isOpen, onClose, schools, onRemove, onClear }: Props) {
   return (
@@ -135,6 +173,16 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                       <tr className="border-b border-slate-200">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">錄取門檻</td>
                         {schools.map((s, i) => <td key={s.name} className={`p-5 font-black border-r border-slate-200 text-rose-600 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.minScore || s.points || s.score || '無資料'}</td>)}
+                      </tr>
+                      <tr className="border-b border-slate-200">
+                        <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">
+                          <span className="inline-flex items-center gap-1.5"><History className="w-4 h-4" />歷年成績</span>
+                        </td>
+                        {schools.map((s, i) => (
+                          <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-700 leading-relaxed ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
+                            <HistoricalScoresCell school={s} />
+                          </td>
+                        ))}
                       </tr>
                       <tr className="">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">學校名額與特招</td>
