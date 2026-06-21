@@ -63,11 +63,11 @@ export default function StrategyModal({ isOpen, onClose }: StrategyModalProps) {
                 </li>
                 <li className="flex gap-3">
                   <div className="bg-rose-100 text-rose-700 font-bold px-2 py-1 rounded-lg text-sm h-fit whitespace-nowrap border-2 border-rose-200">叮嚀 3</div>
-                  <p className="text-slate-700 font-bold leading-relaxed pt-0.5">個別序位僅適用在前三志願學校比較參考。</p>
+                  <p className="text-slate-700 font-bold leading-relaxed pt-0.5">個別序位較適用於「前段同分志願」的學校比較參考。</p>
                 </li>
                 <li className="flex gap-3">
                   <div className="bg-rose-100 text-rose-700 font-bold px-2 py-1 rounded-lg text-sm h-fit whitespace-nowrap border-2 border-rose-200">叮嚀 4</div>
-                  <p className="text-slate-700 font-black leading-relaxed text-rose-600 pt-0.5">務必以前三志願分錄取學校!!!! <span className="text-slate-700 font-bold">(善用同群連續填)</span></p>
+                  <p className="text-slate-700 font-black leading-relaxed text-rose-600 pt-0.5">選填最高原則：確保「志願序積分」不被扣分！ <span className="text-slate-700 font-bold">(依各區規定，善用同群連續填)</span></p>
                 </li>
               </ul>
             </div>
@@ -91,33 +91,34 @@ export default function StrategyModal({ isOpen, onClose }: StrategyModalProps) {
             <div className="bg-emerald-50 rounded-3xl p-6 border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
               <h3 className="text-xl font-black text-slate-900 mb-4 flex items-center gap-2">
                 <ListChecks className="w-6 h-6 text-emerald-600" />
-                志願區間策略
+                志願區間策略 (不扣分配置法)
               </h3>
               <p className="text-slate-700 font-bold leading-relaxed mb-4">
-                志願選填依照順序，可以分成「夢幻」、「實際」、「保守」三大區：
+                在<span className="text-rose-600 font-black underline decoration-rose-300 decoration-4 underline-offset-2">「不被扣志願序積分」</span>的群組範圍內，建議將志願依照順序分成「夢幻」、「實際」、「保守」三大區：
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white p-4 rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  <div className="text-rose-600 font-black mb-1">第 1-2 志願</div>
+                  <div className="text-rose-600 font-black mb-1">前段志願序</div>
                   <div className="text-lg font-black text-slate-900 mb-2">夢幻區</div>
-                  <p className="text-sm font-bold text-slate-600">可填自己想要就讀的夢幻學校</p>
+                  <p className="text-sm font-bold text-slate-600">可填自己想要就讀的夢幻學校，即便落榜也不會影響同群組分數。</p>
                 </div>
                 <div className="bg-white p-4 rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  <div className="text-sky-600 font-black mb-1">第 3-4 志願</div>
+                  <div className="text-sky-600 font-black mb-1">中段志願序</div>
                   <div className="text-lg font-black text-slate-900 mb-2">實際區</div>
-                  <p className="text-sm font-bold text-slate-600">可參考去年錄取狀況後填寫</p>
+                  <p className="text-sm font-bold text-slate-600">可參考去年錄取狀況後務實填寫，是主要的錄取落點。</p>
                 </div>
                 <div className="bg-white p-4 rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  <div className="text-emerald-600 font-black mb-1">第 5-6 志願</div>
+                  <div className="text-emerald-600 font-black mb-1">後段志願序</div>
                   <div className="text-lg font-black text-slate-900 mb-2">保守區</div>
-                  <p className="text-sm font-bold text-slate-600">可填有把握一定會上的學校</p>
+                  <p className="text-sm font-bold text-slate-600">在同群組扣分邊緣前，一定要填上有把握的保底學校。</p>
                 </div>
               </div>
               <div className="bg-white p-4 rounded-2xl border-2 border-slate-900">
                 <ul className="space-y-3 text-slate-700 font-bold text-sm leading-relaxed list-disc list-inside">
-                  <li>雖然不一定要填滿 30 個志願，但還是建議填滿志願，以免高分落榜喔！</li>
+                  <li className="text-rose-600">各就學區的志願序計分與群組規定不同（例如：部分考區前 3 或前 5 志願同分），請務必依據您所在考區的規則，確保主力志願落在「不扣分」的群組內。</li>
+                  <li>雖然不一定要填滿所有志願，但還是建議盡量填滿，以免高分落榜喔！</li>
                   <li>普通型高中、技術型高中可以混合填選在不同志願序。</li>
-                  <li>選填技術型高中或普通型高中附設職業類科學校，可填選同校多個類科，其志願序連續填寫時視為同一志願，積分相同。</li>
+                  <li>選填技術型高中或普通型高中附設職業類科學校，可填選同校多個類科，其志願序連續填寫時視為同一志願，積分相同（極有利於不扣分策略）。</li>
                 </ul>
               </div>
             </div>
