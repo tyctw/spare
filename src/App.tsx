@@ -55,10 +55,12 @@ const normalizeHistoricalScores = (scores: any[] = []) =>
 
 const historicalScoresPendingText = '資料建置中';
 
+const formatHistoricalCredits = (credits: any) =>
+  credits !== null && credits !== undefined && credits !== '' ? credits : '無';
+
 const formatHistoricalScore = (item: any) => {
   const points = item?.points ?? '--';
-  const credits = item?.credits ?? null;
-  return `積分 ${points}${credits !== null && credits !== undefined ? ` / 積點 ${credits}` : ''}`;
+  return `積分 ${points} / 積點 ${formatHistoricalCredits(item?.credits)}`;
 };
 
 const getHistoricalTrend = (scores: any[]) => {
@@ -137,7 +139,7 @@ function HistoricalScoresModal({ school, onClose }: { school: any | null; onClos
                     </div>
                     <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
                       <div className="text-[11px] font-black text-slate-500">{latest?.year || '最新'} 年積點</div>
-                      <div className="mt-1 text-4xl font-black text-slate-900 leading-none">{latest?.credits ?? '--'}</div>
+                      <div className="mt-1 text-4xl font-black text-slate-900 leading-none">{formatHistoricalCredits(latest?.credits)}</div>
                     </div>
                   </div>
                   <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
@@ -1325,7 +1327,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                                     {historicalScores.length > 0 ? (
                                       <>
                                         最新 {latestHistoricalScore?.year || '--'} 年：積分 {latestHistoricalScore?.points ?? '--'}
-                                        {latestHistoricalScore?.credits !== null && latestHistoricalScore?.credits !== undefined ? ` / 積點 ${latestHistoricalScore.credits}` : ''}
+                                        {` / 積點 ${formatHistoricalCredits(latestHistoricalScore?.credits)}`}
                                       </>
                                     ) : (
                                       historicalScoresPendingText
