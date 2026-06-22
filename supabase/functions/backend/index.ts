@@ -949,6 +949,42 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       return { success: true };
     }
 
+    case 'adminClearHistoricalScores': {
+      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+
+      const ids = Array.isArray(payload.ids)
+        ? [...new Set(payload.ids.map((id: unknown) => String(id || '').trim()).filter(Boolean))]
+        : [];
+
+      if (ids.length === 0) throw new Error('缺少要清空歷年成績的資料 ID');
+      if (ids.length > 2000) throw new Error('一次清空筆數過多，請先篩選後再執行');
+
+      const updated: SchoolRow[] = [];
+      const now = new Date().toISOString();
+
+      for (let index = 0; index < ids.length; index += 500) {
+        const chunk = ids.slice(index, index + 500);
+        const { data, error } = await withTimeout(
+          supabase
+            .from('schools')
+            .update({ historical_scores: null, updated_at: now })
+            .in('id', chunk)
+            .select(
+              'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at',
+            ),
+          8000,
+          `admin clear historical scores ${index}`,
+        );
+
+        if (error) throw error;
+        updated.push(...((data || []) as SchoolRow[]));
+      }
+
+      invalidateCache(cacheKey(['schools']));
+
+      return { schools: updated, count: updated.length };
+    }
+
     case 'analyzeScores': {
       assertScores(payload.scores);
 
