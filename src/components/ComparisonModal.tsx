@@ -21,6 +21,9 @@ const normalizeHistoricalScores = (scores: any[] = []) =>
     .sort((a, b) => (Number.isFinite(b.numericYear) ? b.numericYear : 0) - (Number.isFinite(a.numericYear) ? a.numericYear : 0))
     .slice(0, 4);
 
+const formatHistoricalCredits = (credits: any) =>
+  credits !== null && credits !== undefined && credits !== '' ? credits : '無';
+
 const HistoricalScoresCell = ({ school }: { school: any }) => {
   const scores = normalizeHistoricalScores(school.historicalScores || []);
   if (!scores.length) {
@@ -40,7 +43,7 @@ const HistoricalScoresCell = ({ school }: { school: any }) => {
         >
           <span className="text-[10px] font-black text-amber-700">{item.year}</span>
           <span className="text-xs font-black text-slate-800">
-            積分 {item.points}{item.credits !== null && item.credits !== undefined ? ` / 積點 ${item.credits}` : ''}
+            積分 {item.points} / 積點 {formatHistoricalCredits(item.credits)}
           </span>
         </span>
       ))}
