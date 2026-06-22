@@ -17,4 +17,4 @@ jobs:
           curl -L \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
-            "https://ufanwuihknmjlfnmdvzo.supabase.co/rest/v1/schools?select=id&limit=1"
+            "https://ujltpbzlspbustqjqnar.supabase.co/rest/v1/schools?select=id&limit=1"
