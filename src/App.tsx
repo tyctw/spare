@@ -41,6 +41,7 @@ import DataProviderModal from './components/DataProviderModal';
 import AppHeader from './components/layout/AppHeader';
 import Footer from './components/layout/Footer';
 import HeroBanner from './components/layout/HeroBanner';
+import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 
 const normalizeHistoricalScores = (scores: any[] = []) =>
   scores
@@ -1180,7 +1181,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                       school.type?.includes(resultFilterText) || 
                       school.group?.includes(resultFilterText);
                     const matchZone = resultFilterZone === 'all' || school.zone === resultFilterZone;
-                    const matchOwnership = resultFilterOwnership === 'all' || school.ownership === resultFilterOwnership;
+                    const matchOwnership = resultFilterOwnership === 'all' || getSchoolOwnershipKey(school.ownership) === resultFilterOwnership;
                     const matchType = resultFilterType === 'all' || 
                       (resultFilterType === '普通科' && school.type === '普通科') || 
                       (resultFilterType === '職業類科' && school.type !== '普通科');
@@ -1202,7 +1203,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                         const isCompared = !!comparisonSchools.find(s => s.name === school.name);
 
                       
-                      const ownership = school.ownership || '公立';
+                      const ownership = formatSchoolOwnership(school.ownership || 'public');
                       const ownershipColor = ownership === '私立' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
                       const OwnershipIcon = ownership === '私立' ? Building2 : Library;
                       const schoolDistrictName = school.district || ALL_REGIONS.find(r => r.id === (school.region || formData.region))?.name || school.region || '未知區域';

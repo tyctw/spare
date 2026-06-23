@@ -1,5 +1,6 @@
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import { formatSchoolOwnership, formatSchoolOwnershipPreference } from './schoolDisplay';
 
 export const exportTxt = (data: any, regionName: string) => {
   const content = `===============================================
@@ -53,7 +54,7 @@ export const exportJson = (data: any) => {
       identity: data.identity,
       region: data.scores.region,
       preferences: {
-        ownership: data.scores.schoolOwnership,
+        ownership: formatSchoolOwnershipPreference(data.scores.schoolOwnership),
         type: data.scores.schoolType,
         vocationalGroups: data.scores.schoolType === '職業類科' ? data.vocationalGroups : undefined
       }
@@ -73,7 +74,7 @@ export const exportJson = (data: any) => {
       recommendedSchools: data.results.eligibleSchools?.map((s: any) => ({
         name: s.name,
         type: s.type,
-        ownership: s.ownership,
+        ownership: formatSchoolOwnership(s.ownership),
         group: s.group || null,
         zone: s.zone === 'reach' ? '夢幻區' : s.zone === 'target' ? '實際區' : s.zone === 'safe' ? '保守區' : null,
         estimatedThreshold: s.minScore || s.points || s.score || null
@@ -128,7 +129,7 @@ export const exportExcel = (data: any, regionName: string) => {
         s.name, 
         s.group || "--",
         s.type, 
-        s.ownership === '公立' ? '公立' : s.ownership === '私立' ? '私立' : s.ownership,
+        formatSchoolOwnership(s.ownership),
         s.zone === 'reach' ? '夢幻區' : s.zone === 'target' ? '實際區' : s.zone === 'safe' ? '保守區' : "--",
         s.minScore || s.points || s.score || "--"
       ])
@@ -217,7 +218,7 @@ export const printResults = (data: any, regionName: string) => {
         <td style="font-weight: 600; color: #64748b;">#${i + 1}</td>
         <td style="font-weight: 700; color: #0f172a;">${s.name}</td>
         <td>${s.group || s.type || '-'}</td>
-        <td>${s.ownership}</td>
+        <td>${formatSchoolOwnership(s.ownership)}</td>
         <td><span class="badge eval-${s.zone || 'normal'}">${zoneText}</span></td>
         <td style="font-weight: 600;">${thresholdScore}</td>
       </tr>

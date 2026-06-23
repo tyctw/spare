@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ExternalLink, Trash2, List, History } from 'lucide-react';
+import { formatSchoolOwnership } from '../lib/schoolDisplay';
 
 interface Props {
   isOpen: boolean;
@@ -163,8 +164,8 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">公立 / 私立</td>
                         {schools.map((s, i) => (
                           <td key={s.name} className={`p-5 font-bold border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
-                            <span className={`px-2 py-1 rounded-md border-2 border-slate-900 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] ${s.ownership === '公立' ? 'bg-sky-200' : 'bg-amber-200'}`}>
-                              {s.ownership || '未知'}
+                            <span className={`px-2 py-1 rounded-md border-2 border-slate-900 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] ${formatSchoolOwnership(s.ownership) === '公立' ? 'bg-sky-200' : 'bg-amber-200'}`}>
+                              {formatSchoolOwnership(s.ownership)}
                             </span>
                           </td>
                         ))}
