@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://ais-pre-mlb2yqjf5tfmyeabofs3dp-29410634557.asia-northeast1.run.app/sitemap.xml
+Sitemap: https://tyctw.github.io/spare/sitemap.xml
