@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
   <url>
     <loc>https://ais-pre-mlb2yqjf5tfmyeabofs3dp-29410634557.asia-northeast1.run.app/</loc>
-    <lastmod>2026-05-31</lastmod>
+    <lastmod>2026-07-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://ais-pre-mlb2yqjf5tfmyeabofs3dp-29410634557.asia-northeast1.run.app/social-share.png</image:loc>
+      <image:title>TW全國會考落點分析</image:title>
+      <image:caption>國中教育會考落點分析、志願選填建議與高中職校系探索工具</image:caption>
+    </image:image>
   </url>
 </urlset>
