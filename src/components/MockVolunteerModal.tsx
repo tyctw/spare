@@ -36,6 +36,40 @@ const REGION_TO_COUNTIES: Record<string, string[]> = {
   'pingtung': ['屏東縣'],
 };
 
+const DEPARTMENT_GROUPS: Record<string, string[]> = {
+  '機械群': ['機械科', '鑄造科', '板金科', '機械木模科', '配管科', '模具科', '機電科', '製圖科', '生物產業機電科', '電腦機械製圖科'],
+  '動力機械群': ['汽車科', '重機科', '飛機修護科', '動力機械科', '農業機械科', '軌道車輛科'],
+  '電機與電子群': ['資訊科', '電子科', '控制科', '電機科', '冷凍空調科', '航空電子科', '電機空調科'],
+  '化工群': ['化工科', '紡織科', '染整科'],
+  '土木與建築群': ['建築科', '土木科', '消防工程科', '空間測繪科'],
+  '商業與管理群': ['商業經營科', '國際貿易科', '會計事務科', '資料處理科', '不動產事務科', '電子商務科', '流通管理科', '農產行銷科', '航運管理科'],
+  '外語群': ['應用外語科（英文組）', '應用外語科（日文組）'],
+  '設計群': ['家具木工科', '美工科', '陶瓷工程科', '室內空間設計科', '圖文傳播科', '金屬工藝科', '家具設計科', '廣告設計科', '多媒體設計科', '多媒體應用科', '室內設計科'],
+  '農業群': ['農場經營科', '園藝科', '森林科', '野生動物保育科', '造園科', '畜產保健科'],
+  '食品群': ['食品加工科', '食品科', '水產食品科', '烘焙科'],
+  '家政群': ['家政科', '服裝科', '幼兒保育科', '美容科', '時尚模特兒科', '流行服飾科', '時尚造型科', '照顧服務科'],
+  '餐旅群': ['觀光事業科', '餐飲管理科'],
+  '水產群': ['漁業科', '水產養殖科'],
+  '海事群': ['輪機科', '航海科'],
+  '藝術群': ['戲劇科', '音樂科', '舞蹈科', '美術科', '影劇科', '西樂科', '國樂科', '電影電視科', '表演藝術科', '多媒體動畫科', '時尚工藝科'],
+};
+
+const normalizeDeptName = (value: string) =>
+  value
+    .replace(/[()]/g, (match) => (match === '(' ? '（' : '）'))
+    .replace(/\s+/g, '')
+    .trim();
+
+const DEPARTMENT_TO_GROUP = Object.entries(DEPARTMENT_GROUPS).reduce<Record<string, string>>(
+  (lookup, [group, departments]) => {
+    departments.forEach((department) => {
+      lookup[normalizeDeptName(department)] = group;
+    });
+    return lookup;
+  },
+  {},
+);
+
 type VolunteerScoreRule = {
   label: string;
   maxScore: number;
@@ -105,12 +139,22 @@ const VOLUNTEER_SCORE_RULES: Record<string, VolunteerScoreRule> = {
 const isSameSchool = (current: SchoolItem, previous: SchoolItem) =>
   Boolean(current.code && previous.code && current.code === previous.code) || current.name === previous.name;
 
-const isSameGroup = (current: SchoolItem, previous: SchoolItem) =>
-  isSameSchool(current, previous) &&
-  Boolean(
-    (current.groupCode && previous.groupCode && current.groupCode === previous.groupCode) ||
-    (current.groupName && previous.groupName && current.groupName === previous.groupName),
-  );
+const getSchoolGroupKey = (school: SchoolItem) => {
+  const deptGroup = DEPARTMENT_TO_GROUP[normalizeDeptName(school.deptName || '')];
+  return school.groupCode || school.groupName || deptGroup || school.levelInfo || '';
+};
+
+const isSameGroup = (current: SchoolItem, previous: SchoolItem) => {
+  if (!isSameSchool(current, previous)) return false;
+
+  const currentDeptGroup = DEPARTMENT_TO_GROUP[normalizeDeptName(current.deptName || '')];
+  const previousDeptGroup = DEPARTMENT_TO_GROUP[normalizeDeptName(previous.deptName || '')];
+
+  if (currentDeptGroup && previousDeptGroup) return currentDeptGroup === previousDeptGroup;
+
+  const currentGroup = getSchoolGroupKey(current);
+  return Boolean(currentGroup && currentGroup === getSchoolGroupKey(previous));
+};
 
 const shouldShareVolunteerSequence = (regionId: string, current: SchoolItem, previous: SchoolItem) => {
   if (regionId === 'taoyuan' || regionId === 'changhua' || regionId === 'hsinchu') return isSameGroup(current, previous);
