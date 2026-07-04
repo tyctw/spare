@@ -36,6 +36,112 @@ const REGION_TO_COUNTIES: Record<string, string[]> = {
   'pingtung': ['屏東縣'],
 };
 
+type VolunteerScoreRule = {
+  label: string;
+  maxScore: number;
+  note: string;
+  getScore: (sequenceIndex: number) => number | null;
+};
+
+const VOLUNTEER_SCORE_RULES: Record<string, VolunteerScoreRule> = {
+  taipei: {
+    label: '基北區志願序',
+    maxScore: 36,
+    note: '115簡章：1-5志願36分、6-10志願35分、11-15志願34分、16-20志願33分、21-30志願32分。連續選填同校不同類科計為同一志願序。',
+    getScore: (index) => Math.max(32, 36 - Math.floor(index / 5)),
+  },
+  taoyuan: {
+    label: '桃聯區志願序',
+    maxScore: 15,
+    note: '115簡章：1-3志願15分、4-6志願12分、7-9志願9分、10-12志願6分、13-15志願3分、16-30志願1分。專業群科同校同職群連續選填視為同一志願序。',
+    getScore: (index) => {
+      if (index < 3) return 15;
+      if (index < 6) return 12;
+      if (index < 9) return 9;
+      if (index < 12) return 6;
+      if (index < 15) return 3;
+      return 1;
+    },
+  },
+  hsinchu: {
+    label: '竹苗區志願順序',
+    maxScore: 10,
+    note: '115簡章：1-5志願10分、6-10志願9分、11-15志願8分、16-20志願7分、21-25志願6分。同校同學群屬同志願序。',
+    getScore: (index) => index < 25 ? 10 - Math.floor(index / 5) : null,
+  },
+  central: {
+    label: '中投區志願序',
+    maxScore: 30,
+    note: '115簡章：1-10志願序30分、11-20志願序29分、21志願序以後28分。連續選填同校不同類科計為同一志願序。',
+    getScore: (index) => index < 10 ? 30 : index < 20 ? 29 : 28,
+  },
+  changhua: {
+    label: '彰化區志願序',
+    maxScore: 45,
+    note: '115簡章：1-20志願序45分，21志願序以後44分；連續選填同校同職群計為同一志願序。',
+    getScore: (index) => index < 20 ? 45 : 44,
+  },
+  tainan: {
+    label: '台南區志願序',
+    maxScore: 12,
+    note: '115簡章：第一志願序12分、第二11分、第三10分、第四9分、第五8分，第六志願序起7分。每一志願序至多3校為一群組，同一志願序積分相同。',
+    getScore: (index) => {
+      if (index === 0) return 12;
+      if (index === 1) return 11;
+      if (index === 2) return 10;
+      if (index === 3) return 9;
+      if (index === 4) return 8;
+      return 7;
+    },
+  },
+  kaohsiung: {
+    label: '高雄區志願群',
+    maxScore: 30,
+    note: '115簡章：第1志願學校群30分、第2志願學校群29分、第3志願學校群28分；每志願學校群可選填10所學校，同校不同科別以相同積分計算。',
+    getScore: (index) => Math.max(28, 30 - Math.floor(index / 10)),
+  },
+};
+
+const isSameSchool = (current: SchoolItem, previous: SchoolItem) =>
+  Boolean(current.code && previous.code && current.code === previous.code) || current.name === previous.name;
+
+const isSameGroup = (current: SchoolItem, previous: SchoolItem) =>
+  isSameSchool(current, previous) &&
+  Boolean(
+    (current.groupCode && previous.groupCode && current.groupCode === previous.groupCode) ||
+    (current.groupName && previous.groupName && current.groupName === previous.groupName),
+  );
+
+const shouldShareVolunteerSequence = (regionId: string, current: SchoolItem, previous: SchoolItem) => {
+  if (regionId === 'taoyuan' || regionId === 'changhua' || regionId === 'hsinchu') return isSameGroup(current, previous);
+  if (regionId === 'taipei' || regionId === 'central' || regionId === 'kaohsiung') return isSameSchool(current, previous);
+  return false;
+};
+
+const getVolunteerSequenceIndex = (regionId: string, choices: SchoolItem[], index: number) => {
+  if (regionId === 'tainan') {
+    let schoolCount = 0;
+    for (let i = 0; i <= index; i += 1) {
+      if (i === 0 || !isSameSchool(choices[i], choices[i - 1])) schoolCount += 1;
+    }
+    return Math.max(0, Math.ceil(schoolCount / 3) - 1);
+  }
+
+  let sequenceIndex = 0;
+  for (let i = 1; i <= index; i += 1) {
+    if (!shouldShareVolunteerSequence(regionId, choices[i], choices[i - 1])) sequenceIndex += 1;
+  }
+  return sequenceIndex;
+};
+
+const getVolunteerScoreInfo = (regionId: string, choices: SchoolItem[], index: number) => {
+  const rule = VOLUNTEER_SCORE_RULES[regionId];
+  if (!rule) return null;
+  const sequenceIndex = getVolunteerSequenceIndex(regionId, choices, index);
+  const score = rule.getScore(sequenceIndex);
+  return score === null ? null : { score, rule, sequenceNumber: sequenceIndex + 1 };
+};
+
 export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
   const [schools, setSchools] = useState<SchoolItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -109,6 +215,12 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
     }
     return region || 'taipei';
   }, [selectedChoices, region]);
+
+  const activeVolunteerRule = VOLUNTEER_SCORE_RULES[effectiveRegion];
+  const selectedScoreInfos = useMemo(
+    () => selectedChoices.map((_, index) => getVolunteerScoreInfo(effectiveRegion, selectedChoices, index)),
+    [selectedChoices, effectiveRegion],
+  );
 
   const allowedCountiesInRegion = useMemo(() => {
     if (filterRegion === 'all') return [];
@@ -262,9 +374,10 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
             tr { page-break-inside: avoid; height: 14px; }
             tr:nth-child(even) { background-color: #f8fafc; }
             .seq { text-align: center; font-weight: bold; width: 6%; }
-            .col-name { width: 34%; }
-            .col-dept { width: 30%; }
-            .col-group { width: 20%; }
+            .score { text-align: center; font-weight: bold; width: 9%; }
+            .col-name { width: 30%; }
+            .col-dept { width: 27%; }
+            .col-group { width: 18%; }
             .col-county { width: 10%; }
           </style>
         </head>
@@ -273,12 +386,14 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
           <h1>${regionName} 模擬志願選填表</h1>
           <div style="display: flex; justify-content: space-between; align-items: flex-end;">
              <p>列印日期: ${new Date().toLocaleDateString()}</p>
-             <p>共計 ${selectedChoices.length} 個志願</p>
+             <p>共計 ${selectedChoices.length} 個志願${activeVolunteerRule ? `，${activeVolunteerRule.label}滿分${activeVolunteerRule.maxScore}分` : ''}</p>
           </div>
+          ${activeVolunteerRule ? `<p>${activeVolunteerRule.note}</p>` : '<p>此就學區尚未建立志願序計分規則，請以各區正式簡章為準。</p>'}
           <table>
             <thead>
               <tr>
                 <th class="seq">志願序</th>
+                <th class="score">志願分數</th>
                 <th class="col-name">學校名稱</th>
                 <th class="col-dept">科系名稱</th>
                 <th class="col-group">群別 / 類型</th>
@@ -289,9 +404,11 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
     `;
 
     selectedChoices.forEach((c, i) => {
+      const scoreInfo = getVolunteerScoreInfo(effectiveRegion, selectedChoices, i);
       html += `
         <tr>
           <td class="seq">${i + 1}</td>
+          <td class="score">${scoreInfo ? `第${scoreInfo.sequenceNumber}序<br>${scoreInfo.score}分` : '-'}</td>
           <td><strong>${c.name}</strong></td>
           <td>${c.deptName} ${c.shift && c.shift !== '日間部' ? `<span style="color:#64748b; font-size: 10px;">(${c.shift})</span>` : ''}</td>
           <td>${c.groupName || c.levelInfo}</td>
@@ -497,50 +614,77 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
                     <p className="text-xs sm:text-sm font-bold mt-1 max-w-[200px] text-center">請從列表加入想讀的校系</p>
                   </div>
                 ) : (
-                  selectedChoices.map((choice, index) => (
-                    <div key={choice.id} className="bg-white border-2 border-slate-900 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden group">
-                      <select
-                        value={index + 1}
-                        onChange={(e) => handleMoveTo(index, parseInt(e.target.value) - 1)}
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg border-2 border-slate-900 bg-amber-300 text-slate-900 font-black flex items-center justify-center shrink-0 mt-3 sm:mt-0 text-sm sm:text-base text-center appearance-none outline-none cursor-pointer pl-2 sm:pl-3"
-                      >
-                        {selectedChoices.map((_, i) => (
-                          <option key={i} value={i + 1}>{i + 1}</option>
-                        ))}
-                      </select>
-                      <div className="flex-1 min-w-0 flex flex-col justify-center pt-1 sm:pt-0">
-                        <h4 className="font-black text-slate-900 line-clamp-2 pr-12 sm:pr-20 text-sm sm:text-base leading-snug" title={choice.name}>{choice.name}</h4>
-                        <p className="text-[11px] sm:text-sm font-bold text-sky-700 mt-0.5 line-clamp-2" title={choice.deptName}>{choice.deptName}</p>
-                      </div>
-                      <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 mt-2 pt-2 border-t-2 border-slate-100 sm:border-0 sm:pt-0 sm:mt-0">
-                        <div className="flex gap-1.5">
-                          <button 
-                            onClick={() => handleMoveUp(index)}
-                            disabled={index === 0}
-                            className={`p-1.5 rounded-lg border-2 border-slate-900 transition-all ${index === 0 ? 'bg-slate-100 text-slate-300 border-slate-300 cursor-not-allowed' : 'bg-slate-50 hover:bg-slate-200 active:scale-95 text-slate-700 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'}`}
-                            title="往上移"
-                          >
-                            <ArrowUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-inherit" />
-                          </button>
-                          <button 
-                            onClick={() => handleMoveDown(index)}
-                            disabled={index === selectedChoices.length - 1}
-                            className={`p-1.5 rounded-lg border-2 border-slate-900 transition-all ${index === selectedChoices.length - 1 ? 'bg-slate-100 text-slate-300 border-slate-300 cursor-not-allowed' : 'bg-slate-50 hover:bg-slate-200 active:scale-95 text-slate-700 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'}`}
-                            title="往下移"
-                          >
-                            <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-inherit" />
-                          </button>
+                  <>
+                    <div className="bg-white border-2 border-slate-900 rounded-xl p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                          <p className="text-xs font-black text-slate-500">志願序計分規則</p>
+                          <p className="text-sm font-black text-slate-900">{activeVolunteerRule?.label || '尚未建立此區規則'}</p>
                         </div>
-                        <button 
-                          onClick={() => handleRemoveChoice(index)}
-                          className="p-1.5 ml-1 sm:ml-2 rounded-lg border-2 border-slate-900 bg-rose-50 hover:bg-rose-500 hover:text-white text-rose-600 active:scale-95 transition-colors hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
-                          title="移除"
-                        >
-                          <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-inherit" />
-                        </button>
+                        {activeVolunteerRule && (
+                          <span className="rounded-lg border-2 border-slate-900 bg-amber-300 px-3 py-1 text-sm font-black text-slate-900">
+                            滿分 {activeVolunteerRule.maxScore}
+                          </span>
+                        )}
                       </div>
+                      <p className="mt-2 text-xs font-bold leading-relaxed text-slate-600">
+                        {activeVolunteerRule?.note || '目前僅提供清單排序，志願序分數請以該區免試入學簡章為準。'}
+                      </p>
                     </div>
-                  ))
+                    {selectedChoices.map((choice, index) => {
+                      const scoreInfo = selectedScoreInfos[index];
+                      return (
+                        <div key={choice.id} className="bg-white border-2 border-slate-900 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden group">
+                          <select
+                            value={index + 1}
+                            onChange={(e) => handleMoveTo(index, parseInt(e.target.value) - 1)}
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg border-2 border-slate-900 bg-amber-300 text-slate-900 font-black flex items-center justify-center shrink-0 mt-3 sm:mt-0 text-sm sm:text-base text-center appearance-none outline-none cursor-pointer pl-2 sm:pl-3"
+                          >
+                            {selectedChoices.map((_, i) => (
+                              <option key={i} value={i + 1}>{i + 1}</option>
+                            ))}
+                          </select>
+                          <div className="flex-1 min-w-0 flex flex-col justify-center pt-1 sm:pt-0">
+                            <h4 className="font-black text-slate-900 line-clamp-2 pr-12 sm:pr-20 text-sm sm:text-base leading-snug" title={choice.name}>{choice.name}</h4>
+                            <p className="text-[11px] sm:text-sm font-bold text-sky-700 mt-0.5 line-clamp-2" title={choice.deptName}>{choice.deptName}</p>
+                          </div>
+                          <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 mt-2 pt-2 border-t-2 border-slate-100 sm:border-0 sm:pt-0 sm:mt-0">
+                            <div className="min-w-[54px] rounded-lg border-2 border-slate-900 bg-emerald-50 px-2 py-1 text-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                              <div className="text-[10px] font-black text-emerald-700">
+                                {scoreInfo ? `第${scoreInfo.sequenceNumber}序` : '志願分'}
+                              </div>
+                              <div className="text-sm font-black text-slate-900">{scoreInfo ? scoreInfo.score : '-'}</div>
+                            </div>
+                            <div className="flex gap-1.5">
+                              <button 
+                                onClick={() => handleMoveUp(index)}
+                                disabled={index === 0}
+                                className={`p-1.5 rounded-lg border-2 border-slate-900 transition-all ${index === 0 ? 'bg-slate-100 text-slate-300 border-slate-300 cursor-not-allowed' : 'bg-slate-50 hover:bg-slate-200 active:scale-95 text-slate-700 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'}`}
+                                title="往上移"
+                              >
+                                <ArrowUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-inherit" />
+                              </button>
+                              <button 
+                                onClick={() => handleMoveDown(index)}
+                                disabled={index === selectedChoices.length - 1}
+                                className={`p-1.5 rounded-lg border-2 border-slate-900 transition-all ${index === selectedChoices.length - 1 ? 'bg-slate-100 text-slate-300 border-slate-300 cursor-not-allowed' : 'bg-slate-50 hover:bg-slate-200 active:scale-95 text-slate-700 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'}`}
+                                title="往下移"
+                              >
+                                <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-inherit" />
+                              </button>
+                            </div>
+                            <button 
+                              onClick={() => handleRemoveChoice(index)}
+                              className="p-1.5 ml-1 sm:ml-2 rounded-lg border-2 border-slate-900 bg-rose-50 hover:bg-rose-500 hover:text-white text-rose-600 active:scale-95 transition-colors hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+                              title="移除"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-inherit" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
                 )}
               </div>
             </div>
