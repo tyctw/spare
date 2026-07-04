@@ -502,7 +502,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
                       <select
                         value={index + 1}
                         onChange={(e) => handleMoveTo(index, parseInt(e.target.value) - 1)}
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg border-2 border-slate-900 bg-amber-300 text-slate-900 font-black flex items-center justify-center shrink-0 mt-3 sm:mt-0 text-sm sm:text-base text-center appearance-none outline-none cursor-pointer pl-2 sm:pl-3"
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg border-2 border-slate-900 bg-amber-300 text-slate-900 font-black shrink-0 mt-3 sm:mt-0 text-sm sm:text-base text-center [text-align-last:center] appearance-none outline-none cursor-pointer px-0 leading-none"
                       >
                         {selectedChoices.map((_, i) => (
                           <option key={i} value={i + 1}>{i + 1}</option>
