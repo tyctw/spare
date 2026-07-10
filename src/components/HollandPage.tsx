@@ -127,9 +127,26 @@ export default function HollandPage() {
     return { topTypes, topGroups };
   }, [answers]);
 
+  const scrollToElement = (id: string) => {
+    window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  };
+
+  const startTest = () => {
+    setStarted(true);
+    setShowResults(false);
+    setShowMissingModal(false);
+    scrollToElement('holland-questions');
+  };
+
   const setAnswer = (questionId: number, score: number) => {
     setAnswers((current) => ({ ...current, [questionId]: score }));
     setShowResults(false);
+
+    const currentIndex = questions.findIndex((question) => question.id === questionId);
+    const nextQuestion = questions[currentIndex + 1];
+    scrollToElement(nextQuestion ? `holland-question-${nextQuestion.id}` : 'holland-actions');
   };
 
   const reset = () => {
@@ -198,7 +215,7 @@ export default function HollandPage() {
                 <div className="h-full rounded-full bg-purple-600 transition-all" style={{ width: `${(answeredCount / questions.length) * 100}%` }} />
               </div>
               {!started && (
-                <button onClick={() => setStarted(true)} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                <button onClick={startTest} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
                   開始測驗
                   <Sparkles className="h-4 w-4" />
                 </button>
@@ -243,11 +260,11 @@ export default function HollandPage() {
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div id="holland-questions" className="scroll-mt-6 space-y-4">
               {questions.map((question, index) => {
                 const selectedScore = answers[question.id];
                 return (
-                  <article key={question.id} className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
+                  <article id={`holland-question-${question.id}`} key={question.id} className="scroll-mt-6 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                       <div className="min-w-0">
                         <div className="mb-2 flex items-center gap-2">
@@ -282,7 +299,7 @@ export default function HollandPage() {
           )}
 
           {started && (
-            <section className="rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-6">
+            <section id="holland-actions" className="scroll-mt-6 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="text-xl font-black">測驗結果</h2>
