@@ -25,7 +25,6 @@ import AuthFailModal from './components/AuthFailModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
 import SharePlatformModal from './components/SharePlatformModal';
 import RatingModal from './components/RatingModal';
-import InstructionsModal from './components/InstructionsModal';
 import ReportErrorModal from './components/ReportErrorModal';
 import StrategyModal from './components/StrategyModal';
 import HistoricalStatsModal from './components/HistoricalStatsModal';
@@ -199,7 +198,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | 'historicalStats' | 'scoreInquiry' | 'dataProvider' | null>(null);
+const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | 'historicalStats' | 'scoreInquiry' | 'dataProvider' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -1468,11 +1467,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         onClose={() => setActiveModal(null)}
       />
 
-      <InstructionsModal 
-        isOpen={activeModal === 'instructions'} 
-        onClose={() => setActiveModal(null)}
-      />
-
       <ReportErrorModal
         isOpen={activeModal === 'reportError'}
         onClose={() => setActiveModal(null)}
@@ -1745,7 +1739,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages') {
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions') {
                                   window.location.href = withBasePath(`/${btn.id}`);
                                   return;
                                 }
@@ -1799,7 +1793,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages') {
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions') {
                                   window.location.href = withBasePath(`/${btn.id}`);
                                   return;
                                 }

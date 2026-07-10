@@ -4,6 +4,7 @@ import App from './App.tsx';
 import AdvantagesPage from './components/AdvantagesPage.tsx';
 import ChangelogPage from './components/ChangelogPage.tsx';
 import HollandPage from './components/HollandPage.tsx';
+import InstructionsPage from './components/InstructionsPage.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import SchoolTypesPage from './components/SchoolTypesPage.tsx';
 import VocationalEncyclopediaPage from './components/VocationalEncyclopediaPage.tsx';
@@ -22,6 +23,7 @@ const page =
   path === '/terms' ? <LegalPage kind="terms" /> :
   path === '/advantages' ? <AdvantagesPage /> :
   path === '/changelog' ? <ChangelogPage /> :
+  path === '/instructions' ? <InstructionsPage /> :
   path === '/holland' ? <HollandPage /> :
   path === '/school-types' ? <SchoolTypesPage /> :
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
