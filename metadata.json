@@ -1,6 +1,0 @@
-{
-  "name": "免費會考落點分析",
-  "description": "免費國中教育會考落點分析工具，提供高中職落點預測、免試入學積分試算、志願選填建議與校系探索。",
-  "requestFramePermissions": ["camera"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
