@@ -1,6 +1,7 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
+import AdvantagesPage from './components/AdvantagesPage.tsx';
 import ChangelogPage from './components/ChangelogPage.tsx';
 import HollandPage from './components/HollandPage.tsx';
 import LegalPage from './components/LegalPage.tsx';
@@ -19,6 +20,7 @@ if (redirectedRoute) {
 const page =
   path === '/privacy' ? <LegalPage kind="privacy" /> :
   path === '/terms' ? <LegalPage kind="terms" /> :
+  path === '/advantages' ? <AdvantagesPage /> :
   path === '/changelog' ? <ChangelogPage /> :
   path === '/holland' ? <HollandPage /> :
   path === '/school-types' ? <SchoolTypesPage /> :

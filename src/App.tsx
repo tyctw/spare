@@ -25,7 +25,6 @@ import AuthFailModal from './components/AuthFailModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
 import SharePlatformModal from './components/SharePlatformModal';
 import RatingModal from './components/RatingModal';
-import AdvantagesModal from './components/AdvantagesModal';
 import InstructionsModal from './components/InstructionsModal';
 import ReportErrorModal from './components/ReportErrorModal';
 import StrategyModal from './components/StrategyModal';
@@ -1404,10 +1403,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
       </AnimatePresence>
 
       {/* Modals Rendering */}
-      <AdvantagesModal 
-        isOpen={activeModal === 'advantages'} 
-        onClose={() => setActiveModal(null)} 
-      />
       <QRCodeModal 
         isOpen={activeModal === 'qrcode'} 
         onClose={() => setActiveModal(null)} 
@@ -1750,7 +1745,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog') {
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages') {
                                   window.location.href = withBasePath(`/${btn.id}`);
                                   return;
                                 }
@@ -1794,7 +1789,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                         <div className="p-3 flex flex-col gap-2">
                           {[
                             { id: 'instructions', icon: Info, label: '使用說明', color: 'text-blue-600', bg: 'bg-blue-100' },
-                            { id: 'advantages', icon: Sparkles, label: '系統優點', color: 'text-indigo-600', bg: 'bg-indigo-100' },
+                            { id: 'advantages', icon: Sparkles, label: '系統優點與關於我們', color: 'text-indigo-600', bg: 'bg-indigo-100' },
                             { id: 'rating', icon: StarIcon, label: '評分系統', color: 'text-amber-500', bg: 'bg-amber-100' },
                             { id: 'changelog', icon: History, label: '更新日誌', color: 'text-slate-500', bg: 'bg-slate-100' },
                             { id: 'privacy', icon: Database, label: '隱私權政策', color: 'text-emerald-600', bg: 'bg-emerald-100' },
@@ -1804,7 +1799,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog') {
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages') {
                                   window.location.href = withBasePath(`/${btn.id}`);
                                   return;
                                 }
