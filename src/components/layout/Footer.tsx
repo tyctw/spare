@@ -1,5 +1,5 @@
 import React from 'react';
-import { Compass, ArrowRight, Database, Shield, Mail, Copyright } from 'lucide-react';
+import { Compass, ArrowRight, Shield, Mail, Copyright, Map } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
 
 export default function Footer() {
@@ -36,15 +36,15 @@ export default function Footer() {
 
             <div className="grid grid-cols-2 lg:flex gap-3 sm:gap-4 w-full xl:w-auto relative z-10">
               <a
-                href={withBasePath('/privacy')}
+                href={withBasePath('/site-map')}
                 className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
               >
-                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                  <Database className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
+                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
+                  <Map className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
                 </div>
-                <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">隱私權政策</span>
-                <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-emerald-600 transition-colors w-full">
-                  資料授權 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
+                <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">網站地圖</span>
+                <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-amber-600 transition-colors w-full">
+                  全部功能 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
                 </span>
               </a>
 

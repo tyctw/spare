@@ -86,6 +86,33 @@ const answerOptions = [
   { score: 2, label: '非常符合', desc: '很像平常的我' },
 ];
 
+const hollandPrintCopy: Record<HollandType, { name: string; desc: string }> = {
+  R: {
+    name: '實作型',
+    desc: '偏好動手操作、工具設備、機械結構、戶外或實體任務，適合在明確目標中透過實作解決問題。',
+  },
+  I: {
+    name: '研究型',
+    desc: '偏好觀察、分析、推理、實驗與資料判讀，適合需要探究原理、找出規律或解決複雜問題的方向。',
+  },
+  A: {
+    name: '藝術型',
+    desc: '偏好創作、設計、表達與美感判斷，適合需要想像力、作品呈現與個人風格的學習或工作環境。',
+  },
+  S: {
+    name: '社會型',
+    desc: '偏好與人互動、協助、教學、照顧與溝通，適合重視服務、人際支持與團隊合作的方向。',
+  },
+  E: {
+    name: '企業型',
+    desc: '偏好說服、領導、企劃、銷售與目標推進，適合需要主動表達、組織資源與帶動成果的情境。',
+  },
+  C: {
+    name: '常規型',
+    desc: '偏好有規則、流程、資料整理、行政與精確執行的工作，適合重視秩序、細節與穩定性的方向。',
+  },
+};
+
 export default function HollandPage() {
   const [started, setStarted] = useState(false);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -174,6 +201,274 @@ export default function HollandPage() {
     const params = new URLSearchParams();
     params.set('hollandGroups', results.topGroups.map((group) => group.id).join(','));
     return `${withBasePath('/')}?${params.toString()}`;
+  };
+
+  const printOrganizedResults = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('無法開啟列印視窗，請允許瀏覽器彈出視窗後再試一次。');
+      return;
+    }
+
+    const reportDate = new Date().toLocaleDateString('zh-TW');
+    const hollandCode = results.topTypes.map((item) => item.type).join(' - ');
+    const typesHtml = results.topTypes
+      .map((item, index) => {
+        const copy = hollandPrintCopy[item.type];
+        return `
+          <article class="type-card ${index === 0 ? 'primary' : ''}">
+            <div class="type-row">
+              <div>
+                <span class="type-code">${item.type}</span>
+                <h3>${copy.name}</h3>
+              </div>
+              <div class="score">${item.score} / 10</div>
+            </div>
+            <p>${copy.desc}</p>
+          </article>
+        `;
+      })
+      .join('');
+
+    const groupsHtml = results.topGroups
+      .map((group, index) => `
+        <tr>
+          <td class="rank">${index + 1}</td>
+          <td>
+            <strong>${group.id}</strong>
+            <span>${group.codes.join(' / ')}</span>
+          </td>
+          <td class="match">${group.matchPercentage}%</td>
+        </tr>
+      `)
+      .join('');
+
+    printWindow.document.write(`
+      <!doctype html>
+      <html lang="zh-Hant">
+        <head>
+          <meta charset="utf-8" />
+          <title>Holland 性向測驗結果</title>
+          <style>
+            @page { size: A4; margin: 14mm; }
+            * { box-sizing: border-box; }
+            body {
+              margin: 0;
+              color: #0f172a;
+              font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .report {
+              min-height: 100vh;
+              border: 3px solid #0f172a;
+              border-radius: 18px;
+              padding: 28px;
+            }
+            header {
+              display: flex;
+              justify-content: space-between;
+              gap: 24px;
+              border-bottom: 3px solid #0f172a;
+              padding-bottom: 18px;
+              margin-bottom: 22px;
+            }
+            h1 { margin: 0; font-size: 30px; font-weight: 900; }
+            .subtitle {
+              margin-top: 6px;
+              color: #64748b;
+              font-size: 13px;
+              font-weight: 800;
+              letter-spacing: 0.08em;
+              text-transform: uppercase;
+            }
+            .date {
+              align-self: flex-start;
+              border: 2px solid #cbd5e1;
+              border-radius: 12px;
+              padding: 8px 12px;
+              color: #475569;
+              font-size: 13px;
+              font-weight: 900;
+              white-space: nowrap;
+            }
+            .code-panel {
+              background: #f5f3ff;
+              border: 2px solid #8b5cf6;
+              border-radius: 18px;
+              padding: 22px;
+              text-align: center;
+              margin-bottom: 22px;
+            }
+            .label {
+              color: #6d28d9;
+              font-size: 12px;
+              font-weight: 900;
+              letter-spacing: 0.14em;
+              text-transform: uppercase;
+            }
+            .code {
+              margin-top: 8px;
+              font-size: 44px;
+              font-weight: 900;
+              letter-spacing: 0.06em;
+            }
+            .grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 20px;
+            }
+            h2 { margin: 0 0 12px; font-size: 20px; font-weight: 900; }
+            .type-card {
+              border: 2px solid #e2e8f0;
+              border-radius: 16px;
+              padding: 14px;
+              margin-bottom: 10px;
+              background: #fff;
+            }
+            .type-card.primary {
+              border-color: #7c3aed;
+              background: #f5f3ff;
+            }
+            .type-row {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 12px;
+            }
+            .type-code {
+              display: inline-flex;
+              width: 42px;
+              height: 42px;
+              align-items: center;
+              justify-content: center;
+              border-radius: 12px;
+              background: #0f172a;
+              color: #fff;
+              font-size: 24px;
+              font-weight: 900;
+            }
+            h3 {
+              display: inline-block;
+              margin: 0 0 0 10px;
+              font-size: 18px;
+              font-weight: 900;
+            }
+            .score {
+              border-radius: 999px;
+              background: #ede9fe;
+              color: #6d28d9;
+              padding: 5px 10px;
+              font-size: 13px;
+              font-weight: 900;
+              white-space: nowrap;
+            }
+            p {
+              margin: 10px 0 0;
+              color: #475569;
+              font-size: 13px;
+              font-weight: 700;
+              line-height: 1.7;
+            }
+            table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+            td {
+              background: #f8fafc;
+              border-top: 2px solid #e2e8f0;
+              border-bottom: 2px solid #e2e8f0;
+              padding: 12px;
+              font-size: 13px;
+              font-weight: 800;
+            }
+            td:first-child {
+              border-left: 2px solid #e2e8f0;
+              border-radius: 12px 0 0 12px;
+            }
+            td:last-child {
+              border-right: 2px solid #e2e8f0;
+              border-radius: 0 12px 12px 0;
+            }
+            .rank { width: 42px; text-align: center; color: #64748b; font-weight: 900; }
+            td span {
+              display: block;
+              margin-top: 3px;
+              color: #64748b;
+              font-size: 11px;
+              font-weight: 800;
+            }
+            .match {
+              width: 78px;
+              text-align: right;
+              color: #6d28d9;
+              font-size: 18px;
+              font-weight: 900;
+            }
+            .note {
+              margin-top: 20px;
+              border: 2px dashed #cbd5e1;
+              border-radius: 16px;
+              background: #f8fafc;
+              padding: 14px;
+              color: #475569;
+              font-size: 12px;
+              font-weight: 700;
+              line-height: 1.7;
+            }
+            footer {
+              margin-top: 18px;
+              border-top: 2px solid #e2e8f0;
+              padding-top: 12px;
+              color: #94a3b8;
+              font-size: 11px;
+              font-weight: 800;
+              display: flex;
+              justify-content: space-between;
+              gap: 12px;
+            }
+          </style>
+        </head>
+        <body>
+          <main class="report">
+            <header>
+              <div>
+                <h1>Holland 性向測驗結果</h1>
+                <div class="subtitle">Organized Result Report</div>
+              </div>
+              <div class="date">測驗日期：${reportDate}</div>
+            </header>
+
+            <section class="code-panel">
+              <div class="label">你的 Holland Code</div>
+              <div class="code">${hollandCode}</div>
+            </section>
+
+            <section class="grid">
+              <div>
+                <h2>前三項性向整理</h2>
+                ${typesHtml}
+              </div>
+              <div>
+                <h2>推薦技職群別</h2>
+                <table>
+                  <tbody>${groupsHtml}</tbody>
+                </table>
+                <div class="note">
+                  這份結果用來輔助探索興趣與選校方向，不代表唯一適合的科系。建議搭配成績、學習經驗、家庭討論與學校輔導資源一起判斷。
+                </div>
+              </div>
+            </section>
+
+            <footer>
+              <span>TW 全國會考落點分析引擎</span>
+              <span>列印內容已排除題目與作答明細，只保留整理後結果。</span>
+            </footer>
+          </main>
+          <script>
+            window.onload = () => setTimeout(() => { window.print(); window.close(); }, 400);
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   return (
@@ -330,7 +625,7 @@ export default function HollandPage() {
                     <div className="text-sm font-black uppercase tracking-widest text-purple-600">Your Holland Code</div>
                     <h2 className="mt-2 text-3xl font-black tracking-tight">{results.topTypes.map((item) => item.type).join(' - ')}</h2>
                   </div>
-                  <button onClick={() => window.print()} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(251,191,36,1)]">
+                  <button onClick={printOrganizedResults} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(251,191,36,1)]">
                     <Printer className="h-4 w-4" />
                     列印結果
                   </button>
