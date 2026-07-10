@@ -1739,8 +1739,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions') {
-                                  window.location.href = withBasePath(`/${btn.id}`);
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats') {
+                                  window.location.href = withBasePath(btn.id === 'historicalStats' ? '/historical-stats' : `/${btn.id}`);
                                   return;
                                 }
                                 setActiveModal(btn.id as any);
