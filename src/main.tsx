@@ -1,6 +1,7 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
+import ChangelogPage from './components/ChangelogPage.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
@@ -15,6 +16,7 @@ if (redirectedRoute) {
 const page =
   path === '/privacy' ? <LegalPage kind="privacy" /> :
   path === '/terms' ? <LegalPage kind="terms" /> :
+  path === '/changelog' ? <ChangelogPage /> :
   <App />;
 
 createRoot(document.getElementById('root')!).render(

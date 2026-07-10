@@ -11,7 +11,6 @@ import VocationalModal from './components/VocationalModal';
 import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
 import HollandTestModal from './components/HollandTestModal';
 import { InfoModal } from './components/InfoModals';
-import ChangelogModal from './components/ChangelogModal';
 import DisclaimerModal from './components/DisclaimerModal';
 import ComparisonModal from './components/ComparisonModal';
 import QRCodeModal from './components/QRCodeModal';
@@ -1475,11 +1474,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         onClose={() => setActiveModal(null)}
       />
 
-      <ChangelogModal 
-        isOpen={activeModal === 'changelog'} 
-        onClose={() => setActiveModal(null)}
-      />
-
       <ReportErrorModal
         isOpen={activeModal === 'reportError'}
         onClose={() => setActiveModal(null)}
@@ -1757,7 +1751,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms') {
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog') {
                                   window.location.href = withBasePath(`/${btn.id}`);
                                   return;
                                 }
@@ -1811,7 +1805,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms') {
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog') {
                                   window.location.href = withBasePath(`/${btn.id}`);
                                   return;
                                 }
