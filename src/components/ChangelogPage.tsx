@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowLeft, Bug, Cpu, FileText, History, Rocket, Sparkles, Star } from 'lucide-react';
+import { ArrowLeft, Bug, Cpu, History, Rocket, Sparkles, Star } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageNavigation from './PageNavigation';
 
 const updatedAt = '2026 年 5 月 16 日';
 
@@ -203,24 +204,16 @@ export default function ChangelogPage() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className="lg:sticky lg:top-6 lg:self-start">
-          <nav className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-            <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500">
-              <FileText className="h-4 w-4" />
-              版本
-            </div>
-            <div className="space-y-2">
-              {releases.map((release) => (
-                <a
-                  key={release.version}
-                  href={`#${release.version}`}
-                  className="block rounded-xl px-3 py-2 text-sm font-black text-slate-700 transition-colors hover:bg-slate-100"
-                >
-                  {release.version} {release.title}
-                </a>
-              ))}
-            </div>
-          </nav>
+        <aside className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+          <PageNavigation
+            navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
+            itemLayoutClassName="space-y-2"
+            items={releases.map((release) => ({
+              id: release.version,
+              label: `${release.version} ${release.title}`,
+              className: 'block rounded-xl',
+            }))}
+          />
         </aside>
 
         <div className="relative space-y-6">

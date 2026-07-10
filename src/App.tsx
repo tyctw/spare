@@ -20,7 +20,6 @@ import { exportTxt, exportExcel, exportJson, printResults } from './lib/exportUt
 import { callBackend, isBackendError, normalizeInvitationCode } from './lib/api';
 import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import ExportModal from './components/ExportModal';
-import GradeLevelModal from './components/GradeLevelModal';
 import AuthFailModal from './components/AuthFailModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
 import SharePlatformModal from './components/SharePlatformModal';
@@ -1580,11 +1579,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
         </div>
       </InfoModal>
 
-      <GradeLevelModal 
-        isOpen={activeModal === 'gradeLevel'} 
-        onClose={() => setActiveModal(null)} 
-      />
-
       <StrategyModal 
         isOpen={activeModal === 'strategy'} 
         onClose={() => setActiveModal(null)} 
@@ -1739,8 +1733,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats') {
-                                  window.location.href = withBasePath(btn.id === 'historicalStats' ? '/historical-stats' : `/${btn.id}`);
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats' || btn.id === 'gradeLevel') {
+                                  window.location.href = withBasePath(btn.id === 'historicalStats' ? '/historical-stats' : btn.id === 'gradeLevel' ? '/grade-level' : `/${btn.id}`);
                                   return;
                                 }
                                 setActiveModal(btn.id as any);

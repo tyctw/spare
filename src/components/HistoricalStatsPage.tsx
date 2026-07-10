@@ -4,7 +4,6 @@ import {
   BarChart3,
   BookOpen,
   CheckCircle2,
-  FileText,
   GraduationCap,
   Info,
   PenTool,
@@ -13,6 +12,7 @@ import {
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { table114, table115 } from './HistoricalStatsModal';
+import PageNavigation from './PageNavigation';
 
 type YearKey = '115' | '114';
 
@@ -115,19 +115,15 @@ export default function HistoricalStatsPage() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className="min-w-0 lg:sticky lg:top-6 lg:self-start">
-          <nav className="rounded-lg border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-            <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500">
-              <FileText className="h-4 w-4" />
-              頁面導覽
-            </div>
-            <div className="grid gap-2">
-              <a className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-black text-slate-700 hover:bg-slate-100" href="#overview">年度總覽</a>
-              <a className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-black text-slate-700 hover:bg-slate-100" href="#focus">重點組合</a>
-              <a className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-black text-slate-700 hover:bg-slate-100" href="#table">完整表格</a>
-              <a className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-black text-slate-700 hover:bg-slate-100" href="#notes">判讀提醒</a>
-            </div>
-          </nav>
+        <aside className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+          <PageNavigation
+            items={[
+              { id: 'overview', label: '年度總覽' },
+              { id: 'focus', label: '重點組合' },
+              { id: 'table', label: '完整表格' },
+              { id: 'notes', label: '判讀提醒' },
+            ]}
+          />
         </aside>
 
         <div className="min-w-0 space-y-8">

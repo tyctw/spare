@@ -6,13 +6,13 @@ import {
   Calculator,
   CheckCircle2,
   Download,
-  FileText,
   KeyRound,
   MapPin,
   Search,
   ShieldCheck,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageNavigation from './PageNavigation';
 
 const quickSteps = [
   {
@@ -107,19 +107,15 @@ export default function InstructionsPage() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className="min-w-0 lg:sticky lg:top-6 lg:self-start">
-          <nav className="rounded-lg border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-            <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500">
-              <FileText className="h-4 w-4" />
-              頁面導覽
-            </div>
-            <div className="grid gap-2">
-              <a className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-black text-slate-700 hover:bg-slate-100" href="#flow">操作流程</a>
-              <a className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-black text-slate-700 hover:bg-slate-100" href="#scores">成績填寫</a>
-              <a className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-black text-slate-700 hover:bg-slate-100" href="#results">結果判讀</a>
-              <a className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-black text-slate-700 hover:bg-slate-100" href="#actions">後續操作</a>
-            </div>
-          </nav>
+        <aside className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+          <PageNavigation
+            items={[
+              { id: 'flow', label: '操作流程' },
+              { id: 'scores', label: '成績填寫' },
+              { id: 'results', label: '結果判讀' },
+              { id: 'actions', label: '後續操作' },
+            ]}
+          />
         </aside>
 
         <div className="min-w-0 space-y-8">

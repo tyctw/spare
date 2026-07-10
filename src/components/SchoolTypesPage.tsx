@@ -4,12 +4,12 @@ import {
   BookOpen,
   Building2,
   Compass,
-  FileText,
   GraduationCap,
   Layers,
   Target,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageNavigation from './PageNavigation';
 
 const schoolTypes = [
   {
@@ -122,18 +122,16 @@ export default function SchoolTypesPage() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className="min-w-0 lg:sticky lg:top-6 lg:self-start">
-          <nav className="w-full rounded-2xl border-4 border-slate-900 bg-white p-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-4 sm:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-            <div className="mb-2 flex items-center gap-2 text-sm font-black text-slate-500 sm:mb-3">
-              <FileText className="h-4 w-4" />
-              頁面導覽
-            </div>
-            <div className="grid grid-cols-2 gap-2 lg:block lg:space-y-2">
-              <a href="#overview" className="rounded-xl bg-slate-50 px-3 py-2 text-center text-sm font-black text-slate-700 hover:bg-slate-100 lg:block lg:text-left">類型總覽</a>
-              <a href="#comparison" className="rounded-xl bg-slate-50 px-3 py-2 text-center text-sm font-black leading-5 text-slate-700 hover:bg-slate-100 lg:block lg:text-left">普通高中 vs 技術型高中</a>
-              <a href="#choose" className="col-span-2 rounded-xl bg-slate-50 px-3 py-2 text-center text-sm font-black text-slate-700 hover:bg-slate-100 lg:col-span-1 lg:block lg:text-left">怎麼選比較穩</a>
-            </div>
-          </nav>
+        <aside className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+          <PageNavigation
+            navClassName="w-full rounded-2xl border-4 border-slate-900 bg-white p-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-4 sm:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
+            itemLayoutClassName="grid grid-cols-2 gap-2 lg:block lg:space-y-2"
+            items={[
+              { id: 'overview', label: '類型總覽', className: 'text-center lg:block lg:text-left' },
+              { id: 'comparison', label: '普通高中 vs 技術型高中', className: 'text-center leading-5 lg:block lg:text-left' },
+              { id: 'choose', label: '怎麼選比較穩', className: 'col-span-2 text-center lg:col-span-1 lg:block lg:text-left' },
+            ]}
+          />
         </aside>
 
         <div className="min-w-0 space-y-6 sm:space-y-8">

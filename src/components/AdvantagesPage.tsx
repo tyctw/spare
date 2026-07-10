@@ -13,6 +13,7 @@ import {
   Target,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageNavigation from './PageNavigation';
 
 const principles = [
   {
@@ -102,9 +103,23 @@ export default function AdvantagesPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+      <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
+        <aside className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+          <PageNavigation
+            navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
+            items={[
+              { id: 'mission', label: '我們的理念' },
+              { id: 'principles', label: '核心原則' },
+              { id: 'problems', label: '正在解決的問題' },
+              { id: 'features', label: '系統優點' },
+              { id: 'updates', label: '持續優化' },
+            ]}
+          />
+        </aside>
+
+        <div className="min-w-0">
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-          <section className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
+          <section id="mission" className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
             <div className="flex items-center gap-3">
               <div className="rounded-xl border-2 border-slate-900 bg-amber-100 p-3">
                 <HeartHandshake className="h-6 w-6 text-amber-700" />
@@ -130,7 +145,7 @@ export default function AdvantagesPage() {
           </aside>
         </div>
 
-        <section className="mt-6 grid gap-5 md:grid-cols-3">
+        <section id="principles" className="mt-6 grid scroll-mt-8 gap-5 md:grid-cols-3">
           {principles.map((item) => {
             const Icon = item.icon;
             return (
@@ -145,7 +160,7 @@ export default function AdvantagesPage() {
           })}
         </section>
 
-        <section className="mt-6 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
+        <section id="problems" className="mt-6 scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
           <div className="flex items-center gap-3">
             <div className="rounded-xl border-2 border-slate-900 bg-rose-100 p-3">
               <CheckCircle2 className="h-6 w-6 text-rose-700" />
@@ -161,7 +176,7 @@ export default function AdvantagesPage() {
           </div>
         </section>
 
-        <section className="mt-6">
+        <section id="features" className="mt-6 scroll-mt-8">
           <h2 className="text-2xl font-black sm:text-3xl">系統優點</h2>
           <div className="mt-4 grid gap-5 md:grid-cols-2">
             {features.map((feature) => {
@@ -183,12 +198,13 @@ export default function AdvantagesPage() {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
+        <section id="updates" className="mt-6 scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
           <h2 className="text-2xl font-black sm:text-3xl">持續優化</h2>
           <p className="mt-4 max-w-4xl text-sm font-bold leading-8 text-slate-800 sm:text-base">
             我們會持續優化資料整理、計算邏輯與使用體驗，也歡迎使用者回報錯誤、提供補充資料或提出改善建議。
           </p>
         </section>
+        </div>
       </section>
     </main>
   );
