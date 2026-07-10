@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+  <url>
+    <loc>https://tyctw.github.io/spare/</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://tyctw.github.io/spare/social-share.png</image:loc>
+      <image:title>免費會考落點分析</image:title>
+      <image:caption>免費國中教育會考落點分析、免試入學積分試算、志願選填建議與高中職校系探索工具</image:caption>
+    </image:image>
+  </url>
+</urlset>
