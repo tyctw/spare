@@ -1810,7 +1810,14 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                           ].map(btn => (
                             <button
                               key={btn.id}
-                              onClick={() => { setActiveModal(btn.id as any); setIsNavMenuOpen(false); }}
+                              onClick={() => {
+                                if (btn.id === 'privacy' || btn.id === 'terms') {
+                                  window.location.href = withBasePath(`/${btn.id}`);
+                                  return;
+                                }
+                                setActiveModal(btn.id as any);
+                                setIsNavMenuOpen(false);
+                              }}
                               className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
                             >
                               <div className="flex items-center gap-3">
