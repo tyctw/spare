@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Search, Plus, Trash2, ArrowUp, ArrowDown, Building2, Target, AlertCircle, Loader2, Printer, Filter, ChevronDown, AlertTriangle } from 'lucide-react';
-import { ALL_REGIONS } from './RegionModal';
 import { callBackend } from '../lib/api';
 
 interface SchoolItem {
@@ -23,19 +22,6 @@ interface Props {
   region: string;
 }
 
-const REGION_TO_COUNTIES: Record<string, string[]> = {
-  'taipei': ['基隆市', '臺北市', '新北市'],
-  'taoyuan': ['桃園市', '連江縣'],
-  'hsinchu': ['新竹市', '新竹縣', '苗栗縣'],
-  'central': ['臺中市', '南投縣'],
-  'changhua': ['彰化縣'],
-  'yunlin': ['雲林縣'],
-  'chiayi': ['嘉義市', '嘉義縣'],
-  'tainan': ['臺南市'],
-  'kaohsiung': ['高雄市'],
-  'pingtung': ['屏東縣'],
-};
-
 const ADMISSION_REGION_COUNTIES: Record<string, string[]> = {
   taipei: ['基隆市', '臺北市', '新北市'],
   yilan: ['宜蘭縣'],
@@ -54,6 +40,24 @@ const ADMISSION_REGION_COUNTIES: Record<string, string[]> = {
   kinmen: ['金門縣'],
 };
 
+const MOCK_VOLUNTEER_REGIONS = [
+  { id: 'taipei', name: '基北區' },
+  { id: 'yilan', name: '宜蘭區' },
+  { id: 'taoyuan', name: '桃連區' },
+  { id: 'hsinchu', name: '竹苗區' },
+  { id: 'central', name: '中投區' },
+  { id: 'changhua', name: '彰化區' },
+  { id: 'yunlin', name: '雲林區' },
+  { id: 'chiayi', name: '嘉義區' },
+  { id: 'tainan', name: '臺南區' },
+  { id: 'kaohsiung', name: '高雄區' },
+  { id: 'pingtung', name: '屏東區' },
+  { id: 'hualien', name: '花蓮區' },
+  { id: 'taitung', name: '臺東區' },
+  { id: 'penghu', name: '澎湖區' },
+  { id: 'kinmen', name: '金門區' },
+];
+
 const normalizeCounty = (county = '') => county.trim().replace(/台/g, '臺');
 
 const getRegionCountyText = (regionId: string) => (ADMISSION_REGION_COUNTIES[regionId] || []).join('、');
@@ -65,7 +69,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRegion, setFilterRegion] = useState(region);
   const [filterOwnership, setFilterOwnership] = useState('all');
-  const [filterCounty, setFilterCounty] = useState('all');
+  const [filterCounty, setFilterCounty] = useState('region');
   const [filterType, setFilterType] = useState('all');
   const [filterGroup, setFilterGroup] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
@@ -80,6 +84,12 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
       fetchSchools();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setFilterRegion(region || 'taipei');
+    setFilterCounty('region');
+  }, [isOpen, region]);
 
   const fetchSchools = async () => {
     setIsLoading(true);
@@ -138,11 +148,12 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
   }, [filterRegion]);
   
   const uniqueCounties = useMemo(() => {
-    return Array.from(new Set(schools.filter(s => {
+    const regionCounties = filterRegion === 'all' ? [] : ADMISSION_REGION_COUNTIES[filterRegion] || [];
+    return Array.from(new Set([...regionCounties, ...schools.filter(s => {
       const c = normalizeCounty(s.county);
       return allowedCountiesInRegion.length === 0 || allowedCountiesInRegion.includes(c);
-    }).map(s => s.county))).sort();
-  }, [schools, allowedCountiesInRegion]);
+    }).map(s => s.county)])).filter(Boolean).sort();
+  }, [schools, filterRegion, allowedCountiesInRegion]);
 
   const uniqueTypes = useMemo(() => {
     return Array.from(new Set(schools.map(s => s.levelInfo).filter(Boolean))).sort();
@@ -164,7 +175,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
         if (filterOwnership === 'private' && isPublic) return false;
       }
 
-      if (filterCounty !== 'all' && s.county !== filterCounty) return false;
+      if (filterCounty !== 'all' && filterCounty !== 'region' && s.county !== filterCounty) return false;
       if (filterType !== 'all' && s.levelInfo !== filterType) return false;
       if (filterGroup !== 'all' && s.groupName !== filterGroup) return false;
 
@@ -600,12 +611,12 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
                         value={filterRegion} 
                         onChange={(e) => {
                           setFilterRegion(e.target.value);
-                          setFilterCounty('all');
+                          setFilterCounty(e.target.value === 'all' ? 'all' : 'region');
                         }}
                         className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-lg text-sm font-bold focus:border-sky-400 focus:bg-white outline-none transition-colors"
                       >
                         <option value="all">全國</option>
-                        {ALL_REGIONS.filter(r => r.active).map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                        {MOCK_VOLUNTEER_REGIONS.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                       </select>
                     </div>
                     <div className="space-y-1.5">
@@ -615,6 +626,9 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
                         onChange={(e) => setFilterCounty(e.target.value)}
                         className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-lg text-sm font-bold focus:border-sky-400 focus:bg-white outline-none transition-colors"
                       >
+                        {filterRegion !== 'all' && (
+                          <option value="region">本區全部縣市（{getRegionCountyText(filterRegion)}）</option>
+                        )}
                         <option value="all">所有縣市</option>
                         {uniqueCounties.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>

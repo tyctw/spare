@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
-import { ALL_REGIONS } from './RegionModal';
 import { pageNavigationAsideClassName } from './PageNavigation';
 
 interface SchoolItem {
@@ -54,12 +53,30 @@ const REGION_COUNTIES: Record<string, string[]> = {
   kinmen: ['金門縣'],
 };
 
+const MOCK_VOLUNTEER_REGIONS = [
+  { id: 'taipei', name: '基北區' },
+  { id: 'yilan', name: '宜蘭區' },
+  { id: 'taoyuan', name: '桃連區' },
+  { id: 'hsinchu', name: '竹苗區' },
+  { id: 'central', name: '中投區' },
+  { id: 'changhua', name: '彰化區' },
+  { id: 'yunlin', name: '雲林區' },
+  { id: 'chiayi', name: '嘉義區' },
+  { id: 'tainan', name: '臺南區' },
+  { id: 'kaohsiung', name: '高雄區' },
+  { id: 'pingtung', name: '屏東區' },
+  { id: 'hualien', name: '花蓮區' },
+  { id: 'taitung', name: '臺東區' },
+  { id: 'penghu', name: '澎湖區' },
+  { id: 'kinmen', name: '金門區' },
+];
+
 const normalizeCounty = (county = '') => county.trim().replace(/台/g, '臺');
 
 const getRegionCountyText = (regionId: string) => (REGION_COUNTIES[regionId] || []).join('、');
 
 export default function MockVolunteerPage() {
-  const [region, setRegion] = useState(ALL_REGIONS.find((item) => item.active)?.id || 'taipei');
+  const [region, setRegion] = useState(MOCK_VOLUNTEER_REGIONS[0].id);
   const [schools, setSchools] = useState<SchoolItem[]>([]);
   const [selectedChoices, setSelectedChoices] = useState<SchoolItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -106,17 +123,19 @@ export default function MockVolunteerPage() {
   }, [region]);
 
   useEffect(() => {
-    setFilterCounty('all');
+    setFilterCounty('region');
     setFilterType('all');
     setFilterGroup('all');
     setSearchQuery('');
   }, [region]);
 
-  const activeRegionName = ALL_REGIONS.find((item) => item.id === region)?.name || '目前就學區';
+  const activeRegionName = MOCK_VOLUNTEER_REGIONS.find((item) => item.id === region)?.name || '目前就學區';
+  const activeRegionCountyText = getRegionCountyText(region);
+  const activeRegionCounties = useMemo(() => (REGION_COUNTIES[region] || []).map(normalizeCounty), [region]);
 
   const uniqueCounties = useMemo(
-    () => Array.from(new Set(schools.map((school) => school.county).filter(Boolean))).sort(),
-    [schools],
+    () => Array.from(new Set([...REGION_COUNTIES[region], ...schools.map((school) => school.county).filter(Boolean)])).sort(),
+    [region, schools],
   );
 
   const uniqueTypes = useMemo(
@@ -132,7 +151,11 @@ export default function MockVolunteerPage() {
   const filteredSchools = useMemo(() => {
     const keyword = searchQuery.trim();
     return schools.filter((school) => {
-      if (filterCounty !== 'all' && school.county !== filterCounty) return false;
+      const normalizedCounty = normalizeCounty(school.county);
+      if (filterCounty === 'region' && activeRegionCounties.length > 0 && !activeRegionCounties.includes(normalizedCounty)) {
+        return false;
+      }
+      if (filterCounty !== 'all' && filterCounty !== 'region' && school.county !== filterCounty) return false;
       if (filterType !== 'all' && school.levelInfo !== filterType) return false;
       if (filterGroup !== 'all' && school.groupName !== filterGroup) return false;
       if (!keyword) return true;
@@ -141,7 +164,7 @@ export default function MockVolunteerPage() {
         .filter(Boolean)
         .some((value) => value.includes(keyword));
     });
-  }, [schools, filterCounty, filterType, filterGroup, searchQuery]);
+  }, [schools, filterCounty, activeRegionCounties, filterType, filterGroup, searchQuery]);
 
   const addChoice = (school: SchoolItem) => {
     if (selectedChoices.length >= 30) {
@@ -288,7 +311,7 @@ export default function MockVolunteerPage() {
                 onChange={(event) => setRegion(event.target.value)}
                 className="w-full rounded-lg border-2 border-slate-900 bg-slate-50 px-3 py-2.5 text-sm font-black outline-none focus:ring-4 focus:ring-sky-300/40"
               >
-                {ALL_REGIONS.filter((item) => item.active).map((item) => (
+                {MOCK_VOLUNTEER_REGIONS.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
                   </option>
@@ -333,6 +356,7 @@ export default function MockVolunteerPage() {
                   />
                 </div>
                 <select value={filterCounty} onChange={(event) => setFilterCounty(event.target.value)} className="rounded-lg border-2 border-slate-900 bg-slate-50 px-3 py-2.5 text-sm font-bold outline-none focus:bg-white">
+                  <option value="region">本區全部縣市{activeRegionCountyText ? `（${activeRegionCountyText}）` : ''}</option>
                   <option value="all">全部縣市</option>
                   {uniqueCounties.map((county) => (
                     <option key={county} value={county}>{county}</option>
