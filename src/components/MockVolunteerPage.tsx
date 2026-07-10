@@ -13,6 +13,7 @@ import {
   Search,
   Target,
   Trash2,
+  AlertTriangle,
 } from 'lucide-react';
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
@@ -35,6 +36,28 @@ interface SchoolItem {
 const createChoiceId = (school: SchoolItem) =>
   `${school.code}-${school.deptCode}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+const REGION_COUNTIES: Record<string, string[]> = {
+  taipei: ['基隆市', '臺北市', '新北市'],
+  yilan: ['宜蘭縣'],
+  taoyuan: ['桃園市', '連江縣'],
+  hsinchu: ['新竹市', '新竹縣', '苗栗縣'],
+  central: ['臺中市', '彰化縣', '南投縣'],
+  changhua: ['彰化縣'],
+  yunlin: ['雲林縣'],
+  chiayi: ['嘉義市', '嘉義縣'],
+  tainan: ['臺南市'],
+  kaohsiung: ['高雄市'],
+  pingtung: ['屏東縣'],
+  hualien: ['花蓮縣'],
+  taitung: ['臺東縣'],
+  penghu: ['澎湖縣'],
+  kinmen: ['金門縣'],
+};
+
+const normalizeCounty = (county = '') => county.trim().replace(/台/g, '臺');
+
+const getRegionCountyText = (regionId: string) => (REGION_COUNTIES[regionId] || []).join('、');
+
 export default function MockVolunteerPage() {
   const [region, setRegion] = useState(ALL_REGIONS.find((item) => item.active)?.id || 'taipei');
   const [schools, setSchools] = useState<SchoolItem[]>([]);
@@ -47,6 +70,7 @@ export default function MockVolunteerPage() {
   const [filterGroup, setFilterGroup] = useState('all');
   const [notice, setNotice] = useState('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -131,7 +155,25 @@ export default function MockVolunteerPage() {
       return;
     }
 
+    const selectedRegionCounties = REGION_COUNTIES[region] || [];
+    const schoolCounty = normalizeCounty(school.county);
+    const isCrossRegion =
+      selectedRegionCounties.length > 0 &&
+      Boolean(schoolCounty) &&
+      !selectedRegionCounties.map(normalizeCounty).includes(schoolCounty);
+
+    if (isCrossRegion) {
+      setCrossRegionChoice(school);
+      return;
+    }
+
     setSelectedChoices((choices) => [...choices, { ...school, id: createChoiceId(school) }]);
+  };
+
+  const confirmAddCrossRegionChoice = () => {
+    if (!crossRegionChoice) return;
+    setSelectedChoices((choices) => [...choices, { ...crossRegionChoice, id: createChoiceId(crossRegionChoice) }]);
+    setCrossRegionChoice(null);
   };
 
   const removeChoice = (index: number) => {
@@ -450,6 +492,52 @@ export default function MockVolunteerPage() {
           </aside>
         </div>
       </section>
+
+      {crossRegionChoice && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border-4 border-slate-900 bg-white shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+            <div className="border-b-4 border-slate-900 bg-amber-300 p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <AlertTriangle className="h-6 w-6 text-amber-700" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">跨區選填提醒</h2>
+                  <p className="text-sm font-bold text-amber-900">請先確認招生簡章與跨區資格。</p>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-4 p-5 text-sm font-bold leading-7 text-slate-700">
+              <p>
+                「{crossRegionChoice.name}」位於
+                <span className="font-black text-rose-700"> {crossRegionChoice.county}</span>，
+                不在目前就學區可選縣市內。
+              </p>
+              <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-3">
+                <div className="text-xs font-black text-slate-500">目前就學區包含</div>
+                <div className="mt-1 font-black text-slate-900">{getRegionCountyText(region) || '未設定縣市範圍'}</div>
+              </div>
+              <p className="text-xs leading-6 text-slate-500">
+                跨區選填可能有名額、資格或作業規定限制；此清單僅供模擬排序參考。
+              </p>
+            </div>
+            <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
+              <button
+                onClick={() => setCrossRegionChoice(null)}
+                className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:bg-slate-100 active:translate-y-0.5 active:shadow-none"
+              >
+                取消
+              </button>
+              <button
+                onClick={confirmAddCrossRegionChoice}
+                className="flex-1 rounded-xl border-2 border-slate-900 bg-amber-400 px-4 py-2.5 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:bg-amber-300 active:translate-y-0.5 active:shadow-none"
+              >
+                仍要加入
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {notice && (
         <div className="fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-between gap-3 rounded-xl border-4 border-slate-900 bg-white p-4 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
