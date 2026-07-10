@@ -6,8 +6,8 @@ import './index.css';
 
 const path = window.location.pathname.replace(/\/$/, '');
 const page =
-  path === '/spare/privacy' ? <LegalPage kind="privacy" /> :
-  path === '/spare/terms' ? <LegalPage kind="terms" /> :
+  path === '/privacy' ? <LegalPage kind="privacy" /> :
+  path === '/terms' ? <LegalPage kind="terms" /> :
   <App />;
 
 createRoot(document.getElementById('root')!).render(
