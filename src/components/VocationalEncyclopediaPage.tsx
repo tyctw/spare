@@ -227,7 +227,7 @@ export default function VocationalEncyclopediaPage() {
             </div>
             <h1 className="text-3xl font-black sm:text-5xl lg:text-6xl">職群科系百科</h1>
             <p className="mt-4 max-w-4xl text-[15px] font-bold leading-8 text-slate-700 sm:text-lg">
-              這裡把技術型高中常見的 15 大群分別整理。你可以用群別、科別、未來職涯或 Holland 類型快速搜尋，再看每個群別的學習重點、適合特質與可能進路。
+              這裡把技術型高中常見的 15 大群別整理成獨立頁面。你可以用群別、科別、未來職涯或 Holland 類型快速搜尋，再看每個群別的學習重點、適合特質與可能進路。
             </p>
           </div>
         </div>
