@@ -8,6 +8,7 @@ import GradeLevelPage from './components/GradeLevelPage.tsx';
 import HistoricalStatsPage from './components/HistoricalStatsPage.tsx';
 import InstructionsPage from './components/InstructionsPage.tsx';
 import LegalPage from './components/LegalPage.tsx';
+import MockVolunteerPage from './components/MockVolunteerPage.tsx';
 import SchoolTypesPage from './components/SchoolTypesPage.tsx';
 import VocationalEncyclopediaPage from './components/VocationalEncyclopediaPage.tsx';
 import './index.css';
@@ -27,6 +28,7 @@ const page =
   path === '/changelog' ? <ChangelogPage /> :
   path === '/grade-level' ? <GradeLevelPage /> :
   path === '/historical-stats' ? <HistoricalStatsPage /> :
+  path === '/mock-volunteer' ? <MockVolunteerPage /> :
   path === '/instructions' ? <InstructionsPage /> :
   path === '/holland' ? <HollandPage /> :
   path === '/school-types' ? <SchoolTypesPage /> :

@@ -1122,7 +1122,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
                     <span className="text-xs font-bold text-slate-400 mt-1 block">依據系統運算排序</span>
                   </div>
                   <div className="flex flex-wrap gap-2 relative w-full sm:w-auto">
-                    <button onClick={() => setActiveModal('mockVolunteer')} className="px-3 py-1.5 bg-sky-50 text-sky-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
+                    <button onClick={() => { window.location.href = withBasePath('/mock-volunteer'); }} className="px-3 py-1.5 bg-sky-50 text-sky-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
                       <Target className="w-4 h-4" /> 模擬選填
                     </button>
                     <button onClick={() => setIsComparisonOpen(true)} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
@@ -1733,8 +1733,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats' || btn.id === 'gradeLevel') {
-                                  window.location.href = withBasePath(btn.id === 'historicalStats' ? '/historical-stats' : btn.id === 'gradeLevel' ? '/grade-level' : `/${btn.id}`);
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats' || btn.id === 'gradeLevel' || btn.id === 'mockVolunteer') {
+                                  window.location.href = withBasePath(btn.id === 'historicalStats' ? '/historical-stats' : btn.id === 'gradeLevel' ? '/grade-level' : btn.id === 'mockVolunteer' ? '/mock-volunteer' : `/${btn.id}`);
                                   return;
                                 }
                                 setActiveModal(btn.id as any);
