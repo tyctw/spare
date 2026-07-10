@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import { pageNavigationAsideClassName } from './PageNavigation';
 
 type HollandType = 'R' | 'I' | 'A' | 'S' | 'E' | 'C';
 
@@ -226,7 +227,7 @@ export default function HollandPage() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-8">
-        <aside className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+        <aside className={pageNavigationAsideClassName}>
           <div className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
             <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500">
               <FileText className="h-4 w-4" />

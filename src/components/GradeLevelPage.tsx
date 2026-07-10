@@ -9,7 +9,7 @@ import {
   Table2,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageNavigation from './PageNavigation';
+import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
 
 type YearKey = '115' | '114';
 
@@ -63,7 +63,7 @@ export default function GradeLevelPage() {
   );
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-slate-50 text-slate-900">
+    <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-rose-50">
         <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8">
           <a
@@ -105,7 +105,7 @@ export default function GradeLevelPage() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+        <aside className={pageNavigationAsideClassName}>
           <PageNavigation
             items={[
               { id: 'overview', label: '等級摘要' },

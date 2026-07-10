@@ -7,6 +7,9 @@ export interface PageNavigationItem {
   className?: string;
 }
 
+export const pageNavigationAsideClassName =
+  'min-w-0 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto lg:overscroll-contain';
+
 interface PageNavigationProps {
   items: PageNavigationItem[];
   title?: string;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Bug, Cpu, History, Rocket, Sparkles, Star } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageNavigation from './PageNavigation';
+import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
 
 const updatedAt = '2026 年 5 月 16 日';
 
@@ -204,7 +204,7 @@ export default function ChangelogPage() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+        <aside className={pageNavigationAsideClassName}>
           <PageNavigation
             navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
             itemLayoutClassName="space-y-2"

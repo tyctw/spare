@@ -17,6 +17,7 @@ import {
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
 import { ALL_REGIONS } from './RegionModal';
+import { pageNavigationAsideClassName } from './PageNavigation';
 
 interface SchoolItem {
   id: string;
@@ -365,7 +366,7 @@ export default function MockVolunteerPage() {
             </div>
           </section>
 
-          <aside className="rounded-xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] lg:sticky lg:top-5 lg:self-start">
+          <aside className={`${pageNavigationAsideClassName} rounded-xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]`}>
             <div className="border-b-4 border-slate-900 bg-amber-50 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>

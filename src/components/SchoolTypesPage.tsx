@@ -9,7 +9,7 @@ import {
   Target,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageNavigation from './PageNavigation';
+import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
 
 const schoolTypes = [
   {
@@ -92,7 +92,7 @@ const toneClasses: Record<string, { card: string; text: string; border: string; 
 
 export default function SchoolTypesPage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-slate-50 text-slate-900">
+    <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-sky-50">
         <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
           <a
@@ -122,7 +122,7 @@ export default function SchoolTypesPage() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+        <aside className={pageNavigationAsideClassName}>
           <PageNavigation
             navClassName="w-full rounded-2xl border-4 border-slate-900 bg-white p-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-4 sm:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
             itemLayoutClassName="grid grid-cols-2 gap-2 lg:block lg:space-y-2"
