@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   MapPin, User, BookOpen, Calculator, Award, PenTool,
   Search, Building2, Map, Compass, Anchor, Cpu,
@@ -32,8 +32,6 @@ import InstructionsModal from './components/InstructionsModal';
 import ReportErrorModal from './components/ReportErrorModal';
 import SchoolTypesModal from './components/SchoolTypesModal';
 import StrategyModal from './components/StrategyModal';
-import PrivacyModal from './components/PrivacyModal';
-import TermsModal from './components/TermsModal';
 import HistoricalStatsModal from './components/HistoricalStatsModal';
 import ScoreInquiryModal from './components/ScoreInquiryModal';
 import DataProviderModal from './components/DataProviderModal';
@@ -1624,15 +1622,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         onClose={() => setActiveModal(null)}
       />
 
-      <PrivacyModal 
-        isOpen={activeModal === 'privacy'} 
-        onClose={() => setActiveModal(null)} 
-      />
-      <TermsModal 
-        isOpen={activeModal === 'terms'} 
-        onClose={() => setActiveModal(null)} 
-      />
-
       <SharePlatformModal 
         isOpen={activeModal === 'sharePlatform'}
         onClose={() => setActiveModal(null)}
@@ -1766,7 +1755,14 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                           ].map(btn => (
                             <button
                               key={btn.id}
-                              onClick={() => { setActiveModal(btn.id as any); setIsNavMenuOpen(false); }}
+                              onClick={() => {
+                                if (btn.id === 'privacy' || btn.id === 'terms') {
+                                  window.location.href = `/${btn.id}`;
+                                  return;
+                                }
+                                setActiveModal(btn.id as any);
+                                setIsNavMenuOpen(false);
+                              }}
                               className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
                             >
                               <div className="flex items-center gap-3">
@@ -1967,10 +1963,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         </div>
       </InfoModal>
 
-      <Footer 
-        onPrivacyClick={() => setActiveModal('privacy')} 
-        onTermsClick={() => setActiveModal('terms')} 
-      />
+      <Footer />
 
     </div>
   );

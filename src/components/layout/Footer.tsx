@@ -1,12 +1,7 @@
 import React from 'react';
 import { Compass, ArrowRight, Database, Shield, Mail, Copyright } from 'lucide-react';
 
-interface FooterProps {
-  onPrivacyClick: () => void;
-  onTermsClick: () => void;
-}
-
-export default function Footer({ onPrivacyClick, onTermsClick }: FooterProps) {
+export default function Footer() {
   return (
     <footer className="mt-24 w-full px-4 sm:px-6 lg:px-8 pb-12">
       <div className="max-w-7xl mx-auto">
@@ -39,8 +34,8 @@ export default function Footer({ onPrivacyClick, onTermsClick }: FooterProps) {
             </div>
 
             <div className="grid grid-cols-2 lg:flex gap-3 sm:gap-4 w-full xl:w-auto relative z-10">
-              <button 
-                onClick={onPrivacyClick}
+              <a
+                href="/privacy"
                 className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
               >
                 <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
@@ -50,10 +45,10 @@ export default function Footer({ onPrivacyClick, onTermsClick }: FooterProps) {
                 <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-emerald-600 transition-colors w-full">
                   資料授權 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
                 </span>
-              </button>
+              </a>
 
-              <button 
-                onClick={onTermsClick}
+              <a
+                href="/terms"
                 className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-4 sm:p-6 bg-white border-4 border-slate-900 rounded-3xl sm:rounded-[2rem] shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
               >
                 <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
@@ -63,7 +58,7 @@ export default function Footer({ onPrivacyClick, onTermsClick }: FooterProps) {
                 <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-indigo-600 transition-colors w-full">
                   使用規範 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
                 </span>
-              </button>
+              </a>
 
               <a 
                 href="mailto:tyctw.analyze@gmail.com" 

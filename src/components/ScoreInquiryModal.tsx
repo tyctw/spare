@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { X, Search, ExternalLink, AlertCircle } from 'lucide-react';
 
 interface ScoreInquiryModalProps {
