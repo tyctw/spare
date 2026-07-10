@@ -36,6 +36,8 @@ import HeroBanner from './components/layout/HeroBanner';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 import { withBasePath } from './lib/routes';
 
+const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
+
 const normalizeHistoricalScores = (scores: any[] = []) =>
   scores
     .filter((item) => item && item.points !== null && item.points !== undefined)
@@ -219,7 +221,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
   const [resultFilterZone, setResultFilterZone] = useState('all');
 
   useEffect(() => {
-    setActiveModal('disclaimer');
+    if (window.localStorage.getItem(DISCLAIMER_SEEN_KEY) !== 'true') {
+      setActiveModal('disclaimer');
+    }
 
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code') || params.get('invitationCode') || params.get('invite');
@@ -1463,7 +1467,10 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
 
       <DisclaimerModal 
         isOpen={activeModal === 'disclaimer'} 
-        onClose={() => setActiveModal(null)}
+        onClose={() => {
+          window.localStorage.setItem(DISCLAIMER_SEEN_KEY, 'true');
+          setActiveModal(null);
+        }}
       />
 
       <ReportErrorModal
@@ -1733,8 +1740,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats' || btn.id === 'gradeLevel' || btn.id === 'mockVolunteer') {
-                                  window.location.href = withBasePath(btn.id === 'historicalStats' ? '/historical-stats' : btn.id === 'gradeLevel' ? '/grade-level' : btn.id === 'mockVolunteer' ? '/mock-volunteer' : `/${btn.id}`);
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats' || btn.id === 'gradeLevel' || btn.id === 'mockVolunteer' || btn.id === 'importantDates') {
+                                  window.location.href = withBasePath(btn.id === 'historicalStats' ? '/historical-stats' : btn.id === 'gradeLevel' ? '/grade-level' : btn.id === 'mockVolunteer' ? '/mock-volunteer' : btn.id === 'importantDates' ? '/important-dates' : `/${btn.id}`);
                                   return;
                                 }
                                 setActiveModal(btn.id as any);
@@ -1778,6 +1785,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
                           {[
                             { id: 'instructions', icon: Info, label: '使用說明', color: 'text-blue-600', bg: 'bg-blue-100' },
                             { id: 'advantages', icon: Sparkles, label: '系統優點與關於我們', color: 'text-indigo-600', bg: 'bg-indigo-100' },
+                            { id: 'site-map', icon: Map, label: '網站地圖', color: 'text-amber-600', bg: 'bg-amber-100' },
                             { id: 'rating', icon: StarIcon, label: '評分系統', color: 'text-amber-500', bg: 'bg-amber-100' },
                             { id: 'changelog', icon: History, label: '更新日誌', color: 'text-slate-500', bg: 'bg-slate-100' },
                             { id: 'privacy', icon: Database, label: '隱私權政策', color: 'text-emerald-600', bg: 'bg-emerald-100' },
@@ -1787,7 +1795,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions') {
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'site-map') {
                                   window.location.href = withBasePath(`/${btn.id}`);
                                   return;
                                 }
