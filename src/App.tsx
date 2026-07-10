@@ -8,7 +8,6 @@ import {
   Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database, Instagram, AtSign, Languages
 } from 'lucide-react';
 import VocationalModal from './components/VocationalModal';
-import VocationalEncyclopediaModal from './components/VocationalEncyclopediaModal';
 import HollandTestModal from './components/HollandTestModal';
 import { InfoModal } from './components/InfoModals';
 import DisclaimerModal from './components/DisclaimerModal';
@@ -203,7 +202,6 @@ export default function App() {
   // Modals state
 const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | 'changelog' | 'gradeLevel' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'advantages' | 'reportError' | 'schoolTypes' | 'strategy' | 'terms' | 'privacy' | 'mockVolunteer' | 'historicalStats' | 'scoreInquiry' | 'dataProvider' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
-  const [isEncyclopediaOpen, setIsEncyclopediaOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [vocationalGroups, setVocationalGroups] = useState<string[]>(['all']);
@@ -629,7 +627,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                         職業群別選擇
                       </label>
                       <button 
-                        onClick={() => setIsEncyclopediaOpen(true)}
+                        onClick={() => { window.location.href = withBasePath('/vocational-encyclopedia'); }}
                         className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
                       >
                         <BookOpen className="w-3 h-3" />
@@ -1430,12 +1428,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         onOpenHollandTest={() => { window.location.href = withBasePath('/holland'); }}
       />
 
-      <VocationalEncyclopediaModal
-        isOpen={isEncyclopediaOpen}
-        onClose={() => setIsEncyclopediaOpen(false)}
-        onOpenHollandTest={() => { window.location.href = withBasePath('/holland'); }}
-      />
-      
       <HollandTestModal 
         isOpen={isHollandTestOpen}
         onClose={() => setIsHollandTestOpen(false)}
@@ -1446,7 +1438,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         }}
         onViewEncyclopedia={() => {
           setIsHollandTestOpen(false);
-          setIsEncyclopediaOpen(true);
+          window.location.href = withBasePath('/vocational-encyclopedia');
         }}
       />
 
@@ -1700,7 +1692,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                               <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
                             </button>
                             <button
-                              onClick={() => { setIsEncyclopediaOpen(true); setIsNavMenuOpen(false); }}
+                              onClick={() => { window.location.href = withBasePath('/vocational-encyclopedia'); }}
                               className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
                             >
                               <div className="flex items-center gap-3">

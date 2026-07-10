@@ -5,6 +5,7 @@ import ChangelogPage from './components/ChangelogPage.tsx';
 import HollandPage from './components/HollandPage.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import SchoolTypesPage from './components/SchoolTypesPage.tsx';
+import VocationalEncyclopediaPage from './components/VocationalEncyclopediaPage.tsx';
 import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
 
@@ -21,6 +22,7 @@ const page =
   path === '/changelog' ? <ChangelogPage /> :
   path === '/holland' ? <HollandPage /> :
   path === '/school-types' ? <SchoolTypesPage /> :
+  path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
   <App />;
 
 createRoot(document.getElementById('root')!).render(

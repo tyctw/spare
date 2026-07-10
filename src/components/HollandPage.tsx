@@ -367,7 +367,7 @@ export default function HollandPage() {
 
                 <div className="mt-6 flex flex-col gap-3 border-t-2 border-dashed border-slate-200 pt-6 sm:flex-row">
                   <a href={applyFilterHref()} className="inline-flex flex-1 items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">回首頁套用篩選</a>
-                  <a href={withBasePath('/')} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                  <a href={withBasePath('/vocational-encyclopedia')} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
                     <BookOpen className="h-4 w-4" />
                     查看職群百科
                   </a>
