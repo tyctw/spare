@@ -3,8 +3,15 @@ import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import './index.css';
+import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
 
-const path = window.location.pathname.replace(/\/$/, '');
+const path = getCurrentRoutePath();
+const redirectedRoute = new URLSearchParams(window.location.search).get('route');
+
+if (redirectedRoute) {
+  window.history.replaceState(null, '', withBasePath(path));
+}
+
 const page =
   path === '/privacy' ? <LegalPage kind="privacy" /> :
   path === '/terms' ? <LegalPage kind="terms" /> :

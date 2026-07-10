@@ -40,6 +40,7 @@ import AppHeader from './components/layout/AppHeader';
 import Footer from './components/layout/Footer';
 import HeroBanner from './components/layout/HeroBanner';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
+import { withBasePath } from './lib/routes';
 
 const normalizeHistoricalScores = (scores: any[] = []) =>
   scores
@@ -1757,7 +1758,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                               key={btn.id}
                               onClick={() => {
                                 if (btn.id === 'privacy' || btn.id === 'terms') {
-                                  window.location.href = `/${btn.id}`;
+                                  window.location.href = withBasePath(`/${btn.id}`);
                                   return;
                                 }
                                 setActiveModal(btn.id as any);
