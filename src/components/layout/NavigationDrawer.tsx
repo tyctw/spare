@@ -71,8 +71,8 @@ const menuCategories: MenuCategory[] = [
       { id: 'search', label: '搜尋學校與科別', keywords: '搜尋 學校 科別 群別 縣市 代碼', icon: Search, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/search' } },
       { id: 'mockVolunteer', label: '模擬志願序', keywords: '志願序 模擬 排序 選填', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/mock-volunteer' } },
       { id: 'holland', label: 'Holland 興趣測驗', keywords: 'holland 興趣 測驗 性向 群科', icon: Brain, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/holland' } },
-      { id: 'vocational', label: '技職群科百科', keywords: '技職 群科 百科 職群 科別 職涯', icon: BookOpen, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'route', href: '/vocational-encyclopedia' } },
-      { id: 'schoolTypes', label: '學校類型介紹', keywords: '學校 類型 普高 技高 綜高 五專', icon: Building2, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/school-types' } },
+      { id: 'vocational', label: '技職群科百科', keywords: '技職 群科 百科 職群 科別 職涯 高職', icon: BookOpen, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'route', href: '/vocational-encyclopedia' } },
+      { id: 'schoolTypes', label: '學校類型介紹', keywords: '學校 類型 普高 技高 綜高 五專 高中 高職', icon: Building2, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/school-types' } },
     ],
   },
   {
@@ -88,7 +88,7 @@ const menuCategories: MenuCategory[] = [
       { id: 'historicalStats', label: '歷年錄取統計', keywords: '歷年 錄取 分數 統計', icon: ChartBar, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/historical-stats' } },
       { id: 'importantDates', label: '重要日程', keywords: '日期 日程 簡章 報名 放榜', icon: Map, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/important-dates' } },
       { id: 'strategy', label: '志願選填策略', keywords: '志願 選填 策略 建議', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'modal', id: 'strategy' } },
-      { id: 'disclaimer', label: '使用提醒與免責聲明', keywords: '提醒 免責 聲明 注意', icon: Shield, color: 'text-slate-600', bg: 'bg-slate-100', action: { type: 'modal', id: 'disclaimer' } },
+      { id: 'disclaimer', label: '免責聲明', keywords: '提醒 免責 聲明 注意', icon: Shield, color: 'text-slate-600', bg: 'bg-slate-100', action: { type: 'modal', id: 'disclaimer' } },
     ],
   },
   {
@@ -115,9 +115,9 @@ const menuCategories: MenuCategory[] = [
     color: 'text-emerald-700',
     bg: 'bg-emerald-50',
     items: [
-      { id: 'officialVolunteer', label: '志願選填相關平台', keywords: '志願 選填 外部 平台', icon: ChartBar, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'external', href: 'https://tyctw.github.io/volunteer/' } },
-      { id: 'shared', label: '共同就學區資料', keywords: '共同 就學區 資料 外部', icon: BookOpen, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'external', href: 'https://tyctw.github.io/shared/' } },
-      { id: 'score', label: '會考積分資料', keywords: '會考 積分 資料 外部', icon: List, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'external', href: 'https://tyctw.github.io/score/' } },
+      { id: 'officialVolunteer', label: '志願選填平台', keywords: '志願 選填 序位 平台', icon: ChartBar, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'external', href: 'https://tyctw.github.io/volunteer/' } },
+      { id: 'shared', label: '錄取分享', keywords: '錄取 分享 資料 高中', icon: BookOpen, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'external', href: 'https://tyctw.github.io/shared/' } },
+      { id: 'score', label: '序位分享', keywords: '會考 積分 序位 積點', icon: List, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'external', href: 'https://tyctw.github.io/score/' } },
     ],
   },
 ];
