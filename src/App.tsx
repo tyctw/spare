@@ -29,7 +29,6 @@ import RatingModal from './components/RatingModal';
 import AdvantagesModal from './components/AdvantagesModal';
 import InstructionsModal from './components/InstructionsModal';
 import ReportErrorModal from './components/ReportErrorModal';
-import SchoolTypesModal from './components/SchoolTypesModal';
 import StrategyModal from './components/StrategyModal';
 import HistoricalStatsModal from './components/HistoricalStatsModal';
 import ScoreInquiryModal from './components/ScoreInquiryModal';
@@ -231,6 +230,19 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
     const code = params.get('code') || params.get('invitationCode') || params.get('invite');
     if (code) {
       setFormData(prev => ({ ...prev, invitationCode: code }));
+    }
+
+    const hollandGroupsParam = params.get('hollandGroups') || params.get('vocationalGroups');
+    if (hollandGroupsParam) {
+      const recommendedGroups = hollandGroupsParam
+        .split(',')
+        .map(group => group.trim())
+        .filter(Boolean);
+
+      if (recommendedGroups.length > 0) {
+        setFormData(prev => ({ ...prev, schoolType: '職業類科' }));
+        setVocationalGroups(recommendedGroups);
+      }
     }
   }, []);
 
@@ -581,7 +593,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                       偏好學校類型
                     </label>
                     <button 
-                      onClick={() => setActiveModal('schoolTypes')}
+                      onClick={() => { window.location.href = withBasePath('/school-types'); }}
                       className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
                     >
                       <Building2 className="w-3 h-3" />
@@ -1415,13 +1427,13 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         onClose={() => setIsVocationalOpen(false)}
         selectedGroups={vocationalGroups}
         onChange={setVocationalGroups}
-        onOpenHollandTest={() => { setIsVocationalOpen(false); setIsHollandTestOpen(true); }}
+        onOpenHollandTest={() => { window.location.href = withBasePath('/holland'); }}
       />
 
       <VocationalEncyclopediaModal
         isOpen={isEncyclopediaOpen}
         onClose={() => setIsEncyclopediaOpen(false)}
-        onOpenHollandTest={() => { setIsEncyclopediaOpen(false); setIsHollandTestOpen(true); }}
+        onOpenHollandTest={() => { window.location.href = withBasePath('/holland'); }}
       />
       
       <HollandTestModal 
@@ -1592,11 +1604,6 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
         onClose={() => setActiveModal(null)} 
       />
 
-      <SchoolTypesModal 
-        isOpen={activeModal === 'schoolTypes'} 
-        onClose={() => setActiveModal(null)} 
-      />
-
       <StrategyModal 
         isOpen={activeModal === 'strategy'} 
         onClose={() => setActiveModal(null)} 
@@ -1681,7 +1688,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                       <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-4 border-slate-900 bg-white">
                         <div className="p-3 flex flex-col gap-2">
                             <button
-                              onClick={() => { setIsHollandTestOpen(true); setIsNavMenuOpen(false); }}
+                              onClick={() => { window.location.href = withBasePath('/holland'); }}
                               className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
                             >
                               <div className="flex items-center gap-3">
@@ -1705,7 +1712,7 @@ const [activeModal, setActiveModal] = useState<'instructions' | 'disclaimer' | '
                               <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
                             </button>
                             <button
-                              onClick={() => { setActiveModal('schoolTypes'); setIsNavMenuOpen(false); }}
+                              onClick={() => { window.location.href = withBasePath('/school-types'); }}
                               className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
                             >
                               <div className="flex items-center gap-3">
