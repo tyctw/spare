@@ -33,6 +33,7 @@ import DataProviderModal from './components/DataProviderModal';
 import AppHeader from './components/layout/AppHeader';
 import Footer from './components/layout/Footer';
 import HeroBanner from './components/layout/HeroBanner';
+import NavigationDrawer from './components/layout/NavigationDrawer';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 import { withBasePath } from './lib/routes';
 
@@ -1616,9 +1617,15 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'changelog' | 'gra
         onClose={() => setActiveModal(null)}
       />
 
+      <NavigationDrawer
+        isOpen={isNavMenuOpen}
+        onClose={() => setIsNavMenuOpen(false)}
+        setActiveModal={setActiveModal}
+      />
+
       {/* Navigation Drawer */}
       <AnimatePresence>
-        {isNavMenuOpen && (
+        {false && isNavMenuOpen && (
           <>
             {/* Backdrop */}
             <motion.div
