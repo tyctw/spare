@@ -411,6 +411,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 pb-32 overflow-hidden relative">
+      <a href="#main-content" className="skip-link">跳到主要內容</a>
       
       {/* Modern Background Blur Orbs */}
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-300/20 rounded-full blur-[100px] pointer-events-none"></div>
@@ -420,14 +421,15 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         isScrolled={isScrolled} 
         onShareClick={() => setActiveModal('sharePlatform')} 
         onMenuClick={() => setIsNavMenuOpen(true)} 
+        isMenuOpen={isNavMenuOpen}
       />
 
-      <main className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">
+      <main id="main-content" className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">
         
         <HeroBanner onDataProviderClick={() => setActiveModal('dataProvider')} />
 
         {errorMessage && (
-          <div className="p-4 bg-red-50 text-red-700 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] font-bold flex items-center gap-3">
+          <div role="alert" className="p-4 bg-red-50 text-red-700 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] font-bold flex items-center gap-3">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -497,15 +499,21 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               </div>
               
               <div className="flex gap-2 relative z-10">
+                <label htmlFor="invitation-code" className="sr-only">邀請碼</label>
                 <input
+                  id="invitation-code"
                   type="text"
                   placeholder="請輸入您的邀請碼"
                   value={formData.invitationCode}
                   onChange={(e) => updateForm('invitationCode', e.target.value)}
+                  autoComplete="off"
+                  required
                   className="flex-1 px-4 py-3 rounded-xl bg-white border-2 border-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-400/30 transition-all font-black text-slate-900 shadow-[inset_2px_2px_0px_rgba(0,0,0,0.05)] placeholder-slate-400 tracking-wide"
                 />
                 <button 
+                  type="button"
                   onClick={() => setActiveModal('qrcode')}
+                  aria-label="掃描 QR Code 輸入邀請碼"
                   className="px-4 py-3 bg-slate-900 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(251,191,36,1)] hover:bg-slate-800 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center group"
                   title="掃描 QR Code"
                 >
@@ -549,8 +557,10 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     { id: 'parent', label: '我是家長', icon: '👨‍👩‍👧' }
                   ].map(opt => (
                     <button
+                      type="button"
                       key={opt.id}
                       onClick={() => updateForm('identity', opt.id)}
+                      aria-pressed={formData.identity === opt.id}
                       className={`flex flex-col items-center justify-center gap-1 py-3 px-1 rounded-xl border-2 font-black transition-all ${
                         formData.identity === opt.id 
                           ? 'bg-emerald-400 text-slate-900 border-slate-900 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.5)] -translate-y-1' 
@@ -567,12 +577,13 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               <div className="space-y-4 pt-6 relative z-10">
                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
                 <div>
-                  <label className="text-sm font-black text-slate-900 flex items-center gap-2 mb-3">
+                  <label htmlFor="school-ownership" className="text-sm font-black text-slate-900 flex items-center gap-2 mb-3">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 border border-slate-900 inline-block"></span>
                     偏好學校屬性
                   </label>
                   <div className="relative">
                     <select
+                      id="school-ownership"
                       className="w-full pl-4 pr-10 py-3 rounded-xl bg-white border-2 border-slate-900 appearance-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 transition-all font-bold text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] cursor-pointer"
                       value={formData.schoolOwnership}
                       onChange={(e) => updateForm('schoolOwnership', e.target.value)}
@@ -588,11 +599,12 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 </div>
                 <div>
                   <div className="flex items-center justify-between mt-4 mb-3">
-                    <label className="text-sm font-black text-slate-900 flex items-center gap-2">
+                    <label htmlFor="school-type" className="text-sm font-black text-slate-900 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 border border-slate-900 inline-block"></span>
                       偏好學校類型
                     </label>
                     <button 
+                      type="button"
                       onClick={() => { window.location.href = withBasePath('/school-types'); }}
                       className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
                     >
@@ -602,6 +614,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   </div>
                   <div className="relative">
                     <select
+                      id="school-type"
                       className="w-full pl-4 pr-10 py-3 rounded-xl bg-white border-2 border-slate-900 appearance-none focus:outline-none focus:ring-4 focus:ring-emerald-400/30 transition-all font-bold text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] cursor-pointer"
                       value={formData.schoolType}
                       onChange={(e) => {
@@ -670,7 +683,10 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 
                 <div className="flex flex-row gap-2 sm:gap-3 w-full">
                   <button
+                    type="button"
                     onClick={() => setIsRegionOpen(true)}
+                    aria-haspopup="dialog"
+                    aria-expanded={isRegionOpen}
                     className="flex-1 px-4 sm:px-6 py-4 rounded-2xl border-2 border-slate-900 flex items-center justify-between gap-2 sm:gap-4 font-black transition-all bg-amber-100 text-amber-900 hover:bg-amber-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
                   >
                     <div className="flex items-center gap-3">
@@ -686,6 +702,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   </button>
                   {formData.region && (
                     <button
+                      type="button"
                       onClick={() => setActiveModal('scoringMethod')}
                       className="shrink-0 px-3 sm:px-4 py-4 rounded-2xl border-2 border-slate-900 flex items-center justify-center gap-1 sm:gap-2 font-black transition-all bg-white text-slate-900 hover:bg-slate-100 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
                     >
@@ -729,7 +746,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 ].map(subject => (
                   <div key={subject.id} className={`relative group ${subject.theme} border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3`}>
                     <div className="flex items-center justify-between gap-2 sm:gap-4">
-                      <label className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 shrink-0">
+                      <label htmlFor={`score-${subject.id}`} className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 shrink-0">
                         <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] bg-slate-50`}>
                           <subject.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${subject.color}`} />
                         </div>
@@ -737,6 +754,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                       </label>
                       <div className="relative w-full max-w-[180px] sm:max-w-[200px]">
                         <select
+                          id={`score-${subject.id}`}
+                          required
                           className={`w-full px-2 sm:px-4 py-2 sm:py-3 rounded-xl border-2 font-black text-sm sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 transition-all cursor-pointer ${subject.bgBorder}`}
                           value={(formData as any)[subject.id]}
                           onChange={(e) => updateForm(subject.id, e.target.value)}
@@ -784,7 +803,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 {/* Composition */}
                 <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3">
                   <div className="flex items-center justify-between gap-2 sm:gap-4">
-                    <label className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 shrink-0">
+                    <label htmlFor="score-composition" className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 shrink-0">
                       <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(251,191,36,0.2)] bg-slate-800">
                         <PenTool className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
                       </div>
@@ -792,6 +811,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     </label>
                     <div className="relative w-full max-w-[180px] sm:max-w-[200px]">
                       <select
+                        id="score-composition"
+                        required
                         className="w-full px-2 sm:px-4 py-2 sm:py-3 rounded-xl border-2 border-slate-700 bg-slate-800 text-amber-400 font-black text-sm sm:text-lg appearance-none outline-none focus:outline-none focus:ring-4 focus:ring-amber-400/50 hover:border-amber-500/50 transition-all cursor-pointer"
                         value={formData.composition}
                         onChange={(e) => updateForm('composition', e.target.value)}
@@ -860,8 +881,10 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       <div className="sticky bottom-6 left-0 right-0 w-full px-4 z-50 pointer-events-none mt-8">
         <div className="max-w-2xl mx-auto pointer-events-auto">
           <button
+            type="button"
             onClick={handleAnalyze}
             disabled={status === 'auth' || status === 'quantum'}
+            aria-busy={status === 'auth' || status === 'quantum'}
             className="w-full flex items-center justify-center gap-3 bg-indigo-500 border-2 border-slate-900 text-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] rounded-2xl py-4 px-8 text-xl font-black transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(15,23,42,1)] disabled:bg-slate-400 group"
           >
             {status === 'quantum' ? (
@@ -908,6 +931,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         {status === 'success' && results && (
           <motion.div 
             id="results-section"
+            role="region"
+            aria-live="polite"
+            aria-label="分析結果"
             initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} 
             className="max-w-6xl mx-auto px-4 pt-10"
           >
@@ -1143,7 +1169,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 <div className="flex flex-col sm:flex-row gap-3 mb-4 bg-slate-50 p-3 rounded-2xl border-2 border-slate-200">
                   <div className="flex-1 relative">
                     <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <label htmlFor="result-filter-text" className="sr-only">搜尋分析結果</label>
                     <input 
+                      id="result-filter-text"
                       type="text" 
                       placeholder="搜尋學校、科別關鍵字..." 
                       value={resultFilterText}
@@ -1152,7 +1180,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     />
                   </div>
                   <div className="flex flex-wrap gap-2">
+                    <label htmlFor="result-filter-zone" className="sr-only">依落點區間篩選</label>
                     <select 
+                      id="result-filter-zone"
                       value={resultFilterZone} 
                       onChange={e => setResultFilterZone(e.target.value)}
                       className="flex-1 sm:flex-none px-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900"
@@ -1162,7 +1192,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                       <option value="target">實際區</option>
                       <option value="safe">保守區</option>
                     </select>
+                    <label htmlFor="result-filter-ownership" className="sr-only">依學校屬性篩選</label>
                     <select 
+                      id="result-filter-ownership"
                       value={resultFilterOwnership} 
                       onChange={e => setResultFilterOwnership(e.target.value)}
                       className="flex-1 sm:flex-none px-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900"
@@ -1171,7 +1203,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                       <option value="public">公立</option>
                       <option value="private">私立</option>
                     </select>
+                    <label htmlFor="result-filter-type" className="sr-only">依學校類型篩選</label>
                     <select 
+                      id="result-filter-type"
                       value={resultFilterType} 
                       onChange={e => setResultFilterType(e.target.value)}
                       className="flex-1 sm:flex-none px-3 py-2 bg-white rounded-xl border-2 border-slate-200 text-sm font-bold focus:outline-none focus:border-slate-900"

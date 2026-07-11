@@ -23,6 +23,8 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
              initial={{ scale: 0.95, opacity: 0, y: 20 }} 
              animate={{ scale: 1, opacity: 1, y: 0 }} 
              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+             role="dialog"
+             aria-modal="true"
              className="relative w-full max-w-4xl bg-slate-50 rounded-[32px] shadow-2xl border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] max-h-[90vh] flex flex-col"
           >
             {/* Header */}
@@ -37,7 +39,9 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
                   </div>
                </div>
                <button 
+                  type="button"
                   onClick={onClose} 
+                  aria-label="關閉免責聲明"
                   className="w-10 h-10 bg-white border-2 border-slate-900 rounded-xl flex items-center justify-center hover:bg-slate-100 active:translate-y-1 transition-all shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none shrink-0"
                >
                   <X className="w-5 h-5 text-slate-900" />
@@ -141,6 +145,7 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
              <div className="p-4 sm:p-6 bg-white border-t-4 border-slate-900 flex justify-end shrink-0 w-full gap-4 items-center">
                 <span className="text-sm font-bold text-slate-400 hidden sm:inline-block">點擊按鈕表示您已充分理解並同意以上條款。</span>
                 <button 
+                  type="button"
                   onClick={onClose} 
                   className="w-full sm:w-auto px-10 py-3 sm:py-4 bg-slate-900 text-white rounded-2xl border-4 border-slate-900 font-black text-lg hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(245,158,11,1)] active:translate-y-0 active:shadow-[0px_0px_0px_0px_rgba(245,158,11,1)] transition-all flex items-center justify-center gap-2"
                 >

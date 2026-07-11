@@ -5,9 +5,10 @@ interface AppHeaderProps {
   isScrolled: boolean;
   onShareClick: () => void;
   onMenuClick: () => void;
+  isMenuOpen?: boolean;
 }
 
-export default function AppHeader({ isScrolled, onShareClick, onMenuClick }: AppHeaderProps) {
+export default function AppHeader({ isScrolled, onShareClick, onMenuClick, isMenuOpen = false }: AppHeaderProps) {
   return (
     <div className={`fixed top-0 left-0 right-0 z-50 pointer-events-none transition-all duration-300 ${isScrolled ? 'p-2 sm:p-2' : 'p-4 sm:p-6'}`}>
       <div className="max-w-6xl mx-auto pointer-events-auto">
@@ -26,19 +27,26 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick }: App
               href="https://tyctw.github.io/form/"
               target="_blank"
               rel="noreferrer"
+              aria-label="前往取得邀請碼頁面，新分頁開啟"
               className={`flex items-center justify-center gap-2 bg-amber-400 text-slate-900 border-slate-900 font-black transition hover:bg-amber-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'px-3 h-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'px-4 sm:px-5 h-12 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
             >
               <KeyRound className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
               <span className={`hidden md:inline uppercase tracking-wide ${isScrolled ? 'text-xs' : ''}`}>取得邀請碼</span>
             </a>
             <button
+              type="button"
               onClick={onShareClick}
+              aria-label="開啟分享選單"
               className={`bg-emerald-200 flex items-center justify-center border-slate-900 transition hover:bg-emerald-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
             >
               <Share2 className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
             </button>
             <button
+              type="button"
               onClick={onMenuClick}
+              aria-label={isMenuOpen ? '主選單已開啟' : '開啟主選單'}
+              aria-controls="main-navigation-drawer"
+              aria-expanded={isMenuOpen}
               className={`bg-sky-200 flex items-center justify-center border-slate-900 transition hover:bg-sky-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 sm:w-10 sm:h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'}`}
             >
               <Menu className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />

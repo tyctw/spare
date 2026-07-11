@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import {
   AlertCircle,
@@ -125,6 +125,22 @@ const menuCategories: MenuCategory[] = [
 export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerProps) {
   const [expandedCategory, setExpandedCategory] = useState('common');
   const [searchTerm, setSearchTerm] = useState('');
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
   const filteredCategories = useMemo(() => {
@@ -171,15 +187,21 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            id="main-navigation-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="main-navigation-title"
             className="fixed right-0 top-0 z-[110] flex h-full w-[380px] max-w-full flex-col overflow-hidden border-l-4 border-slate-900 bg-slate-50 shadow-[-8px_0px_0px_0px_rgba(15,23,42,0.1)]"
           >
             <div className="shrink-0 border-b-4 border-slate-900 bg-amber-400 p-5">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <Menu className="h-6 w-6 text-slate-900" />
-                  <h2 className="text-2xl font-black tracking-tight text-slate-900">主選單</h2>
+                  <h2 id="main-navigation-title" className="text-2xl font-black tracking-tight text-slate-900">主選單</h2>
                 </div>
                 <button
+                  ref={closeButtonRef}
+                  type="button"
                   onClick={onClose}
                   className="flex h-10 w-10 items-center justify-center rounded-xl border-4 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-1 active:shadow-none"
                   aria-label="關閉主選單"
@@ -192,6 +214,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                 <input
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
+                  aria-label="搜尋主選單項目"
                   placeholder="搜尋功能、頁面或關鍵字..."
                   className="h-12 w-full rounded-xl border-4 border-slate-900 bg-white pl-11 pr-12 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-sky-50"
                 />
@@ -214,6 +237,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                   <Search className="mx-auto h-10 w-10 text-slate-300" />
                   <div className="mt-3 text-lg font-black text-slate-900">找不到符合的功能</div>
                   <button
+                    type="button"
                     onClick={() => setSearchTerm('')}
                     className="mt-4 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-2 text-sm font-black text-white transition hover:bg-slate-700"
                   >
@@ -228,7 +252,10 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                   return (
                     <div key={category.id} className="overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                       <button
+                        type="button"
                         onClick={() => setExpandedCategory((current) => (current === category.id ? '' : category.id))}
+                        aria-expanded={isExpanded}
+                        aria-controls={`nav-category-${category.id}`}
                         className={`flex w-full items-center justify-between p-4 ${category.bg} outline-none transition-colors hover:bg-opacity-80`}
                       >
                         <div className="flex min-w-0 items-center gap-3">
@@ -242,6 +269,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                       <AnimatePresence>
                         {isExpanded && (
                           <motion.div
+                            id={`nav-category-${category.id}`}
                             initial={{ height: 0 }}
                             animate={{ height: 'auto' }}
                             exit={{ height: 0 }}
@@ -255,7 +283,9 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                                 return (
                                   <button
                                     key={item.id}
+                                    type="button"
                                     onClick={() => runAction(item.action)}
+                                    aria-label={isExternal ? `${item.label}，新分頁開啟` : item.label}
                                     className="group flex w-full items-center justify-between rounded-xl border-2 border-transparent px-4 py-3.5 text-left transition-all hover:border-slate-900 hover:bg-slate-50 active:scale-95"
                                   >
                                     <div className="flex min-w-0 items-center gap-3">

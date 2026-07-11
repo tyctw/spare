@@ -68,6 +68,8 @@ export default function SharePlatformModal({ isOpen, onClose }: SharePlatformMod
             size={180} 
             level="H" 
             includeMargin={true}
+            role="img"
+            aria-label="目前頁面的分享 QR Code"
             className="w-40 h-40 sm:w-56 sm:h-56"
           />
         </div>
@@ -94,7 +96,10 @@ export default function SharePlatformModal({ isOpen, onClose }: SharePlatformMod
             {platformUrl}
           </div>
           <button 
+            type="button"
             onClick={handleCopy}
+            aria-label={copied ? '已複製分享連結' : '複製分享連結'}
+            aria-live="polite"
             className="shrink-0 bg-slate-900 text-white rounded-xl px-5 py-3 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] hover:bg-slate-800 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center font-bold"
           >
             {copied ? <Check className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5" />}
