@@ -11,6 +11,7 @@ import InstructionsPage from './components/InstructionsPage.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import MockVolunteerPage from './components/MockVolunteerPage.tsx';
 import SearchPage from './components/SearchPage.tsx';
+import ResultsPage from './components/ResultsPage.tsx';
 import SiteMapPage from './components/SiteMapPage.tsx';
 import SchoolTypesPage from './components/SchoolTypesPage.tsx';
 import VocationalEncyclopediaPage from './components/VocationalEncyclopediaPage.tsx';
@@ -34,6 +35,7 @@ const page =
   path === '/important-dates' ? <ImportantDatesPage /> :
   path === '/mock-volunteer' ? <MockVolunteerPage /> :
   path === '/search' ? <SearchPage /> :
+  path === '/results' ? <ResultsPage /> :
   path === '/site-map' ? <SiteMapPage /> :
   path === '/instructions' ? <InstructionsPage /> :
   path === '/holland' ? <HollandPage /> :

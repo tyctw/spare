@@ -38,6 +38,7 @@ import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDispla
 import { withBasePath } from './lib/routes';
 
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
+const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
 
 const normalizeHistoricalScores = (scores: any[] = []) =>
   scores
@@ -254,29 +255,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Check if user has entered data
-      const hasData = results !== null || 
-                      formData.chinese !== '' ||
-                      formData.english !== '' ||
-                      formData.math !== '' ||
-                      formData.science !== '' ||
-                      formData.social !== '' ||
-                      formData.composition !== '';
-      
-      if (hasData) {
-        e.preventDefault();
-        // The dialog message can't be customized in modern browsers, 
-        // but returning a string activates the standard warning.
-        e.returnValue = ''; 
-      }
-    };
-    
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [formData, results]);
-
   const updateForm = (key: string, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
@@ -361,11 +339,19 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       };
 
       const data = await callBackend<any>(payload);
+      sessionStorage.setItem(
+        RESULTS_STORAGE_KEY,
+        JSON.stringify({
+          scores: formData,
+          results: data,
+          identity: formData.identity,
+          vocationalGroups,
+          createdAt: new Date().toISOString(),
+        }),
+      );
       setResults(data);
       setStatus('success');
-      setTimeout(() => {
-        document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' });
-      }, 300);
+      window.location.href = withBasePath('/results');
       
       // Delay status change to allow Quantum overlay to finish
       // QuantumLoadingOverlay handles it internally calling onComplete which will set status to success
