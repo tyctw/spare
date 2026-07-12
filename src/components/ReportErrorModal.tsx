@@ -8,6 +8,45 @@ interface ReportErrorModalProps {
   onClose: () => void;
 }
 
+const inappropriateContentPatterns = [
+  /幹/,
+  /靠北/,
+  /靠腰/,
+  /三小/,
+  /白癡/,
+  /智障/,
+  /低能/,
+  /去死/,
+  /王八/,
+  /垃圾/,
+  /賤/,
+  /婊/,
+  /操/,
+  /肏/,
+  /屌/,
+  /雞巴/,
+  /機掰/,
+  /懶叫/,
+  /洨/,
+  /精液/,
+  /陰莖/,
+  /陰道/,
+  /fuck/,
+  /shit/,
+  /bitch/,
+  /asshole/,
+];
+
+const normalizeContentForModeration = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[\s\u200b\u200c\u200d\p{P}\p{S}_]+/gu, '');
+
+const hasInappropriateContent = (value: string) => {
+  const normalized = normalizeContentForModeration(value);
+  return inappropriateContentPatterns.some((pattern) => pattern.test(normalized));
+};
+
 export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalProps) {
   const [type, setType] = useState('school_data');
   const [description, setDescription] = useState('');
@@ -15,6 +54,7 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const descriptionHasInappropriateContent = hasInappropriateContent(description);
 
   if (!isOpen) return null;
 
@@ -22,6 +62,10 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
     e.preventDefault();
     if (!description.trim()) {
       setError('請輸入問題描述');
+      return;
+    }
+    if (descriptionHasInappropriateContent) {
+      setError('問題描述含有不適當字詞，請調整為具體、理性的回報內容。');
       return;
     }
 
@@ -121,10 +165,19 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
                   <label className="block text-sm font-black text-slate-900 mb-2">問題描述 <span className="text-rose-500">*</span></label>
                   <textarea
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                      if (error) setError('');
+                    }}
                     placeholder="請描述您發現的問題（例如：某某高中少了資訊科、計算分數和簡章不同...等等）"
-                    className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 transition-all resize-none h-32"
+                    aria-invalid={descriptionHasInappropriateContent}
+                    className={`w-full px-4 py-3 bg-white border-2 rounded-xl font-bold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-all resize-none h-32 ${descriptionHasInappropriateContent ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-slate-900'}`}
                   ></textarea>
+                  {descriptionHasInappropriateContent && (
+                    <p className="mt-2 text-sm font-bold text-rose-600">
+                      請避免不雅、攻擊或色情字詞，改用具體資料與修正建議描述問題。
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -147,7 +200,7 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
                 <div className="pt-2">
                   <button
                     type="submit"
-                    disabled={submitting}
+                    disabled={submitting || descriptionHasInappropriateContent}
                     className="w-full flex items-center justify-center gap-2 py-4 bg-slate-900 text-white font-black text-lg rounded-2xl border-4 border-slate-900 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(225,29,72,1)] active:translate-y-0 active:shadow-none disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
                   >
                     {submitting ? (
