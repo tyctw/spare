@@ -287,6 +287,13 @@ export default function ResultsPage() {
             回到落點分析
           </a>
           <div className="flex flex-wrap gap-2">
+            <a
+              href={withBasePath('/school-types')}
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-100 px-4 py-2 text-sm font-black text-sky-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
+            >
+              <Building2 className="h-4 w-4" />
+              學校類型解析
+            </a>
             <button
               type="button"
               onClick={() => setIsComparisonOpen(true)}
@@ -537,72 +544,65 @@ export default function ResultsPage() {
                         </div>
                       )}
 
-                      <button
-                        type="button"
-                        onClick={() => setHistoricalScoreSchool(school)}
-                        className={`rounded-2xl border-2 border-slate-900 px-3.5 py-3.5 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all ${historicalScores.length > 0 ? 'bg-amber-50' : 'bg-slate-50'}`}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-9 h-9 rounded-xl border-2 border-slate-900 bg-white flex items-center justify-center shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] shrink-0">
-                              {historicalScores.length > 0 ? (
-                                <History className="w-4 h-4 text-amber-700" />
-                              ) : (
-                                <Database className="w-4 h-4 text-slate-500" />
-                              )}
-                            </div>
-                            <div className="min-w-0">
-                              <div className="text-xs font-black text-slate-900">歷年錄取成績</div>
-                              <div className="text-[11px] font-bold text-slate-600 truncate">
-                                {historicalScores.length > 0 ? (
-                                  <>
-                                    最新 {latestHistoricalScore?.year || '--'} 積分 {latestHistoricalScore?.points ?? '--'}
-                                    {` / 積點 ${formatHistoricalCredits(latestHistoricalScore?.credits)}`}
-                                  </>
-                                ) : (
-                                  historicalScoresPendingText
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-end gap-1 shrink-0">
-                            {historicalScores.length > 0 ? (
-                              <span className={`rounded-lg border px-2 py-0.5 text-[10px] font-black ${historicalTrend.tone}`}>
-                                {historicalTrend.label}
-                              </span>
-                            ) : (
-                              <span className="rounded-lg border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-500">
-                                資料整理中
-                              </span>
-                            )}
-                            <span className="text-[10px] font-black text-amber-700">查看詳情</span>
-                          </div>
-                        </div>
-                      </button>
-
-                      <div className="flex gap-2.5">
+                      <div className="mt-auto grid grid-cols-2 gap-2.5">
+                        <button
+                          type="button"
+                          onClick={() => setHistoricalScoreSchool(school)}
+                          className={`min-h-[4.5rem] rounded-xl border-2 border-slate-900 px-2.5 py-2.5 text-center text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none ${historicalScores.length > 0 ? 'bg-amber-50 text-amber-800' : 'bg-slate-50 text-slate-700'}`}
+                        >
+                          <span className="flex items-center justify-center gap-1.5">
+                            {historicalScores.length > 0 ? <History className="h-4 w-4" /> : <Database className="h-4 w-4" />}
+                            歷年成績
+                          </span>
+                          <span className="mt-1 block truncate text-[11px] font-bold text-slate-600">
+                            {historicalScores.length > 0
+                              ? `${latestHistoricalScore?.year || '--'} 積分 ${latestHistoricalScore?.points ?? '--'} / 積點 ${formatHistoricalCredits(latestHistoricalScore?.credits)}`
+                              : historicalScoresPendingText}
+                          </span>
+                        </button>
+                        <a
+                          href={`https://www.google.com/search?q=${encodeURIComponent(`${school.name} 學校介紹`)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(event) => event.stopPropagation()}
+                          className="flex min-h-[4.5rem] flex-col items-center justify-center rounded-xl border-2 border-slate-900 bg-sky-50 px-2.5 py-2.5 text-center text-sm font-black text-sky-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-sky-100 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
+                        >
+                          <span className="flex items-center justify-center gap-1.5">
+                            <ExternalLink className="h-4 w-4" />
+                            學校介紹
+                          </span>
+                          <span className="mt-1 block text-[11px] font-bold text-slate-600">搜尋校網資訊</span>
+                        </a>
                         <a
                           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`}
                           target="_blank"
                           rel="noreferrer"
                           onClick={(event) => event.stopPropagation()}
-                          className="flex-[2] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-1.5 transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+                          className="flex min-h-[4.5rem] flex-col items-center justify-center rounded-xl border-2 border-slate-900 bg-emerald-50 px-2.5 py-2.5 text-center text-sm font-black text-emerald-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-emerald-100 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
                         >
-                          <MapPin className="w-4 h-4" /> 學校地圖
+                          <span className="flex items-center justify-center gap-1.5">
+                            <MapPin className="h-4 w-4" />
+                            學校地圖
+                          </span>
+                          <span className="mt-1 block text-[11px] font-bold text-slate-600">查看位置</span>
                         </a>
                         <button
+                          type="button"
                           onClick={(event) => {
                             event.stopPropagation();
                             toggleComparison(school);
                           }}
-                          className={`flex-[3] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+                          className={`flex min-h-[4.5rem] flex-col items-center justify-center rounded-xl border-2 border-slate-900 px-2.5 py-2.5 text-center text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all ${
                             isCompared
-                              ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-indigo-500'
-                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'
+                              ? 'bg-indigo-600 text-white hover:bg-indigo-500'
+                              : 'bg-slate-100 text-slate-700 hover:-translate-y-0.5 hover:bg-slate-200 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none'
                           }`}
                         >
-                          {isCompared ? <Check className="w-4 h-4" /> : <List className="w-4 h-4" />}
-                          {isCompared ? '已加入比較' : '加入比較'}
+                          <span className="flex items-center justify-center gap-1.5">
+                            {isCompared ? <Check className="h-4 w-4" /> : <List className="h-4 w-4" />}
+                            {isCompared ? '已加入比較' : '加入比較'}
+                          </span>
+                          <span className={`mt-1 block text-[11px] font-bold ${isCompared ? 'text-indigo-100' : 'text-slate-600'}`}>比較校科</span>
                         </button>
                       </div>
                     </article>
