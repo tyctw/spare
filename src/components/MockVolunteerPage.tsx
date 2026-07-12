@@ -296,7 +296,7 @@ export default function MockVolunteerPage() {
             <div>
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1 text-xs font-black text-sky-700">
                 <Target className="h-4 w-4" />
-                獨立頁面工具
+                僅供討論使用
               </div>
               <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">模擬志願選填</h1>
               <p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-slate-600 sm:text-base">
