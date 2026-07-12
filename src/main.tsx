@@ -14,6 +14,7 @@ import SearchPage from './components/SearchPage.tsx';
 import ResultsPage from './components/ResultsPage.tsx';
 import SiteMapPage from './components/SiteMapPage.tsx';
 import SchoolTypesPage from './components/SchoolTypesPage.tsx';
+import StrategyPage from './components/StrategyPage.tsx';
 import VocationalEncyclopediaPage from './components/VocationalEncyclopediaPage.tsx';
 import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
@@ -40,6 +41,7 @@ const page =
   path === '/instructions' ? <InstructionsPage /> :
   path === '/holland' ? <HollandPage /> :
   path === '/school-types' ? <SchoolTypesPage /> :
+  path === '/strategy' ? <StrategyPage /> :
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
   <App />;
 

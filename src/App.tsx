@@ -25,7 +25,6 @@ import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScor
 import SharePlatformModal from './components/SharePlatformModal';
 import RatingModal from './components/RatingModal';
 import ReportErrorModal from './components/ReportErrorModal';
-import StrategyModal from './components/StrategyModal';
 import HistoricalStatsModal from './components/HistoricalStatsModal';
 import ScoreInquiryModal from './components/ScoreInquiryModal';
 import DataProviderModal from './components/DataProviderModal';
@@ -955,7 +954,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                           </div>
                         </div>
                         <button
-                          onClick={() => setActiveModal('strategy')}
+                          onClick={() => { window.location.href = withBasePath('/strategy'); }}
                           className="w-full sm:w-auto px-5 py-3 bg-amber-400 text-slate-900 font-bold text-sm sm:text-base rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all flex items-center justify-center gap-2"
                         >
                           <Target className="w-5 h-5" />
@@ -1147,6 +1146,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     </button>
                     <button onClick={() => setActiveModal('export')} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
                       <Download className="w-4 h-4" /> 匯出報告
+                    </button>
+                    <button onClick={() => { window.location.href = withBasePath('/strategy'); }} className="px-3 py-1.5 bg-amber-50 text-amber-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
+                      <Target className="w-4 h-4" /> 志願選填攻略
                     </button>
                   </div>
                 </div>
@@ -1607,11 +1609,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         </div>
       </InfoModal>
 
-      <StrategyModal 
-        isOpen={activeModal === 'strategy'} 
-        onClose={() => setActiveModal(null)} 
-      />
-
       <HistoricalStatsModal 
         isOpen={activeModal === 'historicalStats'}
         onClose={() => setActiveModal(null)}
@@ -1767,7 +1764,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                             <button
                               key={btn.id}
                               onClick={() => {
-                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats' || btn.id === 'gradeLevel' || btn.id === 'mockVolunteer' || btn.id === 'importantDates') {
+                                if (btn.id === 'privacy' || btn.id === 'terms' || btn.id === 'changelog' || btn.id === 'advantages' || btn.id === 'instructions' || btn.id === 'historicalStats' || btn.id === 'gradeLevel' || btn.id === 'mockVolunteer' || btn.id === 'importantDates' || btn.id === 'strategy') {
                                   window.location.href = withBasePath(btn.id === 'historicalStats' ? '/historical-stats' : btn.id === 'gradeLevel' ? '/grade-level' : btn.id === 'mockVolunteer' ? '/mock-volunteer' : btn.id === 'importantDates' ? '/important-dates' : `/${btn.id}`);
                                   return;
                                 }

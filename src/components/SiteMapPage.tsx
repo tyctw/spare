@@ -55,7 +55,7 @@ const categories: Array<{ title: string; desc: string; items: SiteMapItem[] }> =
       { title: 'Holland 興趣測驗', desc: '完成 30 題簡易測驗，取得 RIASEC 類型與推薦技職群別。', href: '/holland', icon: Sparkles, tone: 'bg-purple-100 text-purple-700' },
       { title: '技職群科百科', desc: '查 15 大技職群別、常見科別、特質、Holland 類型與未來進路。', href: '/vocational-encyclopedia', icon: BookOpen, tone: 'bg-emerald-100 text-emerald-700' },
       { title: '學校類型介紹', desc: '比較普通型高中、技術型高中、綜合型高中、單科型高中與五專。', href: '/school-types', icon: Building2, tone: 'bg-sky-100 text-sky-700' },
-      { title: '策略建議', desc: '提供填志願、排序與判斷落點區間的提醒與策略方向。', href: '/', icon: Target, tone: 'bg-orange-100 text-orange-700' },
+      { title: '策略建議', desc: '提供填志願、排序與判斷落點區間的提醒與策略方向。', href: '/strategy', icon: Target, tone: 'bg-orange-100 text-orange-700' },
     ],
   },
   {

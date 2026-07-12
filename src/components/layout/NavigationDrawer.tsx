@@ -87,7 +87,7 @@ const menuCategories: MenuCategory[] = [
       { id: 'gradeLevel', label: '積分換算說明', keywords: '積分 換算 等級 A B C', icon: Award, color: 'text-rose-600', bg: 'bg-rose-100', action: { type: 'route', href: '/grade-level' } },
       { id: 'historicalStats', label: '歷年錄取統計', keywords: '歷年 錄取 分數 統計', icon: ChartBar, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/historical-stats' } },
       { id: 'importantDates', label: '重要日程', keywords: '日期 日程 簡章 報名 放榜', icon: Map, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/important-dates' } },
-      { id: 'strategy', label: '志願選填策略', keywords: '志願 選填 策略 建議', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'modal', id: 'strategy' } },
+      { id: 'strategy', label: '志願選填策略', keywords: '志願 選填 策略 建議', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/strategy' } },
       { id: 'disclaimer', label: '免責聲明', keywords: '提醒 免責 聲明 注意', icon: Shield, color: 'text-slate-600', bg: 'bg-slate-100', action: { type: 'modal', id: 'disclaimer' } },
     ],
   },
