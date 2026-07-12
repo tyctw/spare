@@ -483,7 +483,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 })()}
               </div>
               
-              <div className="flex gap-2 relative z-10">
+              <div className="relative z-10 grid grid-cols-[minmax(0,1fr)_48px] gap-2">
                 <label htmlFor="invitation-code" className="sr-only">邀請碼</label>
                 <input
                   id="invitation-code"
@@ -493,13 +493,13 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   onChange={(e) => updateForm('invitationCode', e.target.value)}
                   autoComplete="off"
                   required
-                  className="flex-1 px-4 py-3 rounded-xl bg-white border-2 border-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-400/30 transition-all font-black text-slate-900 shadow-[inset_2px_2px_0px_rgba(0,0,0,0.05)] placeholder-slate-400 tracking-wide"
+                  className="min-w-0 w-full px-3 py-3 sm:px-4 rounded-xl bg-white border-2 border-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-400/30 transition-all font-black text-slate-900 shadow-[inset_2px_2px_0px_rgba(0,0,0,0.05)] placeholder-slate-400 tracking-wide"
                 />
                 <button 
                   type="button"
                   onClick={() => setActiveModal('qrcode')}
                   aria-label="掃描 QR Code 輸入邀請碼"
-                  className="px-4 py-3 bg-slate-900 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(251,191,36,1)] hover:bg-slate-800 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center group"
+                  className="flex h-full min-h-[52px] w-12 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-slate-900 text-white shadow-[2px_2px_0px_0px_rgba(251,191,36,1)] transition-all hover:bg-slate-800 active:translate-y-1 active:shadow-none group"
                   title="掃描 QR Code"
                 >
                   <QrCode className="w-6 h-6 group-hover:scale-110 transition-transform" />
