@@ -95,6 +95,43 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' },
   });
 
+const inappropriateContentPatterns = [
+  /幹/,
+  /靠北/,
+  /靠腰/,
+  /三小/,
+  /白癡/,
+  /智障/,
+  /低能/,
+  /去死/,
+  /王八/,
+  /垃圾/,
+  /賤/,
+  /婊/,
+  /操/,
+  /肏/,
+  /屌/,
+  /雞巴/,
+  /機掰/,
+  /懶叫/,
+  /洨/,
+  /精液/,
+  /陰莖/,
+  /陰道/,
+  /fuck/,
+  /shit/,
+  /bitch/,
+  /asshole/,
+];
+
+const normalizeContentForModeration = (value: string) =>
+  value.toLowerCase().replace(/[\s\u200b\u200c\u200d\p{P}\p{S}_]+/gu, '');
+
+const hasInappropriateContent = (value: string) => {
+  const normalized = normalizeContentForModeration(value);
+  return inappropriateContentPatterns.some((pattern) => pattern.test(normalized));
+};
+
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -645,7 +682,8 @@ function filterSchools(
       return (
         (zoneOrder[a.zone] ?? 99) - (zoneOrder[b.zone] ?? 99) ||
         (a.zone === 'reach' && b.zone === 'reach'
-          ? Math.abs(b.scoreDiff) - Math.abs(a.scoreDiff)
+          ? Math.abs(b.scoreDiff) - Math.abs(a.scoreDiff) ||
+            Math.abs(b.creditDiff ?? 0) - Math.abs(a.creditDiff ?? 0)
           : Math.abs(a.scoreDiff) - Math.abs(b.scoreDiff)) ||
         b.points - a.points ||
         (b.credits || 0) - (a.credits || 0)
@@ -787,6 +825,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       const description = String(payload.payload?.description || '').trim();
 
       if (!description) throw new Error('請輸入問題描述');
+      if (hasInappropriateContent(description)) throw new Error('問題描述含有不適當字詞，請調整為具體、理性的回報內容。');
 
       const { error } = await withTimeout(
         supabase.from('error_reports').insert({
