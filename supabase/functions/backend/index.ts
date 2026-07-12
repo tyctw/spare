@@ -31,6 +31,7 @@ type SchoolRow = {
   min_math: number | null;
   min_science: number | null;
   min_social: number | null;
+  min_composition: number | null;
   created_at?: string;
   updated_at?: string;
 };
@@ -491,6 +492,16 @@ function filterSchools(
     math: '數學',
     science: '自然',
     social: '社會',
+    composition: '作文',
+  };
+
+  const requirementValues: Record<string, number> = {
+    chinese: scoreValues[scores.chinese],
+    english: scoreValues[scores.english],
+    math: scoreValues[scores.math],
+    science: scoreValues[scores.science],
+    social: scoreValues[scores.social],
+    composition: scores.composition,
   };
 
   return rows
@@ -511,6 +522,7 @@ function filterSchools(
           math: row.min_math,
           science: row.min_science,
           social: row.min_social,
+          composition: row.min_composition,
         },
       };
 
@@ -553,7 +565,7 @@ function filterSchools(
         ? Object.entries(school.minRequirements)
             .filter(
               ([subject, minimum]) =>
-                minimum && scoreValues[scores[subject as keyof Scores] as string] < minimum,
+                minimum && requirementValues[subject] < minimum,
             )
             .map(([subject]) => subjectLabels[subject] || subject)
         : [];
@@ -844,7 +856,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         let query = supabase
           .from('schools')
           .select(
-            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at',
+            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, created_at, updated_at',
           )
           .order('region')
           .order('points', { ascending: false });
@@ -907,6 +919,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         min_math: nullableNumber(school.min_math),
         min_science: nullableNumber(school.min_science),
         min_social: nullableNumber(school.min_social),
+        min_composition: nullableNumber(school.min_composition),
         updated_at: new Date().toISOString(),
       };
 
@@ -915,7 +928,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
           .from('schools')
           .upsert(row)
           .select(
-            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at',
+            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, created_at, updated_at',
           )
           .single(),
         5000,
@@ -970,7 +983,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
             .update({ historical_scores: null, updated_at: now })
             .in('id', chunk)
             .select(
-              'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, created_at, updated_at',
+              'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, created_at, updated_at',
             ),
           8000,
           `admin clear historical scores ${index}`,
@@ -1000,7 +1013,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
           supabase
             .from('schools')
             .select(
-              'region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social',
+              'region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition',
             )
             .eq('region', region),
           5000,
