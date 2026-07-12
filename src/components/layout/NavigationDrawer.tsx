@@ -38,6 +38,7 @@ type MenuAction =
 interface MenuItem {
   id: string;
   label: string;
+  description: string;
   keywords: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
@@ -48,6 +49,7 @@ interface MenuItem {
 interface MenuCategory {
   id: string;
   label: string;
+  description: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
   bg: string;
@@ -62,68 +64,77 @@ interface NavigationDrawerProps {
 
 const menuCategories: MenuCategory[] = [
   {
-    id: 'common',
-    label: '常用功能',
+    id: 'find',
+    label: '我要查資料',
+    description: '找學校、科別、群科與學校類型',
     icon: Compass,
     color: 'text-sky-700',
     bg: 'bg-sky-50',
     items: [
-      { id: 'search', label: '搜尋學校與科別', keywords: '搜尋 學校 科別 群別 縣市 代碼', icon: Search, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/search' } },
-      { id: 'mockVolunteer', label: '模擬志願序', keywords: '志願序 模擬 排序 選填', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/mock-volunteer' } },
-      { id: 'holland', label: 'Holland 興趣測驗', keywords: 'holland 興趣 測驗 性向 群科', icon: Brain, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/holland' } },
-      { id: 'vocational', label: '技職群科百科', keywords: '技職 群科 百科 職群 科別 職涯 高職', icon: BookOpen, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'route', href: '/vocational-encyclopedia' } },
-      { id: 'schoolTypes', label: '學校類型介紹', keywords: '學校 類型 普高 技高 綜高 五專 高中 高職', icon: Building2, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/school-types' } },
+      { id: 'search', label: '搜尋學校與科別', description: '用校名、科別、群別快速查資料', keywords: '搜尋 學校 科別 群別 縣市 代碼', icon: Search, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/search' } },
+      { id: 'schoolTypes', label: '學校類型解析', description: '普通科、技高、綜高、五專差在哪', keywords: '學校 類型 普高 技高 綜高 五專 高中 高職', icon: Building2, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/school-types' } },
+      { id: 'vocational', label: '技職群科百科', description: '看 15 大職群、常見科別與未來進路', keywords: '技職 群科 百科 職群 科別 職涯 高職', icon: BookOpen, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'route', href: '/vocational-encyclopedia' } },
     ],
   },
   {
-    id: 'admission',
-    label: '升學策略',
+    id: 'choose',
+    label: '我要選志願',
+    description: '落點分析、志願排序與錄取資料',
     icon: Target,
     color: 'text-amber-700',
     bg: 'bg-amber-50',
     items: [
-      { id: 'home', label: '回到落點分析', keywords: '首頁 落點 分析 會考 分數', icon: ChartBar, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'route', href: '/' } },
-      { id: 'scoreInquiry', label: '會考成績查詢', keywords: '會考 成績 查詢 官方', icon: Search, color: 'text-fuchsia-600', bg: 'bg-fuchsia-100', action: { type: 'modal', id: 'scoreInquiry' } },
-      { id: 'gradeLevel', label: '積分換算說明', keywords: '積分 換算 等級 A B C', icon: Award, color: 'text-rose-600', bg: 'bg-rose-100', action: { type: 'route', href: '/grade-level' } },
-      { id: 'historicalStats', label: '歷年錄取統計', keywords: '歷年 錄取 分數 統計', icon: ChartBar, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/historical-stats' } },
-      { id: 'importantDates', label: '重要日程', keywords: '日期 日程 簡章 報名 放榜', icon: Map, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/important-dates' } },
-      { id: 'strategy', label: '志願選填策略', keywords: '志願 選填 策略 建議', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/strategy' } },
-      { id: 'disclaimer', label: '免責聲明', keywords: '提醒 免責 聲明 注意', icon: Shield, color: 'text-slate-600', bg: 'bg-slate-100', action: { type: 'modal', id: 'disclaimer' } },
+      { id: 'home', label: '落點分析', description: '輸入成績與條件，產生推薦清單', keywords: '首頁 落點 分析 會考 分數', icon: ChartBar, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'route', href: '/' } },
+      { id: 'mockVolunteer', label: '模擬志願序', description: '把校科加入清單，練習排序', keywords: '志願序 模擬 排序 選填', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/mock-volunteer' } },
+      { id: 'strategy', label: '志願選填攻略', description: '看夢幻、落點、安全區如何搭配', keywords: '志願 選填 策略 建議 攻略', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/strategy' } },
+      { id: 'historicalStats', label: '歷年錄取統計', description: '參考各校歷年分數與趨勢', keywords: '歷年 錄取 分數 統計', icon: ChartBar, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/historical-stats' } },
+      { id: 'gradeLevel', label: '積分換算說明', description: '查會考等級如何換成積分、積點', keywords: '積分 換算 等級 A B C', icon: Award, color: 'text-rose-600', bg: 'bg-rose-100', action: { type: 'route', href: '/grade-level' } },
     ],
   },
   {
-    id: 'guide',
-    label: '系統導覽',
+    id: 'plan',
+    label: '我要規劃升學',
+    description: '興趣探索、時程與官方相關資源',
     icon: Sparkles,
     color: 'text-indigo-700',
     bg: 'bg-indigo-50',
     items: [
-      { id: 'instructions', label: '使用說明', keywords: '使用 說明 教學 操作', icon: Info, color: 'text-blue-600', bg: 'bg-blue-100', action: { type: 'route', href: '/instructions' } },
-      { id: 'advantages', label: '平台特色', keywords: '特色 優勢 功能 平台', icon: Sparkles, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/advantages' } },
-      { id: 'site-map', label: '網站地圖', keywords: '網站 地圖 sitemap 頁面', icon: Map, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/site-map' } },
-      { id: 'rating', label: '評分與回饋', keywords: '評分 回饋 意見', icon: Star, color: 'text-amber-500', bg: 'bg-amber-100', action: { type: 'modal', id: 'rating' } },
-      { id: 'changelog', label: '更新紀錄', keywords: '更新 紀錄 changelog 版本', icon: History, color: 'text-slate-500', bg: 'bg-slate-100', action: { type: 'route', href: '/changelog' } },
-      { id: 'privacy', label: '隱私權政策', keywords: '隱私 個資 政策 privacy', icon: Database, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'route', href: '/privacy' } },
-      { id: 'terms', label: '服務條款', keywords: '條款 服務 規範 terms', icon: Shield, color: 'text-slate-600', bg: 'bg-slate-100', action: { type: 'route', href: '/terms' } },
-      { id: 'reportError', label: '問題回報', keywords: '錯誤 問題 回報 bug', icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-100', action: { type: 'modal', id: 'reportError' } },
+      { id: 'holland', label: 'Holland 興趣測驗', description: '先了解自己的興趣類型與適合群科', keywords: 'holland 興趣 測驗 性向 群科', icon: Brain, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/holland' } },
+      { id: 'importantDates', label: '重要日程', description: '查看報名、選填、放榜等時間', keywords: '日期 日程 簡章 報名 放榜', icon: Map, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/important-dates' } },
+      { id: 'scoreInquiry', label: '會考成績查詢', description: '前往成績查詢與相關官方資訊', keywords: '會考 成績 查詢 官方', icon: Search, color: 'text-fuchsia-600', bg: 'bg-fuchsia-100', action: { type: 'modal', id: 'scoreInquiry' } },
+      { id: 'officialVolunteer', label: '志願選填平台', description: '開啟外部志願選填平台', keywords: '志願 選填 外部 平台 官方', icon: LinkIcon, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'external', href: 'https://tyctw.github.io/volunteer/' } },
     ],
   },
   {
-    id: 'external',
-    label: '外部資源',
-    icon: LinkIcon,
-    color: 'text-emerald-700',
-    bg: 'bg-emerald-50',
+    id: 'support',
+    label: '協助與其他',
+    description: '操作說明、回饋、條款與站外分享',
+    icon: Info,
+    color: 'text-slate-700',
+    bg: 'bg-slate-100',
     items: [
-      { id: 'officialVolunteer', label: '志願選填平台', keywords: '志願 選填 外部 平台', icon: ChartBar, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'external', href: 'https://tyctw.github.io/volunteer/' } },
-      { id: 'shared', label: '錄取分享', keywords: '共同 就學區 資料 外部', icon: BookOpen, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'external', href: 'https://tyctw.github.io/shared/' } },
-      { id: 'score', label: '序位分享', keywords: '會考 積分 積點 外部', icon: List, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'external', href: 'https://tyctw.github.io/score/' } },
+      { id: 'instructions', label: '使用說明', description: '第一次使用可從這裡看操作流程', keywords: '使用 說明 教學 操作', icon: Info, color: 'text-blue-600', bg: 'bg-blue-100', action: { type: 'route', href: '/instructions' } },
+      { id: 'site-map', label: '網站地圖', description: '一次查看全部功能頁面', keywords: '網站 地圖 sitemap 頁面', icon: Map, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/site-map' } },
+      { id: 'rating', label: '評分與回饋', description: '留下使用感受或建議', keywords: '評分 回饋 意見', icon: Star, color: 'text-amber-500', bg: 'bg-amber-100', action: { type: 'modal', id: 'rating' } },
+      { id: 'reportError', label: '問題回報', description: '資料錯誤或系統問題從這裡回報', keywords: '錯誤 問題 回報 bug', icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-100', action: { type: 'modal', id: 'reportError' } },
+      { id: 'advantages', label: '平台特色', description: '了解這個工具提供哪些輔助功能', keywords: '特色 優勢 功能 平台', icon: Sparkles, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/advantages' } },
+      { id: 'changelog', label: '更新紀錄', description: '查看最近調整與版本變更', keywords: '更新 紀錄 changelog 版本', icon: History, color: 'text-slate-500', bg: 'bg-slate-100', action: { type: 'route', href: '/changelog' } },
+      { id: 'shared', label: '錄取分享', description: '開啟全國錄取結果分享平台', keywords: '共同 就學區 資料 外部 錄取 分享', icon: BookOpen, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'external', href: 'https://tyctw.github.io/shared/' } },
+      { id: 'score', label: '序位分享', description: '開啟會考積分與序位分享平台', keywords: '會考 積分 積點 外部 序位 分享', icon: List, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'external', href: 'https://tyctw.github.io/score/' } },
+      { id: 'disclaimer', label: '免責聲明', description: '了解分析結果的使用限制', keywords: '提醒 免責 聲明 注意', icon: Shield, color: 'text-slate-600', bg: 'bg-slate-100', action: { type: 'modal', id: 'disclaimer' } },
+      { id: 'privacy', label: '隱私權政策', description: '查看資料使用與隱私說明', keywords: '隱私 個資 政策 privacy', icon: Database, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'route', href: '/privacy' } },
+      { id: 'terms', label: '服務條款', description: '查看平台使用規範', keywords: '條款 服務 規範 terms', icon: Shield, color: 'text-slate-600', bg: 'bg-slate-100', action: { type: 'route', href: '/terms' } },
     ],
   },
 ];
 
+const quickActionIds = ['home', 'search', 'mockVolunteer', 'importantDates'];
+const quickActions = quickActionIds
+  .map((id) => menuCategories.flatMap((category) => category.items).find((item) => item.id === id))
+  .filter(Boolean) as MenuItem[];
+
 export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerProps) {
-  const [expandedCategory, setExpandedCategory] = useState('common');
+  const [expandedCategory, setExpandedCategory] = useState('choose');
   const [searchTerm, setSearchTerm] = useState('');
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -215,7 +226,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   aria-label="搜尋主選單項目"
-                  placeholder="搜尋功能、頁面或關鍵字..."
+                  placeholder="想找學校、選志願、查日程..."
                   className="h-12 w-full rounded-xl border-4 border-slate-900 bg-white pl-11 pr-12 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-sky-50"
                 />
                 {searchTerm && (
@@ -232,6 +243,34 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
             </div>
 
             <div className="custom-scrollbar flex-1 space-y-4 overflow-y-auto p-6">
+              {!normalizedSearch && (
+                <section className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h3 className="text-sm font-black text-slate-500">常用捷徑</h3>
+                    <span className="rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-black text-slate-500">先從這裡開始</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {quickActions.map((item) => {
+                      const ItemIcon = item.icon;
+
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => runAction(item.action)}
+                          className="group flex min-h-[92px] flex-col items-start justify-between rounded-xl border-2 border-slate-900 bg-slate-50 p-3 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-white active:translate-y-0 active:shadow-none"
+                        >
+                          <span className={`rounded-lg border-2 border-slate-900 p-1.5 ${item.bg}`}>
+                            <ItemIcon className={`h-4 w-4 ${item.color}`} />
+                          </span>
+                          <span className="mt-2 text-sm font-black leading-tight text-slate-900">{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
+
               {filteredCategories.length === 0 ? (
                 <div className="rounded-2xl border-4 border-dashed border-slate-300 bg-white p-8 text-center">
                   <Search className="mx-auto h-10 w-10 text-slate-300" />
@@ -262,9 +301,15 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                           <div className="rounded-xl border-2 border-slate-900 bg-white p-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                             <CategoryIcon className={`h-5 w-5 ${category.color}`} />
                           </div>
-                          <span className="truncate text-lg font-black text-slate-900">{category.label}</span>
+                          <span className="min-w-0">
+                            <span className="block truncate text-lg font-black text-slate-900">{category.label}</span>
+                            <span className="block truncate text-xs font-bold text-slate-500">{category.description}</span>
+                          </span>
                         </div>
-                        <ChevronDown className={`h-5 w-5 shrink-0 text-slate-900 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                        <div className="flex shrink-0 items-center gap-2">
+                          <span className="rounded-lg border border-slate-200 bg-white/80 px-2 py-1 text-[11px] font-black text-slate-500">{category.items.length}</span>
+                          <ChevronDown className={`h-5 w-5 text-slate-900 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
                       </button>
                       <AnimatePresence>
                         {isExpanded && (
@@ -292,7 +337,10 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                                       <div className={`rounded-lg border-2 border-slate-900 p-1.5 ${item.bg}`}>
                                         <ItemIcon className={`h-5 w-5 ${item.color}`} />
                                       </div>
-                                      <span className="break-words font-bold text-slate-900">{item.label}</span>
+                                      <span className="min-w-0">
+                                        <span className="block break-words font-black leading-tight text-slate-900">{item.label}</span>
+                                        <span className="mt-0.5 block text-xs font-bold leading-snug text-slate-500">{item.description}</span>
+                                      </span>
                                     </div>
                                     {isExternal ? (
                                       <ArrowRight className="h-4 w-4 shrink-0 -rotate-45 text-slate-400 transition-transform group-hover:rotate-0 group-hover:text-slate-900" />
