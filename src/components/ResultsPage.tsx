@@ -63,8 +63,8 @@ const getHistoricalTrend = (scores: any[]) => {
 
 const zoneMeta: Record<string, { label: string; icon: React.ElementType; tone: string; badge: string }> = {
   reach: { label: '夢幻區', icon: Flame, tone: 'text-rose-700 bg-rose-50 border-rose-200', badge: 'bg-rose-500' },
-  target: { label: '落點區', icon: Target, tone: 'text-sky-700 bg-sky-50 border-sky-200', badge: 'bg-sky-500' },
-  safe: { label: '安全區', icon: ShieldCheck, tone: 'text-emerald-700 bg-emerald-50 border-emerald-200', badge: 'bg-emerald-500' },
+  target: { label: '實際區', icon: Target, tone: 'text-sky-700 bg-sky-50 border-sky-200', badge: 'bg-sky-500' },
+  safe: { label: '保守區', icon: ShieldCheck, tone: 'text-emerald-700 bg-emerald-50 border-emerald-200', badge: 'bg-emerald-500' },
 };
 
 const scoreItems = [
@@ -460,8 +460,8 @@ export default function ResultsPage() {
                 <select value={filterZone} onChange={(event) => setFilterZone(event.target.value)} className="rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-slate-900">
                   <option value="all">全部區間</option>
                   <option value="reach">夢幻區</option>
-                  <option value="target">落點區</option>
-                  <option value="safe">安全區</option>
+                  <option value="target">實際區</option>
+                  <option value="safe">保守區</option>
                 </select>
                 <select value={filterOwnership} onChange={(event) => setFilterOwnership(event.target.value)} className="rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-slate-900">
                   <option value="all">全部屬性</option>
@@ -511,7 +511,7 @@ export default function ResultsPage() {
                           <div className={`flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 ${school.zone === 'reach' ? 'bg-rose-100 text-rose-800 border-rose-300' : school.zone === 'target' ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-emerald-100 text-emerald-800 border-emerald-300'}`}>
                             <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">落點區間</span>
                             <div className="text-center text-sm font-black leading-tight">
-                              {school.zone === 'reach' ? '夢幻區' : school.zone === 'target' ? '落點區' : '安全區'}
+                              {school.zone === 'reach' ? '夢幻區' : school.zone === 'target' ? '實際區' : '保守區'}
                             </div>
                           </div>
                         )}
