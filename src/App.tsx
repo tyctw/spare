@@ -1059,7 +1059,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 )}
               </div>
 
-              <div className="lg:col-span-4 flex flex-col gap-4">
+              <div className="lg:col-span-4 flex flex-col gap-4 lg:max-h-[600px] lg:overflow-y-auto lg:pr-2 custom-scrollbar">
                 <div className="bg-white border-2 border-slate-900 rounded-3xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col">
                   <div className="bg-indigo-300 p-4 border-b-2 border-slate-900 flex justify-between items-center">
                     <h3 className="font-black text-slate-900 flex items-center gap-2">

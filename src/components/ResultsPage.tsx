@@ -387,7 +387,7 @@ export default function ResultsPage() {
         </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
-          <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+          <aside className="space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-2 custom-scrollbar">
             <div className="rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
               <div className="mb-4 flex items-center gap-2 text-sm font-black text-slate-500">
                 <Award className="h-4 w-4" />
