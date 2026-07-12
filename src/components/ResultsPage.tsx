@@ -286,11 +286,11 @@ export default function ResultsPage() {
             <ArrowLeft className="h-4 w-4" />
             回到落點分析
           </a>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             <button
               type="button"
               onClick={() => setIsComparisonOpen(true)}
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
             >
               <List className="h-4 w-4" />
               比較清單 ({comparisonSchools.length})
@@ -298,21 +298,21 @@ export default function ResultsPage() {
             <button
               type="button"
               onClick={() => setIsExportOpen(true)}
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-100 px-4 py-2 text-sm font-black text-emerald-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-100 px-3 py-2 text-center text-sm font-black text-emerald-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
             >
               <Download className="h-4 w-4" />
               匯出結果
             </button>
             <a
               href={withBasePath('/strategy')}
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-100 px-4 py-2 text-sm font-black text-amber-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-100 px-3 py-2 text-center text-sm font-black text-amber-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
             >
               <Target className="h-4 w-4" />
               志願選填攻略
             </a>
             <a
               href={withBasePath('/school-types')}
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-100 px-4 py-2 text-sm font-black text-sky-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-100 px-3 py-2 text-center text-sm font-black text-sky-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
             >
               <Building2 className="h-4 w-4" />
               學校類型解析
@@ -365,15 +365,15 @@ export default function ResultsPage() {
                   <div className="mt-1 text-4xl font-black text-emerald-600">{results.totalCredits || '無'}</div>
                 </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 {(['reach', 'target', 'safe'] as const).map((zone) => {
                   const meta = zoneMeta[zone];
                   const Icon = meta.icon;
                   return (
-                    <div key={zone} className={`rounded-2xl border-2 p-4 ${meta.tone}`}>
-                      <Icon className="mb-2 h-5 w-5" />
-                      <div className="text-xs font-black">{meta.label}</div>
-                      <div className="text-3xl font-black">{results.analysisReport?.zoneCounts?.[zone] || 0}</div>
+                    <div key={zone} className={`rounded-2xl border-2 p-3 sm:p-4 ${meta.tone}`}>
+                      <Icon className="mb-2 h-4 w-4 sm:h-5 sm:w-5" />
+                      <div className="text-[11px] font-black sm:text-xs">{meta.label}</div>
+                      <div className="text-2xl font-black sm:text-3xl">{results.analysisReport?.zoneCounts?.[zone] || 0}</div>
                     </div>
                   );
                 })}
