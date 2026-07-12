@@ -76,6 +76,9 @@ const scoreItems = [
   { key: 'composition', label: '作文' },
 ];
 
+const getPointsGap = (school: any) => Math.abs(school.scoreDiff ?? school.pointsDiff ?? school.distanceScore ?? 0);
+const getCreditsGap = (school: any) => Math.abs(school.creditDiff ?? school.creditsDiff ?? 0);
+
 function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClose: () => void }) {
   if (!school) return null;
 
@@ -242,8 +245,9 @@ export default function ResultsPage() {
       const zoneOrder: Record<string, number> = { reach: 0, target: 1, safe: 2 };
       return (
         (zoneOrder[a.zone] ?? 99) - (zoneOrder[b.zone] ?? 99) ||
-        Math.abs(a.scoreDiff ?? a.pointsDiff ?? a.distanceScore ?? 0) -
-          Math.abs(b.scoreDiff ?? b.pointsDiff ?? b.distanceScore ?? 0) ||
+        (a.zone === 'reach' && b.zone === 'reach'
+          ? getPointsGap(b) - getPointsGap(a) || getCreditsGap(b) - getCreditsGap(a)
+          : getPointsGap(a) - getPointsGap(b)) ||
         (b.points ?? 0) - (a.points ?? 0)
       );
     });
