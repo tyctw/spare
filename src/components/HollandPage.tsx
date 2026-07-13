@@ -197,6 +197,15 @@ export default function HollandPage() {
     }, 0);
   };
 
+  const jumpToQuestion = (questionNumber: number) => {
+    setShowMissingModal(false);
+    window.setTimeout(() => {
+      const target = document.getElementById(`holland-question-${questionNumber}`);
+      target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target?.focus({ preventScroll: true });
+    }, 80);
+  };
+
   const applyFilterHref = () => {
     const params = new URLSearchParams();
     params.set('hollandGroups', results.topGroups.map((group) => group.id).join(','));
@@ -560,7 +569,7 @@ export default function HollandPage() {
               {questions.map((question, index) => {
                 const selectedScore = answers[question.id];
                 return (
-                  <article id={`holland-question-${question.id}`} key={question.id} className="scroll-mt-6 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
+                  <article id={`holland-question-${question.id}`} key={question.id} tabIndex={-1} className="scroll-mt-6 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] outline-none focus:ring-4 focus:ring-purple-300 sm:p-6">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                       <div className="min-w-0">
                         <div className="mb-2 flex items-center gap-2">
@@ -715,12 +724,15 @@ export default function HollandPage() {
             <div className="mt-5 max-h-56 overflow-y-auto rounded-2xl border-2 border-slate-200 bg-slate-50 p-4">
               <div className="flex flex-wrap gap-2">
                 {missingQuestionNumbers.map((number) => (
-                  <span
+                  <button
+                    type="button"
                     key={number}
-                    className="inline-flex h-9 min-w-9 items-center justify-center rounded-lg border-2 border-slate-900 bg-white px-2 text-sm font-black text-purple-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
+                    onClick={() => jumpToQuestion(number)}
+                    aria-label={`跳到第 ${number} 題`}
+                    className="inline-flex h-9 min-w-9 items-center justify-center rounded-lg border-2 border-slate-900 bg-white px-2 text-sm font-black text-purple-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-purple-50 focus:outline-none focus:ring-4 focus:ring-purple-200 active:translate-y-0 active:shadow-none"
                   >
                     {number}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
