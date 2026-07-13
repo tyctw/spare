@@ -258,6 +258,29 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
+  const focusMissingField = (field: string) => {
+    const fieldTargets: Record<string, string> = {
+      '邀請碼': 'invitation-code',
+      '就學考區': 'region-select-trigger',
+      '國文成績': 'score-chinese',
+      '英文成績': 'score-english',
+      '數學成績': 'score-math',
+      '自然成績': 'score-science',
+      '社會成績': 'score-social',
+      '作文成績': 'score-composition',
+    };
+    const targetId = fieldTargets[field];
+
+    setActiveModal(null);
+    if (!targetId) return;
+
+    window.setTimeout(() => {
+      const target = document.getElementById(targetId);
+      target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target?.focus({ preventScroll: true });
+    }, 180);
+  };
+
   const handleAnalyze = async () => {
     const invitationCode = normalizeInvitationCode(formData.invitationCode);
     const missing: string[] = [];
@@ -669,6 +692,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 <div className="flex flex-row gap-2 sm:gap-3 w-full">
                   <button
                     type="button"
+                    id="region-select-trigger"
                     onClick={() => setIsRegionOpen(true)}
                     aria-haspopup="dialog"
                     aria-expanded={isRegionOpen}
@@ -1963,9 +1987,15 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               <p className="text-sm font-bold text-slate-600 mb-4">系統需要完整的資料才能為您進行最準確的落點分析運算。</p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {missingFields.map((field, index) => (
-                  <span key={index} className="inline-flex items-center gap-1 bg-white border-2 border-slate-900 px-3 py-1 rounded-xl text-sm font-black text-rose-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <button
+                    type="button"
+                    key={index}
+                    onClick={() => focusMissingField(field)}
+                    className="inline-flex items-center gap-1 bg-white border-2 border-slate-900 px-3 py-1 rounded-xl text-sm font-black text-rose-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
+                    title={`前往填寫${field}`}
+                  >
                     {field}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
