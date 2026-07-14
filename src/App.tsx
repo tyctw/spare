@@ -16,7 +16,6 @@ import QRCodeModal from './components/QRCodeModal';
 import MockVolunteerModal from './components/MockVolunteerModal';
 import CyberAuthOverlay from './components/CyberAuthOverlay';
 import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
-import { exportTxt, exportExcel, exportJson, printResults } from './lib/exportUtils';
 import { callBackend, isBackendError, normalizeInvitationCode } from './lib/api';
 import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import ExportModal from './components/ExportModal';
@@ -406,10 +405,11 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     });
   };
 
-  const handleExport = (type: 'txt' | 'excel' | 'json' | 'print') => {
+  const handleExport = async (type: 'txt' | 'excel' | 'json' | 'print') => {
     if (!results) return;
     const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未選擇';
     const payload = { scores: formData, results, identity: formData.identity, vocationalGroups };
+    const { exportTxt, exportExcel, exportJson, printResults } = await import('./lib/exportUtils');
     switch (type) {
       case 'txt': exportTxt(payload, regionName); break;
       case 'excel': exportExcel(payload, regionName); break;
