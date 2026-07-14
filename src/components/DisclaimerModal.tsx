@@ -22,9 +22,10 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
           <motion.div
              initial={{ scale: 0.95, opacity: 0, y: 20 }} 
              animate={{ scale: 1, opacity: 1, y: 0 }} 
-             exit={{ scale: 0.95, opacity: 0, y: 20 }}
+             exit={{ scale: 0.95, opacity: 0, y: 20 }} 
              role="dialog"
              aria-modal="true"
+             aria-label="免責聲明"
              className="relative w-full max-w-4xl bg-slate-50 rounded-[32px] shadow-2xl border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] max-h-[90vh] flex flex-col"
           >
             {/* Header */}
