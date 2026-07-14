@@ -434,7 +434,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         isMenuOpen={isNavMenuOpen}
       />
 
-      <main id="main-content" className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">
+      <main id="main-content" aria-label="主要內容" className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">
         
         <HeroBanner onDataProviderClick={() => setActiveModal('dataProvider')} />
 
