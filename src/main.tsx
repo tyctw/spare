@@ -48,13 +48,7 @@ const page =
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Suspense fallback={
-      <main id="main-content" className="flex min-h-screen items-center justify-center bg-slate-50 p-6" aria-busy="true">
-        <p role="status" className="rounded-2xl border-2 border-slate-900 bg-white px-5 py-3 font-black text-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-          正在載入頁面…
-        </p>
-      </main>
-    }>
+    <Suspense fallback={null}>
       {page}
     </Suspense>
   </StrictMode>,
