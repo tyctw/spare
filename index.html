@@ -108,10 +108,22 @@
       }
     </script>
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6966991656561179" crossorigin="anonymous"></script>
-    <script async src="https://fundingchoicesmessages.google.com/i/pub-6966991656561179?ers=1"></script>
     <script>
       (function () {
+        function loadScript(src, attributes) {
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = src;
+          Object.assign(script, attributes);
+          document.head.appendChild(script);
+        }
+
+        window.addEventListener('load', function () {
+          loadScript('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6966991656561179', { crossOrigin: 'anonymous' });
+          loadScript('https://fundingchoicesmessages.google.com/i/pub-6966991656561179?ers=1');
+          loadScript('https://www.googletagmanager.com/gtag/js?id=G-H9X7EC127P');
+        }, { once: true });
+
         function signalGooglefcPresent() {
           if (!window.frames.googlefcPresent) {
             if (document.body) {
@@ -128,7 +140,6 @@
         signalGooglefcPresent();
       })();
     </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H9X7EC127P"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
