@@ -25,7 +25,8 @@ export function InfoModal({ isOpen, onClose, title, icon, children, bare = false
             initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 50, opacity: 0 }}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="info-modal-title"
+            aria-label={bare ? title : undefined}
+            aria-labelledby={bare ? undefined : 'info-modal-title'}
             className={`relative w-full max-h-[90vh] overflow-hidden ${bare ? 'max-w-xl' : 'max-w-2xl bg-white rounded-3xl shadow-2xl border-2 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col'}`}
           >
             {!bare && (
