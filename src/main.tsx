@@ -48,7 +48,7 @@ const page =
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Suspense fallback={<div className="min-h-screen bg-slate-50" aria-busy="true" />}>
+    <Suspense fallback={<main id="main-content" className="min-h-screen bg-slate-50" aria-busy="true" />}>
       {page}
     </Suspense>
   </StrictMode>,
