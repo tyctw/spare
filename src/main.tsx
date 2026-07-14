@@ -2,8 +2,8 @@ import { StrictMode, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
+import App from './App.tsx';
 
-const App = lazy(() => import('./App.tsx'));
 const AdvantagesPage = lazy(() => import('./components/AdvantagesPage.tsx'));
 const ChangelogPage = lazy(() => import('./components/ChangelogPage.tsx'));
 const HollandPage = lazy(() => import('./components/HollandPage.tsx'));
@@ -48,7 +48,13 @@ const page =
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Suspense fallback={<main id="main-content" className="min-h-screen bg-slate-50" aria-busy="true" />}>
+    <Suspense fallback={
+      <main id="main-content" className="flex min-h-screen items-center justify-center bg-slate-50 p-6" aria-busy="true">
+        <p role="status" className="rounded-2xl border-2 border-slate-900 bg-white px-5 py-3 font-black text-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+          正在載入頁面…
+        </p>
+      </main>
+    }>
       {page}
     </Suspense>
   </StrictMode>,
