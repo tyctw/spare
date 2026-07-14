@@ -20,6 +20,20 @@ const SchoolTypesPage = lazy(() => import('./components/SchoolTypesPage.tsx'));
 const StrategyPage = lazy(() => import('./components/StrategyPage.tsx'));
 const VocationalEncyclopediaPage = lazy(() => import('./components/VocationalEncyclopediaPage.tsx'));
 
+function PageLoading() {
+  return (
+    <main
+      className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4 px-4 text-slate-900"
+      role="status"
+      aria-live="polite"
+      aria-label="頁面載入中"
+    >
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600" />
+      <p className="text-lg font-bold">頁面載入中…</p>
+    </main>
+  );
+}
+
 const path = getCurrentRoutePath();
 const redirectedRoute = new URLSearchParams(window.location.search).get('route');
 
@@ -48,7 +62,7 @@ const page =
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Suspense fallback={null}>
+    <Suspense fallback={<PageLoading />}>
       {page}
     </Suspense>
   </StrictMode>,
