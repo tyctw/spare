@@ -225,6 +225,7 @@ export default function ResultsPage() {
   const schoolTypeLabel = scores?.schoolType === 'all' ? '全部類型' : scores?.schoolType || '全部類型';
   const ownershipLabel =
     scores?.schoolOwnership === 'all' ? '公私立皆可' : scores?.schoolOwnership === 'public' ? '公立' : '私立';
+  const isAllVocationalGroups = vocationalGroups.length === 1 && vocationalGroups[0] === 'all';
 
   const filteredSchools = (results.eligibleSchools || [])
     .filter((school: any) => {
@@ -411,14 +412,29 @@ export default function ResultsPage() {
               <div className="space-y-3 text-sm font-bold">
                 <div className="flex justify-between gap-3"><span className="text-slate-500">學校屬性</span><span>{ownershipLabel}</span></div>
                 <div className="flex justify-between gap-3"><span className="text-slate-500">學校類型</span><span>{schoolTypeLabel}</span></div>
-                {vocationalGroups.length > 0 && !(vocationalGroups.length === 1 && vocationalGroups[0] === 'all') && (
-                  <div>
-                    <div className="mb-2 text-slate-500">職群</div>
-                    <div className="flex flex-wrap gap-1">
-                      {vocationalGroups.map((group: string) => (
-                        <span key={group} className="rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs font-black text-emerald-700">{group}</span>
-                      ))}
+                {scores?.schoolType === '職業類科' && (
+                  <div className="border-t-2 border-dashed border-slate-200 pt-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 text-slate-500">
+                        <Layers className="h-4 w-4 text-emerald-600" />
+                        <span>職群篩選</span>
+                      </div>
+                      <span className="rounded-full bg-emerald-100 px-2 py-1 text-[11px] font-black text-emerald-800">
+                        {isAllVocationalGroups ? '不限制職群' : `已選 ${vocationalGroups.length} 個`}
+                      </span>
                     </div>
+                    {isAllVocationalGroups ? (
+                      <p className="mt-2 text-xs font-bold text-slate-600">全部職群皆納入分析。</p>
+                    ) : (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {vocationalGroups.map((group: string) => (
+                          <span key={group} className="inline-flex max-w-[140px] items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-xs font-black text-emerald-800">
+                            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                            <span className="truncate">{group}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
