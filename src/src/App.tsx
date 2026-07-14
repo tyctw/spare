@@ -24,6 +24,10 @@ import RatingModal from './components/RatingModal';
 import ReportErrorModal from './components/ReportErrorModal';
 import ScoreInquiryModal from './components/ScoreInquiryModal';
 import DataProviderModal from './components/DataProviderModal';
+import HollandTestModal from './components/HollandTestModal';
+import MockVolunteerModal from './components/MockVolunteerModal';
+import HistoricalStatsModal from './components/HistoricalStatsModal';
+import { exportTxt, exportExcel, exportJson, printResults } from './lib/exportUtils';
 // Layout Components
 import AppHeader from './components/layout/AppHeader';
 import Footer from './components/layout/Footer';
@@ -31,11 +35,6 @@ import HeroBanner from './components/layout/HeroBanner';
 import NavigationDrawer from './components/layout/NavigationDrawer';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 import { withBasePath } from './lib/routes';
-import { preloadResultsPage } from './lib/pagePreload';
-
-const HollandTestModal = React.lazy(() => import('./components/HollandTestModal'));
-const MockVolunteerModal = React.lazy(() => import('./components/MockVolunteerModal'));
-const HistoricalStatsModal = React.lazy(() => import('./components/HistoricalStatsModal'));
 
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
@@ -301,10 +300,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       return;
     }
 
-    // Start downloading the results-page bundle while the analysis/auth request is in progress.
-    // This makes the route ready as soon as the backend returns the analysis data.
-    void preloadResultsPage();
-    
     setErrorMessage('');
 
     if (invitationCode !== formData.invitationCode) {
@@ -415,7 +410,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     if (!results) return;
     const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未選擇';
     const payload = { scores: formData, results, identity: formData.identity, vocationalGroups };
-    const { exportTxt, exportExcel, exportJson, printResults } = await import('./lib/exportUtils');
     switch (type) {
       case 'txt': exportTxt(payload, regionName); break;
       case 'excel': exportExcel(payload, regionName); break;
@@ -1466,9 +1460,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       />
       
       {activeModal === 'mockVolunteer' && (
-        <React.Suspense fallback={null}>
-          <MockVolunteerModal isOpen onClose={() => setActiveModal(null)} region={formData.region} />
-        </React.Suspense>
+        <MockVolunteerModal isOpen onClose={() => setActiveModal(null)} region={formData.region} />
       )}
 
       <VocationalModal 
@@ -1480,7 +1472,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       />
 
       {isHollandTestOpen && (
-        <React.Suspense fallback={null}>
       <HollandTestModal 
         isOpen={isHollandTestOpen}
         onClose={() => setIsHollandTestOpen(false)}
@@ -1494,7 +1485,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
           window.location.href = withBasePath('/vocational-encyclopedia');
         }}
       />
-        </React.Suspense>
       )}
 
       <RegionModal 
@@ -1645,9 +1635,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       </InfoModal>
 
       {activeModal === 'historicalStats' && (
-        <React.Suspense fallback={null}>
-          <HistoricalStatsModal isOpen onClose={() => setActiveModal(null)} />
-        </React.Suspense>
+        <HistoricalStatsModal isOpen onClose={() => setActiveModal(null)} />
       )}
 
       <ScoreInquiryModal 
