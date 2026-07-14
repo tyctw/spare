@@ -11,7 +11,6 @@ import VocationalModal from './components/VocationalModal';
 import { InfoModal } from './components/InfoModals';
 import DisclaimerModal from './components/DisclaimerModal';
 import ComparisonModal from './components/ComparisonModal';
-import QRCodeModal from './components/QRCodeModal';
 import CyberAuthOverlay from './components/CyberAuthOverlay';
 import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
 import { callBackend, isBackendError, normalizeInvitationCode } from './lib/api';
@@ -19,7 +18,6 @@ import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import ExportModal from './components/ExportModal';
 import AuthFailModal from './components/AuthFailModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
-import SharePlatformModal from './components/SharePlatformModal';
 import RatingModal from './components/RatingModal';
 import ReportErrorModal from './components/ReportErrorModal';
 import ScoreInquiryModal from './components/ScoreInquiryModal';
@@ -35,6 +33,8 @@ const HollandTestModal = React.lazy(() => import('./components/HollandTestModal'
 const MockVolunteerModal = React.lazy(() => import('./components/MockVolunteerModal'));
 const HistoricalStatsModal = React.lazy(() => import('./components/HistoricalStatsModal'));
 const NavigationDrawer = React.lazy(() => import('./components/layout/NavigationDrawer'));
+const QRCodeModal = React.lazy(() => import('./components/QRCodeModal'));
+const SharePlatformModal = React.lazy(() => import('./components/SharePlatformModal'));
 
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
@@ -1454,11 +1454,15 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       </AnimatePresence>
 
       {/* Modals Rendering */}
-      <QRCodeModal 
-        isOpen={activeModal === 'qrcode'} 
-        onClose={() => setActiveModal(null)} 
-        onScan={(code) => { updateForm('invitationCode', code); setActiveModal(null); }} 
-      />
+      {activeModal === 'qrcode' && (
+        <React.Suspense fallback={null}>
+          <QRCodeModal
+            isOpen
+            onClose={() => setActiveModal(null)}
+            onScan={(code) => { updateForm('invitationCode', code); setActiveModal(null); }}
+          />
+        </React.Suspense>
+      )}
       
       {activeModal === 'mockVolunteer' && (
         <React.Suspense fallback={null}>
@@ -1655,10 +1659,11 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         onClose={() => setActiveModal(null)}
       />
 
-      <SharePlatformModal 
-        isOpen={activeModal === 'sharePlatform'}
-        onClose={() => setActiveModal(null)}
-      />
+      {activeModal === 'sharePlatform' && (
+        <React.Suspense fallback={null}>
+          <SharePlatformModal isOpen onClose={() => setActiveModal(null)} />
+        </React.Suspense>
+      )}
 
       <RatingModal 
         isOpen={activeModal === 'rating'} 
