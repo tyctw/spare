@@ -945,7 +945,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
             aria-live="polite"
             aria-label="分析結果"
             initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} 
-            className="max-w-6xl mx-auto px-4 pt-10"
+            className="hidden max-w-6xl mx-auto px-4 pt-10"
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
               <div className="lg:col-span-12 flex items-center gap-3 mb-4">
