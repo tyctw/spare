@@ -145,14 +145,21 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
                   {scores.map((item: any) => {
                     const width = `${Math.max(14, Math.round(((Number(item.points) || 0) / maxPoint) * 100))}%`;
                     return (
-                      <div key={`${item.year}-${item.points}-${item.credits ?? 'none'}`} className="grid grid-cols-[48px_1fr_auto] items-center gap-3">
-                        <div className="text-sm font-black text-slate-500">{item.year}</div>
-                        <div className="h-4 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
-                          <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-sky-300 to-indigo-400" style={{ width }} />
+                      <div key={`${item.year}-${item.points}-${item.credits ?? 'none'}-${item.note ?? ''}`}>
+                        <div className="grid grid-cols-[48px_1fr_auto] items-center gap-3">
+                          <div className="text-sm font-black text-slate-500">{item.year}</div>
+                          <div className="h-4 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
+                            <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-sky-300 to-indigo-400" style={{ width }} />
+                          </div>
+                          <div className="whitespace-nowrap text-xs font-black text-slate-800 sm:text-sm">
+                            {item.points ?? '--'} / {formatHistoricalCredits(item.credits)}
+                          </div>
                         </div>
-                        <div className="whitespace-nowrap text-xs font-black text-slate-800 sm:text-sm">
-                          {item.points ?? '--'} / {formatHistoricalCredits(item.credits)}
-                        </div>
+                        {item.note && (
+                          <p className="ml-[60px] mt-1 text-xs font-bold leading-relaxed text-slate-600">
+                            <span className="mr-1 font-black text-slate-800">備註：</span>{item.note}
+                          </p>
+                        )}
                       </div>
                     );
                   })}
