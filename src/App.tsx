@@ -936,9 +936,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         isOpen={status === 'quantum'}
       />
 
-      {/* Results Section */}
+      {/* 分析完成後統一導向獨立結果頁，不在首頁呈現分析結果。 */}
       <AnimatePresence>
-        {status === 'success' && results && (
+        {false && status === 'success' && results && (
           <motion.div 
             id="results-section"
             role="region"
