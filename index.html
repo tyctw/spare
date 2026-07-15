@@ -118,8 +118,10 @@
           document.head.appendChild(script);
         }
 
+        // Start the ad request while the document is being parsed instead of waiting for every page asset.
+        loadScript('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6966991656561179', { crossOrigin: 'anonymous' });
+
         window.addEventListener('load', function () {
-          loadScript('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6966991656561179', { crossOrigin: 'anonymous' });
           loadScript('https://fundingchoicesmessages.google.com/i/pub-6966991656561179?ers=1');
           loadScript('https://www.googletagmanager.com/gtag/js?id=G-H9X7EC127P');
         }, { once: true });
