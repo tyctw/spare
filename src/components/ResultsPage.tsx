@@ -138,7 +138,7 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
               </div>
 
               <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-5">
-                <div className="flex items-start justify-between gap-3 border-b-2 border-dashed border-slate-200 pb-4">
+                <div className="border-b-2 border-dashed border-slate-200 pb-4">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-100">
                       <History className="h-5 w-5 text-amber-700" strokeWidth={3} />
@@ -148,7 +148,6 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
                       <p className="mt-0.5 text-[11px] font-bold text-slate-500">由新至舊，快速比較每年門檻</p>
                     </div>
                   </div>
-                  <div className="shrink-0 rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-black text-slate-600">積分 / 積點</div>
                 </div>
 
                 <div className="mt-4 space-y-3">
@@ -179,20 +178,20 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
                                 <span className="text-2xl font-black leading-none text-slate-900">{item.points ?? '--'}</span>
                                 <span className="text-xs font-black text-slate-500">積分</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs font-black text-slate-600">積點 {formatHistoricalCredits(item.credits)}</span>
-                                {difference !== null && <span className={`rounded-md px-2 py-1 text-[10px] font-black ${differenceTone}`}>{difference === 0 ? '較前一年不變' : `較前一年 ${difference > 0 ? '+' : ''}${difference}`}</span>}
-                              </div>
+                              <span className="text-xs font-black text-slate-600">積點 {formatHistoricalCredits(item.credits)}</span>
                             </div>
                             <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-200">
                               <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-sky-300 to-indigo-400" style={{ width }} />
                             </div>
                           </div>
                         </div>
-                        {item.note && (
-                          <p className="mt-2 border-t border-dashed border-slate-200 pt-2 text-xs font-bold leading-relaxed text-slate-600">
-                            <span className="mr-1 font-black text-slate-800">備註：</span>{item.note}
-                          </p>
+                        {(item.note || difference !== null) && (
+                          <div className="mt-2 flex items-center justify-between gap-3 border-t border-dashed border-slate-200 pt-2">
+                            <p className="min-w-0 text-xs font-bold leading-relaxed text-slate-600">
+                              {item.note && <><span className="mr-1 font-black text-slate-800">備註：</span>{item.note}</>}
+                            </p>
+                            {difference !== null && <span className={`shrink-0 rounded-md px-2 py-1 text-[10px] font-black ${differenceTone}`}>{difference === 0 ? '較前一年不變' : `較前一年 ${difference > 0 ? '+' : ''}${difference}`}</span>}
+                          </div>
                         )}
                       </div>
                     );
