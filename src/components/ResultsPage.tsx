@@ -56,9 +56,19 @@ const getHistoricalTrend = (scores: any[]) => {
     return { label: '資料整理中', tone: 'border-slate-200 bg-slate-100 text-slate-500' };
   }
   const diff = Math.round((latest.numericPoints - previous.numericPoints) * 10) / 10;
-  if (diff > 0) return { label: `較前一年 +${diff}`, tone: 'border-rose-200 bg-rose-50 text-rose-700' };
-  if (diff < 0) return { label: `較前一年 ${diff}`, tone: 'border-emerald-200 bg-emerald-50 text-emerald-700' };
-  return { label: '與前一年相同', tone: 'border-sky-200 bg-sky-50 text-sky-700' };
+  if (diff > 0) return { label: `較前一年積分 +${diff}`, tone: 'border-rose-200 bg-rose-50 text-rose-700' };
+  if (diff < 0) return { label: `較前一年積分 ${diff}`, tone: 'border-emerald-200 bg-emerald-50 text-emerald-700' };
+
+  const latestCredits = Number(latest.credits);
+  const previousCredits = Number(previous.credits);
+  if (!Number.isFinite(latestCredits) || !Number.isFinite(previousCredits)) {
+    return { label: '積分與前一年相同', tone: 'border-slate-200 bg-slate-100 text-slate-600' };
+  }
+
+  const creditDiff = Math.round((latestCredits - previousCredits) * 10) / 10;
+  if (creditDiff > 0) return { label: `較前一年積點 +${creditDiff}`, tone: 'border-rose-200 bg-rose-50 text-rose-700' };
+  if (creditDiff < 0) return { label: `較前一年積點 ${creditDiff}`, tone: 'border-emerald-200 bg-emerald-50 text-emerald-700' };
+  return { label: '較前一年不變', tone: 'border-sky-200 bg-sky-50 text-sky-700' };
 };
 
 const zoneMeta: Record<string, { label: string; icon: React.ElementType; tone: string; badge: string }> = {
