@@ -77,6 +77,16 @@ const zoneMeta: Record<string, { label: string; icon: React.ElementType; tone: s
   safe: { label: '保守區', icon: ShieldCheck, tone: 'text-emerald-700 bg-emerald-50 border-emerald-200', badge: 'bg-emerald-500' },
 };
 
+const regionTone: Record<string, string> = {
+  taoyuan: 'border-emerald-300 bg-emerald-100 text-emerald-800',
+  taipei: 'border-indigo-300 bg-indigo-100 text-indigo-800',
+  central: 'border-amber-300 bg-amber-100 text-amber-800',
+  changhua: 'border-rose-300 bg-rose-100 text-rose-800',
+  tainan: 'border-sky-300 bg-sky-100 text-sky-800',
+  kaohsiung: 'border-orange-300 bg-orange-100 text-orange-800',
+  hsinchu: 'border-fuchsia-300 bg-fuchsia-100 text-fuchsia-800',
+};
+
 const scoreItems = [
   { key: 'chinese', label: '國文' },
   { key: 'english', label: '英文' },
@@ -587,6 +597,7 @@ export default function ResultsPage() {
                   const historicalTrend = getHistoricalTrend(historicalScores);
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
                   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === (school.region || scores?.region))?.name || school.region || regionName;
+                  const schoolRegionTone = regionTone[school.region || scores?.region] || 'border-slate-300 bg-slate-100 text-slate-700';
 
                   return (
                     <article key={`${school.name}-${index}`} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
@@ -620,10 +631,10 @@ export default function ResultsPage() {
                             {school.group || school.type || '普通科'}
                           </div>
                         </div>
-                        <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-2.5 py-2.5 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                          <span className="text-[10px] font-black uppercase text-slate-500 mb-0.5 whitespace-nowrap">地區</span>
+                        <div className={`flex min-w-0 flex-col items-center justify-center rounded-xl border-2 px-2.5 py-2.5 ${schoolRegionTone}`}>
+                          <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">地區</span>
                           <div className="text-center text-sm font-black leading-tight">
-                            <span className="text-slate-700">{schoolDistrictName}</span>
+                            <span>{schoolDistrictName}</span>
                           </div>
                         </div>
                       </div>
