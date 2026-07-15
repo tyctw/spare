@@ -84,7 +84,6 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
 
   const scores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 6);
   const latest = scores[0];
-  const trend = getHistoricalTrend(scores);
   const maxPoint = Math.max(...scores.map((item: any) => Number(item.points) || 0), 1);
 
   return (
@@ -97,12 +96,14 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
       />
       <section className="relative flex max-h-[88vh] w-full max-w-xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
         <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-amber-300 p-5 sm:p-6">
-          <div className="min-w-0">
-            <div className="text-xs font-black text-amber-900">歷年錄取資料</div>
-            <h2 className="mt-1 break-words text-xl font-black leading-tight text-slate-900 sm:text-2xl">{school.name}</h2>
-            <span className={`mt-3 inline-flex rounded-lg border px-2.5 py-1 text-xs font-black ${scores.length > 0 ? trend.tone : 'border-slate-200 bg-slate-100 text-slate-500'}`}>
-              {scores.length > 0 ? trend.label : historicalScoresPendingText}
-            </span>
+          <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-3 border-slate-900 bg-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:h-12 sm:w-12">
+              <History className="h-6 w-6 text-amber-700" strokeWidth={3} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-black text-amber-900">歷年錄取資料</div>
+              <h2 className="mt-1 break-words text-xl font-black leading-tight text-slate-900 sm:text-2xl">{school.name}</h2>
+            </div>
           </div>
           <button
             type="button"
@@ -136,27 +137,60 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
                 </div>
               </div>
 
-              <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <div className="font-black text-slate-900">歷年分數趨勢</div>
-                  <div className="text-[11px] font-bold text-slate-500">積分 / 積點</div>
+              <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-5">
+                <div className="flex items-start justify-between gap-3 border-b-2 border-dashed border-slate-200 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-100">
+                      <History className="h-5 w-5 text-amber-700" strokeWidth={3} />
+                    </div>
+                    <div>
+                      <div className="font-black text-slate-900">歷年分數趨勢</div>
+                      <p className="mt-0.5 text-[11px] font-bold text-slate-500">由新至舊，快速比較每年門檻</p>
+                    </div>
+                  </div>
+                  <div className="shrink-0 rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-black text-slate-600">積分 / 積點</div>
                 </div>
-                <div className="space-y-3">
-                  {scores.map((item: any) => {
-                    const width = `${Math.max(14, Math.round(((Number(item.points) || 0) / maxPoint) * 100))}%`;
+
+                <div className="mt-4 space-y-3">
+                  {scores.map((item: any, index: number) => {
+                    const point = Number(item.points);
+                    const previousPoint = Number(scores[index + 1]?.points);
+                    const hasPrevious = Number.isFinite(point) && Number.isFinite(previousPoint);
+                    const difference = hasPrevious ? Math.round((point - previousPoint) * 10) / 10 : null;
+                    const width = `${Math.max(14, Math.round(((point || 0) / maxPoint) * 100))}%`;
+                    const isLatest = index === 0;
+                    const differenceTone = difference === null
+                      ? 'bg-slate-100 text-slate-500'
+                      : difference > 0
+                        ? 'bg-rose-100 text-rose-700'
+                        : difference < 0
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-sky-100 text-sky-700';
+
                     return (
-                      <div key={`${item.year}-${item.points}-${item.credits ?? 'none'}-${item.note ?? ''}`}>
-                        <div className="grid grid-cols-[48px_1fr_auto] items-center gap-3">
-                          <div className="text-sm font-black text-slate-500">{item.year}</div>
-                          <div className="h-4 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
-                            <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-sky-300 to-indigo-400" style={{ width }} />
+                      <div key={`${item.year}-${item.points}-${item.credits ?? 'none'}-${item.note ?? ''}`} className={`rounded-xl border-2 p-3 ${isLatest ? 'border-amber-400 bg-amber-50' : 'border-slate-200 bg-slate-50'}`}>
+                        <div className="flex items-start gap-3">
+                          <div className={`flex min-w-12 flex-col items-center rounded-lg px-2 py-2 text-center ${isLatest ? 'bg-amber-400 text-amber-950' : 'bg-slate-200 text-slate-700'}`}>
+                            <span className="text-xs font-black">{item.year}</span>
                           </div>
-                          <div className="whitespace-nowrap text-xs font-black text-slate-800 sm:text-sm">
-                            {item.points ?? '--'} / {formatHistoricalCredits(item.credits)}
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="text-2xl font-black leading-none text-slate-900">{item.points ?? '--'}</span>
+                                <span className="text-xs font-black text-slate-500">積分</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-black text-slate-600">積點 {formatHistoricalCredits(item.credits)}</span>
+                                {difference !== null && <span className={`rounded-md px-2 py-1 text-[10px] font-black ${differenceTone}`}>{difference === 0 ? '較前一年不變' : `較前一年 ${difference > 0 ? '+' : ''}${difference}`}</span>}
+                              </div>
+                            </div>
+                            <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-200">
+                              <div className="h-full rounded-full bg-gradient-to-r from-amber-300 via-sky-300 to-indigo-400" style={{ width }} />
+                            </div>
                           </div>
                         </div>
                         {item.note && (
-                          <p className="ml-[60px] mt-1 text-xs font-bold leading-relaxed text-slate-600">
+                          <p className="mt-2 border-t border-dashed border-slate-200 pt-2 text-xs font-bold leading-relaxed text-slate-600">
                             <span className="mr-1 font-black text-slate-800">備註：</span>{item.note}
                           </p>
                         )}
