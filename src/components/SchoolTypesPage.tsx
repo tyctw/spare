@@ -125,11 +125,11 @@ export default function SchoolTypesPage() {
         <aside className={pageNavigationAsideClassName}>
           <PageNavigation
             navClassName="w-full rounded-2xl border-4 border-slate-900 bg-white p-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-4 sm:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
-            itemLayoutClassName="grid grid-cols-2 gap-2 lg:block lg:space-y-2"
+            itemLayoutClassName="grid gap-2 lg:block lg:space-y-2"
             items={[
               { id: 'overview', label: '類型總覽', className: 'text-center lg:block lg:text-left' },
               { id: 'comparison', label: '普通高中 vs 技術型高中', className: 'text-center leading-5 lg:block lg:text-left' },
-              { id: 'choose', label: '怎麼選比較穩', className: 'col-span-2 text-center lg:col-span-1 lg:block lg:text-left' },
+              { id: 'choose', label: '怎麼選比較穩', className: 'text-center lg:block lg:text-left' },
             ]}
           />
         </aside>
