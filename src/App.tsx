@@ -27,7 +27,6 @@ import DataProviderModal from './components/DataProviderModal';
 import HollandTestModal from './components/HollandTestModal';
 import MockVolunteerModal from './components/MockVolunteerModal';
 import HistoricalStatsModal from './components/HistoricalStatsModal';
-import { exportTxt, exportExcel, exportJson, printResults } from './lib/exportUtils';
 // Layout Components
 import AppHeader from './components/layout/AppHeader';
 import Footer from './components/layout/Footer';
@@ -410,6 +409,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     if (!results) return;
     const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未選擇';
     const payload = { scores: formData, results, identity: formData.identity, vocationalGroups };
+    // Spreadsheet generation is an occasional action; defer its dependency
+    // until the visitor actually chooses an export format.
+    const { exportTxt, exportExcel, exportJson, printResults } = await import('./lib/exportUtils');
     switch (type) {
       case 'txt': exportTxt(payload, regionName); break;
       case 'excel': exportExcel(payload, regionName); break;
@@ -1169,7 +1171,11 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     <button onClick={() => setIsComparisonOpen(true)} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
                       <List className="w-4 h-4" /> 比較清單 ({comparisonSchools.length})
                     </button>
-                    <button onClick={() => setActiveModal('export')} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
+                    <button onClick={() => {
+                      // Begin preparing the export library while the format picker is open.
+                      void import('./lib/exportUtils');
+                      setActiveModal('export');
+                    }} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
                       <Download className="w-4 h-4" /> 匯出報告
                     </button>
                     <button onClick={() => { window.location.href = withBasePath('/strategy'); }} className="px-3 py-1.5 bg-amber-50 text-amber-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
