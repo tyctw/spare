@@ -123,7 +123,6 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
               <h2 className="text-3xl font-black tracking-tight">資料錯誤回報</h2>
             </div>
             <p className="text-slate-900 font-bold opacity-80 mt-2">
-              如果您發現有缺漏的學校或錯誤的資料，請協助我們進行修正，讓系統更準確！
             </p>
           </div>
 
@@ -181,12 +180,13 @@ export default function ReportErrorModal({ isOpen, onClose }: ReportErrorModalPr
                 </div>
 
                 <div>
-                  <label className="block text-sm font-black text-slate-900 mb-2">您的電子郵件 (選填)</label>
+                  <label className="block text-sm font-black text-slate-900 mb-2">您的電子郵件 <span className="text-rose-500">*</span></label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="如果您希望我們後續與您聯繫，請留下 Email"
+                    placeholder="請輸入您的 Email"
+                    required
                     className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 transition-all"
                   />
                 </div>
