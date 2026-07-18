@@ -471,42 +471,30 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               <p className="text-xs font-bold text-slate-600 mb-4 relative z-10">請輸入由主辦單位提供之專屬邀請碼以解鎖進階分析</p>
 
               {/* Announcement */}
-              <div className="mb-4 p-4 bg-gradient-to-r from-amber-200 to-amber-100 border-4 border-slate-900 rounded-xl relative z-10 overflow-hidden group shadow-[4px_4px_0px_0px_rgba(251,191,36,1)]">
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none"></div>
-                {(() => {
-                  const now = new Date();
-                  const start = new Date('2026-06-24T11:55:00+08:00');
-                  const end = new Date('2026-06-30T23:59:59+08:00');
-                  const isDuringInterval = now >= start && now <= end;
-                  
-                  if (isDuringInterval) {
-                    return (
-                      <>
-                        <h3 className="text-base font-black text-slate-900 flex items-center gap-1.5 mb-1.5">
-                          <span className="text-xl animate-bounce">📢</span>分享序位，免費拿邀請碼！
-                        </h3>
-                        <p className="text-sm font-bold text-slate-800 leading-relaxed">
-                          填寫序位分享表單後，即可免費獲得邀請碼！<br />
-                          <a href="https://tyctw.github.io/form/" target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-white bg-indigo-600 px-3 py-1.5 rounded-lg border-2 border-slate-900 shadow-[2px_2px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[4px_4px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all">
-                            前往填寫表單獲取
-                          </a>
-                        </p>
-                      </>
-                    );
-                  }
-                  
-                  return (
-                    <>
-                      <h3 className="text-base font-black text-slate-900 flex items-center gap-1.5 mb-1.5">
-                        <span className="text-xl animate-bounce">📢</span> 限時公告
-                      </h3>
-                      <p className="text-sm font-bold text-slate-800 leading-relaxed">
-                        即日起至 <span className="inline-block bg-white text-rose-600 px-1.5 py-0.5 rounded font-black border-2 border-slate-900 shadow-[2px_2px_0px_rgba(15,23,42,1)]">2026/12/30</span> 前，提供免費使用。<br className="hidden sm:block" />
-                        請於下方輸入邀請碼 <span className="inline-block bg-indigo-600 text-white font-mono text-sm px-2 py-0.5 rounded border-2 border-slate-900 shadow-[2px_2px_0px_rgba(15,23,42,1)] mx-0.5 select-all hover:-translate-y-0.5 transition-transform">TYCTW</span> 即可一鍵解鎖所有進階功能。
-                      </p>
-                    </>
-                  );
-                })()}
+              <div className="relative z-10 mb-5 overflow-hidden rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-white to-orange-100 p-4 shadow-[0_8px_24px_rgba(245,158,11,0.16)]">
+                <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-amber-300/50 blur-2xl" />
+                <div className="absolute bottom-0 left-0 h-16 w-24 rounded-tr-full bg-orange-200/40" />
+                <div className="relative">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-black tracking-wide text-white shadow-sm">
+                      <span className="text-base leading-none">📢</span>
+                      <span>限時公告</span>
+                    </div>
+                    <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-black text-rose-600">免費開放中</span>
+                  </div>
+                  <p className="mt-4 text-sm font-bold leading-6 text-slate-700">
+                    即日起至 <span className="whitespace-nowrap font-black text-rose-600">2026/12/30</span> 前，提供免費使用。
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => updateForm('invitationCode', 'TYCTW')}
+                    className="mt-3 flex w-full items-center justify-between gap-3 rounded-xl border border-indigo-200 bg-white/90 p-3 text-left transition hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    title="點擊自動填入邀請碼"
+                  >
+                    <span className="min-w-0 text-xs font-bold leading-5 text-slate-600">點擊邀請碼，一鍵填入並解鎖所有進階功能</span>
+                    <span className="shrink-0 rounded-lg bg-indigo-600 px-3 py-1.5 font-mono text-sm font-black tracking-[0.16em] text-white shadow-sm">TYCTW</span>
+                  </button>
+                </div>
               </div>
               
               <div className="relative z-10 grid grid-cols-[minmax(0,1fr)_48px] gap-2">
