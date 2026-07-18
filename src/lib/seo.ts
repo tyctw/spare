@@ -12,7 +12,7 @@ type PageMeta = {
 
 const pageMetadata: Record<string, PageMeta> = {
   '/': {
-    title: '全國會考落點分析｜免費志願選填工具',
+    title: '免費會考落點分析｜全台高中職志願選填，一次掌握',
     description: defaultDescription,
   },
   '/advantages': {
