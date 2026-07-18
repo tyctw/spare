@@ -2,7 +2,7 @@ import { appBasePath } from './routes';
 
 const siteUrl = 'https://tyctw.github.io/spare';
 const siteName = '全國會考落點分析';
-const defaultDescription = '輸入會考成績與就學區，立即免費分析落點，找出適合的高中職、五專志願方向。';
+const defaultDescription = '你的會考成績，能選哪些高中職？輸入成績與就學區，免費查看落點、探索五專選擇，志願選填更有方向。';
 
 type PageMeta = {
   title: string;
@@ -12,7 +12,7 @@ type PageMeta = {
 
 const pageMetadata: Record<string, PageMeta> = {
   '/': {
-    title: '免費會考落點分析｜輸入成績，找出適合高中職志願',
+    title: '免費會考落點分析｜你的成績，能選哪些高中職？',
     description: defaultDescription,
   },
   '/advantages': {
