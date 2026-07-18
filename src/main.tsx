@@ -2,6 +2,7 @@ import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
+import { applyPageSeo } from './lib/seo.ts';
 
 // Route-level splitting keeps the initial screen light while retaining the same
 // URL-based navigation model. Each page is fetched only when it is visited.
@@ -74,6 +75,8 @@ const redirectedRoute = new URLSearchParams(window.location.search).get('route')
 if (redirectedRoute) {
   window.history.replaceState(null, '', withBasePath(path));
 }
+
+applyPageSeo(path);
 
 const page =
   path === '/privacy' ? <LegalPage kind="privacy" /> :
