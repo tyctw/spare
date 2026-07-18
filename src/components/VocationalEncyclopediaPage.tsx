@@ -110,12 +110,36 @@ const selectionSteps = [
   ['確認簡章', '填志願前，以當年度免試入學與學校招生簡章為最後依據。'],
 ];
 
+const groupThemes: Record<string, { hero: string; icon: string; chip: string }> = {
+  '機械群': { hero: 'from-slate-800 via-slate-700 to-cyan-700', icon: 'bg-cyan-200', chip: 'bg-cyan-100 text-cyan-950' },
+  '動力機械群': { hero: 'from-orange-700 via-amber-600 to-yellow-500', icon: 'bg-amber-200', chip: 'bg-amber-100 text-amber-950' },
+  '電機與電子群': { hero: 'from-blue-800 via-indigo-700 to-violet-600', icon: 'bg-indigo-200', chip: 'bg-indigo-100 text-indigo-950' },
+  '化工群': { hero: 'from-fuchsia-800 via-purple-700 to-violet-600', icon: 'bg-fuchsia-200', chip: 'bg-fuchsia-100 text-fuchsia-950' },
+  '土木與建築群': { hero: 'from-stone-800 via-amber-800 to-orange-700', icon: 'bg-orange-200', chip: 'bg-orange-100 text-orange-950' },
+  '商業與管理群': { hero: 'from-emerald-800 via-teal-700 to-cyan-700', icon: 'bg-emerald-200', chip: 'bg-emerald-100 text-emerald-950' },
+  '外語群': { hero: 'from-sky-800 via-blue-700 to-indigo-600', icon: 'bg-sky-200', chip: 'bg-sky-100 text-sky-950' },
+  '設計群': { hero: 'from-rose-800 via-pink-700 to-fuchsia-600', icon: 'bg-pink-200', chip: 'bg-pink-100 text-pink-950' },
+  '農業群': { hero: 'from-green-800 via-emerald-700 to-lime-600', icon: 'bg-lime-200', chip: 'bg-lime-100 text-lime-950' },
+  '食品群': { hero: 'from-amber-800 via-orange-700 to-red-600', icon: 'bg-yellow-200', chip: 'bg-yellow-100 text-yellow-950' },
+  '家政群': { hero: 'from-rose-800 via-pink-700 to-purple-600', icon: 'bg-rose-200', chip: 'bg-rose-100 text-rose-950' },
+  '餐旅群': { hero: 'from-red-800 via-orange-700 to-amber-600', icon: 'bg-orange-200', chip: 'bg-orange-100 text-orange-950' },
+  '水產群': { hero: 'from-cyan-800 via-sky-700 to-blue-600', icon: 'bg-cyan-200', chip: 'bg-cyan-100 text-cyan-950' },
+  '海事群': { hero: 'from-blue-950 via-blue-800 to-cyan-700', icon: 'bg-sky-200', chip: 'bg-sky-100 text-sky-950' },
+  '藝術群': { hero: 'from-violet-900 via-purple-700 to-fuchsia-600', icon: 'bg-fuchsia-200', chip: 'bg-fuchsia-100 text-fuchsia-950' },
+};
+
 const getFiveGroupMyths = (group: VocationalGroup): Myth[] => [
   ...groupMyths[group.id],
   { myth: `迷思：同是${group.id}，每所學校的課程都完全一樣。`, fact: `正確觀念：${group.id}有共同專業核心，但實際開設科別、實習設備、特色課程與專題方向仍會因學校而不同。` },
   { myth: `迷思：只看科名，就能知道自己適不適合${group.id}。`, fact: '正確觀念：應進一步閱讀課程地圖、實作內容與學校介紹；科名相近，實際學習經驗可能差異很大。' },
   { myth: `迷思：選${group.id}後，未來只能走單一路徑。`, fact: '正確觀念：可依個人學習成果、興趣與入學管道繼續升學或探索相關產業；高中階段的選擇是起點，不是唯一限制。' },
 ];
+
+const getDetailedSelectionTip = (group: VocationalGroup) => {
+  const courseExample = group.learning.slice(0, 2).join('、');
+  const majorExamples = group.majors.slice(0, 3).join('、');
+  return `${group.selectionTip} 先回頭看課程：如果「${courseExample}」這些內容是你願意花時間練習的，而不只是覺得名稱好聽，才值得優先考慮。再比較目標學校是否實際設有${majorExamples}等科別，以及實習設備、特色課程、通勤與生活安排是否可行。最後請以當年度招生簡章為準，必要時可參加校園參訪或向在校師生詢問真實的學習情況。`;
+};
 
 export default function VocationalEncyclopediaPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -125,8 +149,10 @@ export default function VocationalEncyclopediaPage() {
     if (!keyword) return groups;
     return groups.filter((group) => [group.id, group.summary, group.holland, ...group.traits, ...group.learning, ...group.majors, ...group.careers].some((text) => text.toLowerCase().includes(keyword)));
   }, [searchTerm]);
-  const selectedGroup = groups.find((group) => group.id === selectedId) || filteredGroups[0] || groups[0];
+  const resolvedGroup = groups.find((group) => group.id === selectedId) || filteredGroups[0] || groups[0];
+  const selectedGroup = { ...resolvedGroup, selectionTip: getDetailedSelectionTip(resolvedGroup) };
   const selectedGroupMyths = getFiveGroupMyths(selectedGroup);
+  const selectedTheme = groupThemes[selectedGroup.id] || groupThemes['機械群'];
   const chooseGroup = (id: string) => { setSelectedId(id); window.setTimeout(() => document.getElementById('group-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0); };
 
   return <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
@@ -140,7 +166,7 @@ export default function VocationalEncyclopediaPage() {
       <aside className={pageNavigationAsideClassName}><div className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"><label className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500"><Search className="h-4 w-4" />搜尋群別、科別或興趣</label><div className="relative"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" /><input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="例如：資訊、餐飲、設計、I" className="w-full rounded-xl border-2 border-slate-900 bg-slate-50 py-3 pl-10 pr-3 text-sm font-bold outline-none focus:bg-white" /></div>
         <div className="mt-4 grid max-h-[520px] gap-2 overflow-y-auto pr-1">{filteredGroups.length === 0 ? <div className="rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-5 text-center text-sm font-bold text-slate-500">找不到符合的群別，試試其他關鍵字。</div> : filteredGroups.map((group) => { const active = group.id === selectedGroup.id; return <button key={group.id} onClick={() => chooseGroup(group.id)} className={`flex items-center justify-between gap-3 rounded-xl border-2 px-3 py-3 text-left transition-all ${active ? 'border-slate-900 bg-emerald-500 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]' : 'border-slate-200 bg-white text-slate-800 hover:border-slate-900 hover:bg-emerald-50'}`}><span className="flex items-center gap-3"><span className="text-2xl">{group.icon}</span><span><span className="block text-sm font-black">{group.id}</span><span className={`block text-xs font-bold ${active ? 'text-emerald-50' : 'text-slate-500'}`}>Holland {group.holland}</span></span></span><Tags className="h-4 w-4 shrink-0" /></button>; })}</div></div></aside>
       <div className="min-w-0 space-y-6"><section className="grid gap-4 sm:grid-cols-3"><Stat label="技術型高中群別" value="15 群" /><Stat label="可從這裡了解" value="興趣・學習・科別" /><a href={withBasePath('/holland')} className="rounded-2xl border-4 border-slate-900 bg-purple-600 p-5 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"><Sparkles className="h-6 w-6" /><p className="mt-3 text-sm font-black text-purple-100">還不確定方向？</p><p className="mt-1 text-xl font-black">先做荷倫碼測驗</p></a></section>
-        <section id="group-detail" className="scroll-mt-6 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-7"><div className="flex flex-col gap-5 border-b-2 border-dashed border-slate-200 pb-5 sm:flex-row sm:items-center"><div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-4 border-slate-900 bg-emerald-100 text-5xl">{selectedGroup.icon}</div><div><div className="mb-2 inline-flex rounded-lg border-2 border-slate-900 bg-slate-900 px-3 py-1 text-xs font-black text-white">Holland {selectedGroup.holland}</div><h2 className="text-3xl font-black sm:text-4xl">{selectedGroup.id}</h2><p className="mt-3 text-sm font-bold leading-7 text-slate-700 sm:text-base">{selectedGroup.summary}</p></div></div>
+        <section id="group-detail" className="scroll-mt-6 overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]"><div className={`relative overflow-hidden bg-gradient-to-br ${selectedTheme.hero} px-5 py-6 text-white sm:px-7 sm:py-8`}><div className="pointer-events-none absolute -right-14 -top-16 h-52 w-52 rounded-full border-8 border-white/20" /><div className="pointer-events-none absolute bottom-0 right-28 h-24 w-24 rotate-12 rounded-3xl bg-white/10" /><div className="relative flex flex-col gap-5 sm:flex-row sm:items-center"><div className={`flex h-20 w-20 shrink-0 items-center justify-center rounded-[1.4rem] border-4 border-slate-900 ${selectedTheme.icon} text-5xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]`}>{selectedGroup.icon}</div><div className="min-w-0"><div className="flex flex-wrap gap-2"><span className="rounded-full border-2 border-white/80 bg-white/15 px-3 py-1 text-xs font-black">技術型高中 15 群</span><span className="rounded-full border-2 border-white/80 bg-white/15 px-3 py-1 text-xs font-black">Holland {selectedGroup.holland}</span></div><h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">{selectedGroup.id}</h2><p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-white/90 sm:text-base">{selectedGroup.summary}</p></div></div></div>
           <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_320px]"><div className="space-y-5"><InfoBlock icon={<BookOpen className="h-5 w-5" />} title="主要學習內容" tone="emerald" items={selectedGroup.learning} /><InfoBlock icon={<GraduationCap className="h-5 w-5" />} title="常見相關科別" tone="emerald" items={selectedGroup.majors} /><InfoBlock icon={<GraduationCap className="h-5 w-5" />} title="升學延伸方向" tone="emerald" items={selectedGroup.furtherStudy} /><InfoBlock icon={<Briefcase className="h-5 w-5" />} title="可能職涯方向" tone="amber" items={selectedGroup.careers} /></div><div className="space-y-5"><InfoBlock icon={<Tags className="h-5 w-5" />} title="適合培養的特質" tone="amber" items={selectedGroup.traits} /><div className="rounded-2xl border-2 border-amber-700 bg-amber-50 p-5"><h3 className="text-lg font-black text-amber-900">選擇前，先問自己</h3><p className="mt-3 text-sm font-bold leading-7 text-slate-700">{selectedGroup.selectionTip}</p></div><div className="rounded-2xl border-2 border-slate-900 bg-purple-50 p-5"><h3 className="text-lg font-black text-purple-800">Holland 興趣提醒</h3><p className="mt-3 text-sm font-bold leading-7 text-slate-700">{selectedGroup.hollandDesc}</p><p className="mt-3 text-xs font-bold leading-6 text-slate-500">Holland 代碼只適合作為探索興趣的線索，不應作為選科的唯一依據。</p></div></div></div></section>
         <section className="grid gap-5 lg:grid-cols-[1.15fr_.85fr]"><div className="rounded-2xl border-4 border-slate-900 bg-amber-50 p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"><p className="text-sm font-black text-amber-800">{selectedGroup.id}專屬提醒</p><h2 className="text-2xl font-black">選 {selectedGroup.id} 前，先破解 5 個迷思</h2><div className="mt-4 grid gap-3">{selectedGroupMyths.map((item, index) => <details key={item.myth} className="group rounded-xl border-2 border-amber-200 bg-white p-4"><summary className="cursor-pointer list-none font-black text-amber-900 marker:hidden"><span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-200 text-xs text-amber-950">{index + 1}</span>{item.myth}<span className="float-right text-lg transition-transform group-open:rotate-45">＋</span></summary><p className="mt-3 border-t border-amber-100 pt-3 text-sm font-bold leading-7 text-slate-700">{item.fact}</p></details>)}</div></div><div className="rounded-2xl border-4 border-slate-900 bg-sky-50 p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"><h2 className="text-2xl font-black">選科 4 步走</h2><ol className="mt-4 grid gap-3">{selectionSteps.map(([title, description], index) => <li key={title} className="flex gap-3 rounded-xl border-2 border-sky-200 bg-white p-3"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-black text-white">{index + 1}</span><div><h3 className="font-black text-sky-900">{title}</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-700">{description}</p></div></li>)}</ol></div></section>
       </div></section></main>;
@@ -149,6 +175,7 @@ export default function VocationalEncyclopediaPage() {
 function Stat({ label, value }: { label: string; value: string }) { return <div className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"><p className="text-sm font-black text-slate-500">{label}</p><p className="mt-2 text-xl font-black text-emerald-700">{value}</p></div>; }
 
 function InfoBlock({ icon, title, tone, items }: { icon: React.ReactNode; title: string; tone: 'emerald' | 'amber'; items: string[] }) {
-  const classes = tone === 'emerald' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800';
-  return <div className="rounded-2xl border-2 border-slate-900 bg-white p-5"><div className="flex items-center gap-3"><div className={`rounded-xl border-2 p-2 ${classes}`}>{icon}</div><h3 className="text-lg font-black">{title}</h3></div><div className="mt-4 flex flex-wrap gap-2">{items.map((item) => <span key={item} className={`rounded-xl border px-3 py-2 text-sm font-black ${classes}`}>{item}</span>)}</div></div>;
+  const iconClasses = tone === 'emerald' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
+  const numberClasses = tone === 'emerald' ? 'bg-emerald-200 text-emerald-900' : 'bg-amber-200 text-amber-900';
+  return <section className="rounded-2xl border-2 border-slate-900 bg-white p-5"><div className="flex items-center gap-3"><div className={`rounded-lg border border-slate-200 p-2 ${iconClasses}`}>{icon}</div><h3 className="text-lg font-black text-slate-900">{title}</h3></div><ul className="mt-4 grid auto-rows-fr gap-2 sm:grid-cols-2">{items.map((item, index) => <li key={item} className={`flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-white px-3 py-3 text-sm font-bold leading-6 text-slate-700 ${items.length % 2 === 1 && index === items.length - 1 ? 'sm:col-span-2' : ''}`}><span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black ${numberClasses}`}>{String(index + 1).padStart(2, '0')}</span><span>{item}</span></li>)}</ul></section>;
 }
