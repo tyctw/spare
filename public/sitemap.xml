@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://tyctw.github.io/spare/</loc>
-    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://tyctw.github.io/spare/social-share.png</image:loc>
-      <image:title>免費會考落點分析</image:title>
-      <image:caption>免費國中教育會考落點分析、免試入學積分試算、志願選填建議與高中職校系探索工具</image:caption>
+      <image:title>全國會考落點分析</image:title>
+      <image:caption>提供全台 15 個免試入學區的高中職、五專學校資訊與志願選填參考。</image:caption>
     </image:image>
   </url>
+  <url><loc>https://tyctw.github.io/spare/advantages</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://tyctw.github.io/spare/grade-level</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/historical-stats</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/important-dates</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/instructions</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tyctw.github.io/spare/mock-volunteer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/search</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/holland</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tyctw.github.io/spare/school-types</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/strategy</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/vocational-encyclopedia</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/site-map</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://tyctw.github.io/spare/privacy</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://tyctw.github.io/spare/terms</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
 </urlset>
