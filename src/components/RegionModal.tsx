@@ -48,7 +48,6 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                    <h2 className="text-3xl sm:text-4xl font-black text-slate-900 flex items-center gap-3">
                      <MapPin className="w-8 h-8 sm:w-10 sm:h-10" strokeWidth={3} /> 選擇就學區
                    </h2>
-                   <p className="text-amber-900 font-bold mt-2 text-base sm:text-lg">系統將根據您選擇的區域進行大數據精準分析</p>
                  </div>
                  <button onClick={onClose} className="p-2 bg-white/50 hover:bg-white rounded-xl transition-colors border-2 border-transparent hover:border-slate-900 shrink-0">
                    <X className="w-6 h-6 text-slate-900" />
