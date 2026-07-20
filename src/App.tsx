@@ -1934,14 +1934,14 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 </div>
 
                 <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] p-4 flex justify-center gap-4">
-                  <a href="https://www.instagram.com/115.rcpet/" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
+                  <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
                     <div className="w-10 h-10 rounded-xl bg-pink-50 border-2 border-slate-900 flex items-center justify-center group-hover:bg-pink-100 group-hover:scale-110 active:scale-95 transition-all text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                       <Instagram className="w-5 h-5 group-hover:-rotate-6 transition-transform group-hover:rotate-0" />
                     </div>
                     <span className="font-bold text-slate-700 text-sm">Instagram</span>
                   </a>
                   <div className="w-0.5 h-10 bg-slate-200 rounded-full mx-2"></div>
-                  <a href="https://www.threads.com/@115.rcpet" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
+                  <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
                     <div className="w-10 h-10 rounded-xl bg-slate-50 border-2 border-slate-900 flex items-center justify-center group-hover:bg-slate-100 group-hover:scale-110 active:scale-95 transition-all text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                       <AtSign className="w-5 h-5 group-hover:rotate-6 transition-transform group-hover:rotate-0" />
                     </div>
@@ -1953,7 +1953,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               <div className="p-4 bg-slate-900 border-t-4 border-slate-900 text-center">
                 <p className="text-slate-400 font-bold text-xs flex items-center justify-center gap-1">
                   <Check className="w-3 h-3 text-emerald-400" />
-                  會考落點分析系統 v5.0
+                  會考落點分析系統 v6.0
                 </p>
               </div>
             </motion.div>
