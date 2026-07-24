@@ -10,6 +10,7 @@ import {defineConfig, loadEnv} from 'vite';
 const seoRoutes = [
   'advantages',
   'grade-level',
+  'faq-glossary',
   'historical-stats',
   'important-dates',
   'instructions',

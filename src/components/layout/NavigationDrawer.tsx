@@ -114,6 +114,7 @@ const menuCategories: MenuCategory[] = [
     bg: 'bg-slate-100',
     items: [
       { id: 'instructions', label: '使用說明', description: '第一次使用可從這裡看操作流程', keywords: '使用 說明 教學 操作', icon: Info, color: 'text-blue-600', bg: 'bg-blue-100', action: { type: 'route', href: '/instructions' } },
+      { id: 'faqGlossary', label: '常見問答與名詞百科', description: '快速看懂會考、比序與志願選填名詞', keywords: '常見問答 faq 名詞 百科 超額比序 序位 五專 技高', icon: BookOpen, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/faq-glossary' } },
       { id: 'site-map', label: '網站地圖', description: '一次查看全部功能頁面', keywords: '網站 地圖 sitemap 頁面', icon: Map, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/site-map' } },
       { id: 'rating', label: '評分與回饋', description: '留下使用感受或建議', keywords: '評分 回饋 意見', icon: Star, color: 'text-amber-500', bg: 'bg-amber-100', action: { type: 'modal', id: 'rating' } },
       { id: 'reportError', label: '問題回報', description: '資料錯誤或系統問題從這裡回報', keywords: '錯誤 問題 回報 bug', icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-100', action: { type: 'modal', id: 'reportError' } },

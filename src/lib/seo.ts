@@ -23,6 +23,10 @@ const pageMetadata: Record<string, PageMeta> = {
     title: '會考等級對照表｜答對題數與積分說明',
     description: '查詢國中教育會考各科等級、標示與答對題數對照，快速了解會考成績的判讀方式。',
   },
+  '/faq-glossary': {
+    title: '會考常見問答與名詞百科｜全國會考落點分析',
+    description: '快速認識會考、免試入學、超額比序、志願序、個別序位、技高與五專等常見升學名詞。',
+  },
   '/historical-stats': {
     title: '歷年會考統計資料｜成績趨勢與級距',
     description: '彙整歷年國中教育會考統計資料與級距資訊，協助考生與家長掌握成績分布及升學趨勢。',

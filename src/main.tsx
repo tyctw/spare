@@ -9,6 +9,7 @@ import { applyPageSeo } from './lib/seo.ts';
 const App = lazy(() => import('./App.tsx'));
 const AdvantagesPage = lazy(() => import('./components/AdvantagesPage.tsx'));
 const ChangelogPage = lazy(() => import('./components/ChangelogPage.tsx'));
+const FaqGlossaryPage = lazy(() => import('./components/FaqGlossaryPage.tsx'));
 const HollandPage = lazy(() => import('./components/HollandPage.tsx'));
 const GradeLevelPage = lazy(() => import('./components/GradeLevelPage.tsx'));
 const HistoricalStatsPage = lazy(() => import('./components/HistoricalStatsPage.tsx'));
@@ -83,6 +84,7 @@ const page =
   path === '/terms' ? <LegalPage kind="terms" /> :
   path === '/advantages' ? <AdvantagesPage /> :
   path === '/changelog' ? <ChangelogPage /> :
+  path === '/faq-glossary' ? <FaqGlossaryPage /> :
   path === '/grade-level' ? <GradeLevelPage /> :
   path === '/historical-stats' ? <HistoricalStatsPage /> :
   path === '/important-dates' ? <ImportantDatesPage /> :

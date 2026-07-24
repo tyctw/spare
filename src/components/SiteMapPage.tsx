@@ -74,6 +74,7 @@ const categories: Array<{ title: string; desc: string; items: SiteMapItem[] }> =
     desc: '使用教學、網站資訊、政策文件與回饋入口。',
     items: [
       { title: '使用說明', desc: '一步步了解如何輸入資料、閱讀結果、匯出與後續操作。', href: '/instructions', icon: HelpCircle, tone: 'bg-blue-100 text-blue-700' },
+      { title: '常見問答與名詞百科', desc: '快速理解會考、超額比序、志願序、序位、技高與五專等名詞。', href: '/faq-glossary', icon: BookOpen, tone: 'bg-sky-100 text-sky-700' },
       { title: '系統優點與關於我們', desc: '了解本站設計理念、資料處理原則與功能特色。', href: '/advantages', icon: HeartHandshake, tone: 'bg-indigo-100 text-indigo-700' },
       { title: '網站地圖', desc: '目前這一頁，彙整所有主要功能與頁面入口。', href: '/site-map', icon: Map, tone: 'bg-amber-100 text-amber-700' },
       { title: '更新日誌', desc: '查看版本更新、功能新增與調整紀錄。', href: '/changelog', icon: History, tone: 'bg-slate-100 text-slate-700' },
