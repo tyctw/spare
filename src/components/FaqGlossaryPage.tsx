@@ -23,16 +23,13 @@ const entries: Entry[] = [
   { category: '使用本站', term: '資料更新日與來源', summary: '用來確認資訊適用年度與可追溯性。', detail: '招生規則與日期會變動。使用本站資料前請查看標示年度與更新時間；關鍵決策請回到招生委員會、教育主管機關或學校的正式公告核對。' },
 ];
 
-const categories = ['全部', ...Array.from(new Set(entries.map((entry) => entry.category)))];
-
 export default function FaqGlossaryPage() {
   const [keyword, setKeyword] = useState('');
-  const [category, setCategory] = useState('全部');
   const [openTerm, setOpenTerm] = useState<string | null>(entries[0].term);
   const filtered = useMemo(() => {
     const query = keyword.trim().toLowerCase();
-    return entries.filter((entry) => (category === '全部' || entry.category === category) && (!query || [entry.category, entry.term, entry.summary, entry.detail].join(' ').toLowerCase().includes(query)));
-  }, [category, keyword]);
+    return entries.filter((entry) => !query || [entry.category, entry.term, entry.summary, entry.detail].join(' ').toLowerCase().includes(query));
+  }, [keyword]);
 
   return <main className="min-h-screen bg-slate-50 text-slate-900">
     <section className="border-b-4 border-slate-900 bg-sky-50"><div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
@@ -41,7 +38,7 @@ export default function FaqGlossaryPage() {
       <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">常見問答與名詞百科</h1><p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">把會考、免試入學、志願選填與學校類型的常見名詞整理成易懂說明，幫助你閱讀資料、和家人討論志願。</p></div>
     </div></section>
     <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8"><div className="rounded-2xl border-4 border-slate-900 bg-amber-100 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"><div className="flex gap-3"><ShieldAlert className="mt-0.5 h-6 w-6 shrink-0 text-amber-800" /><p className="text-sm font-bold leading-7 text-slate-800">本頁用語為學習與規劃參考；招生資格、計分、比序、名額與時程可能每年或各就學區不同，請以當年度招生簡章與官方公告為準。</p></div></div>
-      <div className="mt-7 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"><div className="relative"><Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" /><input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="搜尋名詞，例如：序位、五專、超額比序..." className="w-full rounded-xl border-2 border-slate-900 bg-slate-50 py-3 pl-12 pr-4 text-base font-bold outline-none focus:bg-white focus:ring-4 focus:ring-sky-300/40" /></div><div className="mt-4 flex flex-wrap gap-2">{categories.map((item) => <button key={item} type="button" onClick={() => setCategory(item)} className={`rounded-xl border-2 border-slate-900 px-3 py-2 text-sm font-black transition-colors ${category === item ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 hover:bg-sky-50'}`}>{item}</button>)}</div></div>
+      <div className="mt-7 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"><div className="relative"><Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" /><input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="搜尋名詞，例如：序位、五專、超額比序..." className="w-full rounded-xl border-2 border-slate-900 bg-slate-50 py-3 pl-12 pr-4 text-base font-bold outline-none focus:bg-white focus:ring-4 focus:ring-sky-300/40" /></div></div>
       <p className="mt-6 text-sm font-black text-slate-600">找到 {filtered.length} 個名詞</p><div className="mt-3 space-y-4">{filtered.map((entry) => { const isOpen = openTerm === entry.term; return <article key={entry.term} className="overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"><button type="button" onClick={() => setOpenTerm(isOpen ? null : entry.term)} className="flex w-full items-center gap-4 p-5 text-left hover:bg-sky-50"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-sky-100"><CircleHelp className="h-5 w-5 text-sky-700" /></div><div className="min-w-0 flex-1"><span className="text-xs font-black text-sky-700">{entry.category}</span><h2 className="text-xl font-black text-slate-900">{entry.term}</h2><p className="mt-1 text-sm font-bold leading-6 text-slate-600">{entry.summary}</p></div><ChevronDown className={`h-6 w-6 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} /></button>{isOpen && <div className="border-t-2 border-slate-200 bg-slate-50 px-5 py-5 pl-[4.75rem]"><p className="max-w-3xl text-base font-bold leading-8 text-slate-700">{entry.detail}</p></div>}</article>; })}</div>
       {filtered.length === 0 && <div className="mt-4 rounded-2xl border-4 border-dashed border-slate-300 bg-white p-10 text-center"><h2 className="text-xl font-black text-slate-700">找不到相關名詞</h2><p className="mt-2 text-sm font-bold text-slate-500">試試較短的關鍵字，或改選「全部」。</p></div>}
     </section>
