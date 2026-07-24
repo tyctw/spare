@@ -9,13 +9,7 @@ interface LegalPageProps {
   kind: LegalPageKind;
 }
 
-const updatedAt = '2026 年 7 月 10 日';
-
-type LegalSection = {
-  title: string;
-  body: string[];
-};
-
+type LegalSection = { title: string; body: string[] };
 type LegalPageContent = {
   title: string;
   eyebrow: string;
@@ -24,73 +18,71 @@ type LegalPageContent = {
   sections: LegalSection[];
 };
 
+const updatedAt = '2026 年 7 月 24 日';
+const contactEmail = 'tyctw.analyze@gmail.com';
+
 const pages: Record<LegalPageKind, LegalPageContent> = {
   privacy: {
     title: '隱私權政策',
     eyebrow: 'Privacy Policy',
-    description:
-      '本政策完整說明本平台在提供會考落點分析、學校查詢、志願模擬與資料匯出等服務時，如何蒐集、使用、保存與保護您提供或產生的資料。',
+    description: '本政策說明「全國會考落點分析」如何處理您使用網站時提供或產生的資料。請在使用服務前閱讀；若不同意本政策，請停止使用本服務。',
     icon: Database,
     sections: [
       {
-        title: '一、適用範圍',
+        title: '一、適用範圍與資料管理者',
         body: [
-          '本隱私權政策適用於您使用本平台網站、分析工具、查詢功能、匯出功能、意見回報與相關服務時所產生的資料處理行為。',
-          '本平台可能連結至官方教育單位、學校、合作夥伴或其他第三方網站。當您離開本平台後，該第三方網站如何蒐集、使用或保存資料，應依其各自的隱私權政策與服務規範辦理，本平台不對第三方網站的資料處理方式負責。',
+          '本政策適用於本網站的落點分析、學校／科系查詢、模擬志願、結果匯出、評分、問題回報及相關功能。資料管理者為本網站營運者；如對資料處理有疑問，請寄信至 tyctw.analyze@gmail.com。',
+          '本網站可能提供教育主管機關、學校或其他第三方網站的連結。您離開本網站後，該第三方將依其自己的隱私權政策處理資料，本網站不控制其做法。',
         ],
       },
       {
-        title: '二、資料蒐集範圍',
+        title: '二、我們處理的資料',
         body: [
-          '當您使用本平台時，可能會輸入或產生會考成績、作文級分、就學區、身分別、學校篩選條件、志願清單、比較清單、分析結果、匯出內容與操作紀錄等資料。這些資料主要用於即時完成查詢、分析、排序、比較、匯出與頁面顯示。',
-          '本平台不會主動要求您提供與升學落點分析無關的敏感個人資料，例如身分證字號、金融帳戶、精確住址、健康紀錄、私人通訊內容或其他不必要的個人識別資訊。若您自行在回報內容或聯絡信件中提供上述資料，請確認其必要性。',
-          '若您透過電子郵件或錯誤回報功能與我們聯繫，我們可能會取得您的電子郵件地址、問題描述、截圖、裝置或瀏覽器資訊，以及您為了說明問題而主動提供的其他內容。',
+          '為提供分析功能，我們會處理您輸入的會考各科等級、作文級分、就學區、身分／分析類別、學校類型、群科偏好與邀請碼，以及您選用的篩選條件。這些資料用於計算與呈現結果；請勿輸入姓名、身分證字號、准考證號、住址、電話或其他與分析無關的個人資料。',
+          '當您評分、回報問題或主動聯絡我們時，我們會處理您提供的評分、回報類型、文字內容及電子郵件。電子郵件僅用於處理或回覆您的問題。',
+          '為維護服務、安全與除錯，系統會處理請求時間、操作類型、邀請碼驗證結果、IP 位址、瀏覽器 User-Agent，以及您送出的裝置／瀏覽器資訊（例如語言、螢幕與視窗尺寸、頁面網址）。這些資料不會用來建立跨網站的廣告受眾。',
         ],
       },
       {
-        title: '三、資料使用目的',
+        title: '三、處理目的與法律依據',
         body: [
-          '本平台使用資料的目的包括：產生落點分析結果、提供學校與科系資訊、協助志願模擬、保存操作狀態、完成資料匯出、處理錯誤回報、維持系統安全、改善服務品質與優化使用者體驗。',
-          '您輸入的成績、地區與篩選條件會用於計算與顯示分析結果；志願、比較或匯出資料則用於協助您整理升學資訊。平台不會將這些資料用於與服務目的無關的行銷、銷售或個別身分追蹤。',
-          '若您主動聯繫我們，我們會使用您提供的聯絡資訊與問題內容來回覆詢問、排查錯誤、確認資料來源或處理您提出的需求。',
+          '我們處理資料，是為了提供您要求的分析、查詢、匯出、回饋與問題回報功能，驗證服務存取資格，防止濫用與攻擊，維護系統安全，以及遵守適用法令或處理爭議。',
+          '依中華民國個人資料保護法，處理所需資料的依據包括您使用服務所必要的範圍、您主動提供或同意提供的資料、營運與資安的正當需要，以及法令要求或允許的情形。若您不提供必要資料，部分功能可能無法使用。',
         ],
       },
       {
-        title: '四、本機儲存與 Cookie',
+        title: '四、瀏覽器儲存、Cookie 與網址資料',
         body: [
-          '為了讓服務更順暢，本平台可能使用瀏覽器的 Local Storage、Session Storage 或必要 Cookie 來保存介面偏好、暫存查詢條件、操作狀態、授權狀態或其他必要資料。',
-          '這些資料主要保存在您的裝置或瀏覽器中，用於避免重複輸入、維持頁面狀態與提升使用便利性。您可以透過瀏覽器設定清除本機資料；清除後，部分偏好設定、暫存結果、授權狀態或操作紀錄可能需要重新建立。',
-          '若本平台使用第三方分析或嵌入服務，該服務可能依其政策使用 Cookie 或類似技術。您可透過瀏覽器設定限制第三方 Cookie，但部分功能可能因此受到影響。',
+          '本網站目前使用瀏覽器的 Local Storage 與 Session Storage 保存免責聲明閱讀狀態、邀請碼短期驗證狀態、評分狀態及本次分析結果，讓您在同一瀏覽器中完成流程。分析結果會存於 Session Storage，通常於分頁／瀏覽器工作階段結束後清除；其他項目可由您在瀏覽器清除網站資料。',
+          '本網站不主動設置用於跨網站追蹤或個人化廣告的 Cookie。惟瀏覽器、主機服務或您前往的第三方連結，可能依其政策使用 Cookie 或類似技術。請勿將邀請碼放入可公開分享的網址或文件，因網址可能被瀏覽器紀錄、書籤或轉送。',
         ],
       },
       {
-        title: '五、資料分享與揭露',
+        title: '五、資料分享、委託與跨境處理',
         body: [
-          '除非取得您的同意、為提供服務所必要、依法令或主管機關要求，或為保護本平台與使用者的合法權益，本平台不會任意出售、出租、交換或揭露您的個人資料。',
-          '若需要委託第三方提供主機、資料庫、寄信、錯誤追蹤、分析或其他技術服務，我們會要求相關服務提供者僅在必要範圍內處理資料，並採取合理的安全保護措施。',
-          '當發生違反條款、濫用服務、資安事件、法律爭議或主管機關依法要求時，本平台可能在必要範圍內保存、檢視或提供相關紀錄。',
+          '我們不販售您的個人資料，也不會為第三方的行銷目的提供資料。為提供資料庫與後端功能，本網站使用 Supabase 等雲端服務；其僅在提供、維護及保護本服務所需範圍內受託處理資料，並可能在資料中心所在地進行處理或儲存。',
+          '我們僅會在下列情形揭露必要資料：取得您的同意、為回覆您或完成您要求的功能、依法令或政府機關合法要求、為保護使用者或服務安全，或為主張、行使或防禦法律權利。',
         ],
       },
       {
-        title: '六、資料保存與安全',
+        title: '六、保存期間與安全措施',
         body: [
-          '本平台會以合理的技術與管理措施保護資料安全，降低未授權存取、竄改、洩漏、毀損或遺失的風險。相關措施可能包括權限控管、傳輸保護、紀錄檢查與系統維護。',
-          '網路傳輸與電子系統無法保證絕對安全。建議您不要在本平台輸入與升學分析無關的敏感資料，並妥善保管自己的裝置、瀏覽器與帳號安全。',
-          '資料保存期間會依服務目的、系統維護、法律要求與合理營運需求決定。當資料不再需要時，我們會以合理方式刪除、匿名化或停止使用。',
+          '我們在達成蒐集目的所必要的期間內保存資料，並依資料性質、系統安全、帳務／爭議處理及法令要求決定保存時間；不再需要時，會刪除、去識別化或採取其他適當處置。安全或濫用紀錄可能在合理必要期間內保存。',
+          '我們採取合理的技術與管理措施，例如限制資料庫存取、使用權限控管與記錄必要的安全事件。但網路傳輸與電子儲存無法保證絕對安全；請妥善保護您的裝置與邀請碼。',
         ],
       },
       {
-        title: '七、使用者權利',
+        title: '七、您的個資權利',
         body: [
-          '若您希望查詢、更正、刪除或停止使用您曾主動提供給本平台的資料，可透過本頁提供的聯絡方式與我們聯繫。我們會在合理範圍內確認需求並協助處理。',
-          '對於保存在您瀏覽器本機的資料，您可以直接透過瀏覽器設定、網站資料管理工具或清除快取功能刪除。刪除後，部分平台功能可能需要重新設定或重新輸入資料。',
+          '在法令規定的範圍內，您可就您的個人資料請求查詢或閱覽、製給複製本、補充或更正、停止蒐集／處理／利用，及刪除。請以電子郵件提出申請，並說明您要處理的資料、使用的電子郵件或其他足以辨識申請事項的資訊；我們可能在合理範圍內驗證身分。',
+          '您可隨時清除瀏覽器中的本站網站資料以移除本機儲存內容。撤回同意或要求刪除，不影響撤回前已合法處理的資料，亦可能使部分功能無法繼續提供。',
         ],
       },
       {
-        title: '八、政策更新',
+        title: '八、未成年人與政策更新',
         body: [
-          '我們可能因服務調整、法規變更、安全需求或營運狀況更新本政策。更新後版本發布於本頁即生效，頁面會標示最後更新日期。',
-          '若您在政策更新後繼續使用本平台，視為您已閱讀並理解更新後內容。建議您定期查看本頁，以掌握最新資料處理方式。',
+          '本服務面向學生與一般使用者，不要求提供與升學分析無關的敏感個資。未滿十八歲者，建議在家長、法定代理人或師長知情與協助下使用服務；如發現未成年人提供不必要的個人資料，請聯絡我們。',
+          '我們可能因服務、資安或法令變動更新本政策。新版將公布於本頁並更新日期；重大變更將以合理方式提醒。更新後繼續使用服務，表示您同意更新後的政策。',
         ],
       },
     ],
@@ -98,64 +90,62 @@ const pages: Record<LegalPageKind, LegalPageContent> = {
   terms: {
     title: '服務條款',
     eyebrow: 'Terms of Service',
-    description:
-      '本條款完整說明您使用本平台時的權利義務、服務限制、資料正確性聲明、使用規範與責任範圍。當您繼續使用本服務，即表示您理解並同意遵守以下內容。',
+    description: '本條款規範您使用「全國會考落點分析」的權利與責任。使用本服務前請詳閱；您開始或繼續使用服務，即表示同意本條款及隱私權政策。',
     icon: Shield,
     sections: [
       {
-        title: '一、服務定位',
+        title: '一、服務性質與適用範圍',
         body: [
-          '本平台提供會考升學相關資料查詢、落點分析、志願模擬、學校比較、資料匯出與相關輔助工具，目的在於協助使用者整理資訊、理解可能選項並進行參考判斷。',
-          '本平台產生的落點、排序、分數換算、建議內容、圖表或任何分析結果，均屬資訊輔助與參考用途，不構成錄取保證、正式升學建議、學校承諾或任何法律上可主張的保證。',
-          '升學選擇涉及個人成績、志願序、招生名額、分發規則、同分比序、區域政策與年度變動等多項因素，使用者應搭配官方資料、學校輔導資源、家長或專業人員建議進行綜合判斷。',
+          '本網站提供會考成績換算、學校與群科資料查詢、落點推估、模擬志願、歷年資料參考、匯出與相關輔助工具（以下合稱「本服務」）。本服務為資訊整理與決策輔助工具，不是招生主管機關、學校或法律／升學顧問的正式決定。',
+          '實際招生資格、計分、名額、免試入學規則、志願選填、錄取與報到，均應以當年度招生簡章、主管機關及各校公告為準。使用者應自行確認最新官方資訊。',
         ],
       },
       {
-        title: '二、資料正確性與官方依據',
+        title: '二、使用資格與邀請碼',
         body: [
-          '本平台會盡力維持資料合理、完整與即時，但資料可能因官方公告、招生簡章、名額異動、計分規則、學校資訊、年度政策或系統更新而有所差異。',
-          '所有招生資訊、重要日期、分發規則、錄取標準、簡章內容、學校名額與官方說明，均應以主管機關、招生委員會、學校或官方簡章公告為最終依據。',
-          '使用者在採取任何升學行動前，應自行再次確認官方資料。本平台不因資料誤差、更新延遲、使用者輸入錯誤或第三方資料來源變動而承擔錄取結果或決策損失。',
+          '您應以合法方式使用本服務，並對您輸入的資料及操作負責。若您未成年，建議在家長、法定代理人或師長協助下使用。',
+          '部分功能需使用邀請碼。邀請碼僅供授權使用，不得出售、公開散布、轉讓、出租、破解或以自動化方式大量測試。您應妥善保管邀請碼；因您自行分享、外洩或置於公開網址造成的風險，由您自行承擔。',
         ],
       },
       {
-        title: '三、使用者責任',
+        title: '三、使用者義務與禁止行為',
         body: [
-          '使用者應確保輸入資料的正確性與完整性。若因成績、地區、身分別、志願條件或其他輸入資料錯誤，導致分析結果不準確，相關風險由使用者自行承擔。',
-          '使用者不得以違法、侵權、詐欺、冒用、干擾、破壞、破解、逆向工程、大量自動化查詢、爬取、攻擊、繞過授權或其他影響平台安全與穩定性的方式使用本服務。',
-          '使用者不得將本平台內容用於誤導他人、冒充官方資訊、未經授權之商業利用，或以任何方式侵害本平台、其他使用者、學校、資料來源或第三方的權利。',
+          '您不得以任何方式干擾服務、規避存取限制、探測弱點、未經授權存取資料或系統、散布惡意程式、發送大量請求、擷取／爬取資料，或從事其他可能危害服務、使用者或第三人權益的行為。',
+          '您不得上傳、輸入或傳送違法、侵權、誹謗、威脅、騷擾、猥褻或不當內容；亦不得冒用他人身分、提供不實資料，或利用本服務進行商業轉售、代客大量查詢或未經授權的衍生服務。',
         ],
       },
       {
-        title: '四、服務變更、中斷與限制',
+        title: '四、資料、結果與匯出內容',
         body: [
-          '本平台可能因維護、資料修正、功能調整、資安風險、第三方服務異常、流量負載、法規要求或不可抗力因素，調整、暫停、限制或終止部分或全部服務。',
-          '我們會盡合理努力維持服務可用性與資料品質，但不保證服務永不中斷、完全無錯誤、完全符合每位使用者期待，或在任何裝置、瀏覽器與網路環境下皆能正常運作。',
-          '若發現異常使用、違反條款、疑似攻擊、濫用資源或影響其他使用者權益的行為，本平台得視情況限制存取、停用功能、保留紀錄或採取其他必要措施。',
+          '本服務的資料與推估結果可能因來源更新、簡章規則、資料缺漏、輸入錯誤、系統調整或個別情況而有所差異，並不保證完整、即時、無誤或必然符合實際錄取結果。您應將結果作為參考，並自行判斷與核對。',
+          '您可為個人學習、家庭討論或非商業目的使用本服務產生的結果與匯出內容。對於網站程式、介面、資料編排、商標及其他受保護內容，未經權利人書面同意，不得重製、公開傳輸、改作、販售或作商業利用；法令允許者不在此限。',
         ],
       },
       {
-        title: '五、智慧財產權',
+        title: '五、第三方服務與外部連結',
         body: [
-          '本平台的介面設計、程式碼、資料整理方式、分析呈現、圖表、文字編排、功能流程與其他原創內容，除依法屬於第三方或公開資料者外，其相關權利由本平台或合法權利人保留。',
-          '未經授權，使用者不得大量複製、重製、散布、改作、公開傳輸、商業利用、建立衍生服務，或以其他方式侵害本平台與權利人的智慧財產權。',
-          '官方公開資料、學校資訊或第三方資料來源仍歸其原權利人所有。本平台僅就資料整理、呈現與服務功能提供輔助，不主張擁有第三方原始資料之權利。',
+          '本服務可能連結至官方成績查詢、志願選填或其他第三方網站。這些網站由各自營運者負責，其內容、可用性、資料處理、商品或服務不受本網站控制。您使用第三方服務前應閱讀其條款與隱私權政策。',
         ],
       },
       {
-        title: '六、免責聲明',
+        title: '六、服務調整、暫停與終止',
         body: [
-          '本平台依現有資料與系統邏輯提供分析服務，但不保證結果完全準確、即時、完整或適用於所有個案。使用者應自行判斷與承擔使用結果所產生的風險。',
-          '因使用或無法使用本平台、資料錯誤、網路中斷、系統故障、第三方服務異常、官方資料變更、使用者輸入錯誤或其他不可歸責於本平台之事由所造成的直接或間接損失，本平台不負擔保或賠償責任。',
-          '本平台不代表任何官方教育單位、招生委員會或學校。平台內容不得取代官方公告、正式簡章或專業升學諮詢。',
+          '我們得因維護、資安、技術、資料更新、法令或營運需求，隨時修改、暫停或終止全部或部分服務，並在合理可行時提供通知。對因網路、設備、第三方服務或不可抗力造成的中斷，我們會合理處理，但不保證服務永不中斷或永遠可用。',
+          '如有合理理由認定您違反本條款、危害系統安全、濫用資源或侵害他人權益，我們得不經事前通知限制或停止您使用服務、使邀請碼失效、保存必要紀錄，並採取其他適當措施。',
         ],
       },
       {
-        title: '七、條款更新與準據法',
+        title: '七、責任限制',
         body: [
-          '我們可能因服務需求、法規調整、安全考量或營運狀況修訂本條款。修訂後版本發布於本頁即生效，並以頁面標示的最後更新日期為準。',
-          '您於條款更新後繼續使用本平台，視為您已閱讀、理解並同意更新後內容。若您不同意本條款或其更新內容，請停止使用本服務。',
-          '本條款之解釋與適用，若未特別約定者，悉依中華民國相關法律辦理。',
+          '在適用法令允許的最大範圍內，本服務以「現況」及「可提供」基礎提供。除法律不得排除的責任外，我們不對您因依賴分析結果、未核對官方資料、資料或功能中斷、第三方網站、裝置或網路問題所生的間接、附帶、特別、懲罰性或衍生損害負責。',
+          '本條款不排除或限制依中華民國強制法規不得排除或限制的責任，包括因故意或重大過失依法應負的責任。',
+        ],
+      },
+      {
+        title: '八、條款更新、準據法與聯絡方式',
+        body: [
+          '我們可能因服務、資安或法令變動修訂本條款；修訂版公布於本頁並更新日期後生效。若您不同意更新內容，請停止使用本服務。',
+          '本條款以中華民國法律為準據法。在法律允許的範圍內，因本條款所生爭議以臺灣桃園地方法院為第一審管轄法院。若有問題，請來信 tyctw.analyze@gmail.com。',
         ],
       },
     ],
@@ -167,16 +157,8 @@ export default function LegalPage({ kind }: LegalPageProps) {
   const Icon = page.icon;
   const isPrivacy = kind === 'privacy';
   const colors = isPrivacy
-    ? {
-        hero: 'bg-emerald-50',
-        iconBg: 'bg-emerald-100',
-        iconText: 'text-emerald-600',
-      }
-    : {
-        hero: 'bg-indigo-50',
-        iconBg: 'bg-indigo-100',
-        iconText: 'text-indigo-600',
-      };
+    ? { hero: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconText: 'text-emerald-600' }
+    : { hero: 'bg-indigo-50', iconBg: 'bg-indigo-100', iconText: 'text-indigo-600' };
   const alternateHref = isPrivacy ? withBasePath('/terms') : withBasePath('/privacy');
   const alternateText = isPrivacy ? '查看服務條款' : '查看隱私權政策';
 
@@ -184,84 +166,26 @@ export default function LegalPage({ kind }: LegalPageProps) {
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className={`border-b-4 border-slate-900 ${colors.hero}`}>
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-          <a
-            href={withBasePath('/')}
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            返回首頁
+          <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none">
+            <ArrowLeft className="h-4 w-4" />返回首頁
           </a>
-
           <div className="py-10">
             <div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-              <div className={`flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 ${colors.iconBg}`}>
-                <Icon className={`h-6 w-6 ${colors.iconText}`} />
-              </div>
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500">{page.eyebrow}</p>
-                <p className="text-sm font-black text-slate-700">最後更新：{updatedAt}</p>
-              </div>
+              <div className={`flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 ${colors.iconBg}`}><Icon className={`h-6 w-6 ${colors.iconText}`} /></div>
+              <div><p className="text-xs font-black uppercase tracking-widest text-slate-500">{page.eyebrow}</p><p className="text-sm font-black text-slate-700">最後更新：{updatedAt}</p></div>
             </div>
             <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">{page.title}</h1>
-            <p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">
-              {page.description}
-            </p>
+            <p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">{page.description}</p>
           </div>
         </div>
       </section>
-
       <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[240px_1fr] lg:px-8">
         <aside className={pageNavigationAsideClassName}>
-          <PageNavigation
-            navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
-            itemLayoutClassName="space-y-2"
-            items={page.sections.map((section, index) => ({
-              id: `section-${index + 1}`,
-              label: section.title.replace(/^.+?、/, ''),
-              className: 'block rounded-xl',
-            }))}
-          />
+          <PageNavigation navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]" itemLayoutClassName="space-y-2" items={page.sections.map((section, index) => ({ id: `section-${index + 1}`, label: section.title.replace(/^[一二三四五六七八]、/, ''), className: 'block rounded-xl' }))} />
         </aside>
-
         <div className="space-y-5">
-          {page.sections.map((section, index) => (
-            <article
-              key={section.title}
-              id={`section-${index + 1}`}
-              className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8"
-            >
-              <h2 className="text-2xl font-black tracking-tight">{section.title}</h2>
-              <div className="mt-4 space-y-4">
-                {section.body.map((paragraph) => (
-                  <p key={paragraph} className="text-base font-bold leading-8 text-slate-700">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </article>
-          ))}
-
-          <div className="flex flex-col gap-3 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-xl font-black">需要聯絡我們？</h2>
-              <p className="mt-1 text-sm font-bold text-slate-800">若對條款或資料處理有疑問，可寄信與我們聯繫。</p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <a
-                href={alternateHref}
-                className="inline-flex items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
-              >
-                {alternateText}
-              </a>
-              <a
-                href="mailto:tyctw.analyze@gmail.com"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
-              >
-                <Mail className="h-4 w-4" />
-                tyctw.analyze@gmail.com
-              </a>
-            </div>
-          </div>
+          {page.sections.map((section, index) => <article key={section.title} id={`section-${index + 1}`} className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8"><h2 className="text-2xl font-black tracking-tight">{section.title}</h2><div className="mt-4 space-y-4">{section.body.map((paragraph) => <p key={paragraph} className="text-base font-bold leading-8 text-slate-700">{paragraph}</p>)}</div></article>)}
+          <div className="flex flex-col gap-3 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-xl font-black">有任何疑問嗎？</h2><p className="mt-1 text-sm font-bold text-slate-800">歡迎來信詢問條款或資料處理事宜。</p></div><div className="flex flex-col gap-3 sm:flex-row"><a href={alternateHref} className="inline-flex items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none">{alternateText}</a><a href={`mailto:${contactEmail}`} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><Mail className="h-4 w-4" />{contactEmail}</a></div></div>
         </div>
       </section>
     </main>
