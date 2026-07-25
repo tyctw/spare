@@ -29,6 +29,7 @@ const categories: Category[] = [
     { title: '更新日誌', desc: '查看功能新增、調整與修正紀錄。', href: '/changelog', icon: History, tone: 'bg-slate-100 text-slate-700', keywords: '更新 版本 日誌 修正' },
     { title: '隱私權政策', desc: '了解本站處理輸入資料與瀏覽資訊的原則。', href: '/privacy', icon: Shield, tone: 'bg-emerald-100 text-emerald-700', keywords: '隱私 個資 資料 政策' },
     { title: '服務條款', desc: '閱讀服務使用範圍、責任限制與相關規範。', href: '/terms', icon: FileText, tone: 'bg-slate-100 text-slate-700', keywords: '條款 規範 服務' },
+    { title: '免責聲明', desc: '了解分析結果的使用限制與選填前必做確認。', href: '/disclaimer', icon: Shield, tone: 'bg-amber-100 text-amber-700', keywords: '免責 聲明 分析 限制 錄取 保證' },
   ] },
   { title: '外部查詢資源', desc: '這些連結會開啟外部網站，資料與規則請以該網站公告為準。', items: [
     { title: '序位查詢', desc: '前往外部序位查詢服務。', href: 'https://tyctw.github.io/volunteer/', icon: BarChart3, tone: 'bg-orange-100 text-orange-700', external: true, keywords: '外部 序位 查詢' },
