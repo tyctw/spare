@@ -9,6 +9,7 @@ import {defineConfig, loadEnv} from 'vite';
 // the URLs listed in sitemap.xml can be fetched and indexed successfully.
 const seoRoutes = [
   'advantages',
+  'disclaimer',
   'grade-level',
   'faq-glossary',
   'historical-stats',
