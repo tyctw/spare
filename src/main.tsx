@@ -5,8 +5,6 @@ import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
 import { applyPageSeo } from './lib/seo.ts';
 import RelatedReading from './components/RelatedReading.tsx';
 
-// Route-level splitting keeps the initial screen light while retaining the same
-// URL-based navigation model. Each page is fetched only when it is visited.
 const App = lazy(() => import('./App.tsx'));
 const AdvantagesPage = lazy(() => import('./components/AdvantagesPage.tsx'));
 const ChangelogPage = lazy(() => import('./components/ChangelogPage.tsx'));
@@ -25,59 +23,32 @@ const SchoolTypesPage = lazy(() => import('./components/SchoolTypesPage.tsx'));
 const StrategyPage = lazy(() => import('./components/StrategyPage.tsx'));
 const VocationalEncyclopediaPage = lazy(() => import('./components/VocationalEncyclopediaPage.tsx'));
 
-
 function PageLoading() {
   return (
-    <main
-      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-5 text-slate-900"
-      role="status"
-      aria-live="polite"
-      aria-label="頁面載入中"
-    >
+    <div className="fixed inset-0 z-[100] grid min-h-[100dvh] place-items-center overflow-hidden bg-slate-50 px-5 text-slate-900" role="status" aria-live="polite" aria-label="正在準備頁面">
       <div className="pointer-events-none absolute -left-24 top-16 h-64 w-64 rounded-full bg-amber-300/50 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-sky-300/45 blur-3xl" />
-
       <section className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
-        <div className="relative overflow-hidden border-b-4 border-slate-900 bg-indigo-500 px-6 pb-5 pt-6 text-white">
+        <div className="relative overflow-hidden border-b-4 border-slate-900 bg-indigo-500 px-6 py-6 text-white">
           <div className="absolute -right-6 -top-8 h-28 w-28 rounded-full border-4 border-slate-900 bg-amber-300" />
-          <div className="relative flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-4 border-slate-900 bg-white text-xl font-black text-indigo-600 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">115</div>
-            <div>
-              <p className="text-xs font-black tracking-[0.18em] text-indigo-100">ADMISSION COMPASS</p>
-              <h1 className="mt-0.5 text-xl font-black tracking-tight">正在準備你的頁面</h1>
-            </div>
-          </div>
+          <p className="relative text-xs font-black tracking-[0.18em] text-indigo-100">ADMISSION COMPASS</p>
+          <h1 className="relative mt-1 text-xl font-black tracking-tight">正在準備頁面</h1>
         </div>
-
         <div className="p-6">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-sm font-black text-slate-900">資料與工具載入中</p>
-              <p className="mt-1 text-xs font-bold text-slate-500">馬上就好，請稍候一下。</p>
-            </div>
-            <div className="flex items-end gap-1.5 pb-1" aria-hidden="true">
-              <span className="h-3 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-amber-300" />
-              <span className="h-5 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-sky-300 [animation-delay:150ms]" />
-              <span className="h-7 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-rose-300 [animation-delay:300ms]" />
-            </div>
+          <div className="flex items-center justify-between gap-3">
+            <div><p className="text-sm font-black">資料整理中</p><p className="mt-1 text-xs font-bold text-slate-500">請稍候，馬上為你開啟內容。</p></div>
+            <div className="flex items-end gap-1.5" aria-hidden="true"><span className="h-3 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-amber-300" /><span className="h-5 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-sky-300 [animation-delay:150ms]" /><span className="h-7 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-rose-300 [animation-delay:300ms]" /></div>
           </div>
-
-          <div className="mt-6 h-4 overflow-hidden rounded-full border-2 border-slate-900 bg-slate-100 p-0.5" aria-hidden="true">
-            <div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-indigo-500 via-sky-400 to-amber-300" />
-          </div>
+          <div className="mt-6 h-4 overflow-hidden rounded-full border-2 border-slate-900 bg-slate-100 p-0.5" aria-hidden="true"><div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-indigo-500 via-sky-400 to-amber-300" /></div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 
 const path = getCurrentRoutePath();
 const redirectedRoute = new URLSearchParams(window.location.search).get('route');
-
-if (redirectedRoute) {
-  window.history.replaceState(null, '', withBasePath(path));
-}
-
+if (redirectedRoute) window.history.replaceState(null, '', withBasePath(path));
 applyPageSeo(path);
 
 const page =
@@ -100,16 +71,8 @@ const page =
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
   <App />;
 
-const informationalPaths = new Set([
-  '/advantages', '/faq-glossary', '/grade-level', '/historical-stats', '/important-dates',
-  '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia',
-]);
+const informationalPaths = new Set(['/advantages', '/faq-glossary', '/grade-level', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Suspense fallback={<PageLoading />}>
-      {page}
-      {informationalPaths.has(path) && <RelatedReading path={path} />}
-    </Suspense>
-  </StrictMode>,
+  <StrictMode><Suspense fallback={<PageLoading />}>{page}{informationalPaths.has(path) && <RelatedReading path={path} />}</Suspense></StrictMode>,
 );
