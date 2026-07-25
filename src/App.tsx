@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   MapPin, User, BookOpen, Calculator, Award, PenTool,
@@ -7,26 +7,13 @@ import {
   Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail, Link as LinkIcon,
   Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database, Instagram, AtSign, Languages
 } from 'lucide-react';
-import VocationalModal from './components/VocationalModal';
 import { InfoModal } from './components/InfoModals';
 import DisclaimerModal from './components/DisclaimerModal';
-import ComparisonModal from './components/ComparisonModal';
-import QRCodeModal from './components/QRCodeModal';
 import CyberAuthOverlay from './components/CyberAuthOverlay';
 import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
 import { callBackend, isBackendError, normalizeInvitationCode } from './lib/api';
 import RegionModal, { ALL_REGIONS } from './components/RegionModal';
-import ExportModal from './components/ExportModal';
-import AuthFailModal from './components/AuthFailModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
-import SharePlatformModal from './components/SharePlatformModal';
-import RatingModal from './components/RatingModal';
-import ReportErrorModal from './components/ReportErrorModal';
-import ScoreInquiryModal from './components/ScoreInquiryModal';
-import DataProviderModal from './components/DataProviderModal';
-import HollandTestModal from './components/HollandTestModal';
-import MockVolunteerModal from './components/MockVolunteerModal';
-import HistoricalStatsModal from './components/HistoricalStatsModal';
 // Layout Components
 import AppHeader from './components/layout/AppHeader';
 import Footer from './components/layout/Footer';
@@ -34,6 +21,22 @@ import HeroBanner from './components/layout/HeroBanner';
 import NavigationDrawer from './components/layout/NavigationDrawer';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 import { withBasePath } from './lib/routes';
+
+// Keep the analysis form and navigation in the first bundle. These dialogs are
+// fetched only when requested, so they do not delay the first meaningful paint.
+const QRCodeModal = React.lazy(() => import('./components/QRCodeModal'));
+const MockVolunteerModal = React.lazy(() => import('./components/MockVolunteerModal'));
+const VocationalModal = React.lazy(() => import('./components/VocationalModal'));
+const HollandTestModal = React.lazy(() => import('./components/HollandTestModal'));
+const ComparisonModal = React.lazy(() => import('./components/ComparisonModal'));
+const ExportModal = React.lazy(() => import('./components/ExportModal'));
+const ReportErrorModal = React.lazy(() => import('./components/ReportErrorModal'));
+const HistoricalStatsModal = React.lazy(() => import('./components/HistoricalStatsModal'));
+const ScoreInquiryModal = React.lazy(() => import('./components/ScoreInquiryModal'));
+const DataProviderModal = React.lazy(() => import('./components/DataProviderModal'));
+const SharePlatformModal = React.lazy(() => import('./components/SharePlatformModal'));
+const RatingModal = React.lazy(() => import('./components/RatingModal'));
+const AuthFailModal = React.lazy(() => import('./components/AuthFailModal'));
 
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
@@ -221,7 +224,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   const [resultFilterZone, setResultFilterZone] = useState('all');
 
   useEffect(() => {
-    if (window.localStorage.getItem(DISCLAIMER_SEEN_KEY) !== 'true') {
+    const forceDisclaimer = new URLSearchParams(window.location.search).get('showDisclaimer') === '1';
+    if (forceDisclaimer || window.localStorage.getItem(DISCLAIMER_SEEN_KEY) !== 'true') {
       setActiveModal('disclaimer');
     }
 
@@ -1447,23 +1451,28 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       </AnimatePresence>
 
       {/* Modals Rendering */}
-      <QRCodeModal
-        isOpen={activeModal === 'qrcode'}
-        onClose={() => setActiveModal(null)}
-        onScan={(code) => { updateForm('invitationCode', code); setActiveModal(null); }}
-      />
+      <Suspense fallback={null}>
+      {activeModal === 'qrcode' && (
+        <QRCodeModal
+          isOpen
+          onClose={() => setActiveModal(null)}
+          onScan={(code) => { updateForm('invitationCode', code); setActiveModal(null); }}
+        />
+      )}
       
       {activeModal === 'mockVolunteer' && (
         <MockVolunteerModal isOpen onClose={() => setActiveModal(null)} region={formData.region} />
       )}
 
-      <VocationalModal 
-        isOpen={isVocationalOpen} 
-        onClose={() => setIsVocationalOpen(false)}
-        selectedGroups={vocationalGroups}
-        onChange={setVocationalGroups}
-        onOpenHollandTest={() => { window.location.href = withBasePath('/holland'); }}
-      />
+      {isVocationalOpen && (
+        <VocationalModal
+          isOpen
+          onClose={() => setIsVocationalOpen(false)}
+          selectedGroups={vocationalGroups}
+          onChange={setVocationalGroups}
+          onOpenHollandTest={() => { window.location.href = withBasePath('/holland'); }}
+        />
+      )}
 
       {isHollandTestOpen && (
       <HollandTestModal 
@@ -1488,37 +1497,42 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         onSelect={(region) => updateForm('region', region)} 
       />
       
-      <ComparisonModal
-        isOpen={isComparisonOpen}
-        onClose={() => setIsComparisonOpen(false)}
-        schools={comparisonSchools}
-        onRemove={name => setComparisonSchools(prev => prev.filter(s => s.name !== name))}
-        onClear={() => setComparisonSchools([])}
-      />
+      {isComparisonOpen && (
+        <ComparisonModal
+          isOpen
+          onClose={() => setIsComparisonOpen(false)}
+          schools={comparisonSchools}
+          onRemove={name => setComparisonSchools(prev => prev.filter(s => s.name !== name))}
+          onClear={() => setComparisonSchools([])}
+        />
+      )}
 
       <HistoricalScoresModal
         school={historicalScoreSchool}
         onClose={() => setHistoricalScoreSchool(null)}
       />
 
-      <ExportModal
-        isOpen={activeModal === 'export'}
-        onClose={() => setActiveModal(null)}
-        onExport={handleExport}
-      />
+      {activeModal === 'export' && (
+        <ExportModal
+          isOpen
+          onClose={() => setActiveModal(null)}
+          onExport={handleExport}
+        />
+      )}
 
-      <DisclaimerModal 
-        isOpen={activeModal === 'disclaimer'} 
-        onClose={() => {
-          window.localStorage.setItem(DISCLAIMER_SEEN_KEY, 'true');
-          setActiveModal(null);
-        }}
-      />
+      {activeModal === 'disclaimer' && (
+        <DisclaimerModal
+          isOpen
+          onClose={() => {
+            window.localStorage.setItem(DISCLAIMER_SEEN_KEY, 'true');
+            setActiveModal(null);
+          }}
+        />
+      )}
 
-      <ReportErrorModal
-        isOpen={activeModal === 'reportError'}
-        onClose={() => setActiveModal(null)}
-      />
+      {activeModal === 'reportError' && (
+        <ReportErrorModal isOpen onClose={() => setActiveModal(null)} />
+      )}
 
       <InfoModal 
         isOpen={activeModal === 'importantDates'} 
@@ -1632,25 +1646,21 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         <HistoricalStatsModal isOpen onClose={() => setActiveModal(null)} />
       )}
 
-      <ScoreInquiryModal 
-        isOpen={activeModal === 'scoreInquiry'}
-        onClose={() => setActiveModal(null)}
-      />
+      {activeModal === 'scoreInquiry' && (
+        <ScoreInquiryModal isOpen onClose={() => setActiveModal(null)} />
+      )}
 
-      <DataProviderModal 
-        isOpen={activeModal === 'dataProvider'}
-        onClose={() => setActiveModal(null)}
-      />
+      {activeModal === 'dataProvider' && (
+        <DataProviderModal isOpen onClose={() => setActiveModal(null)} />
+      )}
 
-      <SharePlatformModal
-        isOpen={activeModal === 'sharePlatform'}
-        onClose={() => setActiveModal(null)}
-      />
+      {activeModal === 'sharePlatform' && (
+        <SharePlatformModal isOpen onClose={() => setActiveModal(null)} />
+      )}
 
-      <RatingModal 
-        isOpen={activeModal === 'rating'} 
-        onClose={() => setActiveModal(null)}
-      />
+      {activeModal === 'rating' && (
+        <RatingModal isOpen onClose={() => setActiveModal(null)} />
+      )}
 
       {isNavMenuOpen && (
         <NavigationDrawer isOpen onClose={() => setIsNavMenuOpen(false)} setActiveModal={setActiveModal} />
@@ -1925,14 +1935,14 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 </div>
 
                 <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] p-4 flex justify-center gap-4">
-                  <a href="https://www.instagram.com/115.rcpet/" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
+                  <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
                     <div className="w-10 h-10 rounded-xl bg-pink-50 border-2 border-slate-900 flex items-center justify-center group-hover:bg-pink-100 group-hover:scale-110 active:scale-95 transition-all text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                       <Instagram className="w-5 h-5 group-hover:-rotate-6 transition-transform group-hover:rotate-0" />
                     </div>
                     <span className="font-bold text-slate-700 text-sm">Instagram</span>
                   </a>
                   <div className="w-0.5 h-10 bg-slate-200 rounded-full mx-2"></div>
-                  <a href="https://www.threads.com/@115.rcpet" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
+                  <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="flex items-center gap-2 group outline-none">
                     <div className="w-10 h-10 rounded-xl bg-slate-50 border-2 border-slate-900 flex items-center justify-center group-hover:bg-slate-100 group-hover:scale-110 active:scale-95 transition-all text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                       <AtSign className="w-5 h-5 group-hover:rotate-6 transition-transform group-hover:rotate-0" />
                     </div>
@@ -1944,7 +1954,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               <div className="p-4 bg-slate-900 border-t-4 border-slate-900 text-center">
                 <p className="text-slate-400 font-bold text-xs flex items-center justify-center gap-1">
                   <Check className="w-3 h-3 text-emerald-400" />
-                  會考落點分析系統 v5.0
+                  會考落點分析系統 v6.0
                 </p>
               </div>
             </motion.div>
@@ -1952,16 +1962,16 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         )}
       </AnimatePresence>
 
-      <AuthFailModal 
-        isOpen={activeModal === 'authFail'}
-        onClose={() => setActiveModal(null)}
-      />
+      {activeModal === 'authFail' && (
+        <AuthFailModal isOpen onClose={() => setActiveModal(null)} />
+      )}
 
       <RegionScoringModal
         isOpen={activeModal === 'scoringMethod'}
         onClose={() => setActiveModal(null)}
         selectedRegion={formData.region}
       />
+      </Suspense>
 
       <InfoModal 
         isOpen={activeModal === 'validationFailed'} 

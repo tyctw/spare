@@ -27,6 +27,50 @@
   }
 }
 
+/* Disclaimer page hero: use the same light, welcoming palette as the guide pages. */
+.disclaimer-page > section:first-child {
+  background-color: #fffbeb;
+  color: #0f172a;
+}
+
+.disclaimer-page > section:first-child .text-slate-200 {
+  color: #334155;
+}
+
+.disclaimer-page > section:first-child .text-amber-200 {
+  color: #92400e;
+}
+
+.disclaimer-page > section:first-child [class*="bg-white/10"] {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.disclaimer-page > section:first-child [class*="border-white/30"] {
+  border-color: #0f172a;
+}
+
+.disclaimer-page > section:first-child [class*="rgba(255,255,255"] {
+  box-shadow: 5px 5px 0 0 #0f172a;
+}
+
+/* Keep the full-disclaimer link visually secondary and inside the scrollable modal content. */
+.custom-scrollbar > a[href*="/disclaimer"] {
+  display: none;
+  width: fit-content;
+  margin-left: auto;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid #0f172a;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 2px 2px 0 0 #0f172a;
+  text-decoration: none;
+}
+
+.custom-scrollbar > a[href*="/disclaimer"]:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
 @layer utilities {
   .sr-only {
     position: absolute;
