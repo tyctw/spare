@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
 import { applyPageSeo } from './lib/seo.ts';
+import RelatedReading from './components/RelatedReading.tsx';
 
 // Route-level splitting keeps the initial screen light while retaining the same
 // URL-based navigation model. Each page is fetched only when it is visited.
@@ -99,10 +100,16 @@ const page =
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
   <App />;
 
+const informationalPaths = new Set([
+  '/advantages', '/faq-glossary', '/grade-level', '/historical-stats', '/important-dates',
+  '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia',
+]);
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Suspense fallback={<PageLoading />}>
       {page}
+      {informationalPaths.has(path) && <RelatedReading path={path} />}
     </Suspense>
   </StrictMode>,
 );
