@@ -8,6 +8,7 @@ import RelatedReading from './components/RelatedReading.tsx';
 const App = lazy(() => import('./App.tsx'));
 const AdvantagesPage = lazy(() => import('./components/AdvantagesPage.tsx'));
 const ChangelogPage = lazy(() => import('./components/ChangelogPage.tsx'));
+const DisclaimerPage = lazy(() => import('./components/DisclaimerPage.tsx'));
 const FaqGlossaryPage = lazy(() => import('./components/FaqGlossaryPage.tsx'));
 const HollandPage = lazy(() => import('./components/HollandPage.tsx'));
 const GradeLevelPage = lazy(() => import('./components/GradeLevelPage.tsx'));
@@ -56,6 +57,7 @@ const page =
   path === '/terms' ? <LegalPage kind="terms" /> :
   path === '/advantages' ? <AdvantagesPage /> :
   path === '/changelog' ? <ChangelogPage /> :
+  path === '/disclaimer' ? <DisclaimerPage /> :
   path === '/faq-glossary' ? <FaqGlossaryPage /> :
   path === '/grade-level' ? <GradeLevelPage /> :
   path === '/historical-stats' ? <HistoricalStatsPage /> :
@@ -71,7 +73,7 @@ const page =
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
   <App />;
 
-const informationalPaths = new Set(['/advantages', '/faq-glossary', '/grade-level', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
+const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/grade-level', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode><Suspense fallback={<PageLoading />}>{page}{informationalPaths.has(path) && <RelatedReading path={path} />}</Suspense></StrictMode>,

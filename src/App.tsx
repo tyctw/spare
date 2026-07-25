@@ -224,7 +224,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   const [resultFilterZone, setResultFilterZone] = useState('all');
 
   useEffect(() => {
-    if (window.localStorage.getItem(DISCLAIMER_SEEN_KEY) !== 'true') {
+    const forceDisclaimer = new URLSearchParams(window.location.search).get('showDisclaimer') === '1';
+    if (forceDisclaimer || window.localStorage.getItem(DISCLAIMER_SEEN_KEY) !== 'true') {
       setActiveModal('disclaimer');
     }
 
