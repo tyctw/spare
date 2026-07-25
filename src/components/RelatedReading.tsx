@@ -74,8 +74,8 @@ export default function RelatedReading({ path }: { path: string }) {
   return <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8" aria-labelledby="related-reading-title">
     <div className="rounded-2xl border-4 border-slate-900 bg-slate-900 p-5 text-white shadow-[5px_5px_0px_0px_rgba(14,165,233,1)] sm:p-7">
       <p className="text-xs font-black tracking-[0.16em] text-sky-200">KEEP EXPLORING</p>
-      <h2 id="related-reading-title" className="mt-2 text-2xl font-black sm:text-3xl">看懂這一頁後，下一步看這些</h2>
-      <p className="mt-2 max-w-3xl text-sm font-bold leading-7 text-slate-200">升學選擇不是一次做完的決定。沿著最相關的內容繼續看，會更容易把興趣、成績與志願整理成自己的方向。</p>
+      <h2 id="related-reading-title" className="mt-2 text-2xl font-black sm:text-3xl">別急著離開，這幾頁能幫你更快做決定</h2>
+      <p className="mt-2 max-w-3xl text-sm font-bold leading-7 text-slate-200">下一步該選哪種學校、哪個群科，或怎麼排志願？點進最相關的工具，把現在的疑問一步步變成清楚的選擇。</p>
       <div className="mt-5 grid gap-3 md:grid-cols-3">{items.map((item) => { const Icon = item.icon; return <a key={item.href} href={withBasePath(item.href)} className="group rounded-2xl border-2 border-white bg-white p-4 text-slate-900 transition-transform hover:-translate-y-1"><div className={`inline-flex rounded-xl border-2 border-slate-900 p-2 ${item.tone}`}><Icon className="h-5 w-5" /></div><h3 className="mt-3 text-lg font-black">{item.title}</h3><p className="mt-2 text-sm font-bold leading-6 text-slate-600">{item.description}</p><span className="mt-4 inline-flex items-center gap-1 text-sm font-black text-sky-700">繼續閱讀 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span></a>; })}</div>
     </div>
   </section>;
