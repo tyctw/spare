@@ -55,7 +55,7 @@
 
 /* Keep the full-disclaimer link visually secondary and inside the scrollable modal content. */
 .custom-scrollbar > a[href*="/disclaimer"] {
-  display: inline-flex;
+  display: none;
   width: fit-content;
   margin-left: auto;
   padding: 0.65rem 0.9rem;
