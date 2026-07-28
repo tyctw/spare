@@ -22,6 +22,7 @@ const ResultsPage = lazy(() => import('./components/ResultsPage.tsx'));
 const SiteMapPage = lazy(() => import('./components/SiteMapPage.tsx'));
 const SchoolTypesPage = lazy(() => import('./components/SchoolTypesPage.tsx'));
 const StrategyPage = lazy(() => import('./components/StrategyPage.tsx'));
+const SupportPage = lazy(() => import('./components/SupportPage.tsx'));
 const VocationalEncyclopediaPage = lazy(() => import('./components/VocationalEncyclopediaPage.tsx'));
 
 function PageLoading() {
@@ -70,6 +71,7 @@ const page =
   path === '/holland' ? <HollandPage /> :
   path === '/school-types' ? <SchoolTypesPage /> :
   path === '/strategy' ? <StrategyPage /> :
+  path === '/support' ? <SupportPage /> :
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
   <App />;
 

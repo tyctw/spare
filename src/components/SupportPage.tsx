@@ -1,0 +1,31 @@
+import React, { useMemo, useState } from 'react';
+import { ArrowLeft, Check, CircleDollarSign, Heart, Info, Mail, Sparkles } from 'lucide-react';
+import { withBasePath } from '../lib/routes';
+
+const suggestedAmounts = [50, 100, 300, 500];
+
+export default function SupportPage() {
+  const [selectedAmount, setSelectedAmount] = useState(100);
+  const [customAmount, setCustomAmount] = useState('');
+  const [notice, setNotice] = useState('');
+  const amount = useMemo(() => {
+    const parsed = Number(customAmount);
+    return customAmount !== '' && Number.isFinite(parsed) ? parsed : selectedAmount;
+  }, [customAmount, selectedAmount]);
+  const selectAmount = (value: number) => { setSelectedAmount(value); setCustomAmount(''); setNotice(''); };
+  const handleSupport = () => {
+    if (!Number.isInteger(amount) || amount < 1) { setNotice('請輸入至少 NT$ 1 的支持金額。'); return; }
+    setNotice(`已記下您想支持 NT$ ${amount.toLocaleString()}；金流服務開通後，將可在此直接完成付款。`);
+  };
+
+  return <main className="min-h-screen bg-slate-50 text-slate-900">
+    <section className="overflow-hidden border-b-4 border-slate-900 bg-rose-50"><div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+      <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"><ArrowLeft className="h-4 w-4" /> 回到首頁</a>
+      <div className="relative py-12 sm:py-16"><div className="pointer-events-none absolute -right-8 top-2 h-40 w-40 rounded-full border-4 border-slate-900 bg-amber-300 opacity-80 sm:right-16" /><div className="pointer-events-none absolute right-20 top-28 h-16 w-16 rounded-2xl border-4 border-slate-900 bg-sky-200 rotate-12" /><div className="relative max-w-3xl"><div className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"><Heart className="h-4 w-4 fill-rose-500 text-rose-500" /> SUPPORT OUR WORK</div><h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">一起讓選校資訊<br />更容易被找到</h1><p className="mt-5 max-w-2xl text-base font-bold leading-8 text-slate-700 sm:text-lg">每一筆小額支持，都會幫助我們持續整理資料、優化工具與維護免費服務，讓學生與家長在重要的選擇前多一份安心。</p></div></div>
+    </div></section>
+    <section className="mx-auto grid max-w-6xl gap-7 px-4 py-10 sm:px-6 lg:grid-cols-[1.15fr_.85fr] lg:px-8">
+      <section className="rounded-3xl border-4 border-slate-900 bg-white p-5 shadow-[7px_7px_0px_0px_rgba(15,23,42,1)] sm:p-8"><div className="flex items-start gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-rose-200 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"><CircleDollarSign className="h-6 w-6 text-rose-700" /></div><div><p className="text-xs font-black tracking-widest text-rose-700">SMALL SUPPORT, BIG IMPACT</p><h2 className="mt-1 text-2xl font-black sm:text-3xl">選擇支持金額</h2></div></div><div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">{suggestedAmounts.map((value) => <button key={value} type="button" onClick={() => selectAmount(value)} className={`rounded-2xl border-2 border-slate-900 px-3 py-4 text-lg font-black transition ${customAmount === '' && selectedAmount === value ? 'bg-amber-300 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] -translate-y-0.5' : 'bg-white hover:bg-amber-50'}`}>NT$ {value}</button>)}</div><label className="mt-5 block"><span className="text-sm font-black">自訂金額</span><div className="mt-2 flex items-center rounded-2xl border-2 border-slate-900 bg-slate-50 px-4 focus-within:ring-4 focus-within:ring-amber-300/40"><span className="font-black text-slate-500">NT$</span><input type="number" min="1" inputMode="numeric" value={customAmount} onChange={(event) => { setCustomAmount(event.target.value); setNotice(''); }} placeholder="輸入金額" className="w-full bg-transparent px-3 py-4 font-black outline-none" /></div></label><button type="button" onClick={handleSupport} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border-4 border-slate-900 bg-rose-500 px-5 py-4 text-lg font-black text-white shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-rose-600 active:translate-y-0 active:shadow-none"><Heart className="h-5 w-5 fill-current" /> 支持 NT$ {Number.isFinite(amount) && amount > 0 ? amount.toLocaleString() : '—'}</button>{notice && <p role="status" className="mt-5 rounded-2xl border-2 border-emerald-700 bg-emerald-50 p-4 text-sm font-bold leading-6 text-emerald-900"><Check className="mr-2 inline h-4 w-4" />{notice}</p>}<div className="mt-5 flex items-start gap-2 rounded-2xl border-2 border-sky-200 bg-sky-50 p-4 text-sm font-bold leading-6 text-slate-700"><Info className="mt-0.5 h-5 w-5 shrink-0 text-sky-700" /><p>目前尚未串接金流，本頁不會收集付款資料或進行扣款。完成金流串接後，這個按鈕將引導您進入安全付款流程。</p></div></section>
+      <aside className="space-y-5"><section className="rounded-3xl border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[7px_7px_0px_0px_rgba(245,158,11,1)] sm:p-7"><Sparkles className="h-8 w-8 text-amber-300" /><h2 className="mt-4 text-2xl font-black">您的支持會用在哪裡？</h2><ul className="mt-5 space-y-3 text-sm font-bold leading-6 text-indigo-100"><li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />維護與更新升學相關資訊</li><li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />持續改善選校分析工具與操作體驗</li><li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />讓核心服務持續免費開放使用</li></ul></section><section className="rounded-3xl border-4 border-slate-900 bg-white p-6 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]"><h2 className="text-xl font-black">想先和我們聊聊？</h2><p className="mt-2 text-sm font-bold leading-6 text-slate-600">若您有合作、贊助或金流串接建議，歡迎直接聯絡我們。</p><a href="mailto:tyctw.analyze@gmail.com?subject=%E9%97%9C%E6%96%BC%E5%B0%8F%E9%A1%8D%E6%94%AF%E6%8C%81" className="mt-5 inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-300 px-4 py-3 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><Mail className="h-4 w-4" /> 聯絡我們</a></section></aside>
+    </section>
+  </main>;
+}

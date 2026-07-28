@@ -1,5 +1,5 @@
 import React from 'react';
-import { Compass, ArrowRight, Shield, Mail, Copyright, Map } from 'lucide-react';
+import { Compass, ArrowRight, Shield, Mail, Copyright, Map, Heart } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
 
 export default function Footer() {
@@ -35,9 +35,13 @@ export default function Footer() {
             </div>
 
             <div className="grid grid-cols-2 lg:flex gap-3 w-full xl:w-auto relative z-10">
+              <a href={withBasePath('/support')} className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-3 sm:p-4 bg-rose-50 border-4 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none">
+                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-rose-200 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform"><Heart className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600 fill-rose-600" /></div>
+                <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">小額支持</span><span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-rose-600 transition-colors w-full">支持我們持續前進 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" /></span>
+              </a>
               <a
                 href={withBasePath('/site-map')}
-                className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-3 sm:p-4 bg-white border-4 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
+                className="hidden"
               >
                 <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
                   <Map className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
