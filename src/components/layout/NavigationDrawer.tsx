@@ -157,8 +157,17 @@ const menuCategories: MenuCategory[] = [
   },
 ];
 
-const quickActionIds = ['home', 'search', 'mockVolunteer', 'importantDates'];
-const quickActions = quickActionIds
+const quickActionRecommendation = (() => {
+  const month = new Date().getMonth() + 1;
+
+  if (month <= 3) return { label: '準備期', ids: ['home', 'search', 'importantDates', 'instructions'] };
+  if (month <= 5) return { label: '考前準備', ids: ['importantDates', 'instructions', 'holland', 'schoolTypes'] };
+  if (month <= 7) return { label: '成績與選填', ids: ['scoreInquiry', 'home', 'mockVolunteer', 'strategy'] };
+  if (month <= 8) return { label: '放榜與報到', ids: ['importantDates', 'schoolTypes', 'vocational', 'holland'] };
+  return { label: '探索規劃', ids: ['holland', 'vocational', 'schoolTypes', 'search'] };
+})();
+
+const quickActions = quickActionRecommendation.ids
   .map((id) => menuCategories.flatMap((category) => category.items).find((item) => item.id === id))
   .filter(Boolean) as MenuItem[];
 
@@ -276,7 +285,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                 <section className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <h3 className="text-sm font-black text-slate-500">常用捷徑</h3>
-                    <span className="rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-black text-slate-500">先從這裡開始</span>
+                    <span className="rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-black text-slate-500">{quickActionRecommendation.label}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {quickActions.map((item) => {
