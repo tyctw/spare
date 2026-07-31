@@ -73,7 +73,7 @@ const menuCategories: MenuCategory[] = [
     label: '我要查資料',
     description: '找學校、科別、群科與學校類型',
     icon: Search,
-    color: 'text-sky-700',
+    color: 'text-sky-500',
     bg: 'bg-sky-50',
     accent: 'border-sky-500',
     items: [
@@ -87,7 +87,7 @@ const menuCategories: MenuCategory[] = [
     label: '我要選志願',
     description: '落點分析、志願排序與錄取資料',
     icon: Target,
-    color: 'text-amber-700',
+    color: 'text-amber-500',
     bg: 'bg-amber-50',
     accent: 'border-amber-500',
     items: [
@@ -103,7 +103,7 @@ const menuCategories: MenuCategory[] = [
     label: '我要規劃升學',
     description: '興趣探索、時程與官方相關資源',
     icon: CalendarDays,
-    color: 'text-indigo-700',
+    color: 'text-indigo-500',
     bg: 'bg-indigo-50',
     accent: 'border-indigo-500',
     items: [
@@ -117,7 +117,7 @@ const menuCategories: MenuCategory[] = [
     label: '外部連結',
     description: '前往相關平台與延伸升學資源',
     icon: LinkIcon,
-    color: 'text-violet-700',
+    color: 'text-violet-500',
     bg: 'bg-violet-50',
     accent: 'border-violet-500',
     items: [
@@ -131,7 +131,7 @@ const menuCategories: MenuCategory[] = [
     label: '使用協助',
     description: '操作說明、常見問題與意見回饋',
     icon: CircleHelp,
-    color: 'text-slate-700',
+    color: 'text-rose-500',
     bg: 'bg-slate-100',
     accent: 'border-rose-500',
     items: [
@@ -148,7 +148,7 @@ const menuCategories: MenuCategory[] = [
     label: '關於平台',
     description: '平台資訊、更新紀錄與使用規範',
     icon: Info,
-    color: 'text-slate-700',
+    color: 'text-emerald-500',
     bg: 'bg-slate-100',
     accent: 'border-emerald-500',
     items: [
@@ -376,8 +376,8 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                                     className="group flex w-full items-center justify-between rounded-xl border-2 border-transparent px-4 py-3.5 text-left transition-all hover:border-slate-900 hover:bg-slate-50 active:scale-95"
                                   >
                                     <div className="flex min-w-0 items-center gap-3">
-                                      <div className={`rounded-lg border-2 border-slate-900 p-1.5 ${item.bg}`}>
-                                        <ItemIcon className={`h-5 w-5 ${item.color}`} />
+                                      <div className={`rounded-lg border-2 border-slate-900 p-1.5 ${category.bg}`}>
+                                        <ItemIcon className={`h-5 w-5 ${category.color}`} />
                                       </div>
                                       <span className="min-w-0">
                                         <span className="block break-words font-black leading-tight text-slate-900">{item.label}</span>
