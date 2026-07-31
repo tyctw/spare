@@ -463,8 +463,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               className="relative p-6 bg-[#fffbea] border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
             >
               {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-200 rounded-bl-full -z-0 opacity-50 border-b-4 border-l-4 border-slate-900 pointer-events-none"></div>
-              <div className="absolute top-4 right-4 bg-amber-400 border-2 border-slate-900 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded-full rotate-12 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] z-10 pointer-events-none select-none">VIP ONLY</div>
+              <div className="absolute -right-5 -top-5 text-amber-700/15 pointer-events-none">
+                <ShieldCheck className="h-28 w-28" strokeWidth={2.25} aria-hidden="true" />
+              </div>
 
               <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2 relative z-10">
                 <div className="w-8 h-8 rounded-full bg-amber-100 border-2 border-slate-900 flex items-center justify-center">
