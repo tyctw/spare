@@ -102,6 +102,14 @@ const preferenceGroupKey = (region: string, choice: SchoolItem) => {
   return choice.id;
 };
 
+const preferenceMergeReason = (region: string) => {
+  if (region === 'taipei' || region === 'central') return '同校類科連續選填';
+  if (region === 'taoyuan') return '同職群連續選填';
+  if (region === 'hsinchu' || region === 'changhua') return '同校同職群連續選填';
+  if (region === 'kaohsiung') return '同校不同科連續選填';
+  return '依區域規則合併';
+};
+
 const normalizeCounty = (county = '') => county.trim().replace(/台/g, '臺');
 
 const getRegionCountyText = (regionId: string) => (REGION_COUNTIES[regionId] || []).join('、');
@@ -277,7 +285,7 @@ export default function MockVolunteerPage() {
             <td>${choice.deptName || ''}${choice.shift ? ` <span>(${choice.shift})</span>` : ''}</td>
             <td>${choice.groupName || choice.levelInfo || ''}</td>
             <td>${choice.county || ''}</td>
-            <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}${choicePreferenceScores[index].samePreference ? '・同序' : ''}` : '—'}</td>
+            <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}${choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}` : '—'}</td>
           </tr>
         `,
       )
@@ -540,7 +548,7 @@ export default function MockVolunteerPage() {
                           <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · {choice.groupName || choice.levelInfo}</p>
                           {preferenceRule && choicePreferenceScores[index] && (
                             <span className="mt-2 inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
-                              志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}
+                              志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
                             </span>
                           )}
                         </div>
