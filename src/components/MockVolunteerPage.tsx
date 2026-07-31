@@ -71,21 +71,14 @@ const MOCK_VOLUNTEER_REGIONS = [
   { id: 'kinmen', name: '金門區' },
 ];
 
-type PreferenceRule = {
-  description: string;
-  grouping: 'none' | 'school' | 'schoolGroup';
-  scoreForRank: (rank: number) => number | null;
-};
-
-// 115 學年度各區免試入學簡章的志願序積分規則。
-const PREFERENCE_RULES: Record<string, PreferenceRule> = {
-  taipei: { description: '每 5 個志願序為一級距；同校類科連續選填視為同一志願序。', grouping: 'school', scoreForRank: (rank) => rank <= 5 ? 36 : rank <= 10 ? 35 : rank <= 15 ? 34 : rank <= 20 ? 33 : rank <= 30 ? 32 : null },
-  taoyuan: { description: '第 1–3 序 15 分，之後每 3 序遞減；同職群科別連續選填視為同一志願序。', grouping: 'schoolGroup', scoreForRank: (rank) => rank <= 3 ? 15 : rank <= 6 ? 12 : rank <= 9 ? 9 : rank <= 12 ? 6 : rank <= 15 ? 3 : rank <= 30 ? 1 : null },
-  hsinchu: { description: '每 5 個志願序遞減 1 分；同校同學群連續選填視為同一志願序。', grouping: 'schoolGroup', scoreForRank: (rank) => rank <= 5 ? 10 : rank <= 10 ? 9 : rank <= 15 ? 8 : rank <= 20 ? 7 : rank <= 25 ? 6 : null },
-  central: { description: '每 10 個志願序為一群組；同校類科連續選填視為同一志願序。', grouping: 'school', scoreForRank: (rank) => rank <= 10 ? 30 : rank <= 20 ? 29 : rank <= 30 ? 28 : null },
-  changhua: { description: '前 20 個志願序 45 分，之後 44 分；同校同職群連續選填視為同一志願序。', grouping: 'schoolGroup', scoreForRank: (rank) => rank <= 20 ? 45 : rank <= 30 ? 44 : null },
-  tainan: { description: '每 3 個志願序遞減 1 分。', grouping: 'none', scoreForRank: (rank) => rank <= 3 ? 10 : rank <= 6 ? 9 : rank <= 9 ? 8 : rank <= 12 ? 7 : rank <= 15 ? 6 : rank <= 30 ? 5 : null },
-  kaohsiung: { description: '每 10 所學校為一個志願學校群；同校不同科連續選填視為同一所。', grouping: 'school', scoreForRank: (rank) => rank <= 10 ? 30 : rank <= 20 ? 29 : rank <= 30 ? 28 : null },
+const PREFERENCE_RULES: Record<string, string> = {
+  taipei: '第 1–5 志願 36 分、第 6–10 志願 35 分、第 11–15 志願 34 分、第 16–20 志願 33 分、第 21–30 志願 32 分；同校類科連續選填視為同一志願序。',
+  taoyuan: '第 1–3 志願 15 分，第 4–6 志願 12 分，之後每 3 個志願遞減；第 16–30 志願為 1 分。專業群科同職群連續選填視為同一志願序。',
+  hsinchu: '第 1–5 志願序位 10 分，之後每 5 個志願序遞減 1 分，至第 21–25 志願序位為 6 分；同校同學群連續選填視為同一志願序。',
+  central: '第 1–10 志願序 30 分、第 11–20 志願序 29 分、第 21 志願序以後 28 分；同校類科連續選填視為同一志願序。',
+  changhua: '第 1–20 志願序 45 分，第 21 志願序以後 44 分；同校同職群連續選填視為同一志願序。',
+  tainan: '第 1–3 志願 10 分，之後每 3 個志願遞減 1 分；第 16–30 志願為 5 分。',
+  kaohsiung: '每 10 所學校為一個志願學校群：第 1 群 30 分、第 2 群 29 分、第 3 群 28 分；同校不同科連續選填以同一所學校計算。',
 };
 
 const normalizeCounty = (county = '') => county.trim().replace(/台/g, '臺');
@@ -150,23 +143,6 @@ export default function MockVolunteerPage() {
   const activeRegionCountyText = getRegionCountyText(region);
   const activeRegionCounties = useMemo(() => (REGION_COUNTIES[region] || []).map(normalizeCounty), [region]);
   const preferenceRule = PREFERENCE_RULES[region];
-  const preferenceScores = useMemo(() => {
-    if (!preferenceRule) return [];
-    let previousGroupKey = '';
-    let preferenceRank = 0;
-
-    return selectedChoices.map((choice) => {
-      const groupKey = preferenceRule.grouping === 'school'
-        ? choice.code
-        : preferenceRule.grouping === 'schoolGroup'
-          ? `${choice.code}-${choice.groupCode || choice.groupName}`
-          : choice.id;
-      const isSamePreference = groupKey === previousGroupKey;
-      if (!isSamePreference) preferenceRank += 1;
-      previousGroupKey = groupKey;
-      return { rank: preferenceRank, score: preferenceRule.scoreForRank(preferenceRank), isSamePreference };
-    });
-  }, [preferenceRule, selectedChoices]);
 
   const uniqueCounties = useMemo(
     () => Array.from(new Set([...REGION_COUNTIES[region], ...schools.map((school) => school.county).filter(Boolean)])).sort(),
@@ -373,6 +349,15 @@ export default function MockVolunteerPage() {
           </div>
         </div>
 
+        <section className={`mb-5 rounded-xl border-2 p-4 ${preferenceRule ? 'border-indigo-200 bg-indigo-50' : 'border-amber-300 bg-amber-50'}`}>
+          <div className="flex items-center gap-2 text-sm font-black text-slate-900">
+            <Target className={`h-5 w-5 ${preferenceRule ? 'text-indigo-700' : 'text-amber-700'}`} />
+            {activeRegionName}志願序規則
+          </div>
+          <p className="mt-2 text-sm font-bold leading-6 text-slate-700">{preferenceRule || '此區志願序規則尚未完成 115 學年度官方簡章核對，暫不提供積分試算。'}</p>
+          <p className="mt-2 text-xs font-bold leading-5 text-slate-500">此為志願序項目說明；資格、會考、多元表現與其他超額比序項目，請以當年度官方系統與簡章為準。</p>
+        </section>
+
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_460px]">
           <section className="min-h-[620px] rounded-xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
             <div className="border-b-4 border-slate-900 bg-white p-4">
@@ -512,20 +497,6 @@ export default function MockVolunteerPage() {
             </div>
 
             <div className="max-h-[720px] overflow-y-auto p-4 custom-scrollbar">
-              {preferenceRule ? (
-                <section className="mb-4 rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3">
-                  <div className="flex items-center gap-2 text-sm font-black text-indigo-900">
-                    <Target className="h-4 w-4" />
-                    115 學年度志願序積分
-                  </div>
-                  <p className="mt-1 text-xs font-bold leading-5 text-indigo-800">{preferenceRule.description}</p>
-                  <p className="mt-2 text-[11px] font-bold leading-4 text-slate-500">此處僅計算志願序項目；資格、會考與多元表現等其他比序項目仍須以官方系統結果為準。</p>
-                </section>
-              ) : (
-                <section className="mb-4 rounded-xl border-2 border-amber-300 bg-amber-50 p-3 text-xs font-bold leading-5 text-amber-900">
-                  此區志願序積分尚未完成 115 學年度官方簡章核對，目前不顯示試算分數。
-                </section>
-              )}
               {selectedChoices.length === 0 ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-400">
                   <Target className="mb-3 h-12 w-12 stroke-1" />
@@ -544,12 +515,6 @@ export default function MockVolunteerPage() {
                           <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-950">{choice.name}</h3>
                           <p className="mt-1 line-clamp-2 text-xs font-bold text-sky-700">{choice.deptName}</p>
                           <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · {choice.groupName || choice.levelInfo}</p>
-                          {preferenceScores[index] && (
-                            <p className="mt-2 inline-flex items-center gap-1 rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
-                              志願序 {preferenceScores[index].rank} ・{preferenceScores[index].score === null ? '不計分' : `${preferenceScores[index].score} 分`}
-                              {preferenceScores[index].isSamePreference && ' ・同序'}
-                            </p>
-                          )}
                         </div>
                       </div>
                       <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-slate-100 pt-3">
