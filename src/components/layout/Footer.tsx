@@ -1,104 +1,22 @@
 import React from 'react';
-import { Compass, ArrowRight, Shield, Mail, Copyright, Map, Heart } from 'lucide-react';
+import { ArrowRight, Compass, Copyright, Heart, Mail, Map, ShieldCheck } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
 
+const links = [
+  { label: '小額支持', href: '/support', icon: Heart },
+  { label: '服務條款', href: '/terms', icon: ShieldCheck },
+  { label: '網站地圖', href: '/site-map', icon: Map },
+];
+
 export default function Footer() {
-  return (
-    <footer className="mt-12 w-full px-4 sm:px-6 lg:px-8 pb-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-3xl border-4 border-slate-900 overflow-hidden shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col">
-          
-          {/* Top Section */}
-          <div className="p-5 sm:p-6 lg:p-8 flex flex-col lg:flex-row justify-between items-center xl:items-start gap-6 bg-slate-50 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-100 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 opacity-60"></div>
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-100 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 opacity-60"></div>
-
-            <div className="flex flex-col items-center xl:items-start text-center xl:text-left gap-3 max-w-lg relative z-10 w-full">
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                <div className="bg-indigo-600 p-3 rounded-2xl border-4 border-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-transform duration-300">
-                  <Compass className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-1">TW全國會考</h2>
-                  <div className="inline-block bg-amber-200 px-3 py-1 rounded-lg border-2 border-slate-900 shadow-sm">
-                      <h3 className="text-sm sm:text-base font-black tracking-widest text-slate-800 uppercase">落點分析系統</h3>
-                  </div>
-                </div>
-              </div>
-              <div className="inline-flex items-center justify-center xl:justify-start gap-2 px-3 py-2 bg-white rounded-full border-2 border-slate-200 w-fit shadow-sm">
-                <div className="relative flex h-3 w-3 items-center justify-center">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                </div>
-                <span className="text-slate-600 font-bold text-xs sm:text-sm">非政府官方機構 · 運算僅供參考</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 lg:flex gap-3 w-full xl:w-auto relative z-10">
-              <a href={withBasePath('/support')} className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-3 sm:p-4 bg-rose-50 border-4 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none">
-                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-rose-200 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform"><Heart className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600 fill-rose-600" /></div>
-                <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">小額支持</span><span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-rose-600 transition-colors w-full">支持我們持續前進 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" /></span>
-              </a>
-              <a
-                href={withBasePath('/site-map')}
-                className="hidden"
-              >
-                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                  <Map className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
-                </div>
-                <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">網站地圖</span>
-                <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-amber-600 transition-colors w-full">
-                  全部功能 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
-                </span>
-              </a>
-
-              <a
-                href={withBasePath('/terms')}
-                className="group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-3 sm:p-4 bg-white border-4 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all outline-none"
-              >
-                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 border-2 border-slate-900 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
-                </div>
-                <span className="font-black text-slate-900 text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">服務條款</span>
-                <span className="text-xs sm:text-sm font-bold text-slate-500 flex items-center justify-center xl:justify-start gap-1 group-hover:text-indigo-600 transition-colors w-full">
-                  使用規範 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 hidden sm:block" />
-                </span>
-              </a>
-
-              <a 
-                href="mailto:tyctw.analyze@gmail.com" 
-                className="col-span-2 group flex-1 xl:flex-none flex flex-col items-center xl:items-start p-3 sm:p-4 bg-slate-900 border-4 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_rgba(251,191,36,1)] hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_rgba(251,191,36,1)] active:translate-y-0 active:shadow-none transition-all text-white outline-none"
-              >
-                <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-slate-800 border-2 border-slate-700 rounded-xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                  <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-400" />
-                </div>
-                <span className="font-black text-white text-base sm:text-lg xl:text-xl mb-1 text-center xl:text-left">聯絡我們信箱</span>
-                <span className="text-xs sm:text-sm font-bold text-slate-400 group-hover:text-indigo-300 transition-colors break-all text-center xl:text-left w-full">
-                  tyctw.analyze@gmail.com
-                </span>
-              </a>
-            </div>
-          </div>
-
-          {/* Bottom Copyright Section */}
-          <div className="bg-amber-400 border-t-4 border-slate-900 px-4 py-2.5 sm:px-6 sm:py-3 flex flex-row items-center justify-between gap-2 sm:gap-4 overflow-hidden relative">
-            <div className="flex items-center gap-1.5 sm:gap-2 z-10 bg-amber-400">
-              <Copyright className="w-4 h-4 text-slate-900 shrink-0" />
-              <span className="font-black text-slate-900 text-xs sm:text-sm xl:text-base tracking-tight leading-none">COPYRIGHT {new Date().getFullYear()}</span>
-            </div>
-            <div className="z-10 text-right bg-amber-400">
-              <span className="font-black text-slate-900 text-[9px] sm:text-xs xl:text-sm border-b border-slate-900/30">ALL RIGHTS RESERVED.</span>
-            </div>
-            {/* Marquee text in background */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 overflow-hidden whitespace-nowrap z-0">
-              <span className="text-4xl font-black text-slate-900 tracking-tighter uppercase px-4 select-none">
-                TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析 TW會考落點分析
-              </span>
-            </div>
-          </div>
-          
-        </div>
+  return <footer className="mt-16 border-t-4 border-slate-900 bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl border-4 border-slate-900 bg-white shadow-[6px_6px_0_#0f172a]">
+      <div className="grid gap-7 p-6 sm:p-8 lg:grid-cols-[1.2fr_.8fr] lg:items-center">
+        <section><div className="flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 shadow-[3px_3px_0_#0f172a]"><Compass className="h-6 w-6 text-slate-900" /></div><div><p className="text-[10px] font-black tracking-[0.16em] text-indigo-700">ADMISSION COMPASS</p><h2 className="mt-0.5 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">TW 全國會考落點分析</h2></div></div><p className="mt-4 max-w-xl text-sm font-bold leading-7 text-slate-600">把複雜的升學資訊整理得更清楚，陪你一步步找到適合自己的選擇。</p><p className="mt-3 text-xs font-bold text-slate-400">非政府官方機構・分析結果僅供參考</p></section>
+        <section className="rounded-2xl border-2 border-slate-900 bg-indigo-50 p-5"><p className="text-sm font-black text-slate-900">需要協助嗎？</p><p className="mt-1 text-sm font-bold leading-6 text-slate-600">有使用問題、資料建議或合作需求，歡迎直接來信。</p><a href="mailto:tyctw.analyze@gmail.com" className="mt-4 inline-flex items-center gap-2 text-sm font-black text-indigo-700 underline decoration-2 underline-offset-4 hover:text-indigo-900"><Mail className="h-4 w-4" />tyctw.analyze@gmail.com <ArrowRight className="h-4 w-4" /></a></section>
       </div>
-    </footer>
-  );
+      <nav className="grid border-y-2 border-slate-900 sm:grid-cols-3">{links.map(({ label, href, icon: Icon }) => <a key={href} href={withBasePath(href)} className="group flex items-center justify-between border-b-2 border-slate-900 px-5 py-4 text-sm font-black text-slate-900 transition hover:bg-amber-100 last:border-b-0 sm:border-b-0 sm:border-r-2 sm:last:border-r-0"><span className="flex items-center gap-2"><Icon className="h-4 w-4 text-indigo-700" />{label}</span><ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></a>)}</nav>
+      <div className="relative flex items-center justify-between gap-3 overflow-hidden border-t-2 border-slate-900 bg-amber-400 px-5 py-3 text-slate-900"><div className="relative z-10 flex items-center gap-2"><Copyright className="h-4 w-4 shrink-0" /><span className="text-xs font-black sm:text-sm">COPYRIGHT {new Date().getFullYear()}</span></div><a href={withBasePath('/privacy')} className="relative z-10 text-right text-[10px] font-black underline decoration-slate-900/30 underline-offset-4 sm:text-xs">隱私權政策</a><div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden whitespace-nowrap opacity-20"><span className="px-4 text-3xl font-black tracking-tighter">TW 會考落點分析　TW 會考落點分析　TW 會考落點分析　TW 會考落點分析</span></div></div>
+    </div>
+  </footer>;
 }
