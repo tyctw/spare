@@ -5,7 +5,7 @@ import {
   Search, Building2, Map, Compass, Anchor, Cpu,
   Mountain, Sparkles, AlertCircle, ChevronRight, ChevronDown,
   Library, ArrowRight, Activity, KeyRound, Info, Shield, History, ChartBar, Download, List, QrCode, Check, Menu, X, Filter, Share2, Mail, Link as LinkIcon,
-  Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database, Instagram, AtSign, Languages
+  Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database, Instagram, AtSign, Languages, GraduationCap, Presentation, UsersRound
 } from 'lucide-react';
 import { InfoModal } from './components/InfoModals';
 import DisclaimerModal from './components/DisclaimerModal';
@@ -556,9 +556,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
 
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { id: 'student', label: '我是學生', icon: '🎓' },
-                    { id: 'teacher', label: '我是老師', icon: '👩‍🏫' },
-                    { id: 'parent', label: '我是家長', icon: '👨‍👩‍👧' }
+                    { id: 'student', label: '我是學生', icon: GraduationCap },
+                    { id: 'teacher', label: '我是老師', icon: Presentation },
+                    { id: 'parent', label: '我是家長', icon: UsersRound }
                   ].map(opt => (
                     <button
                       type="button"
@@ -567,11 +567,13 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                       aria-pressed={formData.identity === opt.id}
                       className={`flex flex-col items-center justify-center gap-1 py-3 px-1 rounded-xl border-2 font-black transition-all ${
                         formData.identity === opt.id 
-                          ? 'bg-emerald-400 text-slate-900 border-slate-900 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.5)] -translate-y-1' 
+                        ? 'bg-emerald-400 text-slate-900 border-slate-900 shadow-[inset_2px_2px_0px_rgba(255,255,255,0.5)]' 
                           : 'bg-white text-slate-600 border-slate-300 hover:border-slate-900 hover:bg-slate-50 hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]'
                       }`}
                     >
-                      <span className="text-xl">{opt.icon}</span>
+                      <span className={`flex h-9 w-9 items-center justify-center rounded-xl border-2 ${formData.identity === opt.id ? 'border-slate-900 bg-slate-900 text-white' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>
+                        <opt.icon className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />
+                      </span>
                       <span className="text-xs">{opt.label}</span>
                     </button>
                   ))}
