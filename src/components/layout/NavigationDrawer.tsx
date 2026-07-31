@@ -120,8 +120,8 @@ const menuCategories: MenuCategory[] = [
   },
   {
     id: 'support',
-    label: '協助與其他',
-    description: '操作說明、回饋、條款與站外分享',
+    label: '使用協助',
+    description: '操作說明、常見問題與意見回饋',
     icon: Info,
     color: 'text-slate-700',
     bg: 'bg-slate-100',
@@ -132,6 +132,16 @@ const menuCategories: MenuCategory[] = [
       { id: 'support', label: '小額支持', description: '支持我們持續維護免費升學工具', keywords: '支持 贊助 小額 捐款 金流', icon: Heart, color: 'text-rose-600', bg: 'bg-rose-100', action: { type: 'route', href: '/support' } },
       { id: 'rating', label: '評分與回饋', description: '留下使用感受或建議', keywords: '評分 回饋 意見', icon: Star, color: 'text-amber-500', bg: 'bg-amber-100', action: { type: 'modal', id: 'rating' } },
       { id: 'reportError', label: '問題回報', description: '資料錯誤或系統問題從這裡回報', keywords: '錯誤 問題 回報 bug', icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-100', action: { type: 'modal', id: 'reportError' } },
+    ],
+  },
+  {
+    id: 'about',
+    label: '關於平台',
+    description: '平台資訊、更新紀錄與使用規範',
+    icon: Info,
+    color: 'text-slate-700',
+    bg: 'bg-slate-100',
+    items: [
       { id: 'advantages', label: '平台特色', description: '了解這個工具提供哪些輔助功能', keywords: '特色 優勢 功能 平台', icon: Sparkles, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/advantages' } },
       { id: 'changelog', label: '更新紀錄', description: '查看最近調整與版本變更', keywords: '更新 紀錄 changelog 版本', icon: History, color: 'text-slate-500', bg: 'bg-slate-100', action: { type: 'route', href: '/changelog' } },
       { id: 'disclaimer', label: '免責聲明', description: '了解分析結果的使用限制', keywords: '提醒 免責 聲明 注意', icon: Shield, color: 'text-slate-600', bg: 'bg-slate-100', action: { type: 'route', href: '/disclaimer' } },
