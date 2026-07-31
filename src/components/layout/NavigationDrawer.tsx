@@ -53,6 +53,7 @@ interface MenuCategory {
   icon: React.ComponentType<{ className?: string }>;
   color: string;
   bg: string;
+  accent: string;
   items: MenuItem[];
 }
 
@@ -70,6 +71,7 @@ const menuCategories: MenuCategory[] = [
     icon: Compass,
     color: 'text-sky-700',
     bg: 'bg-sky-50',
+    accent: 'border-sky-500',
     items: [
       { id: 'search', label: '搜尋學校與科別', description: '用校名、科別、群別快速查資料', keywords: '搜尋 學校 科別 群別 縣市 代碼', icon: Search, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/search' } },
       { id: 'schoolTypes', label: '學校類型解析', description: '普通科、技高、綜高、五專差在哪', keywords: '學校 類型 普高 技高 綜高 五專 高中 高職', icon: Building2, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/school-types' } },
@@ -83,6 +85,7 @@ const menuCategories: MenuCategory[] = [
     icon: Target,
     color: 'text-amber-700',
     bg: 'bg-amber-50',
+    accent: 'border-amber-500',
     items: [
       { id: 'home', label: '落點分析', description: '輸入成績與條件，產生推薦清單', keywords: '首頁 落點 分析 會考 分數', icon: ChartBar, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'route', href: '/' } },
       { id: 'mockVolunteer', label: '模擬志願序', description: '把校科加入清單，練習排序', keywords: '志願序 模擬 排序 選填', icon: Target, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/mock-volunteer' } },
@@ -98,6 +101,7 @@ const menuCategories: MenuCategory[] = [
     icon: Sparkles,
     color: 'text-indigo-700',
     bg: 'bg-indigo-50',
+    accent: 'border-indigo-500',
     items: [
       { id: 'holland', label: 'Holland 興趣測驗', description: '先了解自己的興趣類型與適合群科', keywords: 'holland 興趣 測驗 性向 群科', icon: Brain, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/holland' } },
       { id: 'importantDates', label: '重要日程', description: '查看報名、選填、放榜等時間', keywords: '日期 日程 簡章 報名 放榜', icon: Map, color: 'text-purple-600', bg: 'bg-purple-100', action: { type: 'route', href: '/important-dates' } },
@@ -111,6 +115,7 @@ const menuCategories: MenuCategory[] = [
     icon: LinkIcon,
     color: 'text-violet-700',
     bg: 'bg-violet-50',
+    accent: 'border-violet-500',
     items: [
       { id: 'officialVolunteer', label: '志願選填平台', description: '開啟外部志願選填平台', keywords: '志願 選填 外部 平台 官方', icon: LinkIcon, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'external', href: 'https://tyctw.github.io/volunteer/' } },
       { id: 'shared', label: '錄取分享', description: '開啟全國錄取結果分享平台', keywords: '共同 就學區 資料 外部 錄取 分享', icon: BookOpen, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'external', href: 'https://tyctw.github.io/shared/' } },
@@ -124,6 +129,7 @@ const menuCategories: MenuCategory[] = [
     icon: Info,
     color: 'text-slate-700',
     bg: 'bg-slate-100',
+    accent: 'border-rose-500',
     items: [
       { id: 'instructions', label: '使用說明', description: '第一次使用可從這裡看操作流程', keywords: '使用 說明 教學 操作', icon: Info, color: 'text-blue-600', bg: 'bg-blue-100', action: { type: 'route', href: '/instructions' } },
       { id: 'faqGlossary', label: '常見問答與名詞百科', description: '快速看懂會考、比序與志願選填名詞', keywords: '常見問答 faq 名詞 百科 超額比序 序位 五專 技高', icon: BookOpen, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/faq-glossary' } },
@@ -140,6 +146,7 @@ const menuCategories: MenuCategory[] = [
     icon: Info,
     color: 'text-slate-700',
     bg: 'bg-slate-100',
+    accent: 'border-emerald-500',
     items: [
       { id: 'advantages', label: '平台特色', description: '了解這個工具提供哪些輔助功能', keywords: '特色 優勢 功能 平台', icon: Sparkles, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/advantages' } },
       { id: 'changelog', label: '更新紀錄', description: '查看最近調整與版本變更', keywords: '更新 紀錄 changelog 版本', icon: History, color: 'text-slate-500', bg: 'bg-slate-100', action: { type: 'route', href: '/changelog' } },
@@ -317,7 +324,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                         onClick={() => setExpandedCategory((current) => (current === category.id ? '' : category.id))}
                         aria-expanded={isExpanded}
                         aria-controls={`nav-category-${category.id}`}
-                        className={`flex w-full items-center justify-between p-4 ${category.bg} outline-none transition-colors hover:bg-opacity-80`}
+                        className={`flex w-full items-center justify-between border-l-8 p-4 ${category.bg} ${category.accent} outline-none transition-colors hover:bg-opacity-80`}
                       >
                         <div className="flex min-w-0 items-center gap-3">
                           <div className="rounded-xl border-2 border-slate-900 bg-white p-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
