@@ -300,7 +300,7 @@ export default function MockVolunteerPage() {
             body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 24px; }
             h1 { margin: 0 0 8px; font-size: 24px; }
             p { margin: 0 0 16px; color: #475569; font-size: 13px; }
-            table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+            table { width: 100%; border-collapse: collapse; table-layout: auto; }
             th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; font-size: 12px; vertical-align: top; }
             th { background: #e0f2fe; color: #0f172a; }
             .seq { width: 48px; text-align: center; font-weight: 800; }
