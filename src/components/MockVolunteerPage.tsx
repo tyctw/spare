@@ -285,7 +285,7 @@ export default function MockVolunteerPage() {
             <td>${choice.deptName || ''}${choice.shift ? ` <span>(${choice.shift})</span>` : ''}</td>
             <td>${choice.groupName || choice.levelInfo || ''}</td>
             <td>${choice.county || ''}</td>
-            <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}${choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}` : '—'}</td>
+            <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}` : '—'}</td>
           </tr>
         `,
       )
@@ -300,7 +300,7 @@ export default function MockVolunteerPage() {
             body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 24px; }
             h1 { margin: 0 0 8px; font-size: 24px; }
             p { margin: 0 0 16px; color: #475569; font-size: 13px; }
-            table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+            table { width: 100%; border-collapse: collapse; table-layout: auto; }
             th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; font-size: 12px; vertical-align: top; }
             th { background: #e0f2fe; color: #0f172a; }
             .seq { width: 48px; text-align: center; font-weight: 800; }
@@ -336,8 +336,8 @@ export default function MockVolunteerPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="border-b-4 border-slate-900 bg-sky-50">
-        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+      <section className="border-b-4 border-slate-900 bg-gradient-to-br from-sky-100 via-white to-indigo-100">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <a
             href={withBasePath('/')}
             className="mb-5 inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
@@ -346,7 +346,7 @@ export default function MockVolunteerPage() {
             回到落點分析
           </a>
 
-          <div className="grid gap-5 lg:grid-cols-[1fr_320px] lg:items-end">
+          <div className="grid gap-5 lg:grid-cols-[1fr_340px] lg:items-end">
             <div>
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1 text-xs font-black text-sky-700">
                 <Target className="h-4 w-4" />
@@ -358,12 +358,12 @@ export default function MockVolunteerPage() {
               </p>
             </div>
 
-            <div className="rounded-xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+            <div className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
               <label className="mb-2 block text-xs font-black text-slate-500">就學區</label>
               <select
                 value={region}
                 onChange={(event) => setRegion(event.target.value)}
-                className="w-full rounded-lg border-2 border-slate-900 bg-slate-50 px-3 py-2.5 text-sm font-black outline-none focus:ring-4 focus:ring-sky-300/40"
+                className="w-full rounded-xl border-2 border-slate-900 bg-slate-50 px-3 py-3 text-sm font-black outline-none transition focus:bg-white focus:ring-4 focus:ring-sky-300/40"
               >
                 {MOCK_VOLUNTEER_REGIONS.map((item) => (
                   <option key={item.id} value={item.id}>
@@ -378,21 +378,21 @@ export default function MockVolunteerPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-5 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+          <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
             <div className="text-xs font-black text-slate-500">目前區域</div>
             <div className="mt-1 text-2xl font-black text-slate-900">{activeRegionName}</div>
           </div>
-          <div className="rounded-xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+          <div className="rounded-2xl border-2 border-slate-900 bg-sky-50 p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
             <div className="text-xs font-black text-slate-500">搜尋結果</div>
             <div className="mt-1 text-2xl font-black text-slate-900">{filteredSchools.length}</div>
           </div>
-          <div className="rounded-xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+          <div className="rounded-2xl border-2 border-slate-900 bg-amber-50 p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
             <div className="text-xs font-black text-slate-500">已選志願</div>
             <div className="mt-1 text-2xl font-black text-slate-900">{selectedChoices.length} / 30</div>
           </div>
         </div>
 
-        <section className={`mb-5 rounded-xl border-2 p-4 ${preferenceRule ? 'border-indigo-200 bg-indigo-50' : 'border-amber-300 bg-amber-50'}`}>
+        <section className={`mb-6 rounded-2xl border-2 p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] ${preferenceRule ? 'border-indigo-200 bg-indigo-50' : 'border-amber-300 bg-amber-50'}`}>
           <div className="flex items-center gap-2 text-sm font-black text-slate-900">
             <Target className={`h-5 w-5 ${preferenceRule ? 'text-indigo-700' : 'text-amber-700'}`} />
             {activeRegionName}志願序規則
@@ -401,37 +401,37 @@ export default function MockVolunteerPage() {
           <p className="mt-2 text-xs font-bold leading-5 text-slate-500">此為志願序項目說明；資格、會考、多元表現與其他超額比序項目，請以當年度官方系統與簡章為準。</p>
         </section>
 
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_460px]">
-          <section className="min-h-[620px] rounded-xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
-            <div className="border-b-4 border-slate-900 bg-white p-4">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
+          <section className="min-h-[620px] overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
+            <div className="border-b-4 border-slate-900 bg-sky-50/70 p-4 sm:p-5">
               <div className="flex items-center gap-2 text-lg font-black">
                 <Search className="h-5 w-5 text-sky-600" />
                 搜尋校科
               </div>
-              <div className="mt-4 grid gap-3 xl:grid-cols-[1fr_160px_160px_160px]">
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_150px_150px_150px]">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <input
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
                     placeholder="輸入學校、科別、群科或代碼"
-                    className="w-full rounded-lg border-2 border-slate-900 bg-slate-50 py-2.5 pl-9 pr-3 text-sm font-bold outline-none focus:bg-white focus:ring-4 focus:ring-sky-300/40"
+                    className="w-full rounded-xl border-2 border-slate-900 bg-white py-3 pl-9 pr-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40"
                   />
                 </div>
-                <select value={filterCounty} onChange={(event) => setFilterCounty(event.target.value)} className="rounded-lg border-2 border-slate-900 bg-slate-50 px-3 py-2.5 text-sm font-bold outline-none focus:bg-white">
+                <select value={filterCounty} onChange={(event) => setFilterCounty(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="region">本區全部縣市{activeRegionCountyText ? `（${activeRegionCountyText}）` : ''}</option>
                   <option value="all">全部縣市</option>
                   {uniqueCounties.map((county) => (
                     <option key={county} value={county}>{county}</option>
                   ))}
                 </select>
-                <select value={filterType} onChange={(event) => setFilterType(event.target.value)} className="rounded-lg border-2 border-slate-900 bg-slate-50 px-3 py-2.5 text-sm font-bold outline-none focus:bg-white">
+                <select value={filterType} onChange={(event) => setFilterType(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="all">全部類型</option>
                   {uniqueTypes.map((type) => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
-                <select value={filterGroup} onChange={(event) => setFilterGroup(event.target.value)} className="rounded-lg border-2 border-slate-900 bg-slate-50 px-3 py-2.5 text-sm font-bold outline-none focus:bg-white">
+                <select value={filterGroup} onChange={(event) => setFilterGroup(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="all">全部群科</option>
                   {uniqueGroups.map((group) => (
                     <option key={group} value={group}>{group}</option>
@@ -461,7 +461,7 @@ export default function MockVolunteerPage() {
                   {filteredSchools.map((school, index) => {
                     const isSelected = selectedChoices.some((choice) => choice.code === school.code && choice.deptCode === school.deptCode);
                     return (
-                      <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-xl border-2 border-slate-900 bg-slate-50 p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                      <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
                             <div className="mb-2 flex flex-wrap gap-1.5">
@@ -477,14 +477,14 @@ export default function MockVolunteerPage() {
                           <button
                             onClick={() => addChoice(school)}
                             disabled={isSelected}
-                            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 transition-all ${
+                            className={`flex h-10 shrink-0 items-center justify-center gap-1 rounded-xl border-2 border-slate-900 px-2 text-xs font-black transition-all ${
                               isSelected
                                 ? 'bg-emerald-100 text-emerald-700'
                                 : 'bg-white text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:bg-sky-300 active:translate-y-0 active:shadow-none'
                             }`}
                             aria-label={isSelected ? '已加入' : '加入志願'}
                           >
-                            {isSelected ? <CheckCircle2 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                            {isSelected ? <><CheckCircle2 className="h-4 w-4" />已加入</> : <><Plus className="h-4 w-4" />加入</>}
                           </button>
                         </div>
                       </article>
@@ -495,8 +495,8 @@ export default function MockVolunteerPage() {
             </div>
           </section>
 
-          <aside className={`${pageNavigationAsideClassName} rounded-xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]`}>
-            <div className="border-b-4 border-slate-900 bg-amber-50 p-4">
+          <aside className={`${pageNavigationAsideClassName} overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]`}>
+            <div className="border-b-4 border-slate-900 bg-amber-50 p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 text-lg font-black">
