@@ -81,6 +81,23 @@ const PREFERENCE_RULES: Record<string, string> = {
   kaohsiung: '每 10 所學校為一個志願學校群：第 1 群 30 分、第 2 群 29 分、第 3 群 28 分；同校不同科連續選填以同一所學校計算。',
 };
 
+const getPreferenceScore = (region: string, rank: number): number | null => {
+  if (region === 'taipei') return rank <= 5 ? 36 : rank <= 10 ? 35 : rank <= 15 ? 34 : rank <= 20 ? 33 : rank <= 30 ? 32 : null;
+  if (region === 'taoyuan') return rank <= 3 ? 15 : rank <= 6 ? 12 : rank <= 9 ? 9 : rank <= 12 ? 6 : rank <= 15 ? 3 : rank <= 30 ? 1 : null;
+  if (region === 'hsinchu') return rank <= 5 ? 10 : rank <= 10 ? 9 : rank <= 15 ? 8 : rank <= 20 ? 7 : rank <= 25 ? 6 : null;
+  if (region === 'central') return rank <= 10 ? 30 : rank <= 20 ? 29 : rank <= 30 ? 28 : null;
+  if (region === 'changhua') return rank <= 20 ? 45 : rank <= 30 ? 44 : null;
+  if (region === 'tainan') return rank <= 3 ? 10 : rank <= 6 ? 9 : rank <= 9 ? 8 : rank <= 12 ? 7 : rank <= 15 ? 6 : rank <= 30 ? 5 : null;
+  if (region === 'kaohsiung') return rank <= 10 ? 30 : rank <= 20 ? 29 : rank <= 30 ? 28 : null;
+  return null;
+};
+
+const preferenceGroupKey = (region: string, choice: SchoolItem) => {
+  if (region === 'taipei' || region === 'central' || region === 'kaohsiung') return choice.code;
+  if (region === 'taoyuan' || region === 'hsinchu' || region === 'changhua') return `${choice.code}-${choice.groupCode || choice.groupName}`;
+  return choice.id;
+};
+
 const normalizeCounty = (county = '') => county.trim().replace(/台/g, '臺');
 
 const getRegionCountyText = (regionId: string) => (REGION_COUNTIES[regionId] || []).join('、');
@@ -143,6 +160,17 @@ export default function MockVolunteerPage() {
   const activeRegionCountyText = getRegionCountyText(region);
   const activeRegionCounties = useMemo(() => (REGION_COUNTIES[region] || []).map(normalizeCounty), [region]);
   const preferenceRule = PREFERENCE_RULES[region];
+  const choicePreferenceScores = useMemo(() => {
+    let previousKey = '';
+    let rank = 0;
+    return selectedChoices.map((choice) => {
+      const key = preferenceGroupKey(region, choice);
+      const samePreference = key === previousKey;
+      if (!samePreference) rank += 1;
+      previousKey = key;
+      return { rank, score: getPreferenceScore(region, rank), samePreference };
+    });
+  }, [region, selectedChoices]);
 
   const uniqueCounties = useMemo(
     () => Array.from(new Set([...REGION_COUNTIES[region], ...schools.map((school) => school.county).filter(Boolean)])).sort(),
@@ -515,6 +543,11 @@ export default function MockVolunteerPage() {
                           <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-950">{choice.name}</h3>
                           <p className="mt-1 line-clamp-2 text-xs font-bold text-sky-700">{choice.deptName}</p>
                           <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · {choice.groupName || choice.levelInfo}</p>
+                          {preferenceRule && choicePreferenceScores[index] && (
+                            <span className="mt-2 inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
+                              志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-slate-100 pt-3">
