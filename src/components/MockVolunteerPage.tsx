@@ -94,7 +94,11 @@ const getPreferenceScore = (region: string, rank: number): number | null => {
 
 const preferenceGroupKey = (region: string, choice: SchoolItem) => {
   if (region === 'taipei' || region === 'central' || region === 'kaohsiung') return choice.code;
-  if (region === 'taoyuan' || region === 'hsinchu' || region === 'changhua') return `${choice.code}-${choice.groupCode || choice.groupName}`;
+
+  const vocationalGroup = choice.groupCode?.trim() || choice.groupName?.trim();
+  if (region === 'taoyuan') return vocationalGroup ? `group-${vocationalGroup}` : choice.id;
+  if (region === 'hsinchu' || region === 'changhua') return vocationalGroup ? `${choice.code}-${vocationalGroup}` : choice.id;
+
   return choice.id;
 };
 
@@ -502,25 +506,13 @@ export default function MockVolunteerPage() {
                   <Printer className="h-4 w-4" />
                   列印
                 </button>
-                {showClearConfirm ? (
-                  <button
-                    onClick={() => {
-                      setSelectedChoices([]);
-                      setShowClearConfirm(false);
-                    }}
-                    className="rounded-lg border-2 border-slate-900 bg-rose-500 px-3 py-2 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
-                  >
-                    確認清空
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setShowClearConfirm(true)}
-                    disabled={selectedChoices.length === 0}
-                    className="rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-rose-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    清空
-                  </button>
-                )}
+                <button
+                  onClick={() => setShowClearConfirm(true)}
+                  disabled={selectedChoices.length === 0}
+                  className="rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-rose-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  清空
+                </button>
               </div>
             </div>
 
@@ -569,6 +561,29 @@ export default function MockVolunteerPage() {
           </aside>
         </div>
       </section>
+
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+          <section role="dialog" aria-modal="true" aria-labelledby="clear-volunteer-title" className="w-full max-w-md overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+            <div className="border-b-4 border-slate-900 bg-rose-200 p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <AlertTriangle className="h-6 w-6 text-rose-600" />
+                </div>
+                <div>
+                  <h2 id="clear-volunteer-title" className="text-xl font-black text-slate-900">清空志願清單？</h2>
+                  <p className="mt-1 text-sm font-bold text-rose-900">將移除目前全部 {selectedChoices.length} 個志願。</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-5 text-sm font-bold leading-7 text-slate-600">此動作無法復原，建議先列印或確認不再需要這份排序。</div>
+            <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
+              <button onClick={() => setShowClearConfirm(false)} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">保留清單</button>
+              <button onClick={() => { setSelectedChoices([]); setShowClearConfirm(false); }} className="flex-1 rounded-xl border-2 border-slate-900 bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-rose-600 active:translate-y-0.5 active:shadow-none">確認清空</button>
+            </div>
+          </section>
+        </div>
+      )}
 
       {crossRegionChoice && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
