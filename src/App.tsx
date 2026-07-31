@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   MapPin, User, BookOpen, Calculator, Award, PenTool,
@@ -215,7 +215,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   // Comparison
   const [comparisonSchools, setComparisonSchools] = useState<any[]>([]);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  // Read the restored scroll position on the first render. This prevents the
+  // fixed header from resizing just after the page has painted.
+  const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 50);
   
   // Custom Result Filters
   const [resultFilterText, setResultFilterText] = useState('');
@@ -223,7 +225,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   const [resultFilterType, setResultFilterType] = useState('all');
   const [resultFilterZone, setResultFilterZone] = useState('all');
 
-  useEffect(() => {
+  // A first-visit disclaimer is part of the initial view. Run this before the
+  // browser paints so the dialog does not appear as a post-paint layout change.
+  useLayoutEffect(() => {
     const forceDisclaimer = new URLSearchParams(window.location.search).get('showDisclaimer') === '1';
     if (forceDisclaimer || window.localStorage.getItem(DISCLAIMER_SEEN_KEY) !== 'true') {
       setActiveModal('disclaimer');
