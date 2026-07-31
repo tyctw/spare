@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'motion/react';
 import {
   AlertCircle,
   ArrowRight,
-  Award,
   BookOpen,
   Brain,
   Building2,
@@ -11,6 +10,7 @@ import {
   ChevronDown,
   ChevronRight,
   CalendarDays,
+  Calculator,
   CircleHelp,
   FileText,
   History,
@@ -91,11 +91,11 @@ const menuCategories: MenuCategory[] = [
     bg: 'bg-amber-50',
     accent: 'border-amber-500',
     items: [
-      { id: 'home', label: '落點分析', description: '輸入成績與條件，產生推薦清單', keywords: '首頁 落點 分析 會考 分數', icon: ChartBar, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'route', href: '/' } },
+      { id: 'home', label: '落點分析', description: '輸入成績與條件，產生推薦清單', keywords: '首頁 落點 分析 會考 分數', icon: Calculator, color: 'text-orange-600', bg: 'bg-orange-100', action: { type: 'route', href: '/' } },
       { id: 'mockVolunteer', label: '模擬志願序', description: '把校科加入清單，練習排序', keywords: '志願序 模擬 排序 選填', icon: ListOrdered, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/mock-volunteer' } },
       { id: 'strategy', label: '志願選填攻略', description: '看夢幻、落點、安全區如何搭配', keywords: '志願 選填 策略 建議 攻略', icon: Route, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/strategy' } },
       { id: 'historicalStats', label: '歷年錄取統計', description: '參考各校歷年分數與趨勢', keywords: '歷年 錄取 分數 統計', icon: ChartBar, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/historical-stats' } },
-      { id: 'gradeLevel', label: '積分換算說明', description: '查會考等級如何換成積分、積點', keywords: '積分 換算 等級 A B C', icon: Award, color: 'text-rose-600', bg: 'bg-rose-100', action: { type: 'route', href: '/grade-level' } },
+      { id: 'gradeLevel', label: '積分換算說明', description: '查會考等級如何換成積分、積點', keywords: '積分 換算 等級 A B C', icon: Calculator, color: 'text-rose-600', bg: 'bg-rose-100', action: { type: 'route', href: '/grade-level' } },
     ],
   },
   {
@@ -418,7 +418,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               </div>
             </div>
 
-            <div className="border-t-4 border-slate-900 bg-slate-900 p-3"><a href={withBasePath('/support')} className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-400 px-4 py-2 text-xs font-black text-slate-900 shadow-[2px_2px_0_#fbbf24] transition hover:-translate-y-0.5 hover:bg-rose-300 hover:shadow-[3px_3px_0_#fbbf24] active:translate-y-0 active:shadow-none"><Heart className="h-3.5 w-3.5 fill-current" />小額支持<ArrowRight className="h-3.5 w-3.5" /></a></div>
+            <div className="border-t-4 border-slate-900 bg-slate-900 p-3"><a href={withBasePath('/support')} className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-400 px-4 py-2 text-xs font-black text-slate-900 shadow-[2px_2px_0_#fbbf24] transition hover:-translate-y-0.5 hover:bg-rose-300 hover:shadow-[3px_3px_0_#fbbf24] active:translate-y-0 active:shadow-none"><Heart className="h-3.5 w-3.5 fill-current" />前往小額支持<ArrowRight className="h-3.5 w-3.5" /></a></div>
           </motion.div>
         </>
       )}
