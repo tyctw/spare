@@ -27,27 +27,7 @@ export default function ScoreInquiryModal({ isOpen, onClose }: ScoreInquiryModal
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className="relative w-full max-w-lg bg-slate-50 border-4 border-slate-900 rounded-3xl shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
         >
-          {/* Header */}
-          <div className="p-4 sm:p-6 bg-white border-b-4 border-slate-900 flex justify-between items-start">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-fuchsia-100 border-2 border-slate-900 rounded-2xl flex items-center justify-center shrink-0 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-3">
-                <Search className="w-6 h-6 sm:w-8 sm:h-8 text-fuchsia-600" />
-              </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-                  會考成績查詢
-                </h2>
-                <p className="text-sm font-bold text-slate-500 mt-1">請選擇成績查詢網路分流</p>
-              </div>
-            </div>
-            
-            <button
-              onClick={onClose}
-              className="p-2 bg-slate-100 hover:bg-slate-200 border-2 border-transparent hover:border-slate-900 rounded-xl transition-all"
-            >
-              <X className="w-6 h-6 text-slate-600 hover:text-slate-900" />
-            </button>
-          </div>
+          <header className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-fuchsia-100 p-6 sm:p-8"><div className="pointer-events-none absolute right-0 top-0 -translate-y-8 translate-x-8 opacity-10"><Search className="h-40 w-40 text-fuchsia-900" strokeWidth={2.5} /></div><div className="relative flex items-start justify-between gap-4"><h2 id="score-inquiry-modal-title" className="flex items-center gap-3 text-3xl font-black text-slate-900 sm:text-4xl"><Search className="h-8 w-8 text-fuchsia-600 sm:h-10 sm:w-10" strokeWidth={3} />會考成績查詢</h2><button onClick={onClose} aria-label="關閉會考成績查詢" className="shrink-0 rounded-xl border-2 border-transparent bg-white/50 p-2 transition-colors hover:border-slate-900 hover:bg-white"><X className="h-6 w-6 text-slate-900" /></button></div></header>
 
           <div className="p-6 space-y-4">
             

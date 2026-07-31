@@ -1,20 +1,20 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, MapPin, Building2, Map, Compass, Anchor, Mountain, Cpu, TreePine, Sun, Sunrise, Waves, Sprout } from 'lucide-react';
+import { X, Building2, Cpu, Landmark, MapPin, Mountain, ShipWheel, Sunrise, Sun, TreePine, Waves, Wheat } from 'lucide-react';
 
 export const ALL_REGIONS = [
-  { id: 'taoyuan', name: '桃連區', desc: '130+ 高中職', icon: Building2, active: true, color: 'bg-emerald-400' },
-  { id: 'taipei', name: '基北區', desc: '276+ 高中職', icon: Map, active: true, color: 'bg-indigo-400' },
-  { id: 'central', name: '中投區', desc: '172+ 高中職', icon: Mountain, active: true, color: 'bg-amber-400' },
-  { id: 'changhua', name: '彰化區', desc: '82+ 高中職', icon: MapPin, active: true, color: 'bg-rose-400' },
-  { id: 'tainan', name: '台南區', desc: '119+ 高中職', icon: Compass, active: true, color: 'bg-sky-400' },
-  { id: 'kaohsiung', name: '高雄區', desc: '95+ 高中職', icon: Anchor, active: true, color: 'bg-orange-400' },
-  { id: 'hsinchu', name: '竹苗區', desc: '55+ 高中職', icon: Cpu, active: true, color: 'bg-fuchsia-400' },
-  { id: 'yunlin', name: '雲林區', desc: '籌備中', icon: Sprout, active: false, color: 'bg-slate-400' },
-  { id: 'chiayi', name: '嘉義區', desc: '籌備中', icon: TreePine, active: false, color: 'bg-slate-400' },
-  { id: 'pingtung', name: '屏東區', desc: '籌備中', icon: Sun, active: false, color: 'bg-slate-400' },
-  { id: 'yilan', name: '宜蘭區', desc: '籌備中', icon: Waves, active: false, color: 'bg-slate-400' },
-  { id: 'taitung', name: '台東區', desc: '籌備中', icon: Sunrise, active: false, color: 'bg-slate-400' }
+  { id: 'taoyuan', name: '桃連區', desc: '桃園市、連江縣', icon: Building2, active: true, color: 'bg-emerald-400' },
+  { id: 'taipei', name: '基北區', desc: '基隆市、臺北市、新北市', icon: ShipWheel, active: true, color: 'bg-indigo-400' },
+  { id: 'central', name: '中投區', desc: '臺中市、南投縣', icon: Mountain, active: true, color: 'bg-amber-400' },
+  { id: 'changhua', name: '彰化區', desc: '彰化縣', icon: Wheat, active: true, color: 'bg-rose-400' },
+  { id: 'tainan', name: '台南區', desc: '臺南市', icon: Landmark, active: true, color: 'bg-sky-400' },
+  { id: 'kaohsiung', name: '高雄區', desc: '高雄市', icon: ShipWheel, active: true, color: 'bg-orange-400' },
+  { id: 'hsinchu', name: '竹苗區', desc: '新竹市、新竹縣、苗栗縣', icon: Cpu, active: true, color: 'bg-fuchsia-400' },
+  { id: 'yunlin', name: '雲林區', desc: '雲林縣 · 籌備中', icon: Wheat, active: false, color: 'bg-slate-400' },
+  { id: 'chiayi', name: '嘉義區', desc: '嘉義市、嘉義縣 · 籌備中', icon: TreePine, active: false, color: 'bg-slate-400' },
+  { id: 'pingtung', name: '屏東區', desc: '屏東縣 · 籌備中', icon: Sun, active: false, color: 'bg-slate-400' },
+  { id: 'yilan', name: '宜蘭區', desc: '宜蘭縣 · 籌備中', icon: Waves, active: false, color: 'bg-slate-400' },
+  { id: 'taitung', name: '台東區', desc: '臺東縣 · 籌備中', icon: Sunrise, active: false, color: 'bg-slate-400' }
 ];
 
 interface Props {

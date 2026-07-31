@@ -51,6 +51,18 @@ const pageMetadata: Record<string, PageMeta> = {
     title: '網站地圖｜全國會考落點分析',
     description: '瀏覽全國會考落點分析的所有功能與升學資訊頁面，快速找到需要的工具與說明。',
   },
+  '/support': {
+    title: '小額支持｜升學選校工具',
+    description: '支持我們持續維護升學資訊、優化選校工具，讓核心服務免費開放給學生與家長使用。',
+  },
+  '/after-sales-service': {
+    title: '售後服務｜升學選校工具',
+    description: '小額支持的售後服務、交易聯絡與付款爭議處理說明。',
+  },
+  '/refund-cancellation-policy': {
+    title: '退款與取消政策｜升學選校工具',
+    description: '小額支持的取消、退款申請、原付款方式退回及交易爭議處理政策。',
+  },
   '/holland': {
     title: '荷倫碼性向測驗｜探索適合的職群科系',
     description: '透過荷倫碼性向測驗認識個人興趣特質，探索適合的技職群科與升學方向。',

@@ -71,6 +71,45 @@ const MOCK_VOLUNTEER_REGIONS = [
   { id: 'kinmen', name: '金門區' },
 ];
 
+const PREFERENCE_RULES: Record<string, string> = {
+  taipei: '第 1–5 志願 36 分、第 6–10 志願 35 分、第 11–15 志願 34 分、第 16–20 志願 33 分、第 21–30 志願 32 分；同校類科連續選填視為同一志願序。',
+  taoyuan: '第 1–3 志願 15 分，第 4–6 志願 12 分，之後每 3 個志願遞減；第 16–30 志願為 1 分。專業群科同職群連續選填視為同一志願序。',
+  hsinchu: '第 1–5 志願序位 10 分，之後每 5 個志願序遞減 1 分，至第 21–25 志願序位為 6 分；同校同學群連續選填視為同一志願序。',
+  central: '第 1–10 志願序 30 分、第 11–20 志願序 29 分、第 21 志願序以後 28 分；同校類科連續選填視為同一志願序。',
+  changhua: '第 1–20 志願序 45 分，第 21 志願序以後 44 分；同校同職群連續選填視為同一志願序。',
+  tainan: '第 1–3 志願 10 分，之後每 3 個志願遞減 1 分；第 16–30 志願為 5 分。',
+  kaohsiung: '每 10 所學校為一個志願學校群：第 1 群 30 分、第 2 群 29 分、第 3 群 28 分；同校不同科連續選填以同一所學校計算。',
+};
+
+const getPreferenceScore = (region: string, rank: number): number | null => {
+  if (region === 'taipei') return rank <= 5 ? 36 : rank <= 10 ? 35 : rank <= 15 ? 34 : rank <= 20 ? 33 : rank <= 30 ? 32 : null;
+  if (region === 'taoyuan') return rank <= 3 ? 15 : rank <= 6 ? 12 : rank <= 9 ? 9 : rank <= 12 ? 6 : rank <= 15 ? 3 : rank <= 30 ? 1 : null;
+  if (region === 'hsinchu') return rank <= 5 ? 10 : rank <= 10 ? 9 : rank <= 15 ? 8 : rank <= 20 ? 7 : rank <= 25 ? 6 : null;
+  if (region === 'central') return rank <= 10 ? 30 : rank <= 20 ? 29 : rank <= 30 ? 28 : null;
+  if (region === 'changhua') return rank <= 20 ? 45 : rank <= 30 ? 44 : null;
+  if (region === 'tainan') return rank <= 3 ? 10 : rank <= 6 ? 9 : rank <= 9 ? 8 : rank <= 12 ? 7 : rank <= 15 ? 6 : rank <= 30 ? 5 : null;
+  if (region === 'kaohsiung') return rank <= 10 ? 30 : rank <= 20 ? 29 : rank <= 30 ? 28 : null;
+  return null;
+};
+
+const preferenceGroupKey = (region: string, choice: SchoolItem) => {
+  if (region === 'taipei' || region === 'central' || region === 'kaohsiung') return choice.code;
+
+  const vocationalGroup = choice.groupCode?.trim() || choice.groupName?.trim();
+  if (region === 'taoyuan') return vocationalGroup ? `group-${vocationalGroup}` : choice.id;
+  if (region === 'hsinchu' || region === 'changhua') return vocationalGroup ? `${choice.code}-${vocationalGroup}` : choice.id;
+
+  return choice.id;
+};
+
+const preferenceMergeReason = (region: string) => {
+  if (region === 'taipei' || region === 'central') return '同校類科連續選填';
+  if (region === 'taoyuan') return '同職群連續選填';
+  if (region === 'hsinchu' || region === 'changhua') return '同校同職群連續選填';
+  if (region === 'kaohsiung') return '同校不同科連續選填';
+  return '依區域規則合併';
+};
+
 const normalizeCounty = (county = '') => county.trim().replace(/台/g, '臺');
 
 const getRegionCountyText = (regionId: string) => (REGION_COUNTIES[regionId] || []).join('、');
@@ -132,6 +171,18 @@ export default function MockVolunteerPage() {
   const activeRegionName = MOCK_VOLUNTEER_REGIONS.find((item) => item.id === region)?.name || '目前就學區';
   const activeRegionCountyText = getRegionCountyText(region);
   const activeRegionCounties = useMemo(() => (REGION_COUNTIES[region] || []).map(normalizeCounty), [region]);
+  const preferenceRule = PREFERENCE_RULES[region];
+  const choicePreferenceScores = useMemo(() => {
+    let previousKey = '';
+    let rank = 0;
+    return selectedChoices.map((choice) => {
+      const key = preferenceGroupKey(region, choice);
+      const samePreference = key === previousKey;
+      if (!samePreference) rank += 1;
+      previousKey = key;
+      return { rank, score: getPreferenceScore(region, rank), samePreference };
+    });
+  }, [region, selectedChoices]);
 
   const uniqueCounties = useMemo(
     () => Array.from(new Set([...REGION_COUNTIES[region], ...schools.map((school) => school.county).filter(Boolean)])).sort(),
@@ -234,6 +285,7 @@ export default function MockVolunteerPage() {
             <td>${choice.deptName || ''}${choice.shift ? ` <span>(${choice.shift})</span>` : ''}</td>
             <td>${choice.groupName || choice.levelInfo || ''}</td>
             <td>${choice.county || ''}</td>
+            <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}${choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}` : '—'}</td>
           </tr>
         `,
       )
@@ -252,6 +304,7 @@ export default function MockVolunteerPage() {
             th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; font-size: 12px; vertical-align: top; }
             th { background: #e0f2fe; color: #0f172a; }
             .seq { width: 48px; text-align: center; font-weight: 800; }
+            .score { width: 108px; font-weight: 800; color: #3730a3; }
           </style>
         </head>
         <body>
@@ -265,6 +318,7 @@ export default function MockVolunteerPage() {
                 <th>科別</th>
                 <th>類群</th>
                 <th>縣市</th>
+                <th class="score">志願序積分</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -337,6 +391,15 @@ export default function MockVolunteerPage() {
             <div className="mt-1 text-2xl font-black text-slate-900">{selectedChoices.length} / 30</div>
           </div>
         </div>
+
+        <section className={`mb-5 rounded-xl border-2 p-4 ${preferenceRule ? 'border-indigo-200 bg-indigo-50' : 'border-amber-300 bg-amber-50'}`}>
+          <div className="flex items-center gap-2 text-sm font-black text-slate-900">
+            <Target className={`h-5 w-5 ${preferenceRule ? 'text-indigo-700' : 'text-amber-700'}`} />
+            {activeRegionName}志願序規則
+          </div>
+          <p className="mt-2 text-sm font-bold leading-6 text-slate-700">{preferenceRule || '此區志願序規則尚未完成 115 學年度官方簡章核對，暫不提供積分試算。'}</p>
+          <p className="mt-2 text-xs font-bold leading-5 text-slate-500">此為志願序項目說明；資格、會考、多元表現與其他超額比序項目，請以當年度官方系統與簡章為準。</p>
+        </section>
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_460px]">
           <section className="min-h-[620px] rounded-xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
@@ -454,25 +517,13 @@ export default function MockVolunteerPage() {
                   <Printer className="h-4 w-4" />
                   列印
                 </button>
-                {showClearConfirm ? (
-                  <button
-                    onClick={() => {
-                      setSelectedChoices([]);
-                      setShowClearConfirm(false);
-                    }}
-                    className="rounded-lg border-2 border-slate-900 bg-rose-500 px-3 py-2 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
-                  >
-                    確認清空
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setShowClearConfirm(true)}
-                    disabled={selectedChoices.length === 0}
-                    className="rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-rose-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    清空
-                  </button>
-                )}
+                <button
+                  onClick={() => setShowClearConfirm(true)}
+                  disabled={selectedChoices.length === 0}
+                  className="rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-rose-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  清空
+                </button>
               </div>
             </div>
 
@@ -495,6 +546,11 @@ export default function MockVolunteerPage() {
                           <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-950">{choice.name}</h3>
                           <p className="mt-1 line-clamp-2 text-xs font-bold text-sky-700">{choice.deptName}</p>
                           <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · {choice.groupName || choice.levelInfo}</p>
+                          {preferenceRule && choicePreferenceScores[index] && (
+                            <span className="mt-2 inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
+                              志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-slate-100 pt-3">
@@ -516,6 +572,29 @@ export default function MockVolunteerPage() {
           </aside>
         </div>
       </section>
+
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+          <section role="dialog" aria-modal="true" aria-labelledby="clear-volunteer-title" className="w-full max-w-md overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+            <div className="border-b-4 border-slate-900 bg-rose-200 p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <AlertTriangle className="h-6 w-6 text-rose-600" />
+                </div>
+                <div>
+                  <h2 id="clear-volunteer-title" className="text-xl font-black text-slate-900">清空志願清單？</h2>
+                  <p className="mt-1 text-sm font-bold text-rose-900">將移除目前全部 {selectedChoices.length} 個志願。</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-5 text-sm font-bold leading-7 text-slate-600">此動作無法復原，建議先列印或確認不再需要這份排序。</div>
+            <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
+              <button onClick={() => setShowClearConfirm(false)} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">保留清單</button>
+              <button onClick={() => { setSelectedChoices([]); setShowClearConfirm(false); }} className="flex-1 rounded-xl border-2 border-slate-900 bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-rose-600 active:translate-y-0.5 active:shadow-none">確認清空</button>
+            </div>
+          </section>
+        </div>
+      )}
 
       {crossRegionChoice && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
