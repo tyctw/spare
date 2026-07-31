@@ -285,7 +285,7 @@ export default function MockVolunteerPage() {
             <td>${choice.deptName || ''}${choice.shift ? ` <span>(${choice.shift})</span>` : ''}</td>
             <td>${choice.groupName || choice.levelInfo || ''}</td>
             <td>${choice.county || ''}</td>
-            <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}${choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}` : '—'}</td>
+            <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}` : '—'}</td>
           </tr>
         `,
       )
