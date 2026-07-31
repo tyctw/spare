@@ -277,6 +277,7 @@ export default function MockVolunteerPage() {
             <td>${choice.deptName || ''}${choice.shift ? ` <span>(${choice.shift})</span>` : ''}</td>
             <td>${choice.groupName || choice.levelInfo || ''}</td>
             <td>${choice.county || ''}</td>
+            <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}${choicePreferenceScores[index].samePreference ? '・同序' : ''}` : '—'}</td>
           </tr>
         `,
       )
@@ -295,6 +296,7 @@ export default function MockVolunteerPage() {
             th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; font-size: 12px; vertical-align: top; }
             th { background: #e0f2fe; color: #0f172a; }
             .seq { width: 48px; text-align: center; font-weight: 800; }
+            .score { width: 108px; font-weight: 800; color: #3730a3; }
           </style>
         </head>
         <body>
@@ -308,6 +310,7 @@ export default function MockVolunteerPage() {
                 <th>科別</th>
                 <th>類群</th>
                 <th>縣市</th>
+                <th class="score">志願序積分</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
