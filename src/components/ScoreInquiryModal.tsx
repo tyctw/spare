@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Search, ExternalLink, AlertCircle } from 'lucide-react';
+import { X, Search, ExternalLink, AlertCircle, FileCheck2 } from 'lucide-react';
 
 interface ScoreInquiryModalProps {
   isOpen: boolean;
@@ -27,27 +27,13 @@ export default function ScoreInquiryModal({ isOpen, onClose }: ScoreInquiryModal
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className="relative w-full max-w-lg bg-slate-50 border-4 border-slate-900 rounded-3xl shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
         >
-          {/* Header */}
-          <div className="p-4 sm:p-6 bg-white border-b-4 border-slate-900 flex justify-between items-start">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-fuchsia-100 border-2 border-slate-900 rounded-2xl flex items-center justify-center shrink-0 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-3">
-                <Search className="w-6 h-6 sm:w-8 sm:h-8 text-fuchsia-600" />
-              </div>
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-                  會考成績查詢
-                </h2>
-                <p className="text-sm font-bold text-slate-500 mt-1">請選擇成績查詢網路分流</p>
-              </div>
+          <header className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-fuchsia-100 via-white to-indigo-50 p-5 sm:p-6">
+            <div className="pointer-events-none absolute -bottom-5 right-5 flex h-20 w-20 items-center justify-center rounded-3xl border-2 border-fuchsia-200 bg-white/60 text-fuchsia-300 opacity-80"><FileCheck2 className="h-10 w-10" /></div>
+            <div className="relative flex items-start justify-between gap-4">
+              <div className="flex items-center gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-fuchsia-500 text-white shadow-[3px_3px_0_#0f172a] sm:h-14 sm:w-14"><Search className="h-6 w-6 sm:h-7 sm:w-7" /></div><h2 id="score-inquiry-modal-title" className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">會考成績查詢</h2></div>
+              <button onClick={onClose} aria-label="關閉會考成績查詢" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0_#0f172a] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none"><X className="h-5 w-5 text-slate-900" /></button>
             </div>
-            
-            <button
-              onClick={onClose}
-              className="p-2 bg-slate-100 hover:bg-slate-200 border-2 border-transparent hover:border-slate-900 rounded-xl transition-all"
-            >
-              <X className="w-6 h-6 text-slate-600 hover:text-slate-900" />
-            </button>
-          </div>
+          </header>
 
           <div className="p-6 space-y-4">
             
