@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Check, X, Star } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { Check, Send, Sparkles, Star, X } from 'lucide-react';
 import { callBackend } from '../lib/api';
 
-interface RatingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+interface RatingModalProps { isOpen: boolean; onClose: () => void; }
+
+const ratingLabels = ['', '還需要加油', '有待改善', '還不錯', '很有幫助', '非常滿意'];
 
 export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
   const [rating, setRating] = useState(0);
@@ -14,199 +13,47 @@ export default function RatingModal({ isOpen, onClose }: RatingModalProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [hasRated, setHasRated] = useState(false);
-  const [error, setError] = useState(''); // 新增錯誤狀態
+  const [error, setError] = useState('');
 
   React.useEffect(() => {
-    if (isOpen) {
-      if (localStorage.getItem('hasRatedApplet') === 'true') {
-        setHasRated(true);
-      }
-    }
+    if (!isOpen) return;
+    setHasRated(localStorage.getItem('hasRatedApplet') === 'true');
+    setError('');
+    setHoveredRating(0);
   }, [isOpen]);
+
+  const closeAndReset = () => {
+    onClose();
+    window.setTimeout(() => { setSubmitted(false); setRating(0); setSubmitting(false); }, 300);
+  };
 
   const handleSubmit = async () => {
     if (rating === 0) return;
     setSubmitting(true);
-    setError(''); // 每次送出前清空錯誤訊息
-    
+    setError('');
     try {
-      const payload = {
-        rating,
-        feedback: '', 
-        timestamp: new Date().toISOString()
-      };
-      
-      const clientInfo = {
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        screenResolution: `${window.screen.width}x${window.screen.height}`,
-        viewport: `${window.innerWidth}x${window.innerHeight}`,
-        url: window.location.href
-      };
-      
-      await callBackend({ action: 'submitFeedback', payload, clientInfo });
-      setSubmitted(true);
+      await callBackend({
+        action: 'submitFeedback',
+        payload: { rating, feedback: '', timestamp: new Date().toISOString() },
+        clientInfo: { userAgent: navigator.userAgent, language: navigator.language, screenResolution: `${window.screen.width}x${window.screen.height}`, viewport: `${window.innerWidth}x${window.innerHeight}`, url: window.location.href },
+      });
       localStorage.setItem('hasRatedApplet', 'true');
-      setTimeout(() => {
-        onClose();
-        setTimeout(() => {
-            setSubmitted(false);
-            setRating(0);
-        }, 500);
-      }, 2000);
-    } catch (e) {
-      console.error(e);
+      setSubmitted(true);
+      window.setTimeout(closeAndReset, 2200);
+    } catch (submissionError) {
+      console.error(submissionError);
+      setError('評分傳送失敗，請檢查網路連線後再試一次。');
       setSubmitting(false);
-      // 絕對不造假，誠實顯示錯誤訊息
-      setError('評分傳送失敗，請檢查網路連線後重試。');
     }
   };
 
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-            onClick={!submitting && !submitted ? onClose : undefined}
-          />
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-sm bg-white rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] border-4 border-slate-900 flex flex-col items-center text-center overflow-hidden"
-          >
-            {/* Background glowing orb */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-300/30 blur-[60px] rounded-full pointer-events-none" />
+  const activeRating = hoveredRating || rating;
 
-            {!submitting && !submitted && (
-              <button 
-                onClick={onClose} 
-                className="absolute top-4 right-4 p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors text-slate-500 z-10"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            )}
-
-            <div className="relative z-10 w-full">
-              {submitted ? (
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="flex flex-col items-center py-6 gap-5"
-                >
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-emerald-400 rounded-full blur-xl opacity-40 animate-pulse" />
-                    <div className="relative w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center border-4 border-emerald-400 shadow-[4px_4px_0px_0px_rgba(52,211,153,1)]">
-                      <Check className="w-10 h-10" strokeWidth={3} />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black text-slate-800 mb-2">感謝您的評分！</h3>
-                    <p className="text-slate-500 font-bold">您的支持是我們進步的最大動力</p>
-                  </div>
-                </motion.div>
-              ) : hasRated ? (
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="flex flex-col items-center py-6 gap-5"
-                >
-                  <div className="w-20 h-20 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center border-4 border-amber-300">
-                    <Star className="w-10 h-10 fill-amber-500" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black text-slate-800 mb-2">您已經評分過囉！</h3>
-                    <p className="text-slate-500 font-bold">感謝您的支持與回饋</p>
-                  </div>
-                  <button 
-                    onClick={onClose}
-                    className="mt-4 w-full py-3 px-4 rounded-xl font-bold text-white transition-all bg-slate-900 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-none hover:bg-slate-800"
-                  >
-                    關閉
-                  </button>
-                </motion.div>
-              ) : (
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-amber-100 text-amber-500 rounded-2xl flex items-center justify-center border-4 border-amber-300 shadow-[4px_4px_0px_0px_rgba(252,211,77,1)] mb-6 -rotate-6">
-                    <Star className="w-8 h-8 fill-amber-500" />
-                  </div>
-                  <h3 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">您喜歡這個系統嗎？</h3>
-                  <p className="text-slate-500 font-bold mb-8 text-sm">點擊星星為我們打分</p>
-
-                  <div className="flex gap-2 justify-center mb-6">
-                    {[1, 2, 3, 4, 5].map(star => (
-                      <motion.button 
-                        key={star} 
-                        type="button"
-                        onMouseEnter={() => setHoveredRating(star)}
-                        onMouseLeave={() => setHoveredRating(0)}
-                        onClick={() => setRating(star)}
-                        disabled={submitting}
-                        whileHover={{ scale: 1.2, rotate: 5 }}
-                        whileTap={{ scale: 0.9, rotate: -5 }}
-                        className="relative focus:outline-none transition-colors"
-                      >
-                        <Star 
-                          className={`w-12 h-12 transition-all duration-300 ${
-                            (hoveredRating || rating) >= star 
-                              ? 'fill-amber-400 text-amber-500 drop-shadow-[0_4px_8px_rgba(251,191,36,0.5)]' 
-                              : 'fill-slate-100 text-slate-300'
-                          }`} 
-                          strokeWidth={1.5}
-                        />
-                      </motion.button>
-                    ))}
-                  </div>
-
-                  {/* 顯示錯誤訊息的區塊 */}
-                  {error && (
-                    <div className="w-full mb-4 p-3 bg-rose-100 text-rose-600 font-bold text-sm rounded-xl border-2 border-rose-300">
-                      {error}
-                    </div>
-                  )}
-
-                  {!submitting && (
-                    <div className="flex w-full gap-3">
-                      <button 
-                        onClick={onClose}
-                        className="flex-1 py-3 px-4 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
-                      >
-                        取消
-                      </button>
-                      <button 
-                        onClick={handleSubmit}
-                        disabled={rating === 0}
-                        className={`flex-1 py-3 px-4 rounded-xl font-bold text-white transition-all ${
-                          rating === 0 
-                            ? 'bg-slate-300 cursor-not-allowed' 
-                            : 'bg-slate-900 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 active:translate-y-0 active:shadow-none hover:bg-slate-800'
-                        }`}
-                      >
-                        送出評分
-                      </button>
-                    </div>
-                  )}
-                  
-                  {submitting && (
-                     <motion.p 
-                       initial={{ opacity: 0 }} 
-                       animate={{ opacity: 1 }} 
-                       className="text-amber-600 font-bold mt-4 animate-pulse"
-                     >
-                       傳送中...
-                     </motion.p>
-                  )}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
-  );
+  return <AnimatePresence>{isOpen && <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={!submitting && !submitted ? closeAndReset : undefined} className="absolute inset-0 bg-slate-950/55 backdrop-blur-md" />
+    <motion.section initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.92, y: 20 }} transition={{ type: 'spring', damping: 25, stiffness: 300 }} role="dialog" aria-modal="true" aria-labelledby="rating-title" className="relative w-full max-w-lg overflow-hidden rounded-[30px] border-4 border-slate-900 bg-[#fffdf8] shadow-[8px_8px_0_#0f172a]">
+      <header className="relative overflow-hidden border-b-4 border-slate-900 bg-amber-300 px-5 py-5 sm:px-7"><div aria-hidden="true" className="absolute -right-5 -top-7 rotate-12 text-amber-100/70"><Star className="h-32 w-32 fill-current" /></div><div className="relative flex items-start justify-between gap-4"><div className="flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white shadow-[3px_3px_0_#0f172a]"><Sparkles className="h-6 w-6 text-amber-600" /></div><div><p className="text-[10px] font-black tracking-[0.18em] text-amber-900">YOUR VOICE MATTERS</p><h2 id="rating-title" className="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">評分與回饋</h2></div></div>{!submitting && !submitted && <button type="button" onClick={closeAndReset} aria-label="關閉評分與回饋" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0_#0f172a] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none"><X className="h-5 w-5" /></button>}</div></header>
+      <div className="p-5 sm:p-7">{submitted ? <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex min-h-72 flex-col items-center justify-center text-center"><div className="flex h-20 w-20 items-center justify-center rounded-[28px] border-4 border-slate-900 bg-emerald-300 shadow-[5px_5px_0_#0f172a]"><Check className="h-10 w-10" strokeWidth={3} /></div><h3 className="mt-6 text-2xl font-black text-slate-900">感謝您的回饋！</h3><p className="mt-2 max-w-xs text-sm font-bold leading-6 text-slate-600">您的評分會幫助我們持續改善工具與使用體驗。</p></motion.div> : hasRated ? <div className="flex min-h-72 flex-col items-center justify-center text-center"><div className="flex h-20 w-20 items-center justify-center rounded-[28px] border-4 border-slate-900 bg-indigo-100 shadow-[5px_5px_0_#0f172a]"><Star className="h-10 w-10 fill-amber-400 text-amber-500" /></div><h3 className="mt-6 text-2xl font-black text-slate-900">您已留下評分</h3><p className="mt-2 max-w-xs text-sm font-bold leading-6 text-slate-600">謝謝您的支持；我們會持續讓系統更好用。</p><button type="button" onClick={closeAndReset} className="mt-7 rounded-xl border-2 border-slate-900 bg-slate-900 px-7 py-3 text-sm font-black text-white shadow-[3px_3px_0_#fbbf24] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none">關閉</button></div> : <div><p className="text-center text-sm font-bold leading-6 text-slate-600">花幾秒告訴我們你的使用感受，讓下一次的分析更貼近你的需要。</p><div className="mt-6 rounded-2xl border-2 border-slate-900 bg-white p-5 text-center shadow-[3px_3px_0_#0f172a]"><p className="text-sm font-black text-slate-900">這次使用體驗如何？</p><div className="mt-4 flex justify-center gap-1.5" role="radiogroup" aria-label="評分"><>{[1, 2, 3, 4, 5].map((star) => <motion.button key={star} type="button" role="radio" aria-checked={rating === star} aria-label={`${star} 星：${ratingLabels[star]}`} onMouseEnter={() => setHoveredRating(star)} onMouseLeave={() => setHoveredRating(0)} onFocus={() => setHoveredRating(star)} onBlur={() => setHoveredRating(0)} onClick={() => setRating(star)} whileHover={{ scale: 1.16, rotate: 5 }} whileTap={{ scale: 0.92 }} className="rounded-lg p-1 focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-300"><Star className={`h-10 w-10 transition ${activeRating >= star ? 'fill-amber-400 text-amber-500 drop-shadow-[0_3px_0_#92400e]' : 'fill-slate-100 text-slate-300'}`} strokeWidth={2} /></motion.button>)}</></div><p className="mt-3 h-5 text-sm font-black text-amber-700">{activeRating ? ratingLabels[activeRating] : '請選擇 1 至 5 星'}</p></div>{error && <p role="alert" className="mt-4 rounded-xl border-2 border-rose-300 bg-rose-50 p-3 text-sm font-bold text-rose-700">{error}</p>}<div className="mt-5 flex gap-3"><button type="button" onClick={closeAndReset} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black text-slate-700 transition hover:bg-slate-100">稍後再說</button><button type="button" onClick={handleSubmit} disabled={rating === 0 || submitting} className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0_#fbbf24] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none">{submitting ? '傳送中…' : <><Send className="h-4 w-4" />送出評分</>}</button></div></div>}</div>
+    </motion.section>
+  </div>}</AnimatePresence>;
 }
