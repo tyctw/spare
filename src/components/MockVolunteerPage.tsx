@@ -579,13 +579,12 @@ export default function MockVolunteerPage() {
                             <div className="mb-2 flex flex-wrap gap-1.5 text-[11px] font-black">
                               {school.county && <span className="rounded-md border border-slate-300 bg-slate-50 px-2 py-0.5 text-slate-600">{school.county}</span>}
                               {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-amber-900">類型：{school.levelInfo}</span>}
-                              {school.shift && <span className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-slate-600">{school.shift}</span>}
                             </div>
                             {school.groupName && <div className="mb-2"><span className="inline-flex rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
                             <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
                             <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
                               <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
-                              <span className="line-clamp-1">{school.deptName}</span>
+                              <span className="line-clamp-1">{school.deptName}{school.shift ? ` (${school.shift})` : ''}</span>
                             </p>
                           </div>
                           <button
@@ -681,13 +680,12 @@ export default function MockVolunteerPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <h3 className="truncate pr-[78px] text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
-                          <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}</p>
+                          <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}{choice.shift ? ` (${choice.shift})` : ''}</p>
                           <div className="mt-1.5 space-y-0.5 border-t border-slate-100 pt-1.5 text-[11px] font-black leading-4 text-[#4f76a4]">
                             <div className="flex min-w-0 items-center gap-1 whitespace-nowrap">
                               {choice.county && <span>{choice.county}</span>}
                               {choice.county && <span className="text-slate-400">·</span>}
                               <span className="truncate">類型：{choice.levelInfo || '未提供'}</span>
-                              {choice.shift && <><span className="text-slate-400">·</span><span>{choice.shift}</span></>}
                             </div>
                             <div className="flex min-w-0 items-center justify-between gap-2">
                               <span className="min-w-0 truncate">群別：{choice.groupName || '未提供'}</span>
