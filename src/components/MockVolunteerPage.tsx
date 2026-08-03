@@ -651,7 +651,7 @@ export default function MockVolunteerPage() {
               </div>
             </div>
 
-            <div className="max-h-[720px] overflow-y-auto p-4 custom-scrollbar">
+            <div className="min-h-[560px] max-h-[840px] overflow-y-auto p-4 custom-scrollbar">
               {selectedChoices.length === 0 ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-400">
                   <Target className="mb-3 h-12 w-12 stroke-1" />
