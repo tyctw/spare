@@ -618,12 +618,12 @@ export default function MockVolunteerPage() {
                               {school.county && <span className="rounded-md border border-slate-300 bg-slate-50 px-2 py-0.5 text-slate-600">{school.county}</span>}
                               {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-amber-900">類型：{school.levelInfo}</span>}
                             </div>
-                            {school.groupName && <div className="mb-2"><span className="inline-flex rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
                             <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
                             <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
                               <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
                               <span className="line-clamp-1">{school.deptName}{school.shift ? ` (${school.shift})` : ''}</span>
                             </p>
+                            {school.groupName && <div className="mt-1.5"><span className="inline-flex rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
                           </div>
                           <button
                             onClick={() => addChoice(school)}
