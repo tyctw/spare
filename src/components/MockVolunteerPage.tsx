@@ -395,13 +395,16 @@ export default function MockVolunteerPage() {
           <title>${activeRegionName} 模擬志願選填表</title>
           <style>
             body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 24px; }
+            body::before { content: "模擬志願選填"; position: fixed; top: 43%; left: 50%; z-index: 0; color: rgba(148, 163, 184, 0.18); font-size: 56px; font-weight: 900; letter-spacing: 8px; white-space: nowrap; transform: translate(-50%, -50%) rotate(-28deg); }
             h1 { margin: 0 0 8px; font-size: 24px; }
             p { margin: 0 0 16px; color: #475569; font-size: 13px; }
+            h1, p, table, .print-site { position: relative; z-index: 1; }
             table { width: 100%; border-collapse: collapse; table-layout: auto; }
             th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; font-size: 12px; vertical-align: top; }
             th { background: #e0f2fe; color: #0f172a; }
             .seq { width: 48px; text-align: center; font-weight: 800; }
             .score { width: 108px; font-weight: 800; color: #3730a3; }
+            .print-site { margin-top: 18px; text-align: right; color: #64748b; font-size: 11px; font-weight: 700; }
           </style>
         </head>
         <body>
@@ -420,6 +423,7 @@ export default function MockVolunteerPage() {
             </thead>
             <tbody>${rows}</tbody>
           </table>
+          <div class="print-site">網站網址：https://tyctw.github.io/spare/</div>
         </body>
       </html>
     `);
@@ -546,7 +550,7 @@ export default function MockVolunteerPage() {
               </div>
             </div>
 
-            <div className="max-h-[720px] overflow-y-auto p-4 custom-scrollbar">
+            <div className="max-h-[720px] overflow-y-auto p-3 custom-scrollbar">
               {isLoading ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center gap-3 text-slate-500">
                   <Loader2 className="h-9 w-9 animate-spin text-sky-500" />
@@ -644,37 +648,37 @@ export default function MockVolunteerPage() {
                   <p className="mt-1 text-sm font-bold">從左側搜尋結果加入校科後，這裡會顯示你的排序清單。</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {selectedChoices.map((choice, index) => (
-                    <article key={choice.id} className="rounded-2xl border-2 border-slate-900 bg-gradient-to-br from-white to-amber-50/70 p-3.5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-                      <div className="flex gap-3.5">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-300 text-xl font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                    <article key={choice.id} className="rounded-xl border-2 border-slate-900 bg-white p-2.5 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-amber-50">
+                      <div className="flex items-start gap-2.5">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black">
                           {index + 1}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="line-clamp-2 text-[15px] font-black leading-snug text-slate-950">{choice.name}</h3>
-                          <p className="mt-1 line-clamp-2 text-sm font-black text-sky-700">{choice.deptName}</p>
-                          <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-black">
-                            {choice.county && <span className="rounded-md border border-slate-200 bg-white px-2 py-1 text-slate-600">{choice.county}</span>}
-                            <span className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-amber-800">類型：{choice.levelInfo || '未提供'}</span>
-                            {choice.shift && <span className="rounded-md border border-slate-200 bg-slate-100 px-2 py-1 text-slate-600">{choice.shift}</span>}
+                          <h3 className="truncate text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
+                          <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}</p>
+                          <div className="mt-1 flex flex-wrap gap-1 text-[10px] font-bold leading-4">
+                            {choice.county && <span className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-slate-600">{choice.county}</span>}
+                            <span className="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-amber-800">類型：{choice.levelInfo || '未提供'}</span>
+                            {choice.shift && <span className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-slate-600">{choice.shift}</span>}
                           </div>
-                          {choice.groupName && <div className="mt-1.5"><span className="inline-flex rounded-md border border-sky-200 bg-sky-100 px-2 py-1 text-[11px] font-black text-sky-800">群別：{choice.groupName}</span></div>}
+                          {choice.groupName && <div className="mt-1"><span className="inline-flex rounded border border-sky-200 bg-sky-50 px-1.5 py-0.5 text-[10px] font-bold leading-4 text-sky-800">群別：{choice.groupName}</span></div>}
                           {preferenceRule && choicePreferenceScores[index] && (
-                            <span className="mt-2 inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
+                            <span className="mt-1 inline-flex items-center rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold leading-4 text-indigo-800">
                               志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
                             </span>
                           )}
                         </div>
                       </div>
-                      <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-amber-100 pt-3">
-                        <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="rounded-lg border-2 border-slate-900 bg-white p-2 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none disabled:border-slate-200 disabled:text-slate-300 disabled:shadow-none">
+                      <div className="mt-2 flex items-center justify-end gap-1.5 border-t border-slate-200 pt-2">
+                        <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="rounded-md border border-slate-300 bg-white p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300">
                           <ArrowUp className="h-4 w-4" />
                         </button>
-                        <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-lg border-2 border-slate-900 bg-white p-2 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none disabled:border-slate-200 disabled:text-slate-300 disabled:shadow-none">
+                        <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-md border border-slate-300 bg-white p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300">
                           <ArrowDown className="h-4 w-4" />
                         </button>
-                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-lg border-2 border-slate-900 bg-rose-50 p-2 text-rose-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-rose-500 hover:text-white hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none" aria-label="刪除志願">
+                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-md border border-rose-200 bg-rose-50 p-1.5 text-rose-600 transition hover:bg-rose-500 hover:text-white" aria-label="刪除志願">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
