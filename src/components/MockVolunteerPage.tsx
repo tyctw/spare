@@ -187,7 +187,9 @@ export default function MockVolunteerPage() {
   const [notice, setNotice] = useState('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [choicePendingRemoval, setChoicePendingRemoval] = useState<SchoolItem | null>(null);
+  const [rankPickerChoiceId, setRankPickerChoiceId] = useState<string | null>(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [leaveDestination, setLeaveDestination] = useState(withBasePath('/'));
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
   const allowPageExitRef = useRef(false);
 
@@ -343,12 +345,13 @@ export default function MockVolunteerPage() {
   const requestLeavePage = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (selectedChoices.length === 0) return;
     event.preventDefault();
+    setLeaveDestination(event.currentTarget.href);
     setShowLeaveConfirm(true);
   };
 
   const confirmLeavePage = () => {
     allowPageExitRef.current = true;
-    window.location.assign(withBasePath('/'));
+    window.location.assign(leaveDestination);
   };
 
   const moveChoice = (from: number, to: number) => {
@@ -394,20 +397,35 @@ export default function MockVolunteerPage() {
         <head>
           <title>${activeRegionName} 模擬志願選填表</title>
           <style>
-            body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 24px; }
-            h1 { margin: 0 0 8px; font-size: 24px; }
-            p { margin: 0 0 16px; color: #475569; font-size: 13px; }
-            table { width: 100%; border-collapse: collapse; table-layout: auto; }
-            th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; font-size: 12px; vertical-align: top; }
-            th { background: #e0f2fe; color: #0f172a; }
-            .seq { width: 48px; text-align: center; font-weight: 800; }
-            .score { width: 108px; font-weight: 800; color: #3730a3; }
+            @page { size: A4 portrait; margin: 9mm 8mm; }
+            * { box-sizing: border-box; }
+            body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 0; }
+            body::before { content: "模擬志願選填"; position: fixed; top: 48%; left: 50%; z-index: 0; color: rgba(148, 163, 184, 0.16); font-size: 46px; font-weight: 900; letter-spacing: 7px; white-space: nowrap; transform: translate(-50%, -50%) rotate(-28deg); }
+            h1 { margin: 0 0 3px; font-size: 18px; line-height: 1.3; }
+            p { margin: 0 0 8px; color: #475569; font-size: 9px; line-height: 1.4; }
+            h1, p, table, .print-site { position: relative; z-index: 1; }
+            table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+            th, td { border: 0.5px solid #94a3b8; padding: 3px 4px; text-align: left; font-size: 8.5px; line-height: 1.28; vertical-align: middle; word-break: break-word; }
+            th { background: #e0f2fe; color: #0f172a; font-size: 8px; }
+            thead { display: table-header-group; }
+            tr { break-inside: avoid; page-break-inside: avoid; }
+            .seq { text-align: center; font-weight: 800; }
+            .score { font-weight: 800; color: #3730a3; }
+            .print-site { margin-top: 6px; text-align: right; color: #64748b; font-size: 8px; font-weight: 700; }
           </style>
         </head>
         <body>
           <h1>${activeRegionName} 模擬志願選填表</h1>
           <p>列印日期：${new Date().toLocaleDateString('zh-TW')}，共 ${selectedChoices.length} 個志願。正式選填仍應以招生簡章與官方公告為準。</p>
           <table>
+            <colgroup>
+              <col style="width: 6%" />
+              <col style="width: 25%" />
+              <col style="width: 25%" />
+              <col style="width: 16%" />
+              <col style="width: 10%" />
+              <col style="width: 18%" />
+            </colgroup>
             <thead>
               <tr>
                 <th class="seq">序</th>
@@ -420,15 +438,17 @@ export default function MockVolunteerPage() {
             </thead>
             <tbody>${rows}</tbody>
           </table>
+          <div class="print-site">網站網址：https://tyctw.github.io/spare/</div>
         </body>
       </html>
     `);
     printWindow.document.close();
+    const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    if (!isMobileDevice) {
+      printWindow.onafterprint = () => printWindow.close();
+    }
     printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 300);
+    printWindow.print();
   };
 
   return (
@@ -546,7 +566,7 @@ export default function MockVolunteerPage() {
               </div>
             </div>
 
-            <div className="max-h-[720px] overflow-y-auto p-4 custom-scrollbar">
+            <div className="max-h-[720px] overflow-y-auto p-3 custom-scrollbar">
               {isLoading ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center gap-3 text-slate-500">
                   <Loader2 className="h-9 w-9 animate-spin text-sky-500" />
@@ -570,11 +590,11 @@ export default function MockVolunteerPage() {
                       <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="mb-2 flex flex-wrap gap-1.5">
-                              {school.county && <span className="rounded-md border border-slate-300 bg-white px-2 py-0.5 text-[11px] font-black text-slate-600">{school.county}</span>}
-                              {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-[11px] font-black text-amber-900">類型：{school.levelInfo}</span>}
+                            <div className="mb-2 flex flex-wrap gap-1.5 text-[11px] font-black">
+                              {school.county && <span className="rounded-md border border-slate-300 bg-slate-50 px-2 py-0.5 text-slate-600">{school.county}</span>}
+                              {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-amber-900">類型：{school.levelInfo}</span>}
                             </div>
-                            {school.groupName && <div className="mb-2"><span className="rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
+                            {school.groupName && <div className="mb-2"><span className="inline-flex rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
                             <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
                             <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
                               <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
@@ -603,20 +623,30 @@ export default function MockVolunteerPage() {
           </section>
 
           <aside className={`${pageNavigationAsideClassName} overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]`}>
-            <div className="border-b-4 border-slate-900 bg-amber-50 p-5">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2 text-lg font-black">
+            <div className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-amber-200 via-amber-50 to-white p-5">
+              <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full border-4 border-amber-300/60 bg-amber-100/70" />
+              <div className="relative flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-xl font-black tracking-tight">
                     <Target className="h-5 w-5 text-amber-700" />
                     我的志願順序
                   </div>
                   <p className="mt-1 text-xs font-bold text-slate-500">用上下鍵調整排序，第一志願放最上面。</p>
                 </div>
-                <div className="rounded-lg border-2 border-slate-900 bg-white px-3 py-1 text-sm font-black">
-                  {selectedChoices.length}/30
+                <div className="shrink-0 rounded-xl border-2 border-slate-900 bg-slate-900 px-3 py-2 text-center text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <div className="text-lg leading-none">{selectedChoices.length}</div>
+                  <div className="mt-0.5 text-[10px] tracking-wide text-amber-200">/ 30</div>
                 </div>
               </div>
-              <div className="mt-4 flex gap-2">
+              <a
+                href={withBasePath('/strategy')}
+                onClick={requestLeavePage}
+                className="relative mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-amber-300 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0 active:shadow-none"
+              >
+                <Target className="h-4 w-4" />
+                志願選填攻略
+              </a>
+              <div className="relative mt-2 flex gap-2">
                 <button
                   onClick={handlePrint}
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-sky-300 px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
@@ -634,7 +664,7 @@ export default function MockVolunteerPage() {
               </div>
             </div>
 
-            <div className="max-h-[720px] overflow-y-auto p-4 custom-scrollbar">
+            <div className="min-h-[560px] max-h-[840px] overflow-y-auto p-4 custom-scrollbar">
               {selectedChoices.length === 0 ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-400">
                   <Target className="mb-3 h-12 w-12 stroke-1" />
@@ -642,35 +672,58 @@ export default function MockVolunteerPage() {
                   <p className="mt-1 text-sm font-bold">從左側搜尋結果加入校科後，這裡會顯示你的排序清單。</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {selectedChoices.map((choice, index) => (
-                    <article key={choice.id} className="rounded-2xl border-2 border-slate-900 bg-gradient-to-br from-white to-amber-50/70 p-3.5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-                      <div className="flex gap-3.5">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-300 text-xl font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                          {index + 1}
+                    <article key={choice.id} className="relative rounded-xl border-2 border-slate-900 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-amber-50">
+                      <div className="absolute right-3 top-3 flex items-center gap-1">
+                        <div className="flex overflow-hidden rounded-md border border-slate-300 bg-white">
+                          <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="border-r border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300" aria-label="上移志願">
+                            <ArrowUp className="h-3.5 w-3.5" />
+                          </button>
+                          <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300" aria-label="下移志願">
+                            <ArrowDown className="h-3.5 w-3.5" />
+                          </button>
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="line-clamp-2 text-[15px] font-black leading-snug text-slate-950">{choice.name}</h3>
-                          <p className="mt-1 line-clamp-2 text-sm font-black text-sky-700">{choice.deptName}</p>
-                          <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · 類型：{choice.levelInfo || '未提供'}{choice.shift ? ` · ${choice.shift}` : ''}</p>
-                          {choice.groupName && <p className="mt-1 text-[11px] font-bold text-sky-700">群別：{choice.groupName}</p>}
-                          {preferenceRule && choicePreferenceScores[index] && (
-                            <span className="mt-2 inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
-                              志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
-                            </span>
-                          )}
-                        </div>
+                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-md border border-rose-200 bg-rose-50 p-1.5 text-rose-600 transition hover:bg-rose-500 hover:text-white" aria-label="刪除志願">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
                       </div>
-                      <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-amber-100 pt-3">
-                        <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="rounded-lg border-2 border-slate-900 bg-white p-2 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none disabled:border-slate-200 disabled:text-slate-300 disabled:shadow-none">
-                          <ArrowUp className="h-4 w-4" />
-                        </button>
-                        <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-lg border-2 border-slate-900 bg-white p-2 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none disabled:border-slate-200 disabled:text-slate-300 disabled:shadow-none">
-                          <ArrowDown className="h-4 w-4" />
-                        </button>
-                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-lg border-2 border-slate-900 bg-rose-50 p-2 text-rose-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-rose-500 hover:text-white hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none" aria-label="刪除志願">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                      <div className="flex items-start gap-2.5">
+                        {rankPickerChoiceId === choice.id ? (
+                          <select
+                            autoFocus
+                            value={index}
+                            onChange={(event) => {
+                              moveChoice(index, Number(event.target.value));
+                              setRankPickerChoiceId(null);
+                            }}
+                            onBlur={() => setRankPickerChoiceId(null)}
+                            className="h-10 w-10 shrink-0 rounded-lg border-2 border-slate-900 bg-amber-300 text-center text-sm font-black outline-none"
+                            aria-label="選擇目標志願序"
+                          >
+                            {selectedChoices.map((_, rankIndex) => <option key={rankIndex} value={rankIndex}>{rankIndex + 1}</option>)}
+                          </select>
+                        ) : (
+                          <button
+                            onClick={() => setRankPickerChoiceId(choice.id)}
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black transition hover:bg-amber-400"
+                            aria-label={`調整第 ${index + 1} 志願`}
+                            title="點擊選擇目標志願序"
+                          >
+                            {index + 1}
+                          </button>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <h3 className="truncate pr-[78px] text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
+                          <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}{choice.shift ? ` (${choice.shift})` : ''}</p>
+                          <div className="mt-1.5 space-y-0.5 border-t border-slate-100 pt-1.5 text-[11px] font-black leading-4 text-[#4f76a4]">
+                            <div><span className="inline-flex max-w-full rounded-md border border-amber-200 bg-amber-100 px-1.5 py-0.5 text-amber-900"><span className="truncate">類型：{choice.levelInfo || '未提供'}</span></span></div>
+                            <div className="flex min-w-0 items-center justify-between gap-2">
+                              <span className="inline-flex min-w-0 max-w-[58%] rounded-md border border-sky-200 bg-sky-100 px-1.5 py-0.5 text-sky-800"><span className="truncate">群別：{choice.groupName || '未提供'}</span></span>
+                              {preferenceRule && choicePreferenceScores[index] && <span className="shrink-0 text-indigo-700">第 {choicePreferenceScores[index].rank} 志願・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}</span>}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </article>
                   ))}
