@@ -576,16 +576,12 @@ export default function MockVolunteerPage() {
                       <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="mb-2 space-y-0.5 text-[13px] font-black leading-5 text-[#4f76a4]">
-                              <div className="flex min-w-0 items-center gap-1.5 whitespace-nowrap">
-                                {school.county && <span>{school.county}</span>}
-                                {school.county && (school.levelInfo || school.shift) && <span className="text-slate-400">·</span>}
-                                {school.levelInfo && <span className="truncate">類型：{school.levelInfo}</span>}
-                                {school.levelInfo && school.shift && <span className="text-slate-400">·</span>}
-                                {school.shift && <span>{school.shift}</span>}
-                              </div>
-                              {school.groupName && <div className="flex min-w-0 items-center gap-1"><span className="shrink-0">群別：</span><span className="truncate">{school.groupName}</span></div>}
+                            <div className="mb-2 flex flex-wrap gap-1.5 text-[11px] font-black">
+                              {school.county && <span className="rounded-md border border-slate-300 bg-slate-50 px-2 py-0.5 text-slate-600">{school.county}</span>}
+                              {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-amber-900">類型：{school.levelInfo}</span>}
+                              {school.shift && <span className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-slate-600">{school.shift}</span>}
                             </div>
+                            {school.groupName && <div className="mb-2"><span className="inline-flex rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
                             <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
                             <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
                               <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
@@ -629,7 +625,15 @@ export default function MockVolunteerPage() {
                   <div className="mt-0.5 text-[10px] tracking-wide text-amber-200">/ 30</div>
                 </div>
               </div>
-              <div className="relative mt-4 flex gap-2">
+              <a
+                href={withBasePath('/strategy')}
+                onClick={requestLeavePage}
+                className="relative mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-amber-300 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0 active:shadow-none"
+              >
+                <Target className="h-4 w-4" />
+                志願選填攻略
+              </a>
+              <div className="relative mt-2 flex gap-2">
                 <button
                   onClick={handlePrint}
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-sky-300 px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
@@ -645,14 +649,6 @@ export default function MockVolunteerPage() {
                   清空
                 </button>
               </div>
-              <a
-                href={withBasePath('/strategy')}
-                onClick={requestLeavePage}
-                className="relative mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-amber-300 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0 active:shadow-none"
-              >
-                <Target className="h-4 w-4" />
-                志願選填攻略
-              </a>
             </div>
 
             <div className="max-h-[720px] overflow-y-auto p-4 custom-scrollbar">
