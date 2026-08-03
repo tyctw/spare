@@ -187,6 +187,7 @@ export default function MockVolunteerPage() {
   const [notice, setNotice] = useState('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [choicePendingRemoval, setChoicePendingRemoval] = useState<SchoolItem | null>(null);
+  const [rankPickerChoiceId, setRankPickerChoiceId] = useState<string | null>(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [leaveDestination, setLeaveDestination] = useState(withBasePath('/'));
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
@@ -675,9 +676,30 @@ export default function MockVolunteerPage() {
                         </button>
                       </div>
                       <div className="flex items-start gap-2.5">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black">
-                          {index + 1}
-                        </div>
+                        {rankPickerChoiceId === choice.id ? (
+                          <select
+                            autoFocus
+                            value={index}
+                            onChange={(event) => {
+                              moveChoice(index, Number(event.target.value));
+                              setRankPickerChoiceId(null);
+                            }}
+                            onBlur={() => setRankPickerChoiceId(null)}
+                            className="h-10 w-10 shrink-0 rounded-lg border-2 border-slate-900 bg-amber-300 text-center text-sm font-black outline-none"
+                            aria-label="選擇目標志願序"
+                          >
+                            {selectedChoices.map((_, rankIndex) => <option key={rankIndex} value={rankIndex}>{rankIndex + 1}</option>)}
+                          </select>
+                        ) : (
+                          <button
+                            onClick={() => setRankPickerChoiceId(choice.id)}
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black transition hover:bg-amber-400"
+                            aria-label={`調整第 ${index + 1} 志願`}
+                            title="點擊選擇目標志願序"
+                          >
+                            {index + 1}
+                          </button>
+                        )}
                         <div className="min-w-0 flex-1">
                           <h3 className="truncate pr-[78px] text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
                           <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}{choice.shift ? ` (${choice.shift})` : ''}</p>
