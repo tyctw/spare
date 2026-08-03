@@ -25,7 +25,6 @@ import { withBasePath } from './lib/routes';
 // Keep the analysis form and navigation in the first bundle. These dialogs are
 // fetched only when requested, so they do not delay the first meaningful paint.
 const QRCodeModal = React.lazy(() => import('./components/QRCodeModal'));
-const MockVolunteerModal = React.lazy(() => import('./components/MockVolunteerModal'));
 const VocationalModal = React.lazy(() => import('./components/VocationalModal'));
 const HollandTestModal = React.lazy(() => import('./components/HollandTestModal'));
 const ComparisonModal = React.lazy(() => import('./components/ComparisonModal'));
@@ -202,7 +201,7 @@ export default function App() {
   const [results, setResults] = useState<any>(null);
   
   // Modals state
-const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'reportError' | 'strategy' | 'mockVolunteer' | 'historicalStats' | 'scoreInquiry' | 'dataProvider' | null>(null);
+const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'reportError' | 'strategy' | 'historicalStats' | 'scoreInquiry' | 'dataProvider' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -1467,10 +1466,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         />
       )}
       
-      {activeModal === 'mockVolunteer' && (
-        <MockVolunteerModal isOpen onClose={() => setActiveModal(null)} region={formData.region} />
-      )}
-
       {isVocationalOpen && (
         <VocationalModal
           isOpen

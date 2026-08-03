@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertCircle,
   ArrowDown,
@@ -92,20 +92,64 @@ const getPreferenceScore = (region: string, rank: number): number | null => {
   return null;
 };
 
+const VOCATIONAL_GROUP_DEPARTMENTS: Record<string, string[]> = {
+  '機械群': ['機械科', '鑄造科', '板金科', '機械木模科', '配管科', '模具科', '機電科', '製圖科', '生物產業機電科', '電腦機械製圖科'],
+  '動力機械群': ['汽車科', '重機科', '飛機修護科', '動力機械科', '農業機械科', '軌道車輛科'],
+  '電機與電子群': ['資訊科', '電子科', '控制科', '電機科', '冷凍空調科', '航空電子科', '電機空調科'],
+  '化工群': ['化工科', '紡織科', '染整科'],
+  '土木與建築群': ['建築科', '土木科', '消防工程科', '空間測繪科'],
+  '商業與管理群': ['商業經營科', '國際貿易科', '會計事務科', '資料處理科', '不動產事務科', '電子商務科', '流通管理科', '農產行銷科', '航運管理科'],
+  '外語群': ['應用外語科（英文組）', '應用外語科（日文組）'],
+  '設計群': ['家具木工科', '美工科', '陶瓷工程科', '室內空間設計科', '圖文傳播科', '金屬工藝科', '家具設計科', '廣告設計科', '多媒體設計科', '多媒體應用科', '室內設計科'],
+  '農業群': ['農場經營科', '園藝科', '森林科', '野生動物保育科', '造園科', '畜產保健科'],
+  '食品群': ['食品加工科', '食品科', '水產食品科', '烘焙科'],
+  '家政群': ['家政科', '服裝科', '幼兒保育科', '美容科', '時尚模特兒科', '流行服飾科', '時尚造型科', '照顧服務科'],
+  '餐旅群': ['觀光事業科', '餐飲管理科'],
+  '水產群': ['漁業科', '水產養殖科'],
+  '海事群': ['輪機科', '航海科'],
+  '藝術群': ['戲劇科', '音樂科', '舞蹈科', '美術科', '影劇科', '西樂科', '國樂科', '電影電視科', '表演藝術科', '多媒體動畫科', '時尚工藝科'],
+};
+
+const normalizeDepartmentName = (name = '') => name.trim().replace(/\s+/g, '').replace(/[（]/g, '(').replace(/[）]/g, ')');
+const VOCATIONAL_GROUP_BY_DEPARTMENT = new Map(
+  Object.entries(VOCATIONAL_GROUP_DEPARTMENTS).flatMap(([group, departments]) =>
+    departments.map((department) => [normalizeDepartmentName(department), group] as const),
+  ),
+);
+
 // Only professional-program departments are vocational categories. Academic
-// groups and comprehensive high-school programs must each keep their own rank.
-const isVocationalProgram = (choice: SchoolItem) => choice.levelInfo?.trim() === '專業群科';
+// and comprehensive groups must never share a vocational-group rank.
+const isVocationalProgram = (choice: SchoolItem) => {
+  const groupName = choice.groupName?.trim();
+  return choice.levelInfo?.trim() === '專業群科' && groupName !== '學術群' && groupName !== '綜合群';
+};
+
+const getVocationalGroup = (choice: SchoolItem) =>
+  VOCATIONAL_GROUP_BY_DEPARTMENT.get(normalizeDepartmentName(choice.deptName)) || choice.groupName?.trim();
 
 const preferenceGroupKey = (region: string, choice: SchoolItem) => {
   if (region === 'taipei' || region === 'central' || region === 'kaohsiung') return choice.code;
 
-  const vocationalGroup = choice.groupCode?.trim() || choice.groupName?.trim();
   if (!isVocationalProgram(choice)) return choice.id;
+  const vocationalGroup = getVocationalGroup(choice);
 
   if (region === 'taoyuan') return vocationalGroup ? `group-${vocationalGroup}` : choice.id;
   if (region === 'hsinchu' || region === 'changhua') return vocationalGroup ? `${choice.code}-${vocationalGroup}` : choice.id;
 
   return choice.id;
+};
+
+const canSharePreferenceRank = (region: string, previousChoice: SchoolItem | null, choice: SchoolItem) => {
+  if (!previousChoice) return false;
+  if (region === 'taipei' || region === 'central' || region === 'kaohsiung') return previousChoice.code === choice.code;
+
+  if (region === 'taoyuan' || region === 'hsinchu' || region === 'changhua') {
+    return isVocationalProgram(previousChoice)
+      && isVocationalProgram(choice)
+      && preferenceGroupKey(region, previousChoice) === preferenceGroupKey(region, choice);
+  }
+
+  return false;
 };
 
 const preferenceMergeReason = (region: string) => {
@@ -130,10 +174,13 @@ export default function MockVolunteerPage() {
   const [filterCounty, setFilterCounty] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [filterGroup, setFilterGroup] = useState('all');
+  const [filterDepartment, setFilterDepartment] = useState('all');
   const [notice, setNotice] = useState('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [choicePendingRemoval, setChoicePendingRemoval] = useState<SchoolItem | null>(null);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
+  const allowPageExitRef = useRef(false);
 
   useEffect(() => {
     let ignore = false;
@@ -172,39 +219,59 @@ export default function MockVolunteerPage() {
     setFilterCounty('region');
     setFilterType('all');
     setFilterGroup('all');
+    setFilterDepartment('all');
     setSearchQuery('');
   }, [region]);
+
+  useEffect(() => {
+    const confirmBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (selectedChoices.length === 0 || allowPageExitRef.current) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', confirmBeforeUnload);
+    return () => window.removeEventListener('beforeunload', confirmBeforeUnload);
+  }, [selectedChoices.length]);
 
   const activeRegionName = MOCK_VOLUNTEER_REGIONS.find((item) => item.id === region)?.name || '目前就學區';
   const activeRegionCountyText = getRegionCountyText(region);
   const activeRegionCounties = useMemo(() => (REGION_COUNTIES[region] || []).map(normalizeCounty), [region]);
   const preferenceRule = PREFERENCE_RULES[region];
   const choicePreferenceScores = useMemo(() => {
-    let previousKey = '';
+    let previousChoice: SchoolItem | null = null;
     let rank = 0;
     return selectedChoices.map((choice) => {
-      const key = preferenceGroupKey(region, choice);
-      const samePreference = key === previousKey;
+      const samePreference = canSharePreferenceRank(region, previousChoice, choice);
       if (!samePreference) rank += 1;
-      previousKey = key;
+      previousChoice = choice;
       return { rank, score: getPreferenceScore(region, rank), samePreference };
     });
   }, [region, selectedChoices]);
 
-  const uniqueCounties = useMemo(
-    () => Array.from(new Set([...REGION_COUNTIES[region], ...schools.map((school) => school.county).filter(Boolean)])).sort(),
-    [region, schools],
-  );
+  const filterOptions = useMemo(() => {
+    type FilterName = 'county' | 'type' | 'group' | 'department';
+    const matchesOtherFilters = (school: SchoolItem, omit: FilterName) => {
+      const normalizedCounty = normalizeCounty(school.county);
+      if (omit !== 'county') {
+        if (filterCounty === 'region' && activeRegionCounties.length > 0 && !activeRegionCounties.includes(normalizedCounty)) return false;
+        if (filterCounty !== 'all' && filterCounty !== 'region' && school.county !== filterCounty) return false;
+      }
+      if (omit !== 'type' && filterType !== 'all' && school.levelInfo !== filterType) return false;
+      if (omit !== 'group' && filterGroup !== 'all' && school.groupName !== filterGroup) return false;
+      if (omit !== 'department' && filterDepartment !== 'all' && school.deptName !== filterDepartment) return false;
+      return true;
+    };
+    const getValues = (omit: FilterName, value: (school: SchoolItem) => string) =>
+      Array.from(new Set(schools.filter((school) => matchesOtherFilters(school, omit)).map(value).filter(Boolean))).sort();
 
-  const uniqueTypes = useMemo(
-    () => Array.from(new Set(schools.map((school) => school.levelInfo).filter(Boolean))).sort(),
-    [schools],
-  );
-
-  const uniqueGroups = useMemo(
-    () => Array.from(new Set(schools.map((school) => school.groupName).filter(Boolean))).sort(),
-    [schools],
-  );
+    return {
+      counties: getValues('county', (school) => school.county),
+      types: getValues('type', (school) => school.levelInfo),
+      groups: getValues('group', (school) => school.groupName),
+      departments: getValues('department', (school) => school.deptName),
+    };
+  }, [schools, activeRegionCounties, filterCounty, filterType, filterGroup, filterDepartment]);
 
   const filteredSchools = useMemo(() => {
     const keyword = searchQuery.trim();
@@ -216,13 +283,14 @@ export default function MockVolunteerPage() {
       if (filterCounty !== 'all' && filterCounty !== 'region' && school.county !== filterCounty) return false;
       if (filterType !== 'all' && school.levelInfo !== filterType) return false;
       if (filterGroup !== 'all' && school.groupName !== filterGroup) return false;
+      if (filterDepartment !== 'all' && school.deptName !== filterDepartment) return false;
       if (!keyword) return true;
 
       return [school.name, school.deptName, school.county, school.groupName, school.levelInfo, school.code]
         .filter(Boolean)
         .some((value) => value.includes(keyword));
     });
-  }, [schools, filterCounty, activeRegionCounties, filterType, filterGroup, searchQuery]);
+  }, [schools, filterCounty, activeRegionCounties, filterType, filterGroup, filterDepartment, searchQuery]);
 
   const addChoice = (school: SchoolItem) => {
     if (selectedChoices.length >= 30) {
@@ -261,6 +329,17 @@ export default function MockVolunteerPage() {
     if (!choicePendingRemoval) return;
     setSelectedChoices((choices) => choices.filter((choice) => choice.id !== choicePendingRemoval.id));
     setChoicePendingRemoval(null);
+  };
+
+  const requestLeavePage = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (selectedChoices.length === 0) return;
+    event.preventDefault();
+    setShowLeaveConfirm(true);
+  };
+
+  const confirmLeavePage = () => {
+    allowPageExitRef.current = true;
+    window.location.assign(withBasePath('/'));
   };
 
   const moveChoice = (from: number, to: number) => {
@@ -349,6 +428,7 @@ export default function MockVolunteerPage() {
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <a
             href={withBasePath('/')}
+            onClick={requestLeavePage}
             className="mb-5 inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -417,7 +497,7 @@ export default function MockVolunteerPage() {
                 <Search className="h-5 w-5 text-sky-600" />
                 搜尋校科
               </div>
-              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_150px_150px_150px]">
+              <div className="mt-4 space-y-3">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <input
@@ -427,25 +507,33 @@ export default function MockVolunteerPage() {
                     className="w-full rounded-xl border-2 border-slate-900 bg-white py-3 pl-9 pr-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40"
                   />
                 </div>
+                <div className="grid grid-cols-2 gap-3">
                 <select value={filterCounty} onChange={(event) => setFilterCounty(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="region">本區全部縣市{activeRegionCountyText ? `（${activeRegionCountyText}）` : ''}</option>
                   <option value="all">全部縣市</option>
-                  {uniqueCounties.map((county) => (
+                  {filterOptions.counties.map((county) => (
                     <option key={county} value={county}>{county}</option>
                   ))}
                 </select>
                 <select value={filterType} onChange={(event) => setFilterType(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="all">全部類型</option>
-                  {uniqueTypes.map((type) => (
+                  {filterOptions.types.map((type) => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
                 <select value={filterGroup} onChange={(event) => setFilterGroup(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="all">全部群科</option>
-                  {uniqueGroups.map((group) => (
+                  {filterOptions.groups.map((group) => (
                     <option key={group} value={group}>{group}</option>
                   ))}
                 </select>
+                <select value={filterDepartment} onChange={(event) => setFilterDepartment(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
+                  <option value="all">全部科系</option>
+                  {filterOptions.departments.map((department) => (
+                    <option key={department} value={department}>{department}</option>
+                  ))}
+                </select>
+                </div>
               </div>
             </div>
 
@@ -626,6 +714,29 @@ export default function MockVolunteerPage() {
             <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
               <button onClick={() => setChoicePendingRemoval(null)} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">取消</button>
               <button onClick={confirmRemoveChoice} className="flex-1 rounded-xl border-2 border-slate-900 bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-rose-600 active:translate-y-0.5 active:shadow-none">確認刪除</button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {showLeaveConfirm && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+          <section role="dialog" aria-modal="true" aria-labelledby="leave-volunteer-title" className="w-full max-w-md overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+            <div className="border-b-4 border-slate-900 bg-amber-300 p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <AlertTriangle className="h-6 w-6 text-amber-700" />
+                </div>
+                <div>
+                  <h2 id="leave-volunteer-title" className="text-xl font-black text-slate-900">要離開模擬志願選填嗎？</h2>
+                  <p className="mt-1 text-sm font-bold text-amber-900">目前清單有 {selectedChoices.length} 個志願。</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-5 text-sm font-bold leading-7 text-slate-600">離開後，本次模擬志願清單將不會保留。</div>
+            <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
+              <button onClick={() => setShowLeaveConfirm(false)} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">留在頁面</button>
+              <button onClick={confirmLeavePage} className="flex-1 rounded-xl border-2 border-slate-900 bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-rose-600 active:translate-y-0.5 active:shadow-none">確認離開</button>
             </div>
           </section>
         </div>
