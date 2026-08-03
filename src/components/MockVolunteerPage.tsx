@@ -644,14 +644,14 @@ export default function MockVolunteerPage() {
               ) : (
                 <div className="space-y-3">
                   {selectedChoices.map((choice, index) => (
-                    <article key={choice.id} className="rounded-xl border-2 border-slate-900 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                      <div className="flex gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-lg font-black">
+                    <article key={choice.id} className="rounded-2xl border-2 border-slate-900 bg-gradient-to-br from-white to-amber-50/70 p-3.5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
+                      <div className="flex gap-3.5">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-300 text-xl font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                           {index + 1}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-950">{choice.name}</h3>
-                          <p className="mt-1 line-clamp-2 text-xs font-bold text-sky-700">{choice.deptName}</p>
+                          <h3 className="line-clamp-2 text-[15px] font-black leading-snug text-slate-950">{choice.name}</h3>
+                          <p className="mt-1 line-clamp-2 text-sm font-black text-sky-700">{choice.deptName}</p>
                           <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · 類型：{choice.levelInfo || '未提供'}{choice.shift ? ` · ${choice.shift}` : ''}</p>
                           {choice.groupName && <p className="mt-1 text-[11px] font-bold text-sky-700">群別：{choice.groupName}</p>}
                           {preferenceRule && choicePreferenceScores[index] && (
@@ -661,14 +661,14 @@ export default function MockVolunteerPage() {
                           )}
                         </div>
                       </div>
-                      <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-slate-100 pt-3">
-                        <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="rounded-lg border-2 border-slate-900 bg-slate-50 p-1.5 text-slate-700 disabled:border-slate-200 disabled:text-slate-300">
+                      <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-amber-100 pt-3">
+                        <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="rounded-lg border-2 border-slate-900 bg-white p-2 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none disabled:border-slate-200 disabled:text-slate-300 disabled:shadow-none">
                           <ArrowUp className="h-4 w-4" />
                         </button>
-                        <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-lg border-2 border-slate-900 bg-slate-50 p-1.5 text-slate-700 disabled:border-slate-200 disabled:text-slate-300">
+                        <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-lg border-2 border-slate-900 bg-white p-2 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none disabled:border-slate-200 disabled:text-slate-300 disabled:shadow-none">
                           <ArrowDown className="h-4 w-4" />
                         </button>
-                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-lg border-2 border-slate-900 bg-rose-50 p-1.5 text-rose-600 hover:bg-rose-500 hover:text-white" aria-label="刪除志願">
+                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-lg border-2 border-slate-900 bg-rose-50 p-2 text-rose-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-rose-500 hover:text-white hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none" aria-label="刪除志願">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
