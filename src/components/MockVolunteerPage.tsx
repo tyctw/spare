@@ -206,25 +206,29 @@ export default function MockVolunteerPage() {
     });
   }, [region, selectedChoices]);
 
-  const uniqueCounties = useMemo(
-    () => Array.from(new Set([...REGION_COUNTIES[region], ...schools.map((school) => school.county).filter(Boolean)])).sort(),
-    [region, schools],
-  );
+  const filterOptions = useMemo(() => {
+    type FilterName = 'county' | 'type' | 'group' | 'department';
+    const matchesOtherFilters = (school: SchoolItem, omit: FilterName) => {
+      const normalizedCounty = normalizeCounty(school.county);
+      if (omit !== 'county') {
+        if (filterCounty === 'region' && activeRegionCounties.length > 0 && !activeRegionCounties.includes(normalizedCounty)) return false;
+        if (filterCounty !== 'all' && filterCounty !== 'region' && school.county !== filterCounty) return false;
+      }
+      if (omit !== 'type' && filterType !== 'all' && school.levelInfo !== filterType) return false;
+      if (omit !== 'group' && filterGroup !== 'all' && school.groupName !== filterGroup) return false;
+      if (omit !== 'department' && filterDepartment !== 'all' && school.deptName !== filterDepartment) return false;
+      return true;
+    };
+    const getValues = (omit: FilterName, value: (school: SchoolItem) => string) =>
+      Array.from(new Set(schools.filter((school) => matchesOtherFilters(school, omit)).map(value).filter(Boolean))).sort();
 
-  const uniqueTypes = useMemo(
-    () => Array.from(new Set(schools.map((school) => school.levelInfo).filter(Boolean))).sort(),
-    [schools],
-  );
-
-  const uniqueGroups = useMemo(
-    () => Array.from(new Set(schools.map((school) => school.groupName).filter(Boolean))).sort(),
-    [schools],
-  );
-
-  const uniqueDepartments = useMemo(
-    () => Array.from(new Set(schools.map((school) => school.deptName).filter(Boolean))).sort(),
-    [schools],
-  );
+    return {
+      counties: getValues('county', (school) => school.county),
+      types: getValues('type', (school) => school.levelInfo),
+      groups: getValues('group', (school) => school.groupName),
+      departments: getValues('department', (school) => school.deptName),
+    };
+  }, [schools, activeRegionCounties, filterCounty, filterType, filterGroup, filterDepartment]);
 
   const filteredSchools = useMemo(() => {
     const keyword = searchQuery.trim();
@@ -464,25 +468,25 @@ export default function MockVolunteerPage() {
                 <select value={filterCounty} onChange={(event) => setFilterCounty(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="region">本區全部縣市{activeRegionCountyText ? `（${activeRegionCountyText}）` : ''}</option>
                   <option value="all">全部縣市</option>
-                  {uniqueCounties.map((county) => (
+                  {filterOptions.counties.map((county) => (
                     <option key={county} value={county}>{county}</option>
                   ))}
                 </select>
                 <select value={filterType} onChange={(event) => setFilterType(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="all">全部類型</option>
-                  {uniqueTypes.map((type) => (
+                  {filterOptions.types.map((type) => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
                 <select value={filterGroup} onChange={(event) => setFilterGroup(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="all">全部群科</option>
-                  {uniqueGroups.map((group) => (
+                  {filterOptions.groups.map((group) => (
                     <option key={group} value={group}>{group}</option>
                   ))}
                 </select>
                 <select value={filterDepartment} onChange={(event) => setFilterDepartment(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="all">全部科系</option>
-                  {uniqueDepartments.map((department) => (
+                  {filterOptions.departments.map((department) => (
                     <option key={department} value={department}>{department}</option>
                   ))}
                 </select>
