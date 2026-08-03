@@ -92,10 +92,16 @@ const getPreferenceScore = (region: string, rank: number): number | null => {
   return null;
 };
 
+// Only professional-program departments are vocational categories. Academic
+// groups and comprehensive high-school programs must each keep their own rank.
+const isVocationalProgram = (choice: SchoolItem) => choice.levelInfo?.trim() === '專業群科';
+
 const preferenceGroupKey = (region: string, choice: SchoolItem) => {
   if (region === 'taipei' || region === 'central' || region === 'kaohsiung') return choice.code;
 
   const vocationalGroup = choice.groupCode?.trim() || choice.groupName?.trim();
+  if (!isVocationalProgram(choice)) return choice.id;
+
   if (region === 'taoyuan') return vocationalGroup ? `group-${vocationalGroup}` : choice.id;
   if (region === 'hsinchu' || region === 'changhua') return vocationalGroup ? `${choice.code}-${vocationalGroup}` : choice.id;
 
@@ -126,6 +132,7 @@ export default function MockVolunteerPage() {
   const [filterGroup, setFilterGroup] = useState('all');
   const [notice, setNotice] = useState('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [choicePendingRemoval, setChoicePendingRemoval] = useState<SchoolItem | null>(null);
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
 
   useEffect(() => {
@@ -250,8 +257,10 @@ export default function MockVolunteerPage() {
     setCrossRegionChoice(null);
   };
 
-  const removeChoice = (index: number) => {
-    setSelectedChoices((choices) => choices.filter((_, choiceIndex) => choiceIndex !== index));
+  const confirmRemoveChoice = () => {
+    if (!choicePendingRemoval) return;
+    setSelectedChoices((choices) => choices.filter((choice) => choice.id !== choicePendingRemoval.id));
+    setChoicePendingRemoval(null);
   };
 
   const moveChoice = (from: number, to: number) => {
@@ -560,7 +569,7 @@ export default function MockVolunteerPage() {
                         <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-lg border-2 border-slate-900 bg-slate-50 p-1.5 text-slate-700 disabled:border-slate-200 disabled:text-slate-300">
                           <ArrowDown className="h-4 w-4" />
                         </button>
-                        <button onClick={() => removeChoice(index)} className="rounded-lg border-2 border-slate-900 bg-rose-50 p-1.5 text-rose-600 hover:bg-rose-500 hover:text-white">
+                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-lg border-2 border-slate-900 bg-rose-50 p-1.5 text-rose-600 hover:bg-rose-500 hover:text-white" aria-label="刪除志願">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
@@ -591,6 +600,32 @@ export default function MockVolunteerPage() {
             <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
               <button onClick={() => setShowClearConfirm(false)} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">保留清單</button>
               <button onClick={() => { setSelectedChoices([]); setShowClearConfirm(false); }} className="flex-1 rounded-xl border-2 border-slate-900 bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-rose-600 active:translate-y-0.5 active:shadow-none">確認清空</button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {choicePendingRemoval && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+          <section role="dialog" aria-modal="true" aria-labelledby="remove-volunteer-title" className="w-full max-w-md overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+            <div className="border-b-4 border-slate-900 bg-rose-200 p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <AlertTriangle className="h-6 w-6 text-rose-600" />
+                </div>
+                <div>
+                  <h2 id="remove-volunteer-title" className="text-xl font-black text-slate-900">刪除這個志願？</h2>
+                  <p className="mt-1 text-sm font-bold text-rose-900">刪除後無法復原。</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-5 text-sm font-bold leading-7 text-slate-600">
+              <p className="font-black text-slate-900">{choicePendingRemoval.name}</p>
+              <p>{choicePendingRemoval.deptName}</p>
+            </div>
+            <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
+              <button onClick={() => setChoicePendingRemoval(null)} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">取消</button>
+              <button onClick={confirmRemoveChoice} className="flex-1 rounded-xl border-2 border-slate-900 bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-rose-600 active:translate-y-0.5 active:shadow-none">確認刪除</button>
             </div>
           </section>
         </div>
