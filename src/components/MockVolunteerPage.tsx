@@ -383,6 +383,7 @@ export default function MockVolunteerPage() {
       : selectedChoices.length >= 16
         ? { bodyFont: '9.5px', headerFont: '9px', cellPadding: '3.5px 4px', titleFont: '19px', noteFont: '9.5px' }
         : { bodyFont: '10.5px', headerFont: '10px', cellPadding: '4.5px 5px', titleFont: '20px', noteFont: '10px' };
+    const printRowHeight = `${Math.min(120, Math.max(31, Math.round(920 / printedChoiceCount)))}px`;
 
     const rows = isBlankForm
       ? Array.from({ length: 30 }, (_, index) => `
@@ -424,11 +425,11 @@ export default function MockVolunteerPage() {
             table { width: 100%; border-collapse: collapse; table-layout: fixed; }
             th, td { border: 0.5px solid #94a3b8; padding: ${printLayout.cellPadding}; text-align: left; font-size: ${printLayout.bodyFont}; line-height: 1.28; vertical-align: middle; word-break: break-word; }
             th { background: #e0f2fe; color: #0f172a; font-size: ${printLayout.headerFont}; }
+            tbody td { height: ${printRowHeight}; }
             thead { display: table-header-group; }
             tr { break-inside: avoid; page-break-inside: avoid; }
             .seq { text-align: center; font-weight: 800; }
             .score { font-weight: 800; color: #3730a3; }
-            .blank-row td { height: 30px; }
             .print-footer { margin-top: 6px; color: #64748b; font-size: ${printLayout.headerFont}; font-weight: 700; }
             .print-warning { color: #9f1239; }
             .print-site { margin-top: 2px; text-align: right; }
@@ -775,10 +776,13 @@ export default function MockVolunteerPage() {
               <button
                 onClick={() => { setShowPrintDialog(false); handlePrint(false); }}
                 disabled={selectedChoices.length === 0}
-                className="w-full rounded-xl border-2 border-slate-900 bg-white p-4 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className={`w-full rounded-xl border-2 border-slate-900 p-4 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition disabled:cursor-not-allowed disabled:opacity-40 ${selectedChoices.length > 0
+                  ? 'bg-sky-500 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:bg-sky-600'
+                  : 'bg-white text-slate-900'
+                }`}
               >
-                <div className="font-black text-slate-900">列印目前志願表</div>
-                <div className="mt-1 text-xs font-bold text-slate-500">列出目前的 {selectedChoices.length} 個志願與志願序積分。</div>
+                <div className="font-black">列印目前志願表</div>
+                <div className={`mt-1 text-xs font-bold ${selectedChoices.length > 0 ? 'text-sky-50' : 'text-slate-500'}`}>列出目前的 {selectedChoices.length} 個志願與志願序積分。</div>
               </button>
               <button
                 onClick={() => { setShowPrintDialog(false); handlePrint(true); }}
