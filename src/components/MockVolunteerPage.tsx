@@ -376,6 +376,12 @@ export default function MockVolunteerPage() {
       return;
     }
 
+    const printLayout = selectedChoices.length >= 25
+      ? { bodyFont: '9px', headerFont: '8.5px', cellPadding: '3px 4px', titleFont: '18px', noteFont: '9px' }
+      : selectedChoices.length >= 16
+        ? { bodyFont: '9.5px', headerFont: '9px', cellPadding: '3.5px 4px', titleFont: '19px', noteFont: '9.5px' }
+        : { bodyFont: '10.5px', headerFont: '10px', cellPadding: '4.5px 5px', titleFont: '20px', noteFont: '10px' };
+
     const rows = selectedChoices
       .map(
         (choice, index) => `
@@ -401,17 +407,17 @@ export default function MockVolunteerPage() {
             * { box-sizing: border-box; }
             body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 0; }
             body::before { content: "模擬志願選填"; position: fixed; top: 48%; left: 50%; z-index: 0; color: rgba(148, 163, 184, 0.16); font-size: 46px; font-weight: 900; letter-spacing: 7px; white-space: nowrap; transform: translate(-50%, -50%) rotate(-28deg); }
-            h1 { margin: 0 0 3px; font-size: 18px; line-height: 1.3; }
-            p { margin: 0 0 8px; color: #475569; font-size: 9px; line-height: 1.4; }
+            h1 { margin: 0 0 3px; font-size: ${printLayout.titleFont}; line-height: 1.3; }
+            p { margin: 0 0 8px; color: #475569; font-size: ${printLayout.noteFont}; line-height: 1.4; }
             h1, p, table, .print-site { position: relative; z-index: 1; }
             table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-            th, td { border: 0.5px solid #94a3b8; padding: 3px 4px; text-align: left; font-size: 8.5px; line-height: 1.28; vertical-align: middle; word-break: break-word; }
-            th { background: #e0f2fe; color: #0f172a; font-size: 8px; }
+            th, td { border: 0.5px solid #94a3b8; padding: ${printLayout.cellPadding}; text-align: left; font-size: ${printLayout.bodyFont}; line-height: 1.28; vertical-align: middle; word-break: break-word; }
+            th { background: #e0f2fe; color: #0f172a; font-size: ${printLayout.headerFont}; }
             thead { display: table-header-group; }
             tr { break-inside: avoid; page-break-inside: avoid; }
             .seq { text-align: center; font-weight: 800; }
             .score { font-weight: 800; color: #3730a3; }
-            .print-site { margin-top: 6px; text-align: right; color: #64748b; font-size: 8px; font-weight: 700; }
+            .print-site { margin-top: 6px; text-align: right; color: #64748b; font-size: ${printLayout.headerFont}; font-weight: 700; }
           </style>
         </head>
         <body>
@@ -443,11 +449,12 @@ export default function MockVolunteerPage() {
       </html>
     `);
     printWindow.document.close();
+    const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    if (!isMobileDevice) {
+      printWindow.onafterprint = () => printWindow.close();
+    }
     printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 300);
+    printWindow.print();
   };
 
   return (
