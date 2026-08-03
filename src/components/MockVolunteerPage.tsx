@@ -603,20 +603,22 @@ export default function MockVolunteerPage() {
           </section>
 
           <aside className={`${pageNavigationAsideClassName} overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]`}>
-            <div className="border-b-4 border-slate-900 bg-amber-50 p-5">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2 text-lg font-black">
+            <div className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-amber-200 via-amber-50 to-white p-5">
+              <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full border-4 border-amber-300/60 bg-amber-100/70" />
+              <div className="relative flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-xl font-black tracking-tight">
                     <Target className="h-5 w-5 text-amber-700" />
                     我的志願順序
                   </div>
                   <p className="mt-1 text-xs font-bold text-slate-500">用上下鍵調整排序，第一志願放最上面。</p>
                 </div>
-                <div className="rounded-lg border-2 border-slate-900 bg-white px-3 py-1 text-sm font-black">
-                  {selectedChoices.length}/30
+                <div className="shrink-0 rounded-xl border-2 border-slate-900 bg-slate-900 px-3 py-2 text-center text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <div className="text-lg leading-none">{selectedChoices.length}</div>
+                  <div className="mt-0.5 text-[10px] tracking-wide text-amber-200">/ 30</div>
                 </div>
               </div>
-              <div className="mt-4 flex gap-2">
+              <div className="relative mt-4 flex gap-2">
                 <button
                   onClick={handlePrint}
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-sky-300 px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
