@@ -661,40 +661,40 @@ export default function MockVolunteerPage() {
               ) : (
                 <div className="space-y-2">
                   {selectedChoices.map((choice, index) => (
-                    <article key={choice.id} className="rounded-xl border-2 border-slate-900 bg-white p-2.5 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-amber-50">
+                    <article key={choice.id} className="relative rounded-xl border-2 border-slate-900 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-amber-50">
+                      <div className="absolute right-3 top-3 flex items-center gap-1">
+                        <div className="flex overflow-hidden rounded-md border border-slate-300 bg-white">
+                          <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="border-r border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300" aria-label="上移志願">
+                            <ArrowUp className="h-3.5 w-3.5" />
+                          </button>
+                          <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300" aria-label="下移志願">
+                            <ArrowDown className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-md border border-rose-200 bg-rose-50 p-1.5 text-rose-600 transition hover:bg-rose-500 hover:text-white" aria-label="刪除志願">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                       <div className="flex items-start gap-2.5">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black">
                           {index + 1}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="truncate text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
+                          <h3 className="truncate pr-[78px] text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
                           <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}</p>
-                          <div className="mt-1 space-y-0.5 text-[11px] font-black leading-4 text-[#4f76a4]">
+                          <div className="mt-1.5 space-y-0.5 border-t border-slate-100 pt-1.5 text-[11px] font-black leading-4 text-[#4f76a4]">
                             <div className="flex min-w-0 items-center gap-1 whitespace-nowrap">
                               {choice.county && <span>{choice.county}</span>}
                               {choice.county && <span className="text-slate-400">·</span>}
                               <span className="truncate">類型：{choice.levelInfo || '未提供'}</span>
                               {choice.shift && <><span className="text-slate-400">·</span><span>{choice.shift}</span></>}
                             </div>
-                            {choice.groupName && <div className="flex min-w-0 items-center gap-1"><span className="shrink-0">群別：</span><span className="truncate">{choice.groupName}</span></div>}
+                            <div className="flex min-w-0 items-center justify-between gap-2">
+                              <span className="min-w-0 truncate">群別：{choice.groupName || '未提供'}</span>
+                              {preferenceRule && choicePreferenceScores[index] && <span className="shrink-0 text-indigo-700">第 {choicePreferenceScores[index].rank} 志願・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}</span>}
+                            </div>
                           </div>
-                          {preferenceRule && choicePreferenceScores[index] && (
-                            <span className="mt-1 inline-flex items-center rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold leading-4 text-indigo-800">
-                              志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
-                            </span>
-                          )}
                         </div>
-                      </div>
-                      <div className="mt-2 flex items-center justify-end gap-1.5 border-t border-slate-200 pt-2">
-                        <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="rounded-md border border-slate-300 bg-white p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300">
-                          <ArrowUp className="h-4 w-4" />
-                        </button>
-                        <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-md border border-slate-300 bg-white p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300">
-                          <ArrowDown className="h-4 w-4" />
-                        </button>
-                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-md border border-rose-200 bg-rose-50 p-1.5 text-rose-600 transition hover:bg-rose-500 hover:text-white" aria-label="刪除志願">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
                       </div>
                     </article>
                   ))}
