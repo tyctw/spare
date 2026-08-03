@@ -704,13 +704,9 @@ export default function MockVolunteerPage() {
                           <h3 className="truncate pr-[78px] text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
                           <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}{choice.shift ? ` (${choice.shift})` : ''}</p>
                           <div className="mt-1.5 space-y-0.5 border-t border-slate-100 pt-1.5 text-[11px] font-black leading-4 text-[#4f76a4]">
-                            <div className="flex min-w-0 items-center gap-1 whitespace-nowrap">
-                              {choice.county && <span>{choice.county}</span>}
-                              {choice.county && <span className="text-slate-400">·</span>}
-                              <span className="truncate">類型：{choice.levelInfo || '未提供'}</span>
-                            </div>
+                            <div><span className="inline-flex max-w-full rounded-md border border-amber-200 bg-amber-100 px-1.5 py-0.5 text-amber-900"><span className="truncate">類型：{choice.levelInfo || '未提供'}</span></span></div>
                             <div className="flex min-w-0 items-center justify-between gap-2">
-                              <span className="min-w-0 truncate">群別：{choice.groupName || '未提供'}</span>
+                              <span className="inline-flex min-w-0 max-w-[58%] rounded-md border border-sky-200 bg-sky-100 px-1.5 py-0.5 text-sky-800"><span className="truncate">群別：{choice.groupName || '未提供'}</span></span>
                               {preferenceRule && choicePreferenceScores[index] && <span className="shrink-0 text-indigo-700">第 {choicePreferenceScores[index].rank} 志願・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}</span>}
                             </div>
                           </div>
