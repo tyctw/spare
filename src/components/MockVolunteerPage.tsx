@@ -572,7 +572,8 @@ export default function MockVolunteerPage() {
                           <div className="min-w-0">
                             <div className="mb-2 flex flex-wrap gap-1.5">
                               {school.county && <span className="rounded-md border border-slate-300 bg-white px-2 py-0.5 text-[11px] font-black text-slate-600">{school.county}</span>}
-                              {(school.groupName || school.levelInfo) && <span className="rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">{school.groupName || school.levelInfo}</span>}
+                              {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-[11px] font-black text-amber-900">類型：{school.levelInfo}</span>}
+                              {school.groupName && <span className="rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span>}
                             </div>
                             <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
                             <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
@@ -651,7 +652,8 @@ export default function MockVolunteerPage() {
                         <div className="min-w-0 flex-1">
                           <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-950">{choice.name}</h3>
                           <p className="mt-1 line-clamp-2 text-xs font-bold text-sky-700">{choice.deptName}</p>
-                          <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · {choice.groupName || choice.levelInfo}</p>
+                          <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · 類型：{choice.levelInfo || '未提供'}{choice.shift ? ` · ${choice.shift}` : ''}</p>
+                          {choice.groupName && <p className="mt-1 text-[11px] font-bold text-sky-700">群別：{choice.groupName}</p>}
                           {preferenceRule && choicePreferenceScores[index] && (
                             <span className="mt-2 inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
                               志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
