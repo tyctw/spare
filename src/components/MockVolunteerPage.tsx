@@ -652,8 +652,12 @@ export default function MockVolunteerPage() {
                         <div className="min-w-0 flex-1">
                           <h3 className="line-clamp-2 text-[15px] font-black leading-snug text-slate-950">{choice.name}</h3>
                           <p className="mt-1 line-clamp-2 text-sm font-black text-sky-700">{choice.deptName}</p>
-                          <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · 類型：{choice.levelInfo || '未提供'}{choice.shift ? ` · ${choice.shift}` : ''}</p>
-                          {choice.groupName && <p className="mt-1 text-[11px] font-bold text-sky-700">群別：{choice.groupName}</p>}
+                          <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-black">
+                            {choice.county && <span className="rounded-md border border-slate-200 bg-white px-2 py-1 text-slate-600">{choice.county}</span>}
+                            <span className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-amber-800">類型：{choice.levelInfo || '未提供'}</span>
+                            {choice.shift && <span className="rounded-md border border-slate-200 bg-slate-100 px-2 py-1 text-slate-600">{choice.shift}</span>}
+                          </div>
+                          {choice.groupName && <div className="mt-1.5"><span className="inline-flex rounded-md border border-sky-200 bg-sky-100 px-2 py-1 text-[11px] font-black text-sky-800">群別：{choice.groupName}</span></div>}
                           {preferenceRule && choicePreferenceScores[index] && (
                             <span className="mt-2 inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
                               志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
