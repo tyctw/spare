@@ -35,6 +35,11 @@ interface SchoolItem {
 const createChoiceId = (school: SchoolItem) =>
   `${school.code}-${school.deptCode}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+const isSameVolunteerOption = (first: SchoolItem, second: SchoolItem) =>
+  first.code === second.code
+  && first.deptCode === second.deptCode
+  && first.shift?.trim() === second.shift?.trim();
+
 const REGION_COUNTIES: Record<string, string[]> = {
   taipei: ['基隆市', '臺北市', '新北市'],
   yilan: ['宜蘭縣'],
@@ -117,11 +122,15 @@ const VOCATIONAL_GROUP_BY_DEPARTMENT = new Map(
   ),
 );
 
-// Only professional-program departments are vocational categories. Academic
-// and comprehensive groups must never share a vocational-group rank.
+// Source records use different level labels for daytime, evening and practical
+// skills programs. Use the department-to-group mapping as the primary signal,
+// while excluding academic and comprehensive high-school programs.
 const isVocationalProgram = (choice: SchoolItem) => {
+  const levelInfo = choice.levelInfo?.trim();
   const groupName = choice.groupName?.trim();
-  return choice.levelInfo?.trim() === '專業群科' && groupName !== '學術群' && groupName !== '綜合群';
+  if (levelInfo === '普通科' || levelInfo === '綜合高中' || groupName === '學術群' || groupName === '綜合群') return false;
+
+  return VOCATIONAL_GROUP_BY_DEPARTMENT.has(normalizeDepartmentName(choice.deptName)) || levelInfo === '專業群科';
 };
 
 const getVocationalGroup = (choice: SchoolItem) =>
@@ -298,7 +307,7 @@ export default function MockVolunteerPage() {
       return;
     }
 
-    const exists = selectedChoices.some((choice) => choice.code === school.code && choice.deptCode === school.deptCode);
+    const exists = selectedChoices.some((choice) => isSameVolunteerOption(choice, school));
     if (exists) {
       setNotice('這個校科已經在志願清單中。');
       return;
@@ -556,15 +565,16 @@ export default function MockVolunteerPage() {
               ) : (
                 <div className="grid gap-3 xl:grid-cols-2">
                   {filteredSchools.map((school, index) => {
-                    const isSelected = selectedChoices.some((choice) => choice.code === school.code && choice.deptCode === school.deptCode);
+                    const isSelected = selectedChoices.some((choice) => isSameVolunteerOption(choice, school));
                     return (
                       <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
                             <div className="mb-2 flex flex-wrap gap-1.5">
                               {school.county && <span className="rounded-md border border-slate-300 bg-white px-2 py-0.5 text-[11px] font-black text-slate-600">{school.county}</span>}
-                              {(school.groupName || school.levelInfo) && <span className="rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">{school.groupName || school.levelInfo}</span>}
+                              {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-[11px] font-black text-amber-900">類型：{school.levelInfo}</span>}
                             </div>
+                            {school.groupName && <div className="mb-2"><span className="rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
                             <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
                             <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
                               <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
@@ -634,15 +644,16 @@ export default function MockVolunteerPage() {
               ) : (
                 <div className="space-y-3">
                   {selectedChoices.map((choice, index) => (
-                    <article key={choice.id} className="rounded-xl border-2 border-slate-900 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                      <div className="flex gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-lg font-black">
+                    <article key={choice.id} className="rounded-2xl border-2 border-slate-900 bg-gradient-to-br from-white to-amber-50/70 p-3.5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
+                      <div className="flex gap-3.5">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-300 text-xl font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                           {index + 1}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="line-clamp-2 text-sm font-black leading-snug text-slate-950">{choice.name}</h3>
-                          <p className="mt-1 line-clamp-2 text-xs font-bold text-sky-700">{choice.deptName}</p>
-                          <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · {choice.groupName || choice.levelInfo}</p>
+                          <h3 className="line-clamp-2 text-[15px] font-black leading-snug text-slate-950">{choice.name}</h3>
+                          <p className="mt-1 line-clamp-2 text-sm font-black text-sky-700">{choice.deptName}</p>
+                          <p className="mt-1 text-[11px] font-bold text-slate-500">{choice.county} · 類型：{choice.levelInfo || '未提供'}{choice.shift ? ` · ${choice.shift}` : ''}</p>
+                          {choice.groupName && <p className="mt-1 text-[11px] font-bold text-sky-700">群別：{choice.groupName}</p>}
                           {preferenceRule && choicePreferenceScores[index] && (
                             <span className="mt-2 inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-2 py-1 text-[11px] font-black text-indigo-800">
                               志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
@@ -650,14 +661,14 @@ export default function MockVolunteerPage() {
                           )}
                         </div>
                       </div>
-                      <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-slate-100 pt-3">
-                        <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="rounded-lg border-2 border-slate-900 bg-slate-50 p-1.5 text-slate-700 disabled:border-slate-200 disabled:text-slate-300">
+                      <div className="mt-3 flex items-center justify-end gap-2 border-t-2 border-amber-100 pt-3">
+                        <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="rounded-lg border-2 border-slate-900 bg-white p-2 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none disabled:border-slate-200 disabled:text-slate-300 disabled:shadow-none">
                           <ArrowUp className="h-4 w-4" />
                         </button>
-                        <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-lg border-2 border-slate-900 bg-slate-50 p-1.5 text-slate-700 disabled:border-slate-200 disabled:text-slate-300">
+                        <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="rounded-lg border-2 border-slate-900 bg-white p-2 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none disabled:border-slate-200 disabled:text-slate-300 disabled:shadow-none">
                           <ArrowDown className="h-4 w-4" />
                         </button>
-                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-lg border-2 border-slate-900 bg-rose-50 p-1.5 text-rose-600 hover:bg-rose-500 hover:text-white" aria-label="刪除志願">
+                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-lg border-2 border-slate-900 bg-rose-50 p-2 text-rose-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-rose-500 hover:text-white hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none" aria-label="刪除志願">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
