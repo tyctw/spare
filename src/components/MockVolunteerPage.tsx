@@ -185,6 +185,7 @@ export default function MockVolunteerPage() {
   const [filterGroup, setFilterGroup] = useState('all');
   const [filterDepartment, setFilterDepartment] = useState('all');
   const [notice, setNotice] = useState('');
+  const [showPrintDialog, setShowPrintDialog] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [choicePendingRemoval, setChoicePendingRemoval] = useState<SchoolItem | null>(null);
   const [rankPickerChoiceId, setRankPickerChoiceId] = useState<string | null>(null);
@@ -364,8 +365,8 @@ export default function MockVolunteerPage() {
     });
   };
 
-  const handlePrint = () => {
-    if (selectedChoices.length === 0) {
+  const handlePrint = (isBlankForm = false) => {
+    if (!isBlankForm && selectedChoices.length === 0) {
       setNotice('請先加入志願後再列印。');
       return;
     }
@@ -376,9 +377,28 @@ export default function MockVolunteerPage() {
       return;
     }
 
-    const rows = selectedChoices
-      .map(
-        (choice, index) => `
+    const printedChoiceCount = isBlankForm ? 30 : selectedChoices.length;
+    const printLayout = printedChoiceCount >= 25
+      ? { bodyFont: '9px', headerFont: '8.5px', cellPadding: '3px 4px', titleFont: '18px', noteFont: '9px' }
+      : selectedChoices.length >= 16
+        ? { bodyFont: '9.5px', headerFont: '9px', cellPadding: '3.5px 4px', titleFont: '19px', noteFont: '9.5px' }
+        : { bodyFont: '10.5px', headerFont: '10px', cellPadding: '4.5px 5px', titleFont: '20px', noteFont: '10px' };
+    const printRowHeight = `${Math.min(120, Math.max(31, Math.round(920 / printedChoiceCount)))}px`;
+
+    const rows = isBlankForm
+      ? Array.from({ length: 30 }, (_, index) => `
+          <tr class="blank-row">
+            <td class="seq">${index + 1}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="score"></td>
+          </tr>
+        `).join('')
+      : selectedChoices
+        .map(
+          (choice, index) => `
           <tr>
             <td class="seq">${index + 1}</td>
             <td><strong>${choice.name}</strong></td>
@@ -387,36 +407,37 @@ export default function MockVolunteerPage() {
             <td>${choice.county || ''}</td>
             <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}` : '—'}</td>
           </tr>
-        `,
-      )
-      .join('');
+          `,
+        )
+        .join('');
 
     printWindow.document.write(`
       <!doctype html>
       <html lang="zh-Hant">
         <head>
-          <title>${activeRegionName} 模擬志願選填表</title>
+          <title>${activeRegionName}${isBlankForm ? ' 討論用空白志願表' : ' 模擬志願選填表'}</title>
           <style>
             @page { size: A4 portrait; margin: 9mm 8mm; }
             * { box-sizing: border-box; }
             body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 0; }
-            body::before { content: "模擬志願選填"; position: fixed; top: 48%; left: 50%; z-index: 0; color: rgba(148, 163, 184, 0.16); font-size: 46px; font-weight: 900; letter-spacing: 7px; white-space: nowrap; transform: translate(-50%, -50%) rotate(-28deg); }
-            h1 { margin: 0 0 3px; font-size: 18px; line-height: 1.3; }
-            p { margin: 0 0 8px; color: #475569; font-size: 9px; line-height: 1.4; }
-            h1, p, table, .print-site { position: relative; z-index: 1; }
+            h1 { margin: 0 0 3px; font-size: ${printLayout.titleFont}; line-height: 1.3; }
+            p { margin: 0 0 8px; color: #475569; font-size: ${printLayout.noteFont}; line-height: 1.4; }
             table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-            th, td { border: 0.5px solid #94a3b8; padding: 3px 4px; text-align: left; font-size: 8.5px; line-height: 1.28; vertical-align: middle; word-break: break-word; }
-            th { background: #e0f2fe; color: #0f172a; font-size: 8px; }
+            th, td { border: 0.5px solid #94a3b8; padding: ${printLayout.cellPadding}; text-align: left; font-size: ${printLayout.bodyFont}; line-height: 1.28; vertical-align: middle; word-break: break-word; }
+            th { background: #e0f2fe; color: #0f172a; font-size: ${printLayout.headerFont}; }
+            tbody td { height: ${printRowHeight}; }
             thead { display: table-header-group; }
             tr { break-inside: avoid; page-break-inside: avoid; }
             .seq { text-align: center; font-weight: 800; }
             .score { font-weight: 800; color: #3730a3; }
-            .print-site { margin-top: 6px; text-align: right; color: #64748b; font-size: 8px; font-weight: 700; }
+            .print-footer { margin-top: 6px; color: #64748b; font-size: ${printLayout.headerFont}; font-weight: 700; }
+            .print-warning { color: #9f1239; }
+            .print-site { margin-top: 2px; text-align: right; }
           </style>
         </head>
         <body>
-          <h1>${activeRegionName} 模擬志願選填表</h1>
-          <p>列印日期：${new Date().toLocaleDateString('zh-TW')}，共 ${selectedChoices.length} 個志願。正式選填仍應以招生簡章與官方公告為準。</p>
+          <h1>${activeRegionName}${isBlankForm ? ' 討論用空白志願表' : ' 模擬志願選填表'}</h1>
+          <p>${isBlankForm ? '供討論與手寫排序使用，共 30 個志願欄位。' : `列印日期：${new Date().toLocaleDateString('zh-TW')}，共 ${selectedChoices.length} 個志願。`}正式選填仍應以招生簡章與官方公告為準。</p>
           <table>
             <colgroup>
               <col style="width: 6%" />
@@ -438,7 +459,10 @@ export default function MockVolunteerPage() {
             </thead>
             <tbody>${rows}</tbody>
           </table>
-          <div class="print-site">網站網址：https://tyctw.github.io/spare/</div>
+          <div class="print-footer">
+            <div class="print-warning">注意：本表僅供模擬／討論使用，非正式志願選填文件；實際選填請以官方系統與招生簡章為準。</div>
+            <div class="print-site">網站網址：https://tyctw.github.io/spare/</div>
+          </div>
         </body>
       </html>
     `);
@@ -648,7 +672,7 @@ export default function MockVolunteerPage() {
               </a>
               <div className="relative mt-2 flex gap-2">
                 <button
-                  onClick={handlePrint}
+                  onClick={() => setShowPrintDialog(true)}
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-sky-300 px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
                 >
                   <Printer className="h-4 w-4" />
@@ -720,7 +744,7 @@ export default function MockVolunteerPage() {
                             <div><span className="inline-flex max-w-full rounded-md border border-amber-200 bg-amber-100 px-1.5 py-0.5 text-amber-900"><span className="truncate">類型：{choice.levelInfo || '未提供'}</span></span></div>
                             <div className="flex min-w-0 items-center justify-between gap-2">
                               <span className="inline-flex min-w-0 max-w-[58%] rounded-md border border-sky-200 bg-sky-100 px-1.5 py-0.5 text-sky-800"><span className="truncate">群別：{choice.groupName || '未提供'}</span></span>
-                              {preferenceRule && choicePreferenceScores[index] && <span className="shrink-0 text-indigo-700">第 {choicePreferenceScores[index].rank} 志願・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}</span>}
+                              {preferenceRule && choicePreferenceScores[index] && <span className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-indigo-800">第 {choicePreferenceScores[index].rank} 志願・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}</span>}
                             </div>
                           </div>
                         </div>
@@ -733,6 +757,47 @@ export default function MockVolunteerPage() {
           </aside>
         </div>
       </section>
+
+      {showPrintDialog && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+          <section role="dialog" aria-modal="true" aria-labelledby="print-volunteer-title" className="w-full max-w-md overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+            <div className="border-b-4 border-slate-900 bg-sky-200 p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <Printer className="h-6 w-6 text-sky-700" />
+                </div>
+                <div>
+                  <h2 id="print-volunteer-title" className="text-xl font-black text-slate-900">選擇列印表單</h2>
+                  <p className="mt-1 text-sm font-bold text-sky-900">可列印目前排序，或準備空白表單討論。</p>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-3 p-5">
+              <button
+                onClick={() => { setShowPrintDialog(false); handlePrint(false); }}
+                disabled={selectedChoices.length === 0}
+                className={`w-full rounded-xl border-2 border-slate-900 p-4 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition disabled:cursor-not-allowed disabled:opacity-40 ${selectedChoices.length > 0
+                  ? 'bg-sky-500 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:bg-sky-600'
+                  : 'bg-white text-slate-900'
+                }`}
+              >
+                <div className="font-black">列印目前志願表</div>
+                <div className={`mt-1 text-xs font-bold ${selectedChoices.length > 0 ? 'text-sky-50' : 'text-slate-500'}`}>列出目前的 {selectedChoices.length} 個志願與志願序積分。</div>
+              </button>
+              <button
+                onClick={() => { setShowPrintDialog(false); handlePrint(true); }}
+                className="w-full rounded-xl border-2 border-slate-900 bg-amber-50 p-4 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-amber-100"
+              >
+                <div className="font-black text-slate-900">列印討論用空白志願表</div>
+                <div className="mt-1 text-xs font-bold text-slate-500">提供 30 個空白順位欄，可手寫討論與排序。</div>
+              </button>
+            </div>
+            <div className="border-t-2 border-slate-200 bg-slate-50 p-4">
+              <button onClick={() => setShowPrintDialog(false)} className="w-full rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">取消</button>
+            </div>
+          </section>
+        </div>
+      )}
 
       {showClearConfirm && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
@@ -853,7 +918,7 @@ export default function MockVolunteerPage() {
       )}
 
       {notice && (
-        <div className="fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-between gap-3 rounded-xl border-4 border-slate-900 bg-white p-4 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
+        <div className={`fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-between gap-3 rounded-xl border-4 p-4 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] ${notice === '最多可加入 30 個志願。' ? 'border-amber-500 bg-amber-50' : 'border-slate-900 bg-white'}`}>
           <div className="text-sm font-black text-slate-800">{notice}</div>
           <button onClick={() => setNotice('')} className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-black text-white">
             知道了
