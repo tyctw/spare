@@ -429,7 +429,9 @@ export default function MockVolunteerPage() {
             .seq { text-align: center; font-weight: 800; }
             .score { font-weight: 800; color: #3730a3; }
             .blank-row td { height: 19px; }
-            .print-site { margin-top: 6px; text-align: right; color: #64748b; font-size: ${printLayout.headerFont}; font-weight: 700; }
+            .print-footer { margin-top: 6px; color: #64748b; font-size: ${printLayout.headerFont}; font-weight: 700; }
+            .print-warning { color: #9f1239; }
+            .print-site { margin-top: 2px; text-align: right; }
           </style>
         </head>
         <body>
@@ -456,7 +458,10 @@ export default function MockVolunteerPage() {
             </thead>
             <tbody>${rows}</tbody>
           </table>
-          <div class="print-site">網站網址：https://tyctw.github.io/spare/</div>
+          <div class="print-footer">
+            <div class="print-warning">注意：本表僅供模擬／討論使用，非正式志願選填文件；實際選填請以官方系統與招生簡章為準。</div>
+            <div class="print-site">網站網址：https://tyctw.github.io/spare/</div>
+          </div>
         </body>
       </html>
     `);
