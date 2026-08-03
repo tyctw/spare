@@ -216,6 +216,8 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
   };
 
   const handleRemoveChoice = (index: number) => {
+    const choice = selectedChoices[index];
+    if (!choice || !window.confirm(`確定要刪除「${choice.name} ${choice.deptName}」這個志願嗎？`)) return;
     const newChoices = [...selectedChoices];
     newChoices.splice(index, 1);
     setSelectedChoices(newChoices);
