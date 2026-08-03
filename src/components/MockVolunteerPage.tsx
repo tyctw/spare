@@ -918,7 +918,7 @@ export default function MockVolunteerPage() {
       )}
 
       {notice && (
-        <div className="fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-between gap-3 rounded-xl border-4 border-slate-900 bg-white p-4 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
+        <div className={`fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-between gap-3 rounded-xl border-4 p-4 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] ${notice === '最多可加入 30 個志願。' ? 'border-amber-500 bg-amber-50' : 'border-slate-900 bg-white'}`}>
           <div className="text-sm font-black text-slate-800">{notice}</div>
           <button onClick={() => setNotice('')} className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-black text-white">
             知道了
