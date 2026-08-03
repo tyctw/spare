@@ -450,7 +450,7 @@ export default function MockVolunteerPage() {
                 <Search className="h-5 w-5 text-sky-600" />
                 搜尋校科
               </div>
-              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_150px_150px_150px_150px]">
+              <div className="mt-4 space-y-3">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <input
@@ -460,6 +460,7 @@ export default function MockVolunteerPage() {
                     className="w-full rounded-xl border-2 border-slate-900 bg-white py-3 pl-9 pr-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40"
                   />
                 </div>
+                <div className="grid grid-cols-2 gap-3">
                 <select value={filterCounty} onChange={(event) => setFilterCounty(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
                   <option value="region">本區全部縣市{activeRegionCountyText ? `（${activeRegionCountyText}）` : ''}</option>
                   <option value="all">全部縣市</option>
@@ -485,6 +486,7 @@ export default function MockVolunteerPage() {
                     <option key={department} value={department}>{department}</option>
                   ))}
                 </select>
+                </div>
               </div>
             </div>
 
