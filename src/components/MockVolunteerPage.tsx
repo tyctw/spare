@@ -397,23 +397,35 @@ export default function MockVolunteerPage() {
         <head>
           <title>${activeRegionName} 模擬志願選填表</title>
           <style>
-            body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 24px; }
-            body::before { content: "模擬志願選填"; position: fixed; top: 43%; left: 50%; z-index: 0; color: rgba(148, 163, 184, 0.18); font-size: 56px; font-weight: 900; letter-spacing: 8px; white-space: nowrap; transform: translate(-50%, -50%) rotate(-28deg); }
-            h1 { margin: 0 0 8px; font-size: 24px; }
-            p { margin: 0 0 16px; color: #475569; font-size: 13px; }
+            @page { size: A4 portrait; margin: 9mm 8mm; }
+            * { box-sizing: border-box; }
+            body { font-family: "Microsoft JhengHei", sans-serif; color: #0f172a; margin: 0; }
+            body::before { content: "模擬志願選填"; position: fixed; top: 48%; left: 50%; z-index: 0; color: rgba(148, 163, 184, 0.16); font-size: 46px; font-weight: 900; letter-spacing: 7px; white-space: nowrap; transform: translate(-50%, -50%) rotate(-28deg); }
+            h1 { margin: 0 0 3px; font-size: 18px; line-height: 1.3; }
+            p { margin: 0 0 8px; color: #475569; font-size: 9px; line-height: 1.4; }
             h1, p, table, .print-site { position: relative; z-index: 1; }
-            table { width: 100%; border-collapse: collapse; table-layout: auto; }
-            th, td { border: 1px solid #94a3b8; padding: 8px; text-align: left; font-size: 12px; vertical-align: top; }
-            th { background: #e0f2fe; color: #0f172a; }
-            .seq { width: 48px; text-align: center; font-weight: 800; }
-            .score { width: 108px; font-weight: 800; color: #3730a3; }
-            .print-site { margin-top: 18px; text-align: right; color: #64748b; font-size: 11px; font-weight: 700; }
+            table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+            th, td { border: 0.5px solid #94a3b8; padding: 3px 4px; text-align: left; font-size: 8.5px; line-height: 1.28; vertical-align: middle; word-break: break-word; }
+            th { background: #e0f2fe; color: #0f172a; font-size: 8px; }
+            thead { display: table-header-group; }
+            tr { break-inside: avoid; page-break-inside: avoid; }
+            .seq { text-align: center; font-weight: 800; }
+            .score { font-weight: 800; color: #3730a3; }
+            .print-site { margin-top: 6px; text-align: right; color: #64748b; font-size: 8px; font-weight: 700; }
           </style>
         </head>
         <body>
           <h1>${activeRegionName} 模擬志願選填表</h1>
           <p>列印日期：${new Date().toLocaleDateString('zh-TW')}，共 ${selectedChoices.length} 個志願。正式選填仍應以招生簡章與官方公告為準。</p>
           <table>
+            <colgroup>
+              <col style="width: 6%" />
+              <col style="width: 25%" />
+              <col style="width: 25%" />
+              <col style="width: 16%" />
+              <col style="width: 10%" />
+              <col style="width: 18%" />
+            </colgroup>
             <thead>
               <tr>
                 <th class="seq">序</th>
