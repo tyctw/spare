@@ -188,6 +188,7 @@ export default function MockVolunteerPage() {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [choicePendingRemoval, setChoicePendingRemoval] = useState<SchoolItem | null>(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [leaveDestination, setLeaveDestination] = useState(withBasePath('/'));
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
   const allowPageExitRef = useRef(false);
 
@@ -343,12 +344,13 @@ export default function MockVolunteerPage() {
   const requestLeavePage = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (selectedChoices.length === 0) return;
     event.preventDefault();
+    setLeaveDestination(event.currentTarget.href);
     setShowLeaveConfirm(true);
   };
 
   const confirmLeavePage = () => {
     allowPageExitRef.current = true;
-    window.location.assign(withBasePath('/'));
+    window.location.assign(leaveDestination);
   };
 
   const moveChoice = (from: number, to: number) => {
@@ -574,11 +576,14 @@ export default function MockVolunteerPage() {
                       <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="mb-2 flex flex-wrap gap-1.5">
-                              {school.county && <span className="rounded-md border border-slate-300 bg-white px-2 py-0.5 text-[11px] font-black text-slate-600">{school.county}</span>}
-                              {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-[11px] font-black text-amber-900">類型：{school.levelInfo}</span>}
-                            </div>
-                            {school.groupName && <div className="mb-2"><span className="rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
+                            {(school.county || school.levelInfo) && (
+                              <p className="mb-1 text-sm font-black text-[#4f76a4]">
+                                {school.county}
+                                {school.county && school.levelInfo && <span className="mx-1.5 text-slate-400">·</span>}
+                                {school.levelInfo && `類型：${school.levelInfo}`}
+                              </p>
+                            )}
+                            {school.groupName && <p className="mb-2 text-sm font-black text-[#4f76a4]">群別：{school.groupName}</p>}
                             <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
                             <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
                               <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
@@ -638,6 +643,14 @@ export default function MockVolunteerPage() {
                   清空
                 </button>
               </div>
+              <a
+                href={withBasePath('/strategy')}
+                onClick={requestLeavePage}
+                className="relative mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-amber-300 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0 active:shadow-none"
+              >
+                <Target className="h-4 w-4" />
+                志願選填攻略
+              </a>
             </div>
 
             <div className="max-h-[720px] overflow-y-auto p-4 custom-scrollbar">
@@ -658,12 +671,13 @@ export default function MockVolunteerPage() {
                         <div className="min-w-0 flex-1">
                           <h3 className="truncate text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
                           <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}</p>
-                          <div className="mt-1 flex flex-wrap gap-1 text-[10px] font-bold leading-4">
-                            {choice.county && <span className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-slate-600">{choice.county}</span>}
-                            <span className="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-amber-800">類型：{choice.levelInfo || '未提供'}</span>
-                            {choice.shift && <span className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-slate-600">{choice.shift}</span>}
-                          </div>
-                          {choice.groupName && <div className="mt-1"><span className="inline-flex rounded border border-sky-200 bg-sky-50 px-1.5 py-0.5 text-[10px] font-bold leading-4 text-sky-800">群別：{choice.groupName}</span></div>}
+                          <p className="mt-1 truncate text-[11px] font-black leading-4 text-[#4f76a4]">
+                            {choice.county}
+                            {choice.county && <span className="mx-1 text-slate-400">·</span>}
+                            類型：{choice.levelInfo || '未提供'}
+                            {choice.shift && <><span className="mx-1 text-slate-400">·</span>{choice.shift}</>}
+                          </p>
+                          {choice.groupName && <p className="mt-0.5 truncate text-[11px] font-black leading-4 text-[#4f76a4]">群別：{choice.groupName}</p>}
                           {preferenceRule && choicePreferenceScores[index] && (
                             <span className="mt-1 inline-flex items-center rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold leading-4 text-indigo-800">
                               志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
