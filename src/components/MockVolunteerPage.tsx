@@ -35,6 +35,11 @@ interface SchoolItem {
 const createChoiceId = (school: SchoolItem) =>
   `${school.code}-${school.deptCode}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+const isSameVolunteerOption = (first: SchoolItem, second: SchoolItem) =>
+  first.code === second.code
+  && first.deptCode === second.deptCode
+  && first.shift?.trim() === second.shift?.trim();
+
 const REGION_COUNTIES: Record<string, string[]> = {
   taipei: ['基隆市', '臺北市', '新北市'],
   yilan: ['宜蘭縣'],
@@ -298,7 +303,7 @@ export default function MockVolunteerPage() {
       return;
     }
 
-    const exists = selectedChoices.some((choice) => choice.code === school.code && choice.deptCode === school.deptCode);
+    const exists = selectedChoices.some((choice) => isSameVolunteerOption(choice, school));
     if (exists) {
       setNotice('這個校科已經在志願清單中。');
       return;
@@ -556,7 +561,7 @@ export default function MockVolunteerPage() {
               ) : (
                 <div className="grid gap-3 xl:grid-cols-2">
                   {filteredSchools.map((school, index) => {
-                    const isSelected = selectedChoices.some((choice) => choice.code === school.code && choice.deptCode === school.deptCode);
+                    const isSelected = selectedChoices.some((choice) => isSameVolunteerOption(choice, school));
                     return (
                       <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                         <div className="flex items-start justify-between gap-3">
