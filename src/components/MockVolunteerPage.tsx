@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertCircle,
   ArrowDown,
@@ -130,10 +130,13 @@ export default function MockVolunteerPage() {
   const [filterCounty, setFilterCounty] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [filterGroup, setFilterGroup] = useState('all');
+  const [filterDepartment, setFilterDepartment] = useState('all');
   const [notice, setNotice] = useState('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [choicePendingRemoval, setChoicePendingRemoval] = useState<SchoolItem | null>(null);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
+  const allowPageExitRef = useRef(false);
 
   useEffect(() => {
     let ignore = false;
@@ -172,8 +175,20 @@ export default function MockVolunteerPage() {
     setFilterCounty('region');
     setFilterType('all');
     setFilterGroup('all');
+    setFilterDepartment('all');
     setSearchQuery('');
   }, [region]);
+
+  useEffect(() => {
+    const confirmBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (selectedChoices.length === 0 || allowPageExitRef.current) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', confirmBeforeUnload);
+    return () => window.removeEventListener('beforeunload', confirmBeforeUnload);
+  }, [selectedChoices.length]);
 
   const activeRegionName = MOCK_VOLUNTEER_REGIONS.find((item) => item.id === region)?.name || '目前就學區';
   const activeRegionCountyText = getRegionCountyText(region);
@@ -206,6 +221,11 @@ export default function MockVolunteerPage() {
     [schools],
   );
 
+  const uniqueDepartments = useMemo(
+    () => Array.from(new Set(schools.map((school) => school.deptName).filter(Boolean))).sort(),
+    [schools],
+  );
+
   const filteredSchools = useMemo(() => {
     const keyword = searchQuery.trim();
     return schools.filter((school) => {
@@ -216,13 +236,14 @@ export default function MockVolunteerPage() {
       if (filterCounty !== 'all' && filterCounty !== 'region' && school.county !== filterCounty) return false;
       if (filterType !== 'all' && school.levelInfo !== filterType) return false;
       if (filterGroup !== 'all' && school.groupName !== filterGroup) return false;
+      if (filterDepartment !== 'all' && school.deptName !== filterDepartment) return false;
       if (!keyword) return true;
 
       return [school.name, school.deptName, school.county, school.groupName, school.levelInfo, school.code]
         .filter(Boolean)
         .some((value) => value.includes(keyword));
     });
-  }, [schools, filterCounty, activeRegionCounties, filterType, filterGroup, searchQuery]);
+  }, [schools, filterCounty, activeRegionCounties, filterType, filterGroup, filterDepartment, searchQuery]);
 
   const addChoice = (school: SchoolItem) => {
     if (selectedChoices.length >= 30) {
@@ -261,6 +282,17 @@ export default function MockVolunteerPage() {
     if (!choicePendingRemoval) return;
     setSelectedChoices((choices) => choices.filter((choice) => choice.id !== choicePendingRemoval.id));
     setChoicePendingRemoval(null);
+  };
+
+  const requestLeavePage = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (selectedChoices.length === 0) return;
+    event.preventDefault();
+    setShowLeaveConfirm(true);
+  };
+
+  const confirmLeavePage = () => {
+    allowPageExitRef.current = true;
+    window.location.assign(withBasePath('/'));
   };
 
   const moveChoice = (from: number, to: number) => {
@@ -349,6 +381,7 @@ export default function MockVolunteerPage() {
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <a
             href={withBasePath('/')}
+            onClick={requestLeavePage}
             className="mb-5 inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -417,7 +450,7 @@ export default function MockVolunteerPage() {
                 <Search className="h-5 w-5 text-sky-600" />
                 搜尋校科
               </div>
-              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_150px_150px_150px]">
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_150px_150px_150px_150px]">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <input
@@ -444,6 +477,12 @@ export default function MockVolunteerPage() {
                   <option value="all">全部群科</option>
                   {uniqueGroups.map((group) => (
                     <option key={group} value={group}>{group}</option>
+                  ))}
+                </select>
+                <select value={filterDepartment} onChange={(event) => setFilterDepartment(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
+                  <option value="all">全部科系</option>
+                  {uniqueDepartments.map((department) => (
+                    <option key={department} value={department}>{department}</option>
                   ))}
                 </select>
               </div>
@@ -626,6 +665,29 @@ export default function MockVolunteerPage() {
             <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
               <button onClick={() => setChoicePendingRemoval(null)} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">取消</button>
               <button onClick={confirmRemoveChoice} className="flex-1 rounded-xl border-2 border-slate-900 bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-rose-600 active:translate-y-0.5 active:shadow-none">確認刪除</button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {showLeaveConfirm && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm">
+          <section role="dialog" aria-modal="true" aria-labelledby="leave-volunteer-title" className="w-full max-w-md overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+            <div className="border-b-4 border-slate-900 bg-amber-300 p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                  <AlertTriangle className="h-6 w-6 text-amber-700" />
+                </div>
+                <div>
+                  <h2 id="leave-volunteer-title" className="text-xl font-black text-slate-900">要離開模擬志願選填嗎？</h2>
+                  <p className="mt-1 text-sm font-bold text-amber-900">目前清單有 {selectedChoices.length} 個志願。</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-5 text-sm font-bold leading-7 text-slate-600">離開後，本次模擬志願清單將不會保留。</div>
+            <div className="flex gap-3 border-t-2 border-slate-200 bg-slate-50 p-5">
+              <button onClick={() => setShowLeaveConfirm(false)} className="flex-1 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-0.5 active:shadow-none">留在頁面</button>
+              <button onClick={confirmLeavePage} className="flex-1 rounded-xl border-2 border-slate-900 bg-rose-500 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-rose-600 active:translate-y-0.5 active:shadow-none">確認離開</button>
             </div>
           </section>
         </div>

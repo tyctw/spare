@@ -72,6 +72,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
   const [filterCounty, setFilterCounty] = useState('region');
   const [filterType, setFilterType] = useState('all');
   const [filterGroup, setFilterGroup] = useState('all');
+  const [filterDepartment, setFilterDepartment] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [crossRegionWarning, setCrossRegionWarning] = useState<SchoolItem | null>(null);
@@ -163,6 +164,10 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
     return Array.from(new Set(schools.map(s => s.groupName).filter(Boolean))).sort();
   }, [schools]);
 
+  const uniqueDepartments = useMemo(() => {
+    return Array.from(new Set(schools.map(s => s.deptName).filter(Boolean))).sort();
+  }, [schools]);
+
   const filteredSchools = useMemo(() => {
     return schools.filter(s => {
       const c = normalizeCounty(s.county);
@@ -178,6 +183,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
       if (filterCounty !== 'all' && filterCounty !== 'region' && s.county !== filterCounty) return false;
       if (filterType !== 'all' && s.levelInfo !== filterType) return false;
       if (filterGroup !== 'all' && s.groupName !== filterGroup) return false;
+      if (filterDepartment !== 'all' && s.deptName !== filterDepartment) return false;
 
       if (!searchQuery) return true;
 
@@ -186,7 +192,7 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
         s.county.includes(searchQuery) ||
         (s.groupName && s.groupName.includes(searchQuery));
     });
-  }, [schools, allowedCountiesInRegion, searchQuery, filterOwnership, filterCounty, filterType, filterGroup]);
+  }, [schools, allowedCountiesInRegion, searchQuery, filterOwnership, filterCounty, filterType, filterGroup, filterDepartment]);
 
   const handleAddChoice = (school: SchoolItem) => {
     if (selectedChoices.length >= 30) {
@@ -673,6 +679,17 @@ export default function MockVolunteerModal({ isOpen, onClose, region }: Props) {
                       >
                         <option value="all">所有群別</option>
                         {uniqueGroups.map(g => <option key={g} value={g}>{g}</option>)}
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-black text-slate-600 block">科系</label>
+                      <select
+                        value={filterDepartment}
+                        onChange={(e) => setFilterDepartment(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-50 border-2 border-slate-300 rounded-lg text-sm font-bold focus:border-sky-400 focus:bg-white outline-none transition-colors"
+                      >
+                        <option value="all">全部科系</option>
+                        {uniqueDepartments.map(department => <option key={department} value={department}>{department}</option>)}
                       </select>
                     </div>
                   </div>
