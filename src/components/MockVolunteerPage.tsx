@@ -122,11 +122,15 @@ const VOCATIONAL_GROUP_BY_DEPARTMENT = new Map(
   ),
 );
 
-// Only professional-program departments are vocational categories. Academic
-// and comprehensive groups must never share a vocational-group rank.
+// Source records use different level labels for daytime, evening and practical
+// skills programs. Use the department-to-group mapping as the primary signal,
+// while excluding academic and comprehensive high-school programs.
 const isVocationalProgram = (choice: SchoolItem) => {
+  const levelInfo = choice.levelInfo?.trim();
   const groupName = choice.groupName?.trim();
-  return choice.levelInfo?.trim() === '專業群科' && groupName !== '學術群' && groupName !== '綜合群';
+  if (levelInfo === '普通科' || levelInfo === '綜合高中' || groupName === '學術群' || groupName === '綜合群') return false;
+
+  return VOCATIONAL_GROUP_BY_DEPARTMENT.has(normalizeDepartmentName(choice.deptName)) || levelInfo === '專業群科';
 };
 
 const getVocationalGroup = (choice: SchoolItem) =>
