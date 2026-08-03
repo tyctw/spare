@@ -576,18 +576,20 @@ export default function MockVolunteerPage() {
                       <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            {(school.county || school.levelInfo) && (
-                              <p className="mb-1 text-sm font-black text-[#4f76a4]">
-                                {school.county}
-                                {school.county && school.levelInfo && <span className="mx-1.5 text-slate-400">·</span>}
-                                {school.levelInfo && `類型：${school.levelInfo}`}
-                              </p>
-                            )}
-                            {school.groupName && <p className="mb-2 text-sm font-black text-[#4f76a4]">群別：{school.groupName}</p>}
+                            <div className="mb-2 space-y-0.5 text-[13px] font-black leading-5 text-[#4f76a4]">
+                              <div className="flex min-w-0 items-center gap-1.5 whitespace-nowrap">
+                                {school.county && <span>{school.county}</span>}
+                                {school.county && (school.levelInfo || school.shift) && <span className="text-slate-400">·</span>}
+                                {school.levelInfo && <span className="truncate">類型：{school.levelInfo}</span>}
+                                {school.levelInfo && school.shift && <span className="text-slate-400">·</span>}
+                                {school.shift && <span>{school.shift}</span>}
+                              </div>
+                              {school.groupName && <div className="flex min-w-0 items-center gap-1"><span className="shrink-0">群別：</span><span className="truncate">{school.groupName}</span></div>}
+                            </div>
                             <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
                             <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
                               <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
-                              <span className="line-clamp-1">{school.deptName}{school.shift ? ` (${school.shift})` : ''}</span>
+                              <span className="line-clamp-1">{school.deptName}</span>
                             </p>
                           </div>
                           <button
@@ -671,13 +673,15 @@ export default function MockVolunteerPage() {
                         <div className="min-w-0 flex-1">
                           <h3 className="truncate text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
                           <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}</p>
-                          <p className="mt-1 truncate text-[11px] font-black leading-4 text-[#4f76a4]">
-                            {choice.county}
-                            {choice.county && <span className="mx-1 text-slate-400">·</span>}
-                            類型：{choice.levelInfo || '未提供'}
-                            {choice.shift && <><span className="mx-1 text-slate-400">·</span>{choice.shift}</>}
-                          </p>
-                          {choice.groupName && <p className="mt-0.5 truncate text-[11px] font-black leading-4 text-[#4f76a4]">群別：{choice.groupName}</p>}
+                          <div className="mt-1 space-y-0.5 text-[11px] font-black leading-4 text-[#4f76a4]">
+                            <div className="flex min-w-0 items-center gap-1 whitespace-nowrap">
+                              {choice.county && <span>{choice.county}</span>}
+                              {choice.county && <span className="text-slate-400">·</span>}
+                              <span className="truncate">類型：{choice.levelInfo || '未提供'}</span>
+                              {choice.shift && <><span className="text-slate-400">·</span><span>{choice.shift}</span></>}
+                            </div>
+                            {choice.groupName && <div className="flex min-w-0 items-center gap-1"><span className="shrink-0">群別：</span><span className="truncate">{choice.groupName}</span></div>}
+                          </div>
                           {preferenceRule && choicePreferenceScores[index] && (
                             <span className="mt-1 inline-flex items-center rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold leading-4 text-indigo-800">
                               志願序 {choicePreferenceScores[index].rank}・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? `・同序：${preferenceMergeReason(region)}` : ''}
