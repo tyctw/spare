@@ -428,7 +428,7 @@ export default function MockVolunteerPage() {
             tr { break-inside: avoid; page-break-inside: avoid; }
             .seq { text-align: center; font-weight: 800; }
             .score { font-weight: 800; color: #3730a3; }
-            .blank-row td { height: 19px; }
+            .blank-row td { height: 30px; }
             .print-footer { margin-top: 6px; color: #64748b; font-size: ${printLayout.headerFont}; font-weight: 700; }
             .print-warning { color: #9f1239; }
             .print-site { margin-top: 2px; text-align: right; }
@@ -743,7 +743,7 @@ export default function MockVolunteerPage() {
                             <div><span className="inline-flex max-w-full rounded-md border border-amber-200 bg-amber-100 px-1.5 py-0.5 text-amber-900"><span className="truncate">類型：{choice.levelInfo || '未提供'}</span></span></div>
                             <div className="flex min-w-0 items-center justify-between gap-2">
                               <span className="inline-flex min-w-0 max-w-[58%] rounded-md border border-sky-200 bg-sky-100 px-1.5 py-0.5 text-sky-800"><span className="truncate">群別：{choice.groupName || '未提供'}</span></span>
-                              {preferenceRule && choicePreferenceScores[index] && <span className="shrink-0 text-indigo-700">第 {choicePreferenceScores[index].rank} 志願・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}</span>}
+                              {preferenceRule && choicePreferenceScores[index] && <span className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-indigo-800">第 {choicePreferenceScores[index].rank} 志願・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}</span>}
                             </div>
                           </div>
                         </div>
