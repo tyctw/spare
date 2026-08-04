@@ -139,6 +139,54 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 
+type EcpayPayload = Record<string, string | number>;
+
+const ecpayUrlEncode = (value: string) => encodeURIComponent(value)
+  .replace(/%20/g, '+')
+  .replace(/%2D/g, '-')
+  .replace(/%5F/g, '_')
+  .replace(/%2E/g, '.')
+  .replace(/%21/g, '!')
+  .replace(/%2A/g, '*')
+  .replace(/%28/g, '(')
+  .replace(/%29/g, ')')
+  .toLowerCase();
+
+const sha256 = async (value: string) => {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
+};
+
+const ecpayCheckMacValue = async (params: EcpayPayload, hashKey: string, hashIv: string) => {
+  const body = Object.entries(params)
+    .filter(([key]) => key !== 'CheckMacValue')
+    .sort(([left], [right]) => left.toLowerCase().localeCompare(right.toLowerCase()))
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&');
+  return sha256(ecpayUrlEncode(`HashKey=${hashKey}&${body}&HashIV=${hashIv}`));
+};
+
+const ecpayConfig = () => {
+  const merchantId = Deno.env.get('ECPAY_MERCHANT_ID')?.trim();
+  const hashKey = Deno.env.get('ECPAY_HASH_KEY')?.trim();
+  const hashIv = Deno.env.get('ECPAY_HASH_IV')?.trim();
+  const mode = Deno.env.get('ECPAY_MODE')?.trim().toLowerCase() || 'production';
+  const returnUrl = Deno.env.get('ECPAY_RETURN_URL')?.trim() || `${supabaseUrl}/functions/v1/backend`;
+  const clientBackUrl = Deno.env.get('ECPAY_CLIENT_BACK_URL')?.trim() || 'https://tyctw.github.io/spare/support';
+
+  if (!merchantId || !hashKey || !hashIv) throw new Error('ECPay payment is not configured. Set ECPAY_MERCHANT_ID, ECPAY_HASH_KEY, and ECPAY_HASH_IV.');
+  return {
+    merchantId,
+    hashKey,
+    hashIv,
+    returnUrl,
+    clientBackUrl,
+    actionUrl: mode === 'stage' ? 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5' : 'https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5',
+  };
+};
+
+const createMerchantTradeNo = () => `SP${Date.now()}${crypto.getRandomValues(new Uint16Array(1))[0].toString(36).toUpperCase()}`.slice(0, 20);
+
 const SCHOOL_CACHE_TTL_MS = 20 * 60 * 1000;
 const VOLUNTEER_SCHOOL_CACHE_TTL_MS = 30 * 60 * 1000;
 
@@ -789,6 +837,59 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     case 'wakeup':
       return { message: 'System is awake and ready!' };
 
+    case 'createEcpaySupportPayment': {
+      const amount = Number(payload.amount);
+      if (!Number.isInteger(amount) || amount < 10 || amount > 50_000) {
+        throw new Error('Support amount must be a whole number between NT$10 and NT$50,000.');
+      }
+
+      const config = ecpayConfig();
+      const merchantTradeNo = createMerchantTradeNo();
+      const now = new Date();
+      const merchantTradeDate = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      const fields: EcpayPayload = {
+        MerchantID: config.merchantId,
+        MerchantTradeNo: merchantTradeNo,
+        MerchantTradeDate: merchantTradeDate,
+        PaymentType: 'aio',
+        TotalAmount: amount,
+        TradeDesc: 'Support',
+        ItemName: '網站小額支持',
+        ReturnURL: config.returnUrl,
+        ChoosePayment: 'ALL',
+        ClientBackURL: config.clientBackUrl,
+        NeedExtraPaidInfo: 'Y',
+        EncryptType: 1,
+        CustomField1: 'website-support',
+      };
+      const checkMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
+
+      const { error } = await supabase.from('support_payments').insert({
+        merchant_trade_no: merchantTradeNo,
+        amount,
+        status: 'pending',
+        payment_method: 'ALL',
+      });
+      if (error) throw error;
+
+      return { actionUrl: config.actionUrl, fields: { ...fields, CheckMacValue: checkMacValue } };
+    }
+
+    case 'getEcpaySupportPaymentStatus': {
+      const merchantTradeNo = String(payload.merchantTradeNo || '');
+      if (!/^[A-Za-z0-9]{8,32}$/.test(merchantTradeNo)) {
+        throw new Error('Invalid support payment reference.');
+      }
+
+      const { data, error } = await supabase
+        .from('support_payments')
+        .select('status, amount')
+        .eq('merchant_trade_no', merchantTradeNo)
+        .maybeSingle();
+      if (error) throw error;
+      return data || { status: 'not_found' };
+    }
+
     case 'getInvitationCode':
       return {
         invitationCode: rollingCode(String(payload.prefix || 'TW').toUpperCase(), new Date()),
@@ -1108,6 +1209,39 @@ async function handleAction(payload: Record<string, any>, request: Request) {
   }
 }
 
+async function handleEcpayCallback(request: Request) {
+  const config = ecpayConfig();
+  const formData = await request.formData();
+  const fields = Object.fromEntries(Array.from(formData.entries()).map(([key, value]) => [key, String(value)]));
+  const receivedCheckMacValue = fields.CheckMacValue;
+  const expectedCheckMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
+
+  if (!receivedCheckMacValue || receivedCheckMacValue !== expectedCheckMacValue) {
+    console.error('Invalid ECPay CheckMacValue', { merchantTradeNo: fields.MerchantTradeNo });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  const succeeded = fields.RtnCode === '1';
+  const { error } = await supabase
+    .from('support_payments')
+    .update({
+      status: succeeded ? 'paid' : 'failed',
+      ecpay_trade_no: fields.TradeNo || null,
+      payment_type: fields.PaymentType || null,
+      paid_at: succeeded ? new Date().toISOString() : null,
+      callback_payload: fields,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('merchant_trade_no', fields.MerchantTradeNo);
+
+  if (error) {
+    console.error('Could not record ECPay callback', error);
+    return new Response('0|Error', { status: 500, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+}
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
@@ -1116,6 +1250,9 @@ Deno.serve(async (request) => {
   const path = new URL(request.url).pathname;
 
   try {
+    if (request.headers.get('content-type')?.includes('application/x-www-form-urlencoded')) {
+      return await handleEcpayCallback(request);
+    }
     const payload = await withTimeout(request.json(), 3000, 'parse request json');
     const result = await handleAction(payload, request);
 
