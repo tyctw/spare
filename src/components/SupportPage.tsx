@@ -18,7 +18,9 @@ export default function SupportPage() {
   const [customAmount, setCustomAmount] = useState('');
   const [notice, setNotice] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [thankYouAmount, setThankYouAmount] = useState<number | null>(null);
+  const [thankYouAmount, setThankYouAmount] = useState<number | null>(() => (
+    new URLSearchParams(window.location.search).get('preview') === 'thanks' ? 100 : null
+  ));
   const amount = useMemo(() => {
     const value = Number(customAmount);
     return customAmount !== '' && Number.isFinite(value) ? value : selectedAmount;
@@ -180,6 +182,16 @@ export default function SupportPage() {
           <button type="button" onClick={startEcpayCheckout} disabled={isSubmitting} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border-4 border-slate-900 bg-rose-500 px-5 py-4 text-lg font-black text-white shadow-[5px_5px_0_#0f172a] transition hover:bg-rose-600 disabled:cursor-wait disabled:opacity-60">
             <Heart className="h-5 w-5 fill-current" />{isSubmitting ? '正在前往綠界付款…' : `支持 NT$ ${Number.isFinite(amount) && amount > 0 ? amount.toLocaleString() : '--'}`}
           </button>
+          <div className="mt-6 rounded-2xl border-2 border-slate-300 bg-slate-50 p-4 text-xs font-bold leading-6 text-slate-600">
+            <p className="font-black text-slate-800">付款方式金額限制</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              <li>贊助金額最低為 10 元。</li>
+              <li>贊助金額超過 6,000 元或小於 34 元，無法使用超商代碼付款。</li>
+              <li>贊助金額超過 49,999 元或小於 16 元，無法使用網路 ATM 付款。</li>
+              <li>贊助金額超過 49,999 元或小於 16 元，無法使用 ATM 櫃員機付款。</li>
+              <li>贊助金額超過 199,999 元或小於 6 元，無法使用信用卡付款。</li>
+            </ul>
+          </div>
           {notice && <p role="status" className="mt-5 rounded-2xl border-2 border-amber-700 bg-amber-50 p-4 text-sm font-bold leading-6 text-amber-900"><Info className="mr-2 inline h-4 w-4" />{notice}</p>}
         </section>
 
@@ -214,25 +226,30 @@ export default function SupportPage() {
             </div>
           </section>
 
-        </aside>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8 lg:pb-16">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <section className="rounded-3xl border-4 border-slate-900 bg-amber-100 p-6 shadow-[6px_6px_0_#0f172a] sm:p-7">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-rose-700"><Mail className="h-5 w-5" /></div>
-            <h2 className="mt-4 text-xl font-black">小額支持聯繫方式</h2>
+          <section className="rounded-3xl border-4 border-slate-900 bg-amber-100 p-6 shadow-[6px_6px_0_#0f172a] sm:p-7 lg:col-span-2">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-rose-700"><Mail className="h-5 w-5" /></div>
+              <h2 className="text-xl font-black">小額支持聯繫方式</h2>
+            </div>
             <p className="mt-2 text-sm font-bold leading-6 text-slate-700">付款、退款或支持方案相關問題，請來信聯絡，我們會協助處理。</p>
             <a href={`mailto:${supportEmail}?subject=%E9%97%9C%E6%96%BC%E5%B0%8F%E9%A1%8D%E6%94%AF%E6%8C%81`} className="mt-5 flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black text-rose-700 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-rose-50"><Mail className="h-4 w-4 shrink-0" />{supportEmail}</a>
           </section>
 
-          <section className="rounded-3xl border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[6px_6px_0_#0f172a] sm:p-7">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-indigo-700"><FileText className="h-5 w-5" /></div>
-            <h2 className="mt-4 text-xl font-black">付款前請閱讀</h2>
-            <p className="mt-2 text-sm font-bold leading-6 text-indigo-100">了解售後服務與退款規則，讓每一筆支持都更安心。</p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        </aside>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8 lg:pb-16">
+        <div>
+          <section className="rounded-3xl border-4 border-slate-900 bg-indigo-600 p-5 text-white shadow-[6px_6px_0_#0f172a] sm:p-6">
+            <div className="lg:flex lg:items-center lg:justify-between lg:gap-6">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-indigo-700"><FileText className="h-5 w-5" /></div>
+                <div><h2 className="text-xl font-black">付款前請閱讀</h2><p className="mt-1 text-sm font-bold leading-6 text-indigo-100">了解售後服務與退款規則，讓每一筆支持都更安心。</p></div>
+              </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:mt-0 lg:w-[25rem] lg:shrink-0">
               <a href={withBasePath('/after-sales-service')} className="rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-center text-sm font-black text-slate-900 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-slate-50">售後服務</a>
               <a href={withBasePath('/refund-cancellation-policy')} className="rounded-xl border-2 border-slate-900 bg-amber-300 px-4 py-3 text-center text-sm font-black text-slate-900 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-amber-200">退款與取消政策</a>
+              </div>
             </div>
           </section>
         </div>
