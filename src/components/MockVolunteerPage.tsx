@@ -15,7 +15,6 @@ import {
   Trash2,
   AlertTriangle,
 } from 'lucide-react';
-import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
 import { pageNavigationAsideClassName } from './PageNavigation';
 
@@ -201,16 +200,14 @@ export default function MockVolunteerPage() {
       setIsLoading(true);
       setError('');
       try {
-        const data = await callBackend<{ schools: SchoolItem[] } | SchoolItem[]>({
-          action: 'getVolunteerSchools',
-          region,
-        });
-        const nextSchools = Array.isArray(data) ? data : data?.schools;
+        const response = await fetch(withBasePath('/data/volunteer_schools.json'));
+        if (!response.ok) throw new Error(`Unable to load volunteer schools (${response.status})`);
+        const nextSchools: unknown = await response.json();
         if (!ignore) {
           setSchools(Array.isArray(nextSchools) ? nextSchools : []);
         }
       } catch (err) {
-        console.error('Volunteer school fetch failed:', err);
+        console.error('Volunteer school JSON load failed:', err);
         if (!ignore) {
           setError('志願資料載入失敗，請稍後再試。');
           setSchools([]);
@@ -225,7 +222,7 @@ export default function MockVolunteerPage() {
     return () => {
       ignore = true;
     };
-  }, [region]);
+  }, []);
 
   useEffect(() => {
     setFilterCounty('region');
