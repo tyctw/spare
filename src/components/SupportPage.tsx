@@ -145,7 +145,6 @@ export default function SupportPage() {
               </div>
               <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">讓每一次選擇，<br />都有更可靠的方向</h1>
               <p className="mt-6 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">升學選擇不該被繁雜資訊困住。您的支持，會化為更即時的資料校對、更好用的工具，以及持續免費開放的服務，讓每位學生都能更安心地規劃下一步。</p>
-              <p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700">一筆 NT$ 50 的支持，或一次真心的分享，都可能讓正為志願焦慮的學生與家長，多一份清楚、多一點信心。邀請您和我們一起，讓可靠的升學資訊被更多人看見。</p>
             </div>
             <div aria-hidden="true" className="relative mx-auto mt-10 hidden h-60 w-60 lg:block lg:mt-0">
               <div className="absolute inset-1 rotate-[-9deg] rounded-[3rem] border-[6px] border-slate-900 bg-amber-300 shadow-[10px_10px_0_#0f172a]" />
