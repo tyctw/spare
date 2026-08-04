@@ -23,6 +23,8 @@ const SiteMapPage = lazy(() => import('./components/SiteMapPage.tsx'));
 const SchoolTypesPage = lazy(() => import('./components/SchoolTypesPage.tsx'));
 const StrategyPage = lazy(() => import('./components/StrategyPage.tsx'));
 const SupportPage = lazy(() => import('./components/SupportPage.tsx'));
+const SupportPaymentFailedPage = lazy(() => import('./components/SupportPaymentFailedPage.tsx'));
+const SupportPaymentSuccessPage = lazy(() => import('./components/SupportPaymentSuccessPage.tsx'));
 const SupportPolicyPage = lazy(() => import('./components/SupportPolicyPage.tsx'));
 const VocationalEncyclopediaPage = lazy(() => import('./components/VocationalEncyclopediaPage.tsx'));
 
@@ -73,6 +75,8 @@ const page =
   path === '/school-types' ? <SchoolTypesPage /> :
   path === '/strategy' ? <StrategyPage /> :
   path === '/support' ? <SupportPage /> :
+  path === '/support/failed' ? <SupportPaymentFailedPage /> :
+  path === '/support/success' ? <SupportPaymentSuccessPage /> :
   path === '/after-sales-service' ? <SupportPolicyPage kind="after-sales" /> :
   path === '/refund-cancellation-policy' ? <SupportPolicyPage kind="refund-cancellation" /> :
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
