@@ -5,7 +5,8 @@ import { withBasePath } from '../lib/routes';
 
 const suggestedAmounts = [50, 100, 300, 500];
 const supportEmail = 'tyctw.analyze@gmail.com';
-const paymentMethods = ['信用卡', 'Apple Pay', '網路 ATM', 'ATM 虛擬帳號', '超商條碼', '超商代碼'];
+const cardPaymentMethods = ['信用卡', 'Apple Pay'];
+const nonCardPaymentMethods = ['網路 ATM', 'ATM 虛擬帳號', '超商條碼', '超商代碼'];
 const supportPaymentStorageKey = 'spare.support.payment';
 
 type SupportPaymentTracking = {
@@ -211,15 +212,24 @@ export default function SupportPage() {
             <div className="relative overflow-hidden bg-slate-900 px-6 py-6 text-white sm:px-7">
               <div aria-hidden="true" className="absolute -right-8 -top-12 h-32 w-32 rounded-full border-[18px] border-indigo-400/40" />
               <div className="relative flex items-center gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 shadow-[3px_3px_0_#fff]">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#fff]">
                   <CreditCard className="h-6 w-6" />
                 </div>
-                <div><p className="text-xs font-black tracking-[0.18em] text-amber-300">ECPAY SECURE PAYMENT</p><h2 className="mt-1 text-xl font-black">信用卡與非信用卡付款</h2></div>
+                <div><p className="text-xs font-black tracking-[0.18em] text-slate-300">ECPAY SECURE PAYMENT</p><h2 className="mt-1 text-xl font-black">我們支援的付款方式</h2></div>
               </div>
             </div>
-            <div className="p-5 sm:p-6">
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                {paymentMethods.map((method, index) => <span key={method} className={`flex min-h-11 items-center justify-center rounded-xl border-2 border-slate-900 px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0_#0f172a] ${index === 0 ? 'bg-amber-300' : index === paymentMethods.length - 1 ? 'bg-rose-100' : 'bg-slate-50'}`}>{method}</span>)}
+            <div className="space-y-5 p-5 sm:p-6">
+              <div>
+                <h3 className="mb-2 text-sm font-black text-slate-800">信用卡付款</h3>
+                <div className="grid grid-cols-2 gap-2.5">
+                  {cardPaymentMethods.map((method) => <span key={method} className="flex min-h-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0_#0f172a]">{method}</span>)}
+                </div>
+              </div>
+              <div>
+                <h3 className="mb-2 text-sm font-black text-slate-800">非信用卡付款</h3>
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                  {nonCardPaymentMethods.map((method) => <span key={method} className="flex min-h-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0_#0f172a]">{method}</span>)}
+                </div>
               </div>
               <p className="mt-5 border-l-4 border-indigo-500 pl-3 text-xs font-bold leading-5 text-slate-600">實際可選付款方式將依綠界付款頁與商店已開通服務顯示。</p>
             </div>
