@@ -172,7 +172,7 @@ const ecpayConfig = () => {
   const hashIv = Deno.env.get('ECPAY_HASH_IV')?.trim();
   const mode = Deno.env.get('ECPAY_MODE')?.trim().toLowerCase() || 'production';
   const returnUrl = Deno.env.get('ECPAY_RETURN_URL')?.trim() || `${supabaseUrl}/functions/v1/backend`;
-  const clientBackUrl = Deno.env.get('ECPAY_CLIENT_BACK_URL')?.trim() || 'https://tyctw.github.io/spare/support';
+  const clientBackUrl = Deno.env.get('ECPAY_CLIENT_BACK_URL')?.trim() || 'https://tyctw.github.io/spare/support/success';
 
   if (!merchantId || !hashKey || !hashIv) throw new Error('ECPay payment is not configured. Set ECPAY_MERCHANT_ID, ECPAY_HASH_KEY, and ECPAY_HASH_IV.');
   return {
