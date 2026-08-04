@@ -133,135 +133,73 @@ export default function SupportPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="overflow-hidden border-b-4 border-slate-900 bg-rose-50">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a]">
-            <ArrowLeft className="h-4 w-4" />回到首頁
-          </a>
-          <div className="py-12 sm:py-16 lg:grid lg:min-h-[34rem] lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center lg:gap-16 lg:py-12">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-black shadow-[3px_3px_0_#0f172a]">
-                <Heart className="h-4 w-4 fill-rose-500 text-rose-500" />SUPPORT OUR WORK
-              </div>
-              <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">讓每一次選擇，<br />都有更可靠的方向</h1>
-              <p className="mt-6 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">升學選擇不該被繁雜資訊困住。您的支持，會化為更即時的資料校對、更好用的工具，以及持續免費開放的服務，讓每位學生都能更安心地規劃下一步。</p>
+    <main className="min-h-screen overflow-hidden bg-[#f7f8fc] text-slate-900">
+      <section className="relative overflow-hidden border-b-4 border-slate-900 bg-[#eef3ff] text-slate-900">
+        <div aria-hidden="true" className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-indigo-200/70 blur-3xl" />
+        <div aria-hidden="true" className="absolute -right-20 -top-24 h-96 w-96 rounded-full bg-sky-200/65 blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-6 sm:px-6 sm:pb-24 lg:px-8">
+          <a href={withBasePath('/')} className="inline-flex items-center gap-3 rounded-2xl border-4 border-slate-900 bg-white px-5 py-3 text-base font-black text-slate-800 shadow-[5px_5px_0_#0f172a] transition hover:-translate-y-0.5 hover:border-indigo-700 hover:text-indigo-700 active:translate-y-0 active:shadow-none"><ArrowLeft className="h-5 w-5" />回到首頁</a>
+          <div className="mt-16 grid items-end gap-10 lg:grid-cols-[1fr_20rem]">
+            <div className="max-w-3xl">
+              <p className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-3 py-1.5 text-xs font-black tracking-[0.16em] text-indigo-700"><Heart className="h-3.5 w-3.5 fill-rose-500 text-rose-500" />SUPPORT THE NEXT STEP</p>
+              <h1 className="mt-6 text-4xl font-black leading-[1.08] tracking-tight sm:text-6xl">讓每個重要選擇，<br /><span className="text-indigo-600">都有可靠的方向。</span></h1>
+              <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-slate-600 sm:text-lg">你的支持，會成為更即時的資料校對、更好用的選校工具，以及持續免費開放服務的力量。</p>
             </div>
-            <div aria-hidden="true" className="relative mx-auto mt-10 hidden h-60 w-60 lg:block lg:mt-0">
-              <div className="absolute inset-1 rotate-[-9deg] rounded-[3rem] border-[6px] border-slate-900 bg-amber-300 shadow-[10px_10px_0_#0f172a]" />
-              <div className="absolute inset-8 rotate-[-9deg] rounded-[1.75rem] border-4 border-slate-900 bg-[#fffaf1]" />
-              <Heart className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rotate-[-9deg] fill-rose-600 text-rose-600" strokeWidth={2.4} />
+            <div className="hidden rounded-[2rem] border-2 border-slate-900 bg-white/80 p-5 shadow-sm backdrop-blur-sm lg:block">
+              <Heart className="h-12 w-12 fill-rose-500 text-rose-500" />
+              <p className="mt-8 text-sm font-bold text-indigo-700">Small support,<br />lasting impact.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(23rem,.9fr)] lg:items-start lg:gap-10 lg:px-8 lg:py-14">
-        <section className="rounded-3xl border-4 border-slate-900 bg-white p-5 shadow-[7px_7px_0_#0f172a] sm:p-8 lg:p-9">
-          <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-rose-200"><CircleDollarSign className="h-6 w-6 text-rose-700" /></div>
-            <div>
-              <p className="text-xs font-black tracking-widest text-rose-700">SMALL SUPPORT, REAL IMPACT</p>
-              <h2 className="mt-1 text-2xl font-black sm:text-3xl">選擇支持金額</h2>
-              <p className="mt-1 text-sm font-bold text-slate-600">付款後將前往綠界科技 ECPay 的安全付款頁面。</p>
+      <section className="relative mx-auto -mt-10 max-w-7xl px-4 pb-14 sm:px-6 lg:px-8 lg:pb-20">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_minmax(20rem,.88fr)] lg:gap-8">
+          <section className="rounded-[2rem] border-4 border-slate-900 bg-white p-5 shadow-[7px_7px_0_#0f172a] sm:p-8 lg:p-10">
+            <div className="flex items-start justify-between gap-4">
+              <div><p className="text-xs font-black tracking-[0.16em] text-indigo-600">ONE-TIME SUPPORT</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">選擇支持金額</h2><p className="mt-2 text-sm font-medium text-slate-500">單次付款，沒有自動續扣；付款將安全前往綠界。</p></div>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700"><CircleDollarSign className="h-6 w-6" /></div>
+            </div>
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {suggestedAmounts.map((value) => <button key={value} type="button" onClick={() => selectAmount(value)} aria-pressed={customAmount === '' && selectedAmount === value} className={`rounded-2xl border-2 bg-white px-3 py-4 text-lg font-black transition ${customAmount === '' && selectedAmount === value ? 'border-indigo-600 text-indigo-700 shadow-[0_0_0_3px_rgba(79,70,229,0.12)]' : 'border-slate-200 text-slate-800 hover:border-indigo-300'}`}>NT$ {value}</button>)}
+            </div>
+            <label className="mt-5 block"><span className="text-sm font-black text-slate-700">或輸入自訂金額</span><div className="mt-2 flex items-center rounded-2xl border-2 border-slate-200 bg-white px-4 transition focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-100"><span className="font-black text-slate-400">NT$</span><input type="number" min="10" max="50000" inputMode="numeric" value={customAmount} onChange={(event) => { setCustomAmount(event.target.value); setNotice(''); }} placeholder="最低 10 元" className="w-full bg-transparent px-3 py-4 font-black outline-none" /></div></label>
+            <button type="button" onClick={startEcpayCheckout} disabled={isSubmitting} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#17213d] px-5 py-4 text-lg font-black text-white shadow-[0_8px_0_#0b1020] transition hover:-translate-y-0.5 hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-60"><Heart className="h-5 w-5 fill-rose-300 text-rose-300" />{isSubmitting ? '正在前往綠界付款…' : `支持 NT$ ${Number.isFinite(amount) && amount > 0 ? amount.toLocaleString() : '--'}`}</button>
+            {notice && <p role="status" className="mt-5 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm font-bold leading-6 text-amber-900"><Info className="mr-2 inline h-4 w-4" />{notice}</p>}
+            <div className="mt-7 border-t border-slate-100 pt-5 text-xs font-medium leading-6 text-slate-500"><p className="font-black text-slate-700">付款金額限制</p><p className="mt-1">最低 10 元；超商代碼限 34–6,000 元；網路 ATM 與 ATM 虛擬帳號限 16–49,999 元；信用卡限 6–199,999 元。實際選項仍依綠界付款頁顯示為準。</p></div>
+          </section>
+
+          <aside className="space-y-6">
+            <section className="rounded-[2rem] border-4 border-slate-900 bg-white p-6 shadow-[6px_6px_0_#0f172a] sm:p-8">
+              <div className="flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700"><CreditCard className="h-5 w-5" /></div><div><p className="text-xs font-black tracking-[0.15em] text-indigo-600">ECPAY SECURE PAYMENT</p><h2 className="mt-1 text-xl font-black">支援的付款方式</h2></div></div>
+              <div className="mt-6"><p className="mb-2 text-xs font-black text-slate-500">信用卡付款</p><div className="grid grid-cols-2 gap-2.5">{cardPaymentMethods.map((method) => <span key={method} className="flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-sm font-black text-slate-800">{method}</span>)}</div></div>
+              <div className="mt-5"><p className="mb-2 text-xs font-black text-slate-500">非信用卡付款</p><div className="grid grid-cols-2 gap-2.5">{nonCardPaymentMethods.map((method) => <span key={method} className="flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-sm font-black text-slate-800">{method}</span>)}</div></div>
+              <p className="mt-5 text-xs font-medium leading-5 text-slate-500">實際可選的方式依綠界付款頁與已開通服務顯示。</p>
+            </section>
+            <section className="rounded-[2rem] border-4 border-slate-900 bg-white p-6 shadow-[6px_6px_0_#0f172a] sm:p-8"><p className="text-xs font-black tracking-[0.15em] text-indigo-600">YOUR SUPPORT MATTERS</p><h2 className="mt-2 text-xl font-black">每一筆支持都會用在這裡</h2><ul className="mt-5 space-y-3 text-sm font-medium leading-6 text-slate-600"><li className="flex gap-2"><Check className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />校對與更新升學資訊、學校與科系資料。</li><li className="flex gap-2"><Check className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />改善落點分析、志願排序與搜尋工具。</li><li className="flex gap-2"><Check className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />維持核心功能免費，讓更多學生能使用。</li></ul></section>
+          </aside>
+        </div>
+
+        <section className="mt-8 overflow-hidden rounded-[1.75rem] border-4 border-slate-900 bg-white shadow-[6px_6px_0_#0f172a]">
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(20rem,.8fr)]">
+            <div className="p-6 sm:p-8">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700"><Mail className="h-6 w-6" /></div>
+                <div><p className="text-xs font-black tracking-[0.14em] text-indigo-600">SUPPORT DESK</p><h2 className="mt-1 text-xl font-black">需要協助嗎？</h2><p className="mt-2 max-w-xl text-sm font-medium leading-6 text-slate-600">付款、退款或支持相關問題，請來信聯絡；我們會協助確認交易狀況與後續處理方式。</p></div>
+              </div>
+              <a href={`mailto:${supportEmail}?subject=%E9%97%9C%E6%96%BC%E5%B0%8F%E9%A1%8D%E6%94%AF%E6%8C%81`} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm font-black text-indigo-700 transition hover:border-indigo-400 hover:bg-indigo-100 sm:w-auto"><Mail className="h-4 w-4" />{supportEmail}</a>
+            </div>
+            <div className="border-t border-indigo-100 bg-[#f7f9ff] p-6 sm:p-8 lg:border-l lg:border-t-0">
+              <p className="text-xs font-black tracking-[0.14em] text-slate-500">PAYMENT INFORMATION</p>
+              <h2 className="mt-1 text-lg font-black text-slate-800">付款前請閱讀</h2>
+              <p className="mt-2 text-sm font-medium leading-6 text-slate-600">了解售後與退款規則，讓每一筆支持更安心。</p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                <a href={withBasePath('/after-sales-service')} className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:border-indigo-400 hover:text-indigo-700"><span>售後服務</span><span aria-hidden="true" className="text-indigo-500 transition group-hover:translate-x-1">→</span></a>
+                <a href={withBasePath('/refund-cancellation-policy')} className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:border-indigo-400 hover:text-indigo-700"><span>退款與取消政策</span><span aria-hidden="true" className="text-indigo-500 transition group-hover:translate-x-1">→</span></a>
+              </div>
             </div>
           </div>
-
-          <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:mt-9 lg:gap-4">
-            {suggestedAmounts.map((value) => <button key={value} type="button" onClick={() => selectAmount(value)} className={`rounded-2xl border-2 border-slate-900 px-3 py-4 text-lg font-black transition ${customAmount === '' && selectedAmount === value ? 'bg-amber-300 shadow-[3px_3px_0_#0f172a] -translate-y-0.5' : 'bg-white hover:bg-amber-50'}`}>NT$ {value}</button>)}
-          </div>
-
-          <label className="mt-5 block lg:mt-7">
-            <span className="text-sm font-black">自訂金額</span>
-            <div className="mt-2 flex items-center rounded-2xl border-2 border-slate-900 bg-slate-50 px-4">
-              <span className="font-black text-slate-500">NT$</span>
-              <input type="number" min="10" max="50000" inputMode="numeric" value={customAmount} onChange={(event) => { setCustomAmount(event.target.value); setNotice(''); }} placeholder="最低 NT$ 10" className="w-full bg-transparent px-3 py-4 font-black outline-none" />
-            </div>
-          </label>
-
-          <button type="button" onClick={startEcpayCheckout} disabled={isSubmitting} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border-4 border-slate-900 bg-rose-500 px-5 py-4 text-lg font-black text-white shadow-[5px_5px_0_#0f172a] transition hover:bg-rose-600 disabled:cursor-wait disabled:opacity-60">
-            <Heart className="h-5 w-5 fill-current" />{isSubmitting ? '正在前往綠界付款…' : `支持 NT$ ${Number.isFinite(amount) && amount > 0 ? amount.toLocaleString() : '--'}`}
-          </button>
-          <div className="mt-6 rounded-2xl border-2 border-slate-300 bg-slate-50 p-4 text-xs font-bold leading-6 text-slate-600">
-            <p className="font-black text-slate-800">付款方式金額限制</p>
-            <ul className="mt-2 list-disc space-y-1 pl-5">
-              <li>贊助金額最低為 10 元。</li>
-              <li>贊助金額超過 6,000 元或小於 34 元，無法使用超商代碼付款。</li>
-              <li>贊助金額超過 49,999 元或小於 16 元，無法使用網路 ATM 付款。</li>
-              <li>贊助金額超過 49,999 元或小於 16 元，無法使用 ATM 櫃員機付款。</li>
-              <li>贊助金額超過 199,999 元或小於 6 元，無法使用信用卡付款。</li>
-            </ul>
-          </div>
-          {notice && <p role="status" className="mt-5 rounded-2xl border-2 border-amber-700 bg-amber-50 p-4 text-sm font-bold leading-6 text-amber-900"><Info className="mr-2 inline h-4 w-4" />{notice}</p>}
         </section>
-
-        <aside className="grid gap-5 lg:grid-cols-2">
-          <section className="rounded-3xl border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[6px_6px_0_#f59e0b] lg:col-span-2 lg:p-9">
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-rose-200"><Heart className="h-6 w-6 fill-rose-600 text-rose-600" /></div>
-              <div><p className="text-xs font-black tracking-widest text-amber-300">YOUR SUPPORT MATTERS</p><h2 className="mt-1 text-xl font-black sm:text-2xl">贊助我們會做什麼？</h2></div>
-            </div>
-            <ul className="mt-7 grid gap-3 text-sm font-bold leading-6 text-indigo-100 lg:grid-cols-3 lg:gap-4">
-              <li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />持續校對、更新升學資訊與校科資料。</li>
-              <li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />改善落點分析、志願排序與搜尋工具。</li>
-              <li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />維持核心功能免費，讓更多學生都能使用。</li>
-            </ul>
-          </section>
-
-          <section className="overflow-hidden rounded-3xl border-4 border-slate-900 bg-white shadow-[6px_6px_0_#0f172a] lg:col-span-2">
-            <div className="relative overflow-hidden bg-slate-900 px-6 py-6 text-white sm:px-7">
-              <div aria-hidden="true" className="absolute -right-8 -top-12 h-32 w-32 rounded-full border-[18px] border-indigo-400/40" />
-              <div className="relative flex items-center gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#fff]">
-                  <CreditCard className="h-6 w-6" />
-                </div>
-                <div><p className="text-xs font-black tracking-[0.18em] text-slate-300">ECPAY SECURE PAYMENT</p><h2 className="mt-1 text-xl font-black">我們支援的付款方式</h2></div>
-              </div>
-            </div>
-            <div className="space-y-5 p-5 sm:p-6">
-              <div>
-                <h3 className="mb-2 text-sm font-black text-slate-800">信用卡付款</h3>
-                <div className="grid grid-cols-2 gap-2.5">
-                  {cardPaymentMethods.map((method) => <span key={method} className="flex min-h-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0_#0f172a]">{method}</span>)}
-                </div>
-              </div>
-              <div>
-                <h3 className="mb-2 text-sm font-black text-slate-800">非信用卡付款</h3>
-                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                  {nonCardPaymentMethods.map((method) => <span key={method} className="flex min-h-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0_#0f172a]">{method}</span>)}
-                </div>
-              </div>
-              <p className="mt-5 border-l-4 border-indigo-500 pl-3 text-xs font-bold leading-5 text-slate-600">實際可選付款方式將依綠界付款頁與商店已開通服務顯示。</p>
-            </div>
-          </section>
-
-          <section className="rounded-3xl border-4 border-slate-900 bg-amber-100 p-6 shadow-[6px_6px_0_#0f172a] sm:p-7 lg:col-span-2">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-rose-700"><Mail className="h-5 w-5" /></div>
-              <h2 className="text-xl font-black">小額支持聯繫方式</h2>
-            </div>
-            <p className="mt-2 text-sm font-bold leading-6 text-slate-700">付款、退款或支持方案相關問題，請來信聯絡，我們會協助處理。</p>
-            <a href={`mailto:${supportEmail}?subject=%E9%97%9C%E6%96%BC%E5%B0%8F%E9%A1%8D%E6%94%AF%E6%8C%81`} className="mt-5 flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black text-rose-700 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-rose-50"><Mail className="h-4 w-4 shrink-0" />{supportEmail}</a>
-          </section>
-
-        </aside>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8 lg:pb-16">
-        <div>
-          <section className="rounded-3xl border-4 border-slate-900 bg-indigo-600 p-5 text-white shadow-[6px_6px_0_#0f172a] sm:p-6">
-            <div className="lg:flex lg:items-center lg:justify-between lg:gap-6">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-indigo-700"><FileText className="h-5 w-5" /></div>
-                <div><h2 className="text-xl font-black">付款前請閱讀</h2><p className="mt-1 text-sm font-bold leading-6 text-indigo-100">了解售後服務與退款規則，讓每一筆支持都更安心。</p></div>
-              </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:mt-0 lg:w-[25rem] lg:shrink-0">
-              <a href={withBasePath('/after-sales-service')} className="rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-center text-sm font-black text-slate-900 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-slate-50">售後服務</a>
-              <a href={withBasePath('/refund-cancellation-policy')} className="rounded-xl border-2 border-slate-900 bg-amber-300 px-4 py-3 text-center text-sm font-black text-slate-900 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-amber-200">退款與取消政策</a>
-              </div>
-            </div>
-          </section>
-        </div>
       </section>
 
       {thankYouAmount !== null && <div role="dialog" aria-modal="true" aria-labelledby="support-thanks-title" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4">
