@@ -5,7 +5,7 @@ import { withBasePath } from '../lib/routes';
 
 const suggestedAmounts = [50, 100, 300, 500];
 const supportEmail = 'tyctw.analyze@gmail.com';
-const paymentMethods = ['信用卡', 'Apple Pay', '網路 ATM', 'ATM 虛擬帳號', '超商條碼', '超商代碼', '綠界 Pay'];
+const paymentMethods = ['信用卡', 'Apple Pay', '網路 ATM', 'ATM 虛擬帳號', '超商條碼', '超商代碼'];
 const supportPaymentStorageKey = 'spare.support.payment';
 
 type SupportPaymentTracking = {
@@ -92,8 +92,8 @@ export default function SupportPage() {
   };
 
   const startEcpayCheckout = async () => {
-    if (!Number.isInteger(amount) || amount < 1 || amount > 50_000) {
-      setNotice('請輸入 NT$ 1 至 50,000 的整數金額。');
+    if (!Number.isInteger(amount) || amount < 10 || amount > 50_000) {
+      setNotice('自訂金額請輸入 NT$ 10 至 50,000 的整數。');
       return;
     }
 
@@ -173,7 +173,7 @@ export default function SupportPage() {
             <span className="text-sm font-black">自訂金額</span>
             <div className="mt-2 flex items-center rounded-2xl border-2 border-slate-900 bg-slate-50 px-4">
               <span className="font-black text-slate-500">NT$</span>
-              <input type="number" min="1" max="50000" inputMode="numeric" value={customAmount} onChange={(event) => { setCustomAmount(event.target.value); setNotice(''); }} placeholder="請輸入整數金額" className="w-full bg-transparent px-3 py-4 font-black outline-none" />
+              <input type="number" min="10" max="50000" inputMode="numeric" value={customAmount} onChange={(event) => { setCustomAmount(event.target.value); setNotice(''); }} placeholder="最低 NT$ 10" className="w-full bg-transparent px-3 py-4 font-black outline-none" />
             </div>
           </label>
 
@@ -184,23 +184,34 @@ export default function SupportPage() {
         </section>
 
         <aside className="grid gap-5 lg:grid-cols-2">
-          <section className="rounded-3xl border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[6px_6px_0_#f59e0b] lg:col-span-2 lg:p-7">
-            <Heart className="h-7 w-7 fill-rose-300 text-rose-300" />
-            <h2 className="mt-3 text-xl font-black">贊助我們會做什麼？</h2>
-            <ul className="mt-4 grid gap-3 text-sm font-bold leading-6 text-indigo-100 lg:grid-cols-3 lg:gap-4">
+          <section className="rounded-3xl border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[6px_6px_0_#f59e0b] lg:col-span-2 lg:p-9">
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-rose-200"><Heart className="h-6 w-6 fill-rose-600 text-rose-600" /></div>
+              <div><p className="text-xs font-black tracking-widest text-amber-300">YOUR SUPPORT MATTERS</p><h2 className="mt-1 text-xl font-black sm:text-2xl">贊助我們會做什麼？</h2></div>
+            </div>
+            <ul className="mt-7 grid gap-3 text-sm font-bold leading-6 text-indigo-100 lg:grid-cols-3 lg:gap-4">
               <li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />持續校對、更新升學資訊與校科資料。</li>
               <li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />改善落點分析、志願排序與搜尋工具。</li>
               <li className="flex gap-2"><Check className="h-5 w-5 shrink-0 text-amber-300" />維持核心功能免費，讓更多學生都能使用。</li>
             </ul>
           </section>
 
-          <section className="rounded-3xl border-4 border-slate-900 bg-white p-6 shadow-[6px_6px_0_#0f172a] lg:col-span-2 lg:grid lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-x-4 lg:gap-y-1">
-            <CreditCard className="h-7 w-7 text-indigo-700 lg:row-span-2 lg:mt-1" />
-            <h2 className="mt-3 text-xl font-black lg:mt-0">信用卡與非信用卡付款</h2>
-            <div className="mt-3 flex flex-wrap gap-2 lg:mt-1">
-              {paymentMethods.map((method) => <span key={method} className="rounded-full border-2 border-slate-900 bg-slate-50 px-3 py-1.5 text-sm font-black">{method}</span>)}
+          <section className="overflow-hidden rounded-3xl border-4 border-slate-900 bg-white shadow-[6px_6px_0_#0f172a] lg:col-span-2">
+            <div className="relative overflow-hidden bg-slate-900 px-6 py-6 text-white sm:px-7">
+              <div aria-hidden="true" className="absolute -right-8 -top-12 h-32 w-32 rounded-full border-[18px] border-indigo-400/40" />
+              <div className="relative flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 shadow-[3px_3px_0_#fff]">
+                  <CreditCard className="h-6 w-6" />
+                </div>
+                <div><p className="text-xs font-black tracking-[0.18em] text-amber-300">ECPAY SECURE PAYMENT</p><h2 className="mt-1 text-xl font-black">信用卡與非信用卡付款</h2></div>
+              </div>
             </div>
-            <p className="mt-3 text-xs font-bold leading-5 text-slate-500 lg:col-start-2">實際可選付款方式將依綠界付款頁與商店已開通服務顯示。</p>
+            <div className="p-5 sm:p-6">
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                {paymentMethods.map((method, index) => <span key={method} className={`flex min-h-11 items-center justify-center rounded-xl border-2 border-slate-900 px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0_#0f172a] ${index === 0 ? 'bg-amber-300' : index === paymentMethods.length - 1 ? 'bg-rose-100' : 'bg-slate-50'}`}>{method}</span>)}
+              </div>
+              <p className="mt-5 border-l-4 border-indigo-500 pl-3 text-xs font-bold leading-5 text-slate-600">實際可選付款方式將依綠界付款頁與商店已開通服務顯示。</p>
+            </div>
           </section>
 
         </aside>
