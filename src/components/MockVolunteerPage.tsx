@@ -248,6 +248,10 @@ export default function MockVolunteerPage() {
 
   const activeRegionName = MOCK_VOLUNTEER_REGIONS.find((item) => item.id === region)?.name || '目前就學區';
   const activeRegionCountyText = getRegionCountyText(region);
+  const shareSnapshotKey = useMemo(
+    () => JSON.stringify({ region, choices: selectedChoices.map(({ id, ...choice }) => choice) }),
+    [region, selectedChoices],
+  );
   const activeRegionCounties = useMemo(() => (REGION_COUNTIES[region] || []).map(normalizeCounty), [region]);
   const preferenceRule = PREFERENCE_RULES[region];
   const choicePreferenceScores = useMemo(() => {
@@ -937,6 +941,7 @@ export default function MockVolunteerPage() {
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
         kind="volunteer"
+        snapshotKey={shareSnapshotKey}
         payload={{ region, regionName: activeRegionName, choices: selectedChoices, createdAt: new Date().toISOString() }}
       />
     </main>
