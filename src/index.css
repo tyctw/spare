@@ -118,6 +118,55 @@
     background-color: #94a3b8;
   }
 
+  /* Support centre contact panel: a focused, action-led finish for policy pages. */
+  .support-contact-panel {
+    background:
+      radial-gradient(circle at 92% 12%, rgba(251, 191, 36, 0.23), transparent 25rem),
+      linear-gradient(135deg, #172554 0%, #172554 44%, #312e81 100%);
+  }
+
+  .support-contact-orb {
+    position: absolute;
+    right: -4.5rem;
+    bottom: -5.5rem;
+    width: 13rem;
+    height: 13rem;
+    border: 1.4rem solid rgba(251, 191, 36, 0.18);
+    border-radius: 9999px;
+  }
+
+  .support-contact-email,
+  .support-contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 1rem;
+    padding: 0.875rem 1rem;
+    text-decoration: none;
+    transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+  }
+
+  .support-contact-email {
+    background: #ffffff;
+  }
+
+  .support-contact-link {
+    background: rgba(15, 23, 42, 0.38);
+    color: #ffffff;
+  }
+
+  .support-contact-email:hover,
+  .support-contact-link:hover {
+    transform: translateY(-2px);
+    border-color: #fbbf24;
+  }
+
+  .support-contact-link:hover {
+    background: rgba(15, 23, 42, 0.7);
+  }
+
   /* Keep the shared preference report's summary cards separate from its hero copy. */
   main:has(.before\:bg-indigo-200) header + section {
     margin-top: 1.5rem !important;
