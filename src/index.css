@@ -202,6 +202,46 @@
     color: #64748b;
   }
 
+  .policy-section-anchor {
+    scroll-margin-top: 1.25rem;
+  }
+
+  .policy-page-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-height: 3rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    color: #334155;
+    font-size: 0.875rem;
+    font-weight: 800;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+
+  .policy-page-nav-link > span:first-child {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: #e0e7ff;
+    color: #3730a3;
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+
+  .policy-page-nav-link:hover {
+    transform: translateX(2px);
+    border-color: #6366f1;
+    background: #eef2ff;
+    color: #312e81;
+  }
+
   /* Keep the shared preference report's summary cards separate from its hero copy. */
   main:has(.before\:bg-indigo-200) header + section {
     margin-top: 1.5rem !important;
