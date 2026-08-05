@@ -36,6 +36,8 @@ interface SchoolItem {
 const createChoiceId = (school: SchoolItem) =>
   `${school.code}-${school.deptCode}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
+const SHARED_COPY_STORAGE_KEY = 'mock-volunteer-import';
+
 const isSameVolunteerOption = (first: SchoolItem, second: SchoolItem) =>
   first.code === second.code
   && first.deptCode === second.deptCode
@@ -195,6 +197,21 @@ export default function MockVolunteerPage() {
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const allowPageExitRef = useRef(false);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('import') !== 'shared') return;
+    const raw = window.localStorage.getItem(SHARED_COPY_STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const imported = JSON.parse(raw);
+      if (Array.isArray(imported.choices)) {
+        setSelectedChoices(imported.choices.map((choice: SchoolItem) => ({ ...choice, id: createChoiceId(choice) })));
+        if (typeof imported.region === 'string' && MOCK_VOLUNTEER_REGIONS.some((item) => item.id === imported.region)) setRegion(imported.region);
+        setNotice('已建立個人副本：可在此自由調整，原分享清單不會被修改。');
+      }
+    } catch { setNotice('副本資料無法讀取，請回到分享頁再試一次。'); }
+    window.localStorage.removeItem(SHARED_COPY_STORAGE_KEY);
+  }, []);
 
   useEffect(() => {
     let ignore = false;
