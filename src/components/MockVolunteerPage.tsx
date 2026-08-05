@@ -691,6 +691,10 @@ export default function MockVolunteerPage() {
                 <Target className="h-4 w-4" />
                 志願選填攻略
               </a>
+              <div className="relative mt-3 rounded-xl border-2 border-indigo-300 bg-indigo-50 p-3 text-left">
+                <div className="flex items-center gap-2 text-sm font-black text-indigo-950"><Share2 className="h-4 w-4" />分享志願清單</div>
+                <p className="mt-1 text-xs font-bold leading-5 text-slate-600">一鍵建立唯讀分享連結，方便和家長、老師討論；查看者可建立自己的副本修改，原始清單維持不變。</p>
+              </div>
               <div className="relative mt-2 flex gap-2">
                 <button
                   onClick={() => setIsShareOpen(true)}
