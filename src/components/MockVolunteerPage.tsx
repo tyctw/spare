@@ -17,7 +17,6 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import { pageNavigationAsideClassName } from './PageNavigation';
 import ShareReportDialog from './ShareReportDialog';
 
 interface SchoolItem {
@@ -667,7 +666,7 @@ export default function MockVolunteerPage() {
             </div>
           </section>
 
-          <aside className={`${pageNavigationAsideClassName} overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]`}>
+          <aside className="min-w-0 overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:self-start lg:overflow-y-auto lg:overscroll-contain">
             <div className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-amber-200 via-amber-50 to-white p-5">
               <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full border-4 border-amber-300/60 bg-amber-100/70" />
               <div className="relative flex items-start justify-between gap-3">
