@@ -121,8 +121,9 @@
   /* Support centre contact panel: a focused, action-led finish for policy pages. */
   .support-contact-panel {
     background:
-      radial-gradient(circle at 92% 12%, rgba(251, 191, 36, 0.23), transparent 25rem),
-      linear-gradient(135deg, #172554 0%, #172554 44%, #312e81 100%);
+      radial-gradient(circle at 92% 12%, rgba(251, 191, 36, 0.42), transparent 23rem),
+      linear-gradient(135deg, #eff6ff 0%, #fefce8 52%, #ffffff 100%);
+    color: #0f172a;
   }
 
   .support-contact-orb {
@@ -131,7 +132,7 @@
     bottom: -5.5rem;
     width: 13rem;
     height: 13rem;
-    border: 1.4rem solid rgba(251, 191, 36, 0.18);
+    border: 1.4rem solid rgba(37, 99, 235, 0.12);
     border-radius: 9999px;
   }
 
@@ -141,7 +142,7 @@
     align-items: center;
     gap: 0.75rem;
     min-width: 0;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid #cbd5e1;
     border-radius: 1rem;
     padding: 0.875rem 1rem;
     text-decoration: none;
@@ -153,8 +154,8 @@
   }
 
   .support-contact-link {
-    background: rgba(15, 23, 42, 0.38);
-    color: #ffffff;
+    background: rgba(255, 255, 255, 0.82);
+    color: #0f172a;
   }
 
   .support-contact-email:hover,
@@ -164,7 +165,41 @@
   }
 
   .support-contact-link:hover {
-    background: rgba(15, 23, 42, 0.7);
+    background: #ffffff;
+  }
+
+  .support-contact-panel .text-white,
+  .support-contact-panel .text-slate-100 {
+    color: #0f172a;
+  }
+
+  .support-contact-panel .text-amber-200 {
+    color: #a16207;
+  }
+
+  .support-contact-panel .bg-white\/10 {
+    border-color: #bfdbfe;
+    background: rgba(255, 255, 255, 0.74);
+  }
+
+  .support-contact-panel .border-white\/20 {
+    border-color: #bfdbfe;
+  }
+
+  .support-contact-panel .border-white\/80 {
+    border-color: #0f172a;
+  }
+
+  .support-contact-panel .shadow-\[3px_3px_0_\#fff\] {
+    box-shadow: 3px 3px 0 #0f172a;
+  }
+
+  .support-contact-link .text-slate-300 {
+    color: #475569;
+  }
+
+  .support-contact-link .text-slate-400 {
+    color: #64748b;
   }
 
   /* Keep the shared preference report's summary cards separate from its hero copy. */
