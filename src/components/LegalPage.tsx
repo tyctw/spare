@@ -5,144 +5,66 @@ import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
 
 type LegalPageKind = 'privacy' | 'terms';
 type LegalSection = { title: string; body: string[] };
-type LegalPageContent = {
-  title: string;
-  eyebrow: string;
-  description: string;
-  icon: React.ComponentType<{ className?: string }>;
-  sections: LegalSection[];
-};
+type LegalPageContent = { title: string; eyebrow: string; description: string; icon: React.ComponentType<{ className?: string }>; sections: LegalSection[] };
 
-const updatedAt = '2026 年 8 月 4 日';
 const contactEmail = 'tyctw.analyze@gmail.com';
-// 請在正式營運前填妥下列資訊；以電子商務方式收款時，應揭露可有效聯絡的營運者資料。
-const operatorName = '本網站營運者';
-const operatorAddress = '請以電子郵件聯絡取得營運者聯絡地址';
+const updatedAt = '2026-08-05';
+
+const privacySections: LegalSection[] = [
+  { title: '\u4e00\u3001\u9069\u7528\u7bc4\u570d\u8207\u806f\u7d61\u65b9\u5f0f', body: [
+    '\u672c\u96b1\u79c1\u6b0a\u653f\u7b56\u8aaa\u660e\u300c\u53f0\u7063\u6703\u8003\u843d\u9ede\u5206\u6790\u300d\u7db2\u7ad9\uff08\u4e0b\u7a31\u672c\u7ad9\uff09\u8655\u7406\u500b\u4eba\u8cc7\u6599\u8207\u88dd\u7f6e\u8cc7\u8a0a\u7684\u65b9\u5f0f\uff0c\u9069\u7528\u65bc\u672c\u7ad9\u7db2\u9801\u3001\u843d\u9ede\u5206\u6790\u3001\u6a21\u64ec\u5fd7\u9858\u9078\u586b\u3001\u56de\u994b\u3001\u554f\u984c\u56de\u5831\u3001\u5206\u4eab\u9023\u7d50\u53ca\u5c0f\u984d\u652f\u6301\u529f\u80fd\u3002',
+    '\u8cc7\u6599\u63a7\u5236\u8005\u70ba\u672c\u7ad9\u71df\u904b\u8005\uff1b\u5982\u5c0d\u500b\u4eba\u8cc7\u6599\u8655\u7406\u3001\u6b0a\u5229\u884c\u4f7f\u6216\u672c\u653f\u7b56\u6709\u7591\u554f\uff0c\u8acb\u5bc4\u4fe1\u81f3 tyctw.analyze@gmail.com\u3002\u70ba\u4fdd\u8b77\u60a8\u7684\u8cc7\u6599\uff0c\u672c\u7ad9\u53ef\u80fd\u8981\u6c42\u60a8\u63d0\u4f9b\u8db3\u4ee5\u78ba\u8a8d\u8eab\u5206\u8207\u8acb\u6c42\u5167\u5bb9\u7684\u5fc5\u8981\u8cc7\u8a0a\u3002',
+  ] },
+  { title: '\u4e8c\u3001\u6211\u5011\u53ef\u80fd\u8490\u96c6\u7684\u8cc7\u6599', body: [
+    '\u70ba\u63d0\u4f9b\u670d\u52d9\uff0c\u672c\u7ad9\u53ef\u80fd\u8655\u7406\u60a8\u4e3b\u52d5\u8f38\u5165\u7684\u5c31\u5b78\u5340\u3001\u6703\u8003\u6210\u7e3e\u3001\u5b78\u6821\u985e\u578b\u504f\u597d\u3001\u6280\u8077\u7fa4\u79d1\u504f\u597d\u3001\u6a21\u64ec\u5fd7\u9858\u6e05\u55ae\u3001\u56de\u994b\u5167\u5bb9\u3001\u554f\u984c\u63cf\u8ff0\u53ca\u60a8\u81ea\u9858\u63d0\u4f9b\u7684\u96fb\u5b50\u90f5\u4ef6\u3002',
+    '\u70ba\u7dad\u8b77\u670d\u52d9\u8207\u9632\u6b62\u6feb\u7528\uff0c\u672c\u7ad9\u53ef\u80fd\u8655\u7406\u9080\u8acb\u78bc\u4f7f\u7528\u72c0\u614b\u3001\u8acb\u6c42\u6642\u9593\u3001IP \u4f4d\u5740\u3001\u4f7f\u7528\u8005\u4ee3\u7406\u7a0b\u5f0f\u3001\u8a9e\u8a00\u3001\u87a2\u5e55\u8207\u8996\u7a97\u5c3a\u5bf8\u3001\u9020\u8a2a\u9801\u9762\u53ca\u932f\u8aa4\u6216\u64cd\u4f5c\u7d00\u9304\u3002\u9019\u4e9b\u8cc7\u8a0a\u4e0d\u6703\u7528\u65bc\u5efa\u7acb\u5ee3\u544a\u53d7\u773e\u6216\u8ca9\u552e\u7d66\u7b2c\u4e09\u4eba\u3002',
+    '\u4f7f\u7528\u5c0f\u984d\u652f\u6301\u6642\uff0c\u672c\u7ad9\u6703\u8655\u7406\u4ea4\u6613\u7de8\u865f\u3001\u91d1\u984d\u3001\u4ed8\u6b3e\u72c0\u614b\u8207\u91d1\u6d41\u56de\u50b3\u6240\u5fc5\u8981\u7684\u8cc7\u8a0a\uff1b\u4fe1\u7528\u5361\u6216\u5176\u4ed6\u4ed8\u6b3e\u5de5\u5177\u7684\u654f\u611f\u652f\u4ed8\u8cc7\u6599\u7531\u7da0\u754c\u79d1\u6280\uff08ECPay\uff09\u4f9d\u5176\u652f\u4ed8\u6d41\u7a0b\u8655\u7406\uff0c\u672c\u7ad9\u4e0d\u5132\u5b58\u5b8c\u6574\u5361\u865f\u3002',
+  ] },
+  { title: '\u4e09\u3001\u8490\u96c6\u76ee\u7684\u8207\u4f7f\u7528\u65b9\u5f0f', body: [
+    '\u672c\u7ad9\u50c5\u5728\u63d0\u4f9b\u843d\u9ede\u5206\u6790\u3001\u5fd7\u9858\u6392\u5e8f\u3001\u670d\u52d9\u9a57\u8b49\u3001\u6280\u8853\u7dad\u904b\u3001\u8cc7\u5b89\u9632\u8b77\u3001\u56de\u8986\u56de\u994b\u6216\u554f\u984c\u3001\u8655\u7406\u5c0f\u984d\u652f\u6301\u8207\u9075\u5faa\u6cd5\u4ee4\u6240\u5fc5\u8981\u7684\u7bc4\u570d\u5167\u4f7f\u7528\u8cc7\u6599\u3002',
+    '\u5206\u6790\u7d50\u679c\u8207\u5fd7\u9858\u8cc7\u6599\u4e3b\u8981\u5728\u60a8\u7684\u700f\u89bd\u5668\u5de5\u4f5c\u968e\u6bb5\u4e2d\u4f7f\u7528\u3002\u9664\u975e\u60a8\u4e3b\u52d5\u5efa\u7acb\u5206\u4eab\u9023\u7d50\u3001\u9001\u51fa\u56de\u994b\uff0f\u554f\u984c\u56de\u5831\u6216\u4f7f\u7528\u9700\u8981\u5f8c\u7aef\u8655\u7406\u7684\u529f\u80fd\uff0c\u672c\u7ad9\u4e0d\u6703\u5c07\u5176\u4f5c\u70ba\u516c\u958b\u8cc7\u6599\u520a\u767b\u3002',
+  ] },
+  { title: '\u56db\u3001\u5206\u4eab\u9023\u7d50\u8207\u516c\u958b\u98a8\u96aa', body: [
+    '\u6a21\u64ec\u5fd7\u9858\u9078\u586b\u7684\u552f\u8b80\u5206\u4eab\u9023\u7d50\u63a1\u96a8\u6a5f\u4ee3\u78bc\u5b58\u53d6\uff0c\u6709\u6548\u671f\u9593\u70ba 2 \u5929\u3002\u4efb\u4f55\u53d6\u5f97\u9023\u7d50\u6216 QR Code \u7684\u4eba\u90fd\u53ef\u6aa2\u8996\u8a72\u5206\u4eab\u5feb\u7167\uff1b\u8acb\u52ff\u5728\u5fd7\u9858\u5167\u5bb9\u3001\u622a\u5716\u6216\u5206\u4eab\u8a0a\u606f\u4e2d\u52a0\u5165\u59d3\u540d\u3001\u8eab\u5206\u8b49\u5b57\u865f\u3001\u51c6\u8003\u8b49\u865f\u3001\u4f4f\u5740\u3001\u96fb\u8a71\u6216\u5176\u4ed6\u654f\u611f\u8cc7\u8a0a\u3002',
+    '\u5206\u4eab\u9023\u7d50\u5230\u671f\u5f8c\u5c07\u7121\u6cd5\u900f\u904e\u672c\u7ad9\u8b80\u53d6\u3002\u60a8\u8abf\u6574\u5fd7\u9858\u6e05\u55ae\u5f8c\u9700\u5efa\u7acb\u65b0\u7684\u5feb\u7167\uff1b\u65b0\u7684\u5feb\u7167\u4e0d\u6703\u4fee\u6539\u820a\u9023\u7d50\u5167\u5bb9\u3002',
+  ] },
+  { title: '\u4e94\u3001\u8cc7\u6599\u5206\u4eab\u3001\u59d4\u5916\u8207\u8de8\u5883\u8655\u7406', body: [
+    '\u672c\u7ad9\u4e0d\u51fa\u552e\u3001\u51fa\u79df\u6216\u4ee5\u4ea4\u63db\u65b9\u5f0f\u63d0\u4f9b\u500b\u4eba\u8cc7\u6599\u3002\u50c5\u5728\u670d\u52d9\u6240\u9700\u7bc4\u570d\u5167\uff0c\u53ef\u80fd\u4f7f\u7528 Supabase \u63d0\u4f9b\u5f8c\u7aef\u8207\u8cc7\u6599\u5eab\u670d\u52d9\u3001GitHub Pages \u63d0\u4f9b\u7db2\u7ad9\u8a17\u7ba1\uff0c\u4ee5\u53ca ECPay \u63d0\u4f9b\u652f\u4ed8\u670d\u52d9\uff1b\u5404\u670d\u52d9\u5546\u53ef\u80fd\u5728\u53f0\u7063\u4ee5\u5916\u5730\u5340\u8655\u7406\u6280\u8853\u8cc7\u6599\u3002',
+    '\u7576\u60a8\u9ede\u64ca Google \u5730\u5716\u3001\u5b98\u65b9\u62db\u751f\u5e73\u53f0\u6216\u5176\u4ed6\u5916\u90e8\u9023\u7d50\u6642\uff0c\u8a72\u7b2c\u4e09\u65b9\u7db2\u7ad9\u6703\u4f9d\u5176\u81ea\u5df1\u7684\u96b1\u79c1\u6b0a\u653f\u7b56\u8655\u7406\u60a8\u7684\u8cc7\u6599\uff1b\u672c\u7ad9\u7121\u6cd5\u63a7\u5236\u5176\u4f5c\u6cd5\u3002',
+  ] },
+  { title: '\u516d\u3001\u700f\u89bd\u5668\u5132\u5b58\u3001Cookie \u8207\u7b2c\u4e09\u65b9\u8cc7\u6e90', body: [
+    '\u672c\u7ad9\u4f7f\u7528 localStorage \u8207 sessionStorage \u4fdd\u5b58\u4f8b\u5982\u514d\u8cac\u8072\u660e\u95b1\u8b80\u72c0\u614b\u3001\u9080\u8acb\u78bc\u9a57\u8b49\u66ab\u5b58\u3001\u5206\u6790\u7d50\u679c\u3001\u4ed8\u6b3e\u8ffd\u8e64\u6216\u56de\u994b\u72c0\u614b\uff0c\u4ee5\u7dad\u6301\u9801\u9762\u529f\u80fd\u3002\u60a8\u53ef\u5728\u700f\u89bd\u5668\u6e05\u9664\u7db2\u7ad9\u8cc7\u6599\uff1b\u6e05\u9664\u5f8c\uff0c\u76f8\u95dc\u66ab\u5b58\u7d50\u679c\u8207\u8a2d\u5b9a\u53ef\u80fd\u7121\u6cd5\u5fa9\u539f\u3002',
+    '\u672c\u7ad9\u76ee\u524d\u4e0d\u4ee5 Cookie \u5efa\u7acb\u8de8\u7db2\u7ad9\u5ee3\u544a\u8ffd\u8e64\u3002\u7db2\u7ad9\u53ef\u80fd\u8f09\u5165 Google Fonts \u7b49\u7b2c\u4e09\u65b9\u8cc7\u6e90\uff1b\u9019\u4e9b\u670d\u52d9\u53ef\u80fd\u56e0\u6280\u8853\u50b3\u8f38\u800c\u53d6\u5f97\u60a8\u7684 IP \u4f4d\u5740\u8207\u700f\u89bd\u5668\u8cc7\u8a0a\u3002',
+  ] },
+  { title: '\u4e03\u3001\u4fdd\u5b58\u671f\u9593\u8207\u5b89\u5168\u63aa\u65bd', body: [
+    '\u672c\u7ad9\u50c5\u5728\u9054\u6210\u8490\u96c6\u76ee\u7684\u3001\u8655\u7406\u722d\u8b70\u3001\u7dad\u8b77\u8cc7\u5b89\u6216\u5c65\u884c\u6cd5\u5b9a\u7fa9\u52d9\u6240\u5fc5\u8981\u7684\u671f\u9593\u4fdd\u5b58\u8cc7\u6599\u3002\u5206\u4eab\u5feb\u7167\u4f9d\u524d\u8ff0 2 \u5929\u671f\u9650\u8655\u7406\uff1b\u700f\u89bd\u5668\u66ab\u5b58\u8cc7\u6599\u5247\u7531\u60a8\u63a7\u5236\uff0c\u4e26\u53ef\u81ea\u884c\u6e05\u9664\u3002',
+    '\u672c\u7ad9\u63a1\u53d6\u5b58\u53d6\u6b0a\u9650\u63a7\u7ba1\u3001\u50b3\u8f38\u52a0\u5bc6\u8207\u5f8c\u7aef\u8cc7\u6599\u5217\u5b89\u5168\u8a2d\u5b9a\u7b49\u5408\u7406\u63aa\u65bd\uff0c\u4ee5\u964d\u4f4e\u672a\u6388\u6b0a\u5b58\u53d6\u3001\u907a\u5931\u3001\u7ac4\u6539\u6216\u5916\u6d29\u7684\u98a8\u96aa\u3002\u4f46\u7db2\u8def\u50b3\u8f38\u8207\u5132\u5b58\u7121\u6cd5\u4fdd\u8b49\u7d55\u5c0d\u5b89\u5168\u3002',
+  ] },
+  { title: '\u516b\u3001\u60a8\u7684\u500b\u4eba\u8cc7\u6599\u6b0a\u5229', body: [
+    '\u4f9d\u500b\u4eba\u8cc7\u6599\u4fdd\u8b77\u6cd5\uff0c\u60a8\u5f97\u5c31\u60a8\u7684\u500b\u4eba\u8cc7\u6599\u8acb\u6c42\u67e5\u8a62\u6216\u95b1\u89bd\u3001\u88fd\u7d66\u8907\u88fd\u672c\u3001\u88dc\u5145\u6216\u66f4\u6b63\u3001\u505c\u6b62\u8490\u96c6\u3001\u8655\u7406\u6216\u5229\u7528\uff0c\u4ee5\u53ca\u522a\u9664\uff1b\u4f46\u4f9d\u6cd5\u5f97\u62d2\u7d55\u6216\u6709\u4fdd\u5b58\u5fc5\u8981\u8005\uff0c\u4e0d\u5728\u6b64\u9650\u3002',
+    '\u8acb\u4ee5\u96fb\u5b50\u90f5\u4ef6\u63d0\u51fa\u7533\u8acb\u4e26\u8aaa\u660e\u60a8\u7684\u8acb\u6c42\u3001\u4f7f\u7528\u529f\u80fd\u8207\u53ef\u4f9b\u6838\u5c0d\u7684\u5fc5\u8981\u8cc7\u8a0a\u3002\u672c\u7ad9\u5c07\u4f9d\u9069\u7528\u6cd5\u4ee4\u8655\u7406\uff1b\u5982\u4f9d\u6cd5\u5f97\u6536\u53d6\u8cbb\u7528\uff0c\u6703\u5728\u8655\u7406\u524d\u544a\u77e5\u3002',
+  ] },
+  { title: '\u4e5d\u3001\u672a\u6210\u5e74\u4eba\u8207\u653f\u7b56\u66f4\u65b0', body: [
+    '\u672c\u7ad9\u670d\u52d9\u4e3b\u8981\u9762\u5411\u5347\u5b78\u898f\u5283\u4f7f\u7528\u8005\u3002\u672a\u6eff\u6cd5\u5b9a\u5e74\u9f61\u8005\uff0c\u5efa\u8b70\u5728\u6cd5\u5b9a\u4ee3\u7406\u4eba\u6216\u76e3\u8b77\u4eba\u4e86\u89e3\u672c\u653f\u7b56\u5f8c\u4f7f\u7528\u6d89\u53ca\u8cc7\u6599\u8f38\u5165\u3001\u5206\u4eab\u6216\u4ed8\u6b3e\u7684\u529f\u80fd\u3002',
+    '\u672c\u7ad9\u53ef\u80fd\u56e0\u529f\u80fd\u3001\u6cd5\u4ee4\u6216\u5b89\u5168\u9700\u6c42\u66f4\u65b0\u672c\u653f\u7b56\uff0c\u66f4\u65b0\u5f8c\u5c07\u516c\u5e03\u65bc\u672c\u9801\u4e26\u8abf\u6574\u6700\u5f8c\u66f4\u65b0\u65e5\u671f\u3002\u91cd\u5927\u8b8a\u66f4\u6703\u4ee5\u5408\u7406\u65b9\u5f0f\u63d0\u793a\u4f7f\u7528\u8005\u3002',
+  ] },
+];
+
+const termsSections: LegalSection[] = [
+  { title: '\u670d\u52d9\u8aaa\u660e', body: [
+    '\u672c\u7ad9\u63d0\u4f9b\u5347\u5b78\u8cc7\u8a0a\u3001\u843d\u9ede\u5206\u6790\u8207\u5fd7\u9858\u898f\u5283\u8f14\u52a9\u5de5\u5177\uff0c\u7d50\u679c\u50c5\u4f9b\u53c3\u8003\uff0c\u4e0d\u69cb\u6210\u9304\u53d6\u4fdd\u8b49\u3001\u6559\u80b2\u6216\u6cd5\u5f8b\u5efa\u8b70\u3002',
+  ] },
+  { title: '\u4f7f\u7528\u8005\u8cac\u4efb', body: [
+    '\u8acb\u8f38\u5165\u6b63\u78ba\u4e14\u8207\u5206\u6790\u5fc5\u8981\u76f8\u95dc\u7684\u8cc7\u8a0a\uff0c\u4e26\u4ee5\u62db\u751f\u7c21\u7ae0\u3001\u5b98\u65b9\u516c\u544a\u8207\u6b63\u5f0f\u9078\u586b\u7cfb\u7d71\u70ba\u6700\u7d42\u4f9d\u64da\u3002',
+  ] },
+  { title: '\u670d\u52d9\u8abf\u6574', body: [
+    '\u672c\u7ad9\u5f97\u56e0\u8cc7\u6599\u66f4\u65b0\u3001\u7dad\u8b77\u3001\u5b89\u5168\u6216\u6cd5\u4ee4\u9700\u6c42\u8abf\u6574\u3001\u66ab\u505c\u6216\u7d42\u6b62\u90e8\u5206\u529f\u80fd\u3002',
+  ] },
+];
 
 const pages: Record<LegalPageKind, LegalPageContent> = {
-  privacy: {
-    title: '隱私權政策',
-    eyebrow: 'PRIVACY POLICY',
-    description: '本政策說明「全國會考落點分析」如何蒐集、處理、利用與保護您提供或使用服務時產生的資料。若您不同意本政策，請停止使用本服務。',
-    icon: Database,
-    sections: [
-      {
-        title: '一、資料管理者、適用範圍與聯絡方式',
-        body: [
-          `資料管理者為${operatorName}。本政策適用於本網站的落點分析、學校與科系查詢、模擬志願、資料匯出、評分、問題回報、小額支持與相關頁面。營運者聯絡地址：${operatorAddress}；隱私或個資相關問題請寄至 ${contactEmail}。`,
-          '本網站連結至教育主管機關、學校、綠界科技或其他第三方網站時，您離開本站後，該第三方將依其自身政策處理資料；本網站不控制第三方的資料處理做法。',
-        ],
-      },
-      {
-        title: '二、蒐集的資料類別',
-        body: [
-          '為提供分析與志願規劃功能，我們可能處理您自行輸入的就學區、會考成績、偏好、志願排序、搜尋條件及匯出設定。請勿輸入姓名、身分證字號、准考證號、住址、電話、金融帳號或其他與功能無關的敏感資料。',
-          '為維持服務安全與排除故障，我們可能處理必要的技術資料，例如瀏覽器或裝置類型、IP 位址、請求時間、錯誤與操作紀錄。當您評分、回報問題或來信聯絡時，我們也會處理您主動提供的內容與聯絡資訊。',
-          '進行小額支持時，本站會保存訂單識別碼、金額、付款狀態、付款方式與綠界回傳的必要交易資訊；信用卡卡號、驗證碼及其他付款憑證由綠界科技付款頁處理，本站不直接蒐集或保存。',
-        ],
-      },
-      {
-        title: '三、蒐集目的、處理方式與保存期間',
-        body: [
-          '資料僅在提供分析、志願規劃、客服、錯誤排除、服務安全、防止濫用、付款核對、法令遵循及改善服務所必要的範圍內使用，不會出售您的個人資料，也不會為與前述目的無關的行銷而任意利用。',
-          '分析結果、部分設定與付款返回狀態可能儲存在您的瀏覽器 Local Storage 或 Session Storage；您可透過瀏覽器設定清除。清除後，部分功能偏好、暫存結果或登入／邀請驗證狀態可能無法保留。',
-          '伺服器端資料將依蒐集目的所需期間、爭議處理需要及適用法令的保存義務保存；目的消失、保存期限屆滿或您依法請求時，將依法律及技術可行性辦理刪除、停止處理或去識別化。',
-        ],
-      },
-      {
-        title: '四、資料接收者與委外服務',
-        body: [
-          '為提供服務，我們使用 Supabase 的資料庫與雲端功能處理網站所需資料；其僅在提供基礎設施、資安與維運所必要的範圍內處理資料。若您使用小額支持，綠界科技 ECPay 會依其付款流程處理付款資訊與交易驗證。',
-          '在法律要求、主管機關合法命令、權利保護、資安事件處理或防止詐欺與濫用所必要時，我們可能依法提供必要資料。除上述情形外，未經您同意不會向第三人揭露可識別您的個人資料。',
-        ],
-      },
-      {
-        title: '五、Cookie 與瀏覽器儲存',
-        body: [
-          '本站以必要的瀏覽器儲存功能維持免責聲明閱讀狀態、邀請驗證快取、評分狀態、分析暫存結果與付款返回識別。本站目前不以本站自建 Cookie 進行跨網站廣告追蹤。',
-          '您可在瀏覽器中拒絕 Cookie、限制網站儲存或清除網站資料；但這可能影響部分互動功能。第三方付款頁或外部網站使用的 Cookie，依其各自政策辦理。',
-        ],
-      },
-      {
-        title: '六、資料安全與您的權利',
-        body: [
-          '我們採取合理的技術與管理措施保護資料，包括傳輸加密、存取控制及權限管理；但網際網路傳輸或儲存無法保證絕對安全。如發生可能危及個人資料的事件，將依適用法令採取必要處理。',
-          `依個人資料保護法及其他適用法令，您得就自己的資料請求查詢或閱覽、製給複製本、補充或更正、停止蒐集／處理／利用及刪除。請以 ${contactEmail} 提出申請並提供足以核對身分與請求內容的必要資訊；我們會依法處理，法律另有保存義務或拒絕事由者不在此限。`,
-        ],
-      },
-      {
-        title: '七、未成年人與政策更新',
-        body: [
-          '未滿十八歲者，請在法定代理人或監護人理解本政策的情況下使用服務或進行支持。若法定代理人認為未成年人不當提供資料，請與我們聯絡。',
-          '我們可能因功能、法令或資料處理方式調整而更新本政策，更新內容將公布於本頁並變更最後更新日。重大變更時，會以網站上合理顯著的方式通知；更新後繼續使用服務，表示您在法律允許範圍內同意更新內容。',
-        ],
-      },
-    ],
-  },
-  terms: {
-    title: '服務條款',
-    eyebrow: 'TERMS OF SERVICE',
-    description: '本條款規範您使用「全國會考落點分析」服務的權利與責任。開始或繼續使用服務前，請閱讀本條款、隱私權政策、免責聲明及小額支持相關政策。',
-    icon: Shield,
-    sections: [
-      {
-        title: '一、服務定位與條款同意',
-        body: [
-          '本站提供升學資訊整理、校科查詢、落點分析、志願規劃與討論輔助工具，不是政府機關、招生委員會、學校或正式報名、分發系統，也不提供保證錄取、資格審查或個別升學諮詢。',
-          '使用服務即表示您同意遵守本條款及本站公布的隱私權政策、免責聲明與其他適用規則。若您不同意，請停止使用；未滿十八歲者，應由法定代理人或監護人閱讀並同意後使用。',
-        ],
-      },
-      {
-        title: '二、資訊來源、分析限制與使用者責任',
-        body: [
-          '本站會盡力整理公開資訊與提供工具，但招生名額、比序、資格、日程、學校與科系資料可能隨年度或公告而變更。所有分析、排序、分數區間與建議僅供參考，最終應以當學年度官方簡章、招生區公告及目標學校資訊為準。',
-          '您應自行確認輸入資料是否正確，並在正式報名或選填前核對官方規則。因輸入錯誤、官方規則變更、第三方服務中斷、網路環境、不可抗力或依參考資訊自行作成決定所生結果，應由您依適用法律與實際情況處理。',
-        ],
-      },
-      {
-        title: '三、合理使用與禁止行為',
-        body: [
-          '您可為個人、家庭、教育輔導或非營利討論目的使用本站功能。除法律允許或取得書面同意外，不得大量擷取、爬取、重製、散布、出售、出租、反向工程、干擾服務、規避限制、冒用他人身分或將本站資料包裝為自己的付費服務。',
-          '不得輸入、上傳、傳送或散布違法、侵害他人權利、含惡意程式、具騷擾或歧視性，或可能危害系統安全的內容。若發現合理懷疑的濫用或資安風險，本站得在必要範圍內暫停、限制或終止相關使用，並依法保留權利。',
-        ],
-      },
-      {
-        title: '四、帳號、邀請碼與使用者內容',
-        body: [
-          '若功能提供邀請碼、快取驗證或其他存取機制，您應自行保管，不得轉售、破解、共用以規避限制或用於未經授權目的。您應對透過自己裝置或憑證進行的使用負責。',
-          '您透過評分、問題回報或客服提供的意見，仍由您保有原有權利；您同意本站得在改善、維運與回覆服務所必要的範圍內使用該內容。請勿提交機密、未經授權或含他人個資的資料。',
-        ],
-      },
-      {
-        title: '五、智慧財產權與第三方連結',
-        body: [
-          '本站的程式、版面、商標、設計、文字與資料編排受相關法律保護；官方公開資料、學校資訊及第三方商標仍各自屬其權利人。您不得移除權利標示或主張對本站內容擁有權利。',
-          '本站可能連結教育主管機關、學校、綠界科技或其他第三方網站。第三方網站的內容、可用性、交易、資安與資料處理由各自營運者負責；使用前請自行閱讀其條款與政策。',
-        ],
-      },
-      {
-        title: '六、小額支持、付款與消費者權益',
-        body: [
-          '小額支持為自願性支持網站維運，不代表購買保證錄取、個別諮詢、實體商品或特定優先服務。付款由綠界科技 ECPay 依其流程處理；付款成功與否及可用方式以綠界付款頁與交易結果為準。',
-          `售後、取消與退款申請請依「售後服務」及「退款與取消政策」辦理，或寄至 ${contactEmail}。本條款與相關政策不排除或限制消費者依消費者保護法及其他強制規定享有的權利；如有不一致，依對消費者較有利的強制規定處理。`,
-        ],
-      },
-      {
-        title: '七、服務變更、責任限制與終止',
-        body: [
-          '本站可能為維護、資安、法令遵循或功能改善而修改、暫停或停止全部或部分服務，並會在合理可行情況下公告。本站不保證服務永不中斷、所有資料永遠完整或分析結果必然符合實際招生結果。',
-          '在法律允許的最大範圍內，本站對因使用或無法使用免費資訊工具所生的間接、附帶或衍生損害不負責任；但因故意或重大過失、依法不得排除的責任，或消費者保護相關強制規定所生責任，不受此限制。',
-        ],
-      },
-      {
-        title: '八、準據法、爭議處理與條款更新',
-        body: [
-          `本條款以中華民國法律為準據法。若發生爭議，請先寄至 ${contactEmail} 聯絡處理；如無法協議，雙方得依適用法令向有管轄權的法院或主管機關尋求救濟。`,
-          '我們可能因法令、服務或功能調整而更新本條款，更新內容將公布於本頁並標示最後更新日。若條款部分無效，不影響其餘部分效力；任何不得依法限制的消費者權利，仍依適用法律辦理。',
-        ],
-      },
-    ],
-  },
+  privacy: { title: '\u96b1\u79c1\u6b0a\u653f\u7b56', eyebrow: 'PRIVACY POLICY', description: '\u672c\u7ad9\u91cd\u8996\u60a8\u7684\u96b1\u79c1\u3002\u672c\u653f\u7b56\u8aaa\u660e\u8cc7\u6599\u7684\u8490\u96c6\u3001\u4f7f\u7528\u3001\u5206\u4eab\u3001\u4fdd\u5b58\u8207\u60a8\u53ef\u884c\u4f7f\u7684\u6b0a\u5229\u3002', icon: Database, sections: privacySections },
+  terms: { title: '\u670d\u52d9\u689d\u6b3e', eyebrow: 'TERMS OF SERVICE', description: '\u4f7f\u7528\u672c\u7ad9\u524d\uff0c\u8acb\u5148\u95b1\u8b80\u4e26\u7406\u89e3\u4e0b\u5217\u670d\u52d9\u4f7f\u7528\u539f\u5247\u3002', icon: Shield, sections: termsSections },
 };
 
 export default function LegalPage({ kind }: { kind: LegalPageKind }) {
@@ -153,21 +75,20 @@ export default function LegalPage({ kind }: { kind: LegalPageKind }) {
     ? { hero: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconText: 'text-emerald-700', panel: 'bg-emerald-50' }
     : { hero: 'bg-indigo-50', iconBg: 'bg-indigo-100', iconText: 'text-indigo-700', panel: 'bg-indigo-50' };
   const alternateHref = isPrivacy ? withBasePath('/terms') : withBasePath('/privacy');
-  const alternateText = isPrivacy ? '查看服務條款' : '查看隱私權政策';
-
+  const alternateText = isPrivacy ? '\u67e5\u770b\u670d\u52d9\u689d\u6b3e' : '\u67e5\u770b\u96b1\u79c1\u6b0a\u653f\u7b56';
   return <main className="min-h-screen bg-slate-50 text-slate-900">
-    <section className={`border-b-4 border-slate-900 ${colors.hero}`}>
+    <section className={'border-b-4 border-slate-900 ' + colors.hero}>
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5"><ArrowLeft className="h-4 w-4" />返回首頁</a>
-        <div className="py-10"><div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0_#0f172a]"><div className={`flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 ${colors.iconBg}`}><Icon className={`h-6 w-6 ${colors.iconText}`} /></div><div><p className="text-xs font-black tracking-widest text-slate-500">{page.eyebrow}</p><p className="text-sm font-black text-slate-700">最後更新：{updatedAt}</p></div></div><h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">{page.title}</h1><p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">{page.description}</p></div>
+        <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5"><ArrowLeft className="h-4 w-4" />{'\u56de\u5230\u9996\u9801'}</a>
+        <div className="py-10"><div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0_#0f172a]"><div className={'flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 ' + colors.iconBg}><Icon className={'h-6 w-6 ' + colors.iconText} /></div><div><p className="text-xs font-black tracking-widest text-slate-500">{page.eyebrow}</p><p className="text-sm font-black text-slate-700">{'\u6700\u5f8c\u66f4\u65b0\uff1a'}{updatedAt}</p></div></div><h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">{page.title}</h1><p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">{page.description}</p></div>
       </div>
     </section>
     <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[240px_1fr] lg:px-8">
-      <aside className={pageNavigationAsideClassName}><PageNavigation navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0_#0f172a]" itemLayoutClassName="space-y-2" items={page.sections.map((section, index) => ({ id: `section-${index + 1}`, label: section.title.replace(/^[一二三四五六七八]、/, ''), className: 'block rounded-xl' }))} /></aside>
-      <div className="space-y-5">
-        {page.sections.map((section, index) => <article key={section.title} id={`section-${index + 1}`} className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0_#0f172a] sm:p-8"><h2 className="text-2xl font-black tracking-tight">{section.title}</h2><div className="mt-4 space-y-4">{section.body.map((paragraph) => <p key={paragraph} className="text-base font-bold leading-8 text-slate-700">{paragraph}</p>)}</div></article>)}
-        <section className={`rounded-2xl border-4 border-slate-900 p-5 shadow-[5px_5px_0_#0f172a] ${colors.panel}`}><h2 className="text-xl font-black">需要協助或想了解另一份文件？</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-700">若對本政策或條款有疑問，請先聯絡我們；您也可查看另一份法律文件。</p><div className="mt-4 flex flex-col gap-3 sm:flex-row"><a href={alternateHref} className="inline-flex items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5">{alternateText}</a><a href={`mailto:${contactEmail}`} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5"><Mail className="h-4 w-4" />{contactEmail}</a></div></section>
+      <aside className={pageNavigationAsideClassName}><PageNavigation navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0_#0f172a]" itemLayoutClassName="space-y-2" items={page.sections.map((section, index) => ({ id: 'section-' + String(index + 1), label: section.title, className: 'block rounded-xl' }))} /></aside>
+      <div className="space-y-5">{page.sections.map((section, index) => <article key={section.title} id={'section-' + String(index + 1)} className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0_#0f172a] sm:p-8"><h2 className="text-2xl font-black tracking-tight">{section.title}</h2><div className="mt-4 space-y-4">{section.body.map((paragraph) => <p key={paragraph} className="text-base font-bold leading-8 text-slate-700">{paragraph}</p>)}</div></article>)}
+        <section className={'rounded-2xl border-4 border-slate-900 p-5 shadow-[5px_5px_0_#0f172a] ' + colors.panel}><h2 className="text-xl font-black">{'\u6709\u96b1\u79c1\u6216\u8cc7\u6599\u6b0a\u5229\u554f\u984c\u55ce\uff1f'}</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-700">{'\u8acb\u900f\u904e\u96fb\u5b50\u90f5\u4ef6\u806f\u7d61\u672c\u7ad9\u71df\u904b\u8005\uff0c\u6211\u5011\u6703\u4f9d\u9069\u7528\u6cd5\u4ee4\u8655\u7406\u60a8\u7684\u8acb\u6c42\u3002'}</p><div className="mt-4 flex flex-col gap-3 sm:flex-row"><a href={alternateHref} className="inline-flex items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5">{alternateText}</a><a href={'mailto:' + contactEmail} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5"><Mail className="h-4 w-4" />{contactEmail}</a></div></section>
       </div>
     </section>
   </main>;
 }
+
