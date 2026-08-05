@@ -12,6 +12,8 @@ const DisclaimerPage = lazy(() => import('./components/DisclaimerPage.tsx'));
 const FaqGlossaryPage = lazy(() => import('./components/FaqGlossaryPage.tsx'));
 const HollandPage = lazy(() => import('./components/HollandPage.tsx'));
 const GradeLevelPage = lazy(() => import('./components/GradeLevelPage.tsx'));
+const Grade11PathwaysPage = lazy(() => import('./components/Grade11PathwaysPage.tsx'));
+const GeneralComprehensiveHighSchoolPage = lazy(() => import('./components/GeneralComprehensiveHighSchoolPage.tsx'));
 const HistoricalStatsPage = lazy(() => import('./components/HistoricalStatsPage.tsx'));
 const ImportantDatesPage = lazy(() => import('./components/ImportantDatesPage.tsx'));
 const InstructionsPage = lazy(() => import('./components/InstructionsPage.tsx'));
@@ -66,6 +68,8 @@ const page =
   path === '/disclaimer' ? <DisclaimerPage /> :
   path === '/faq-glossary' ? <FaqGlossaryPage /> :
   path === '/grade-level' ? <GradeLevelPage /> :
+  path === '/grade-11-pathways' ? <Grade11PathwaysPage /> :
+  path === '/general-comprehensive-high-school' ? <GeneralComprehensiveHighSchoolPage /> :
   path === '/historical-stats' ? <HistoricalStatsPage /> :
   path === '/important-dates' ? <ImportantDatesPage /> :
   path === '/mock-volunteer' ? <MockVolunteerPage /> :
@@ -85,7 +89,7 @@ const page =
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
   <App />;
 
-const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/grade-level', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
+const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/grade-level', '/grade-11-pathways', '/general-comprehensive-high-school', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode><Suspense fallback={<PageLoading />}>{page}{informationalPaths.has(path) && <RelatedReading path={path} />}</Suspense></StrictMode>,
