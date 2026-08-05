@@ -5,7 +5,7 @@ import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
 
 type ShareKind = 'analysis' | 'volunteer';
-type Props = { isOpen: boolean; onClose: () => void; kind: ShareKind; payload: Record<string, unknown> | null };
+type Props = { isOpen: boolean; onClose: () => void; kind: ShareKind; payload: Record<string, unknown> | null; snapshotKey: string };
 const text = {
   close: '\u95dc\u9589\u5206\u4eab\u8996\u7a97',
   title: '\u5206\u4eab\u7d66\u5bb6\u9577',
@@ -19,13 +19,15 @@ const text = {
   copyError: '\u7121\u6cd5\u81ea\u52d5\u8907\u88fd\uff0c\u8acb\u624b\u52d5\u8907\u88fd\u9023\u7d50\u3002',
 };
 
-export default function ShareReportDialog({ isOpen, onClose, kind, payload }: Props) {
+export default function ShareReportDialog({ isOpen, onClose, kind, payload, snapshotKey }: Props) {
   const [url, setUrl] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => { if (isOpen) { setUrl(''); setError(''); setCopied(false); } }, [isOpen, payload]);
+  // Keep a previously created link for the same list. A list change means a
+  // new snapshot must be created, so the old link is intentionally discarded.
+  useEffect(() => { setUrl(''); setError(''); setCopied(false); }, [snapshotKey]);
 
   const createLink = async () => {
     if (!payload) return;
