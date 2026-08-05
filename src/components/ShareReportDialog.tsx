@@ -3,6 +3,7 @@ import {
   Check,
   Clock3,
   Copy,
+  CopyPlus,
   Link,
   Loader2,
   LockKeyhole,
@@ -131,20 +132,10 @@ export default function ShareReportDialog({
         <div className="p-5 sm:p-7">
           {!url ? (
             <>
-              <div className="rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-indigo-700">
-                    <LockKeyhole className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-black text-indigo-950">
-                      分享的是此刻的快照
-                    </h3>
-                    <p className="mt-1 text-sm font-bold leading-6 text-slate-600">
-                      {text.snapshot}
-                    </p>
-                  </div>
-                </div>
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 sm:p-3"><Share2 className="h-4 w-4 text-indigo-700 sm:h-5 sm:w-5" /><h3 className="mt-1.5 text-xs font-black text-slate-900 sm:mt-2 sm:text-sm">建立連結</h3><p className="mt-1 text-[10px] font-bold leading-4 text-slate-500 sm:text-xs sm:leading-5">一鍵產生可轉傳網址</p></div>
+                <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 sm:p-3"><LockKeyhole className="h-4 w-4 text-indigo-700 sm:h-5 sm:w-5" /><h3 className="mt-1.5 text-xs font-black text-slate-900 sm:mt-2 sm:text-sm">安心查看</h3><p className="mt-1 text-[10px] font-bold leading-4 text-slate-500 sm:text-xs sm:leading-5">家長只能閱讀內容</p></div>
+                <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 sm:p-3"><CopyPlus className="h-4 w-4 text-indigo-700 sm:h-5 sm:w-5" /><h3 className="mt-1.5 text-xs font-black text-slate-900 sm:mt-2 sm:text-sm">另存副本</h3><p className="mt-1 text-[10px] font-bold leading-4 text-slate-500 sm:text-xs sm:leading-5">對方可自行修改副本</p></div>
               </div>
               <div className="mt-5 flex items-center gap-2 rounded-xl border-2 border-amber-300 bg-amber-50 px-3 py-2.5 text-xs font-black text-amber-950">
                 <Clock3 className="h-4 w-4 shrink-0" />
