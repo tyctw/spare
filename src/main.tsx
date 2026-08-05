@@ -54,7 +54,10 @@ function PageLoading() {
   );
 }
 
-const path = getCurrentRoutePath();
+const rawPath = getCurrentRoutePath();
+const isAcademicGroupRoute = rawPath === '/vocational-encyclopedia' && new URLSearchParams(window.location.search).get('group') === '學術群';
+const path = isAcademicGroupRoute ? '/general-comprehensive-high-school' : rawPath;
+if (isAcademicGroupRoute) window.history.replaceState(null, '', withBasePath('/general-comprehensive-high-school'));
 const sharedReportToken = path.match(/^\/shared\/([0-9a-f-]+)$/i)?.[1];
 const redirectedRoute = new URLSearchParams(window.location.search).get('route');
 if (redirectedRoute) window.history.replaceState(null, '', withBasePath(path));
