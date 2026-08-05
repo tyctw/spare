@@ -895,6 +895,56 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         invitationCode: rollingCode(String(payload.prefix || 'TW').toUpperCase(), new Date()),
       };
 
+    case 'createSharedReport': {
+      const kind = String(payload.kind || '');
+      const report = payload.payload;
+      if (kind !== 'analysis' && kind !== 'volunteer') throw new Error('Invalid shared report type.');
+      if (!report || typeof report !== 'object' || Array.isArray(report)) throw new Error('Invalid shared report content.');
+      if (kind === 'analysis' && (!report.results || typeof report.results !== 'object')) {
+        throw new Error('Invalid analysis report content.');
+      }
+      if (kind === 'volunteer' && (!Array.isArray(report.choices) || report.choices.length > 30)) {
+        throw new Error('Invalid volunteer report content.');
+      }
+
+      // A snapshot is deliberately bounded: this public endpoint must not become
+      // a general-purpose file store.
+      const encodedPayload = JSON.stringify(report);
+      if (encodedPayload.length > 150_000) throw new Error('Shared report is too large.');
+
+      const { data, error } = await withTimeout(
+        supabase
+          .from('shared_reports')
+          .insert({ kind, payload: report })
+          .select('token')
+          .single(),
+        5000,
+        'create shared report',
+      );
+      if (error) throw error;
+      return { token: data.token };
+    }
+
+    case 'getSharedReport': {
+      const token = String(payload.token || '').trim();
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(token)) {
+        throw new Error('Invalid shared report link.');
+      }
+      const { data, error } = await withTimeout(
+        supabase
+          .from('shared_reports')
+          .select('kind, payload, expires_at')
+          .eq('token', token)
+          .gt('expires_at', new Date().toISOString())
+          .maybeSingle(),
+        5000,
+        'load shared report',
+      );
+      if (error) throw error;
+      if (!data) throw new Error('This shared report has expired or is unavailable.');
+      return { kind: data.kind, payload: data.payload, expiresAt: data.expires_at };
+    }
+
     case 'validateInvitationCode':
       return {
         valid: await validateInvitationCode(payload.invitationCode, request),
