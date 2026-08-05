@@ -19,6 +19,7 @@ import {
   List,
   MapPin,
   Search,
+  Share2,
   ShieldCheck,
   Sparkles,
   Target,
@@ -31,6 +32,7 @@ import { ALL_REGIONS } from './RegionModal';
 import { exportExcel, exportJson, exportTxt, printResults } from '../lib/exportUtils';
 import { withBasePath } from '../lib/routes';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
+import ShareReportDialog from './ShareReportDialog';
 
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
 
@@ -263,6 +265,7 @@ export default function ResultsPage() {
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   React.useEffect(() => {
     if (!stored?.results) return;
@@ -300,6 +303,8 @@ export default function ResultsPage() {
   }
 
   const { scores, results, vocationalGroups = [] } = stored;
+  // Invitation codes authorize analysis only. Never include one in a public snapshot.
+  const { invitationCode: _invitationCode, ...shareableScores } = scores || {};
   const regionName = ALL_REGIONS.find((region) => region.id === scores?.region)?.name || scores?.region || '未選擇';
   const schoolTypeLabel = scores?.schoolType === 'all' ? '全部類型' : scores?.schoolType || '全部類型';
   const ownershipLabel =
@@ -386,6 +391,14 @@ export default function ResultsPage() {
             >
               <Download className="h-4 w-4" />
               匯出結果
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsShareOpen(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-100 px-3 py-2 text-center text-sm font-black text-indigo-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
+            >
+              <Share2 className="h-4 w-4" />
+              {'\u5206\u4eab\u7d66\u5bb6\u9577'}
             </button>
             <a
               href={withBasePath('/strategy')}
@@ -733,6 +746,12 @@ export default function ResultsPage() {
       </button>
 
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} onExport={handleExport} />
+      <ShareReportDialog
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        kind="analysis"
+        payload={{ scores: shareableScores, results, vocationalGroups, createdAt: new Date().toISOString() }}
+      />
       <HistoricalScoresDialog school={historicalScoreSchool} onClose={() => setHistoricalScoreSchool(null)} />
       <ComparisonModal
         schools={comparisonSchools}

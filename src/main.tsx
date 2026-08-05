@@ -19,6 +19,7 @@ const LegalPage = lazy(() => import('./components/LegalPage.tsx'));
 const MockVolunteerPage = lazy(() => import('./components/MockVolunteerPage.tsx'));
 const SearchPage = lazy(() => import('./components/SearchPage.tsx'));
 const ResultsPage = lazy(() => import('./components/ResultsPage.tsx'));
+const SharedReportPage = lazy(() => import('./components/SharedReportPage.tsx'));
 const SiteMapPage = lazy(() => import('./components/SiteMapPage.tsx'));
 const SchoolTypesPage = lazy(() => import('./components/SchoolTypesPage.tsx'));
 const StrategyPage = lazy(() => import('./components/StrategyPage.tsx'));
@@ -52,6 +53,7 @@ function PageLoading() {
 }
 
 const path = getCurrentRoutePath();
+const sharedReportToken = path.match(/^\/shared\/([0-9a-f-]+)$/i)?.[1];
 const redirectedRoute = new URLSearchParams(window.location.search).get('route');
 if (redirectedRoute) window.history.replaceState(null, '', withBasePath(path));
 applyPageSeo(path);
@@ -69,6 +71,7 @@ const page =
   path === '/mock-volunteer' ? <MockVolunteerPage /> :
   path === '/search' ? <SearchPage /> :
   path === '/results' ? <ResultsPage /> :
+  sharedReportToken ? <SharedReportPage token={sharedReportToken} /> :
   path === '/site-map' ? <SiteMapPage /> :
   path === '/instructions' ? <InstructionsPage /> :
   path === '/holland' ? <HollandPage /> :

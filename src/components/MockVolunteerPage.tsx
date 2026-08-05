@@ -11,12 +11,14 @@ import {
   Plus,
   Printer,
   Search,
+  Share2,
   Target,
   Trash2,
   AlertTriangle,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { pageNavigationAsideClassName } from './PageNavigation';
+import ShareReportDialog from './ShareReportDialog';
 
 interface SchoolItem {
   id: string;
@@ -191,6 +193,7 @@ export default function MockVolunteerPage() {
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [leaveDestination, setLeaveDestination] = useState(withBasePath('/'));
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const allowPageExitRef = useRef(false);
 
   useEffect(() => {
@@ -669,6 +672,14 @@ export default function MockVolunteerPage() {
               </a>
               <div className="relative mt-2 flex gap-2">
                 <button
+                  onClick={() => setIsShareOpen(true)}
+                  disabled={selectedChoices.length === 0}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-indigo-200 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <Share2 className="h-4 w-4" />
+                  {'\u5206\u4eab'}
+                </button>
+                <button
                   onClick={() => setShowPrintDialog(true)}
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-sky-300 px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
                 >
@@ -922,6 +933,12 @@ export default function MockVolunteerPage() {
           </button>
         </div>
       )}
+      <ShareReportDialog
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        kind="volunteer"
+        payload={{ region, regionName: activeRegionName, choices: selectedChoices, createdAt: new Date().toISOString() }}
+      />
     </main>
   );
 }
