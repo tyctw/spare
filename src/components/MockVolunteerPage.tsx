@@ -682,30 +682,23 @@ export default function MockVolunteerPage() {
                   <div className="mt-0.5 text-[10px] tracking-wide text-amber-200">/ 30</div>
                 </div>
               </div>
-              <a
-                href={withBasePath('/strategy')}
-                onClick={requestLeavePage}
-                className="relative mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-amber-300 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0 active:shadow-none"
-              >
-                <Target className="h-4 w-4" />
-                志願選填攻略
-              </a>
-              <div className="relative mt-3 rounded-xl border-2 border-indigo-300 bg-indigo-50 p-3 text-left">
-                <div className="flex items-center gap-2 text-sm font-black text-indigo-950"><Share2 className="h-4 w-4" />分享志願清單</div>
-                <p className="mt-1 text-xs font-bold leading-5 text-slate-600">一鍵建立唯讀分享連結，方便和家長、老師討論；查看者可建立自己的副本修改，原始清單維持不變。</p>
+              <div className="relative mt-4 rounded-2xl border-2 border-indigo-300 bg-indigo-50 p-4 text-left shadow-[3px_3px_0px_0px_rgba(67,56,202,0.18)]">
+                <div className="flex items-center gap-2 text-[11px] font-black tracking-wider text-indigo-700"><Share2 className="h-4 w-4" />一起討論志願</div>
+                <div className="mt-1 text-base font-black text-indigo-950">分享志願清單</div>
+                <p className="mt-1 text-xs font-bold leading-5 text-slate-600">建立唯讀連結給家長、老師查看；對方可複製到自己的模擬頁修改，原始清單不會變更。</p>
               </div>
-              <div className="relative mt-2 flex gap-2">
+              <div className="relative mt-3 grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setIsShareOpen(true)}
                   disabled={selectedChoices.length === 0}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-indigo-200 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <Share2 className="h-4 w-4" />
                   {'\u5206\u4eab'}
                 </button>
                 <button
                   onClick={() => setShowPrintDialog(true)}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-sky-300 px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-300 px-3 py-3 text-sm font-black text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-sky-400 active:translate-y-0 active:shadow-none"
                 >
                   <Printer className="h-4 w-4" />
                   列印
@@ -713,11 +706,15 @@ export default function MockVolunteerPage() {
                 <button
                   onClick={() => setShowClearConfirm(true)}
                   disabled={selectedChoices.length === 0}
-                  className="rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-rose-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-3 py-2.5 text-sm font-black text-rose-700 transition hover:border-rose-300 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40"
                 >
+                  <Trash2 className="h-4 w-4" />
                   清空
                 </button>
               </div>
+              <a href={withBasePath('/strategy')} onClick={requestLeavePage} className="relative mt-4 inline-flex w-full items-center justify-center gap-1.5 text-xs font-black text-slate-600 underline decoration-amber-400 decoration-2 underline-offset-4 transition hover:text-slate-950">
+                <Target className="h-3.5 w-3.5 text-amber-700" />需要排序建議？查看志願選填攻略
+              </a>
             </div>
 
             <div className="min-h-[560px] max-h-[840px] overflow-y-auto p-4 custom-scrollbar">
