@@ -1,7 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { AlertCircle, Loader2, ShieldCheck } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
+import RelatedReading from './RelatedReading';
 
 type SharedReport = { kind: 'analysis' | 'volunteer'; payload: any; expiresAt: string };
 const text = {
@@ -18,7 +19,7 @@ const text = {
   matches: '\u7b26\u5408\u689d\u4ef6\u6821\u79d1\uff1a',
   threshold: '\u53c3\u8003\u9580\u6abb\uff1a',
   recommended: '\u63a8\u85a6',
-  home: '\u2190 \u56de\u5230\u9996\u9801',
+  home: '\u56de\u5230\u9996\u9801',
   readonly: '\u552f\u8b80\u5206\u4eab',
   created: '\u5efa\u7acb\u65bc ',
   until: '\u6709\u6548\u81f3 ',
@@ -34,7 +35,7 @@ export default function SharedReportPage({ token }: { token: string }) {
   const createdAt = report.payload?.createdAt ? new Date(report.payload.createdAt).toLocaleString('zh-TW') : '';
   if (report.kind === 'volunteer') {
     const choices = Array.isArray(report.payload?.choices) ? report.payload.choices : [];
-    return <Layout title={text.volunteer} createdAt={createdAt} expiresAt={report.expiresAt}><div className="space-y-3">{choices.map((choice: any, index: number) => <article key={String(choice.code || '') + '-' + String(choice.deptCode || '') + '-' + String(index)} className="flex gap-4 rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-300 font-black">{index + 1}</div><div><h2 className="font-black text-slate-950">{choice.name}</h2><p className="mt-1 font-bold text-sky-700">{choice.deptName}{choice.shift ? ' (' + choice.shift + ')' : ''}</p><p className="mt-1 text-sm font-bold text-slate-500">{[choice.county, choice.levelInfo, choice.groupName].filter(Boolean).join(' / ')}</p></div></article>)}</div>{choices.length === 0 && <p className="text-center font-bold text-slate-500">{text.noChoices}</p>}</Layout>;
+    return <Layout title={text.volunteer} createdAt={createdAt} expiresAt={report.expiresAt}><div className="space-y-2">{choices.map((choice: any, index: number) => <article key={String(choice.code || '') + '-' + String(choice.deptCode || '') + '-' + String(index)} className="relative rounded-xl border-2 border-slate-900 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"><div className="flex items-start gap-2.5"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black">{index + 1}</div><div className="min-w-0 flex-1"><h2 className="truncate text-sm font-black leading-5 text-slate-950">{choice.name}</h2><p className="truncate text-sm font-bold text-sky-700">{choice.deptName}{choice.shift ? ' (' + choice.shift + ')' : ''}</p><div className="mt-1.5 space-y-0.5 border-t border-slate-100 pt-1.5 text-[11px] font-black leading-4 text-[#4f76a4]"><div><span className="inline-flex max-w-full rounded-md border border-amber-200 bg-amber-100 px-1.5 py-0.5 text-amber-900"><span className="truncate">{choice.levelInfo || '--'}</span></span></div><div className="flex min-w-0 items-center justify-between gap-2"><span className="inline-flex min-w-0 max-w-[72%] rounded-md border border-sky-200 bg-sky-100 px-1.5 py-0.5 text-sky-800"><span className="truncate">{choice.groupName || '--'}</span></span>{choice.county && <span className="shrink-0 rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-slate-600">{choice.county}</span>}</div></div></div></div></article>)}</div>{choices.length === 0 && <p className="text-center font-bold text-slate-500">{text.noChoices}</p>}</Layout>;
   }
   const payload = report.payload || {};
   const schools = payload.results?.eligibleSchools || [];
@@ -42,6 +43,6 @@ export default function SharedReportPage({ token }: { token: string }) {
 }
 
 function Layout({ title, createdAt, expiresAt, children }: { title: string; createdAt: string; expiresAt: string; children: ReactNode }) {
-  return <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900"><div className="mx-auto max-w-3xl"><a href={withBasePath('/')} className="text-sm font-black text-indigo-700">{text.home}</a><header className="mt-5 rounded-[2rem] border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[7px_7px_0px_0px_rgba(15,23,42,1)]"><div className="flex items-center gap-2 text-indigo-100"><ShieldCheck className="h-5 w-5" />{text.readonly}</div><h1 className="mt-2 text-3xl font-black">{title}</h1><p className="mt-3 text-sm font-bold text-indigo-100">{createdAt && text.created + createdAt + '　'}{text.until}{new Date(expiresAt).toLocaleDateString('zh-TW')}</p></header><div className="mt-6">{children}</div><p className="mt-6 text-center text-xs font-bold text-slate-500">{text.note}</p></div></main>;
+  return <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900"><div className="mx-auto max-w-3xl"><a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-[3px] border-slate-900 bg-white px-5 py-3 text-lg font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-slate-50 active:translate-y-0 active:shadow-none"><ArrowLeft className="h-5 w-5 stroke-[3]" />{text.home}</a><header className="mt-5 rounded-[2rem] border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[7px_7px_0px_0px_rgba(15,23,42,1)]"><div className="flex items-center gap-2 text-indigo-100"><ShieldCheck className="h-5 w-5" />{text.readonly}</div><h1 className="mt-2 text-3xl font-black">{title}</h1><p className="mt-3 text-sm font-bold text-indigo-100">{createdAt && text.created + createdAt + '　'}{text.until}{new Date(expiresAt).toLocaleDateString('zh-TW')}</p></header><div className="mt-6">{children}</div><p className="mt-6 text-center text-xs font-bold text-slate-500">{text.note}</p><div className="mt-8"><RelatedReading path="/strategy" /></div></div></main>;
 }
 function PageState({ icon, title, message }: { icon: ReactNode; title: string; message: string }) { return <main className="grid min-h-screen place-items-center bg-slate-50 p-5 text-center text-slate-900"><div><div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300">{icon}</div><h1 className="text-2xl font-black">{title}</h1><p className="mt-2 font-bold text-slate-500">{message}</p></div></main>; }
