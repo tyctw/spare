@@ -432,14 +432,14 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               )}
 
               <div className="flex justify-center gap-4 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                <a href="https://www.instagram.com/115.rcpet/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
+                <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-pink-50 text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all group-hover:scale-110 group-hover:bg-pink-100 group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:scale-95">
                     <Instagram className="h-5 w-5 transition-transform group-hover:rotate-0" />
                   </div>
                   <span className="text-sm font-bold text-slate-700">Instagram</span>
                 </a>
                 <div className="mx-2 h-10 w-0.5 rounded-full bg-slate-200" />
-                <a href="https://www.threads.com/@115.rcpet" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
+                <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-slate-50 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all group-hover:scale-110 group-hover:bg-slate-100 group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:scale-95">
                     <ThreadsIcon className="h-5 w-5 transition-transform group-hover:scale-110" />
                   </div>
