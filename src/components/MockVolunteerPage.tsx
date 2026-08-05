@@ -11,13 +11,13 @@ import {
   Plus,
   Printer,
   Search,
+  Share2,
   Target,
   Trash2,
   AlertTriangle,
 } from 'lucide-react';
-import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
-import { pageNavigationAsideClassName } from './PageNavigation';
+import ShareReportDialog from './ShareReportDialog';
 
 interface SchoolItem {
   id: string;
@@ -34,6 +34,8 @@ interface SchoolItem {
 
 const createChoiceId = (school: SchoolItem) =>
   `${school.code}-${school.deptCode}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+const SHARED_COPY_STORAGE_KEY = 'mock-volunteer-import';
 
 const isSameVolunteerOption = (first: SchoolItem, second: SchoolItem) =>
   first.code === second.code
@@ -192,7 +194,23 @@ export default function MockVolunteerPage() {
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [leaveDestination, setLeaveDestination] = useState(withBasePath('/'));
   const [crossRegionChoice, setCrossRegionChoice] = useState<SchoolItem | null>(null);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const allowPageExitRef = useRef(false);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('import') !== 'shared') return;
+    const raw = window.localStorage.getItem(SHARED_COPY_STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const imported = JSON.parse(raw);
+      if (Array.isArray(imported.choices)) {
+        setSelectedChoices(imported.choices.map((choice: SchoolItem) => ({ ...choice, id: createChoiceId(choice) })));
+        if (typeof imported.region === 'string' && MOCK_VOLUNTEER_REGIONS.some((item) => item.id === imported.region)) setRegion(imported.region);
+        setNotice('已建立個人副本：可在此自由調整，原分享清單不會被修改。');
+      }
+    } catch { setNotice('副本資料無法讀取，請回到分享頁再試一次。'); }
+    window.localStorage.removeItem(SHARED_COPY_STORAGE_KEY);
+  }, []);
 
   useEffect(() => {
     let ignore = false;
@@ -201,16 +219,14 @@ export default function MockVolunteerPage() {
       setIsLoading(true);
       setError('');
       try {
-        const data = await callBackend<{ schools: SchoolItem[] } | SchoolItem[]>({
-          action: 'getVolunteerSchools',
-          region,
-        });
-        const nextSchools = Array.isArray(data) ? data : data?.schools;
+        const response = await fetch(withBasePath('/data/volunteer_schools.json'));
+        if (!response.ok) throw new Error(`Unable to load volunteer schools (${response.status})`);
+        const nextSchools: unknown = await response.json();
         if (!ignore) {
           setSchools(Array.isArray(nextSchools) ? nextSchools : []);
         }
       } catch (err) {
-        console.error('Volunteer school fetch failed:', err);
+        console.error('Volunteer school JSON load failed:', err);
         if (!ignore) {
           setError('志願資料載入失敗，請稍後再試。');
           setSchools([]);
@@ -225,7 +241,7 @@ export default function MockVolunteerPage() {
     return () => {
       ignore = true;
     };
-  }, [region]);
+  }, []);
 
   useEffect(() => {
     setFilterCounty('region');
@@ -248,6 +264,10 @@ export default function MockVolunteerPage() {
 
   const activeRegionName = MOCK_VOLUNTEER_REGIONS.find((item) => item.id === region)?.name || '目前就學區';
   const activeRegionCountyText = getRegionCountyText(region);
+  const shareSnapshotKey = useMemo(
+    () => JSON.stringify({ version: 2, region, choices: selectedChoices.map(({ id, ...choice }) => choice) }),
+    [region, selectedChoices],
+  );
   const activeRegionCounties = useMemo(() => (REGION_COUNTIES[region] || []).map(normalizeCounty), [region]);
   const preferenceRule = PREFERENCE_RULES[region];
   const choicePreferenceScores = useMemo(() => {
@@ -646,7 +666,7 @@ export default function MockVolunteerPage() {
             </div>
           </section>
 
-          <aside className={`${pageNavigationAsideClassName} overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]`}>
+          <aside className="min-w-0 overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:self-start lg:overflow-y-auto lg:overscroll-contain">
             <div className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-amber-200 via-amber-50 to-white p-5">
               <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full border-4 border-amber-300/60 bg-amber-100/70" />
               <div className="relative flex items-start justify-between gap-3">
@@ -662,18 +682,23 @@ export default function MockVolunteerPage() {
                   <div className="mt-0.5 text-[10px] tracking-wide text-amber-200">/ 30</div>
                 </div>
               </div>
-              <a
-                href={withBasePath('/strategy')}
-                onClick={requestLeavePage}
-                className="relative mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-amber-300 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0 active:shadow-none"
-              >
-                <Target className="h-4 w-4" />
-                志願選填攻略
-              </a>
-              <div className="relative mt-2 flex gap-2">
+              <div className="relative mt-4 rounded-2xl border-2 border-indigo-300 bg-indigo-50 p-4 text-left shadow-[3px_3px_0px_0px_rgba(67,56,202,0.18)]">
+                <div className="flex items-center gap-2 text-[11px] font-black tracking-wider text-indigo-700"><Share2 className="h-4 w-4" />一起討論志願</div>
+                <div className="mt-1 text-base font-black text-indigo-950">分享志願清單</div>
+                <p className="mt-1 text-xs font-bold leading-5 text-slate-600">建立唯讀連結給家長、老師查看；對方可複製到自己的模擬頁修改，原始清單不會變更。</p>
+              </div>
+              <div className="relative mt-3 grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setIsShareOpen(true)}
+                  disabled={selectedChoices.length === 0}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <Share2 className="h-4 w-4" />
+                  {'\u5206\u4eab'}
+                </button>
                 <button
                   onClick={() => setShowPrintDialog(true)}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-slate-900 bg-sky-300 px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-300 px-3 py-3 text-sm font-black text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-sky-400 active:translate-y-0 active:shadow-none"
                 >
                   <Printer className="h-4 w-4" />
                   列印
@@ -681,11 +706,15 @@ export default function MockVolunteerPage() {
                 <button
                   onClick={() => setShowClearConfirm(true)}
                   disabled={selectedChoices.length === 0}
-                  className="rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-rose-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-3 py-2.5 text-sm font-black text-rose-700 transition hover:border-rose-300 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40"
                 >
+                  <Trash2 className="h-4 w-4" />
                   清空
                 </button>
               </div>
+              <a href={withBasePath('/strategy')} onClick={requestLeavePage} className="relative mt-4 inline-flex w-full items-center justify-center gap-1.5 text-xs font-black text-slate-600 underline decoration-amber-400 decoration-2 underline-offset-4 transition hover:text-slate-950">
+                <Target className="h-3.5 w-3.5 text-amber-700" />需要排序建議？查看志願選填攻略
+              </a>
             </div>
 
             <div className="min-h-[560px] max-h-[840px] overflow-y-auto p-4 custom-scrollbar">
@@ -925,6 +954,23 @@ export default function MockVolunteerPage() {
           </button>
         </div>
       )}
+      <ShareReportDialog
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        kind="volunteer"
+        snapshotKey={shareSnapshotKey}
+        payload={{
+          region,
+          regionName: activeRegionName,
+          choices: selectedChoices.map((choice, index) => ({
+            ...choice,
+            preferenceRank: choicePreferenceScores[index]?.rank ?? null,
+            preferenceScore: choicePreferenceScores[index]?.score ?? null,
+            sharesPreferenceRank: choicePreferenceScores[index]?.samePreference ?? false,
+          })),
+          createdAt: new Date().toISOString(),
+        }}
+      />
     </main>
   );
 }

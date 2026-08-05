@@ -55,6 +55,16 @@ const pageMetadata: Record<string, PageMeta> = {
     title: '小額支持｜升學選校工具',
     description: '支持我們持續維護升學資訊、優化選校工具，讓核心服務免費開放給學生與家長使用。',
   },
+  '/support/failed': {
+    title: '付款未完成｜小額支持',
+    description: '小額支持付款未完成時的重新付款與客服協助說明。',
+    noindex: true,
+  },
+  '/support/success': {
+    title: '付款完成｜小額支持',
+    description: '感謝支持全國會考落點分析。',
+    noindex: true,
+  },
   '/after-sales-service': {
     title: '售後服務｜升學選校工具',
     description: '小額支持的售後服務、交易聯絡與付款爭議處理說明。',

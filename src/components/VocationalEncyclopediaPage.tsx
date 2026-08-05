@@ -143,7 +143,8 @@ const getDetailedSelectionTip = (group: VocationalGroup) => {
 
 export default function VocationalEncyclopediaPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedId, setSelectedId] = useState(groups[0].id);
+  const requestedGroup = new URLSearchParams(window.location.search).get('group');
+  const [selectedId, setSelectedId] = useState(() => groups.some((group) => group.id === requestedGroup) ? requestedGroup! : groups[0].id);
   const filteredGroups = useMemo(() => {
     const keyword = searchTerm.trim().toLowerCase();
     if (!keyword) return groups;

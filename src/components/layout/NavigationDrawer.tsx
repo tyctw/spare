@@ -13,6 +13,7 @@ import {
   Calculator,
   CircleHelp,
   FileText,
+  GraduationCap,
   History,
   Heart,
   Info,
@@ -87,6 +88,8 @@ const menuCategories: MenuCategory[] = [
     items: [
       { id: 'search', label: '搜尋學校與科別', description: '用校名、科別、群別快速查資料', keywords: '搜尋 學校 科別 群別 縣市 代碼', icon: Search, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/search' } },
       { id: 'schoolTypes', label: '學校類型解析', description: '普通科、技高、綜高、五專差在哪', keywords: '學校 類型 普高 技高 綜高 五專 高中 高職', icon: Building2, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/school-types' } },
+      { id: 'generalComprehensive', label: '普通科與綜合高中，怎麼選？', description: '比較普通科與綜高學程，找到適合的探索方向', keywords: '普通科 綜合高中 綜高 學程 高中 選擇', icon: GraduationCap, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/general-comprehensive-high-school' } },
+      { id: 'grade11Pathways', label: '高二班群怎麼選？', description: '了解自然、社會取向與 18 學群的規劃方式', keywords: '高二 班群 自然組 社會組 數學 A B 18 學群', icon: Route, color: 'text-fuchsia-600', bg: 'bg-fuchsia-100', action: { type: 'route', href: '/grade-11-pathways' } },
       { id: 'vocational', label: '技職群科百科', description: '看 15 大職群、常見科別與未來進路', keywords: '技職 群科 百科 職群 科別 職涯 高職', icon: BookOpen, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'route', href: '/vocational-encyclopedia' } },
     ],
   },
@@ -432,14 +435,14 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               )}
 
               <div className="flex justify-center gap-4 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                <a href="https://www.instagram.com/115.rcpet/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
+                <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-pink-50 text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all group-hover:scale-110 group-hover:bg-pink-100 group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:scale-95">
                     <Instagram className="h-5 w-5 transition-transform group-hover:rotate-0" />
                   </div>
                   <span className="text-sm font-bold text-slate-700">Instagram</span>
                 </a>
                 <div className="mx-2 h-10 w-0.5 rounded-full bg-slate-200" />
-                <a href="https://www.threads.com/@115.rcpet" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
+                <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-slate-50 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all group-hover:scale-110 group-hover:bg-slate-100 group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:scale-95">
                     <ThreadsIcon className="h-5 w-5 transition-transform group-hover:scale-110" />
                   </div>

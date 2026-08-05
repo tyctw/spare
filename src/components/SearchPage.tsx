@@ -9,7 +9,6 @@ import {
   Search,
   Tags,
 } from 'lucide-react';
-import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
 
 interface SchoolItem {
@@ -42,13 +41,12 @@ export default function SearchPage() {
       setIsLoading(true);
       setError('');
       try {
-        const data = await callBackend<{ schools: SchoolItem[] } | SchoolItem[]>({
-          action: 'getVolunteerSchools',
-        });
-        const nextSchools = Array.isArray(data) ? data : data?.schools;
+        const response = await fetch(withBasePath('/data/volunteer_schools.json'));
+        if (!response.ok) throw new Error(`Unable to load school data (${response.status})`);
+        const nextSchools: unknown = await response.json();
         if (!ignore) setSchools(Array.isArray(nextSchools) ? nextSchools : []);
       } catch (err) {
-        console.error('Search school fetch failed:', err);
+        console.error('Search school JSON load failed:', err);
         if (!ignore) {
           setError('搜尋資料載入失敗，請稍後再試。');
           setSchools([]);
