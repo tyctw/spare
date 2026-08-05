@@ -122,4 +122,19 @@
   main:has(.before\:bg-indigo-200) header + section {
     margin-top: 1.5rem !important;
   }
+
+  @media (max-width: 639px) {
+    main:has(.before\:bg-indigo-200) header + section {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    main:has(.before\:bg-indigo-200) header + section > article {
+      padding: 0.75rem;
+    }
+
+    main:has(.before\:bg-indigo-200) header + section > article p:last-child {
+      font-size: 0.875rem;
+    }
+  }
 }
