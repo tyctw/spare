@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Check,
-  CheckCircle2,
   Clock3,
   Copy,
   Link,
@@ -166,18 +165,7 @@ export default function ShareReportDialog({
             </>
           ) : (
             <>
-              <div className="flex items-start gap-3 rounded-2xl border-2 border-emerald-300 bg-emerald-50 p-4">
-                <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-emerald-700" />
-                <div>
-                  <h3 className="font-black text-emerald-950">
-                    分享連結已準備好
-                  </h3>
-                  <p className="mt-1 text-sm font-bold leading-6 text-slate-600">
-                    傳送連結，或請家長掃描 QR Code 開啟唯讀清單。
-                  </p>
-                </div>
-              </div>
-              <div className="mt-5 grid gap-5 md:grid-cols-[210px_minmax(0,1fr)] md:items-stretch">
+              <div className="grid gap-5 md:grid-cols-[210px_minmax(0,1fr)] md:items-stretch">
                 <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4 text-center">
                   <p className="text-xs font-black tracking-wider text-indigo-700">手機掃描開啟</p>
                   <div className="mt-3 rounded-2xl border-2 border-slate-900 bg-white p-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
