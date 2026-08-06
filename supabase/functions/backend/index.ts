@@ -342,27 +342,31 @@ async function validateAdminCode(code: unknown, request: Request) {
   const adminCode = Deno.env.get('ADMIN_ACCESS_CODE')?.trim();
   const requestedCode = String(code || '').trim();
 
-  if (adminCode) {
-    const valid = requestedCode === adminCode;
-
-    background(
-      withTimeout(
-        supabase.from('invitation_logs').insert({
-          action: 'admin',
-          invitation_code: requestedCode ? '[admin-code]' : null,
-          success: valid,
-          ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
-          user_agent: request.headers.get('user-agent'),
-        }),
-        2000,
-        'insert admin log',
-      ),
-    );
-
-    return valid;
+  // Admin access must never fall back to an invitation code. Invitation codes
+  // grant end-user access only; using one here would let a public code control
+  // privileged school-management actions when this secret is misconfigured.
+  if (!adminCode) {
+    console.error('ADMIN_ACCESS_CODE is not configured; refusing admin access.');
+    throw new Error('管理功能尚未完成安全設定');
   }
 
-  return validateInvitationCode(requestedCode, request);
+  const valid = requestedCode.length > 0 && requestedCode === adminCode;
+
+  background(
+    withTimeout(
+      supabase.from('invitation_logs').insert({
+        action: 'admin',
+        invitation_code: requestedCode ? '[admin-code]' : null,
+        success: valid,
+        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        user_agent: request.headers.get('user-agent'),
+      }),
+      2000,
+      'insert admin log',
+    ),
+  );
+
+  return valid;
 }
 
 function assertAdmin(valid: boolean) {
@@ -890,11 +894,6 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       return data || { status: 'not_found' };
     }
 
-    case 'getInvitationCode':
-      return {
-        invitationCode: rollingCode(String(payload.prefix || 'TW').toUpperCase(), new Date()),
-      };
-
     case 'createSharedReport': {
       const kind = String(payload.kind || '');
       const report = payload.payload;
@@ -1271,22 +1270,89 @@ async function handleEcpayCallback(request: Request) {
     return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
   }
 
+  const merchantTradeNo = fields.MerchantTradeNo || '';
+  const tradeNo = fields.TradeNo || '';
+  const tradeAmount = Number(fields.TradeAmt);
+
+  if (fields.MerchantID !== config.merchantId || !/^[A-Za-z0-9]{8,32}$/.test(merchantTradeNo)) {
+    console.error('Invalid ECPay merchant or order reference', { merchantId: fields.MerchantID, merchantTradeNo });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (!Number.isSafeInteger(tradeAmount) || tradeAmount <= 0) {
+    console.error('Invalid ECPay payment amount', { merchantTradeNo, tradeAmount: fields.TradeAmt });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (!tradeNo) {
+    console.error('Missing ECPay trade number', { merchantTradeNo });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  const { data: payment, error: paymentError } = await supabase
+    .from('support_payments')
+    .select('amount, status, ecpay_trade_no')
+    .eq('merchant_trade_no', merchantTradeNo)
+    .maybeSingle();
+
+  if (paymentError || !payment) {
+    console.error('Unknown ECPay order', { merchantTradeNo, error: paymentError });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (payment.amount !== tradeAmount) {
+    console.error('ECPay payment amount mismatch', { merchantTradeNo, expectedAmount: payment.amount, tradeAmount });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
   const succeeded = fields.RtnCode === '1';
-  const { error } = await supabase
+  const simulated = fields.SimulatePaid === '1';
+  const targetStatus = succeeded ? 'paid' : 'failed';
+
+  // A simulated callback is signed but does not represent a settled payment.
+  // A duplicate callback for the same ECPay trade is safe and acknowledged.
+  if (simulated || (payment.status !== 'pending' && payment.ecpay_trade_no === tradeNo)) {
+    return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (payment.status !== 'pending') {
+    console.error('Invalid ECPay payment state transition', { merchantTradeNo, status: payment.status, tradeNo });
+    return new Response('0|Error', { status: 409, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  const { data: updatedPayment, error } = await supabase
     .from('support_payments')
     .update({
-      status: succeeded ? 'paid' : 'failed',
-      ecpay_trade_no: fields.TradeNo || null,
+      status: targetStatus,
+      ecpay_trade_no: tradeNo,
       payment_type: fields.PaymentType || null,
       paid_at: succeeded ? new Date().toISOString() : null,
       callback_payload: fields,
       updated_at: new Date().toISOString(),
     })
-    .eq('merchant_trade_no', fields.MerchantTradeNo);
+    .eq('merchant_trade_no', merchantTradeNo)
+    .eq('status', 'pending')
+    .select('status, ecpay_trade_no')
+    .maybeSingle();
 
   if (error) {
     console.error('Could not record ECPay callback', error);
     return new Response('0|Error', { status: 500, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (!updatedPayment) {
+    // Another delivery may have completed the same pending order first. Only
+    // acknowledge it when it resulted in the exact same ECPay transaction.
+    const { data: currentPayment, error: currentPaymentError } = await supabase
+      .from('support_payments')
+      .select('status, ecpay_trade_no')
+      .eq('merchant_trade_no', merchantTradeNo)
+      .maybeSingle();
+
+    if (currentPaymentError || currentPayment?.status !== targetStatus || currentPayment.ecpay_trade_no !== tradeNo) {
+      console.error('Could not safely reconcile ECPay callback', { merchantTradeNo, tradeNo, currentPaymentError });
+      return new Response('0|Error', { status: 409, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+    }
   }
 
   return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
