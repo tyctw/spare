@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Calculator, MapPin, Award, CheckCircle2 } from 'lucide-react';
+import { X, Calculator, MapPin, Award, ArrowUpRight } from 'lucide-react';
 import { ALL_REGIONS } from './RegionModal';
+import { withBasePath } from '../lib/routes';
 
 interface Props {
   isOpen: boolean;
@@ -199,37 +200,10 @@ export default function RegionScoringModal({ isOpen, onClose, selectedRegion }: 
               ) : (
                 <div className="space-y-8">
                   
-                  {/* Total Score Header */}
-                  <div className="flex items-center gap-4 bg-white border-4 border-slate-900 p-6 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                    <div className="w-16 h-16 bg-fuchsia-300 border-4 border-slate-900 rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] -rotate-3 shrink-0">
-                      <Award className="w-8 h-8 text-slate-900" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">總積分上限</div>
-                      <div className="text-4xl font-black text-slate-900 flex items-baseline gap-1">
-                        {scoringData.total} <span className="text-xl font-bold text-slate-500">分</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Score Items */}
-                  <div className="space-y-4">
-                    <h3 className="font-black text-xl text-slate-900 border-b-4 border-slate-900 pb-2 inline-block">三大類別配分</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {scoringData.items.map((item, index) => (
-                        <div key={index} className="bg-white border-4 border-slate-900 rounded-2xl p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-transform">
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-black text-lg text-slate-900">{item.label}</h4>
-                            <div className="bg-amber-300 border-2 border-slate-900 px-3 py-1 rounded-full text-slate-900 font-black flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                              {item.score} <span className="text-xs">分</span>
-                            </div>
-                          </div>
-                          <p className="text-slate-600 font-bold text-sm leading-relaxed flex items-start gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                            {item.desc}
-                          </p>
-                        </div>
-                      ))}
+                  <div className="rounded-3xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-fuchsia-200"><Award className="h-6 w-6" /></div>
+                      <div><h3 className="text-xl font-black text-slate-900">會考成績換算速覽</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-600">這裡只顯示填寫成績時需要的基本換算；志願序、多元表現與完整超額比序請前往規則頁查看。</p></div>
                     </div>
                   </div>
 
@@ -262,6 +236,14 @@ export default function RegionScoringModal({ isOpen, onClose, selectedRegion }: 
                       )}
                     </div>
                   )}
+
+                  <a
+                    href={withBasePath(`/scoring-rules/${selectedRegion}`)}
+                    className="flex items-center justify-between gap-4 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 font-black text-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]"
+                  >
+                    <span><span className="block text-lg">查看 {regionName} 完整規則</span><span className="mt-1 block text-sm text-slate-700">含各項採計重點、會考換算與官方簡章連結</span></span>
+                    <ArrowUpRight className="h-6 w-6 shrink-0" />
+                  </a>
 
                 </div>
               )}

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Building2, CalendarDays, CheckCircle2, Compass, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, Search, Shield, Sparkles, Target } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, Search, Shield, Sparkles, Target } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 
 type Item = { title: string; desc: string; href: string; icon: React.ElementType; tone: string; external?: boolean; keywords: string };
@@ -24,6 +24,16 @@ const categories: Category[] = [
     { title: '填志願策略', desc: '了解夢幻、實際、保守志願的安排原則與常見提醒。', href: '/strategy', icon: CheckCircle2, tone: 'bg-orange-100 text-orange-700', keywords: '策略 夢幻 實際 保守 志願' },
     { title: '歷年會考統計', desc: '查看歷年等級組合與分布，理解成績的整體趨勢。', href: '/historical-stats', icon: LineChart, tone: 'bg-indigo-100 text-indigo-700', keywords: '歷年 統計 分布 成績 趨勢' },
     { title: '重要日期', desc: '整理招生與選填時程的關鍵日期；實際日期請以當年度公告為準。', href: '/important-dates', icon: CalendarDays, tone: 'bg-purple-100 text-purple-700', keywords: '日期 時程 報名 選填 放榜' },
+  ] },
+  { title: '各區計分規則', desc: '查看一般免試入學的超額比序架構、會考換算與官方簡章入口；正式規定請以當年度公告為準。', items: [
+    { title: '基北區計分規則', desc: '基隆、臺北、新北的超額比序與會考換算。', href: '/scoring-rules/taipei', icon: Calculator, tone: 'bg-indigo-100 text-indigo-700', keywords: '基北 基隆 台北 臺北 新北 計分 規則 超額比序' },
+    { title: '桃連區計分規則', desc: '桃園、連江的超額比序與會考換算。', href: '/scoring-rules/taoyuan', icon: Calculator, tone: 'bg-emerald-100 text-emerald-700', keywords: '桃連 桃園 連江 計分 規則 超額比序' },
+    { title: '中投區計分規則', desc: '臺中、南投的超額比序與會考換算。', href: '/scoring-rules/central', icon: Calculator, tone: 'bg-amber-100 text-amber-700', keywords: '中投 台中 臺中 南投 計分 規則 超額比序' },
+    { title: '彰化區計分規則', desc: '彰化的超額比序與會考換算。', href: '/scoring-rules/changhua', icon: Calculator, tone: 'bg-rose-100 text-rose-700', keywords: '彰化 計分 規則 超額比序' },
+    { title: '臺南區計分規則', desc: '臺南的超額比序與會考換算。', href: '/scoring-rules/tainan', icon: Calculator, tone: 'bg-sky-100 text-sky-700', keywords: '台南 臺南 計分 規則 超額比序' },
+    { title: '高雄區計分規則', desc: '高雄的超額比序與會考換算。', href: '/scoring-rules/kaohsiung', icon: Calculator, tone: 'bg-orange-100 text-orange-700', keywords: '高雄 計分 規則 超額比序' },
+    { title: '竹苗區計分規則', desc: '新竹、苗栗的超額比序與會考換算。', href: '/scoring-rules/hsinchu', icon: Calculator, tone: 'bg-fuchsia-100 text-fuchsia-700', keywords: '竹苗 新竹 苗栗 計分 規則 超額比序' },
+    { title: '五專優先免試計分規則', desc: '查看五專優先免試入學的積分項目與同分比序參考。', href: '/five-year-college-rules', icon: GraduationCap, tone: 'bg-emerald-100 text-emerald-700', keywords: '五專 優先免試 聯合免試 積分 志願序 比序' },
   ] },
   { title: '說明、資料與網站資訊', desc: '查名詞、了解資料限制，或查看網站相關資訊。', items: [
     { title: '常見問答與名詞百科', desc: '快速理解會考、超額比序、序位、志願序與五專等名詞。', href: '/faq-glossary', icon: HelpCircle, tone: 'bg-cyan-100 text-cyan-700', keywords: 'FAQ 名詞 超額比序 序位 問答' },

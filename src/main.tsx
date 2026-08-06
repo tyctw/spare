@@ -10,6 +10,7 @@ const AdvantagesPage = lazy(() => import('./components/AdvantagesPage.tsx'));
 const ChangelogPage = lazy(() => import('./components/ChangelogPage.tsx'));
 const DisclaimerPage = lazy(() => import('./components/DisclaimerPage.tsx'));
 const FaqGlossaryPage = lazy(() => import('./components/FaqGlossaryPage.tsx'));
+const FiveYearCollegeRulesPage = lazy(() => import('./components/FiveYearCollegeRulesPage.tsx'));
 const HollandPage = lazy(() => import('./components/HollandPage.tsx'));
 const GradeLevelPage = lazy(() => import('./components/GradeLevelPage.tsx'));
 const Grade11PathwaysPage = lazy(() => import('./components/Grade11PathwaysPage.tsx'));
@@ -30,6 +31,7 @@ const SupportPaymentFailedPage = lazy(() => import('./components/SupportPaymentF
 const SupportPaymentSuccessPage = lazy(() => import('./components/SupportPaymentSuccessPage.tsx'));
 const SupportPolicyPage = lazy(() => import('./components/SupportPolicyPage.tsx'));
 const VocationalEncyclopediaPage = lazy(() => import('./components/VocationalEncyclopediaPage.tsx'));
+const RegionScoringRulesPage = lazy(() => import('./components/RegionScoringRulesPage.tsx'));
 
 function PageLoading() {
   return (
@@ -59,6 +61,7 @@ const isAcademicGroupRoute = rawPath === '/vocational-encyclopedia' && new URLSe
 const path = isAcademicGroupRoute ? '/general-comprehensive-high-school' : rawPath;
 if (isAcademicGroupRoute) window.history.replaceState(null, '', withBasePath('/general-comprehensive-high-school'));
 const sharedReportToken = path.match(/^\/shared\/([0-9a-f-]+)$/i)?.[1];
+const scoringRulesRegionId = path.match(/^\/scoring-rules\/([a-z-]+)$/)?.[1];
 const redirectedRoute = new URLSearchParams(window.location.search).get('route');
 if (redirectedRoute) window.history.replaceState(null, '', withBasePath(path));
 applyPageSeo(path);
@@ -70,6 +73,7 @@ const page =
   path === '/changelog' ? <ChangelogPage /> :
   path === '/disclaimer' ? <DisclaimerPage /> :
   path === '/faq-glossary' ? <FaqGlossaryPage /> :
+  path === '/five-year-college-rules' ? <FiveYearCollegeRulesPage /> :
   path === '/grade-level' ? <GradeLevelPage /> :
   path === '/grade-11-pathways' ? <Grade11PathwaysPage /> :
   path === '/general-comprehensive-high-school' ? <GeneralComprehensiveHighSchoolPage /> :
@@ -90,10 +94,12 @@ const page =
   path === '/after-sales-service' ? <SupportPolicyPage kind="after-sales" /> :
   path === '/refund-cancellation-policy' ? <SupportPolicyPage kind="refund-cancellation" /> :
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
+  scoringRulesRegionId ? <RegionScoringRulesPage regionId={scoringRulesRegionId} /> :
   <App />;
 
-const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/grade-level', '/grade-11-pathways', '/general-comprehensive-high-school', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
+const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/five-year-college-rules', '/grade-level', '/grade-11-pathways', '/general-comprehensive-high-school', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
+const showRelatedReading = informationalPaths.has(path) || path.startsWith('/scoring-rules/');
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><Suspense fallback={<PageLoading />}>{page}{informationalPaths.has(path) && <RelatedReading path={path} />}</Suspense></StrictMode>,
+  <StrictMode><Suspense fallback={<PageLoading />}>{page}{showRelatedReading && <RelatedReading path={path} />}</Suspense></StrictMode>,
 );
