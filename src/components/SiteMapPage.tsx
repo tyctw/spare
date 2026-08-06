@@ -52,12 +52,42 @@ const categories: Category[] = [
 
 const quickLinks = categories.slice(0, 3).flatMap((category) => category.items).filter((item) => ['開始落點分析', '搜尋學校與科別', '模擬志願序'].includes(item.title));
 
+const searchAliases: Record<string, string> = {
+  '/': '首頁 總覽 升學 高中 職校',
+  '/search': '學校 高中 高職 綜高 職科 科別 查詢 搜尋',
+  '/mock-volunteer': '志願 志願序 模擬 選填',
+  '/strategy': '策略 填志願 選填 志願序',
+  '/grade-level': '會考 成績 等級 A++ A+ B++ 寫作',
+  '/important-dates': '日期 時程 報名 放榜 會考',
+  '/scoring-rules/taipei': '基北 台北 新北 基隆 免試 比序 積分 會考',
+  '/scoring-rules/taoyuan': '桃連 桃園 連江 免試 比序 積分 會考',
+  '/scoring-rules/central': '中投 台中 免試 比序 積分 會考',
+  '/scoring-rules/changhua': '彰化 免試 比序 積分 會考',
+  '/scoring-rules/tainan': '台南 臺南 免試 比序 積分 會考',
+  '/scoring-rules/kaohsiung': '高雄 免試 比序 積分 會考',
+  '/scoring-rules/hsinchu': '竹苗 新竹 苗栗 免試 比序 積分 會考',
+  '/five-year-college-rules': '五專 優先免試 聯合免試 比序 積分',
+};
+
+const normalizeSearch = (value: string) => value
+  .normalize('NFKC')
+  .toLowerCase()
+  .replace(/[臺台]/g, '台')
+  .replace(/\s+/g, ' ')
+  .trim();
+
 export default function SiteMapPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const filtered = useMemo(() => {
-    const keyword = searchTerm.trim().toLowerCase();
-    if (!keyword) return categories;
-    return categories.map((category) => ({ ...category, items: category.items.filter((item) => `${category.title} ${category.desc} ${item.title} ${item.desc} ${item.keywords}`.toLowerCase().includes(keyword)) })).filter((category) => category.items.length > 0);
+    const tokens = normalizeSearch(searchTerm).split(' ').filter(Boolean);
+    if (!tokens.length) return categories;
+    return categories.map((category) => ({
+      ...category,
+      items: category.items.filter((item) => {
+        const content = normalizeSearch(`${category.title} ${category.desc} ${item.title} ${item.desc} ${item.keywords} ${searchAliases[item.href] ?? ''}`);
+        return tokens.every((token) => content.includes(token));
+      }),
+    })).filter((category) => category.items.length > 0);
   }, [searchTerm]);
   const count = filtered.reduce((total, category) => total + category.items.length, 0);
 
