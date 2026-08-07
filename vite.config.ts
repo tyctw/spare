@@ -33,9 +33,15 @@ const seoRoutes = [
 
 const staticRouteEntries = () => ({
   name: 'static-route-entries',
-  closeBundle() {
-    const outputDir = path.resolve(__dirname, 'dist');
+  // `closeBundle` can run before Vite has written the client output in CI.
+  // Generate route entries only after the output directory is available.
+  writeBundle(outputOptions: { dir?: string }) {
+    const outputDir = outputOptions.dir || path.resolve(__dirname, 'dist');
     const indexFile = path.join(outputDir, 'index.html');
+
+    if (!fs.existsSync(indexFile)) {
+      throw new Error(`Static route entry source was not generated: ${indexFile}`);
+    }
 
     for (const route of seoRoutes) {
       const routeDir = path.join(outputDir, route);
