@@ -6,7 +6,8 @@
   }
 
   body {
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+    font-synthesis: none;
     background-color: #F8FAFC;
   }
 
