@@ -125,7 +125,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                   <table className="w-full min-w-[760px] border-separate border-spacing-2 text-left [&_tbody_tr]:border-0 [&_tbody_td]:rounded-xl [&_tbody_td]:border-2 [&_tbody_td]:border-slate-200 [&_tbody_td]:bg-white [&_tbody_td]:px-4 [&_tbody_td]:py-3 [&_tbody_td]:align-middle [&_tbody_td:first-child]:border-slate-900 [&_tbody_td:first-child]:bg-slate-900 [&_tbody_td:first-child]:text-xs [&_tbody_td:first-child]:uppercase [&_tbody_td:first-child]:tracking-wide [&_tbody_td:first-child]:text-white">
                     <thead>
                       <tr className="text-white">
-                        <th className="p-5 font-black border-r border-slate-700 w-1/4">比較維度</th>
+                        <th className="p-5 font-black border-r border-slate-700 w-1/4">學校(科系)</th>
                         {schools.map((s, i) => (
                           <th key={s.name} className={`min-w-[205px] rounded-xl border-2 border-slate-900 p-4 font-black relative shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${i % 2 === 0 ? 'bg-indigo-700' : 'bg-slate-800'}`}>
                             <div className="mb-1 text-[10px] font-black tracking-[0.16em] text-amber-300">OPTION {String(i + 1).padStart(2, '0')}</div>
