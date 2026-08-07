@@ -116,10 +116,7 @@ const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: num
   analyzeScores: { windowSeconds: 60, maxRequests: 8 },
   validateInvitationCode: { windowSeconds: 60, maxRequests: 10 },
   getVolunteerSchools: { windowSeconds: 60, maxRequests: 20 },
-  // Sharing is intentionally anonymous, so use a low daily quota rather than
-  // a short burst-only limit. This prevents the endpoint from being used as
-  // general-purpose storage while still allowing normal family sharing.
-  createSharedReport: { windowSeconds: 86_400, maxRequests: 12 },
+  createSharedReport: { windowSeconds: 60, maxRequests: 10 },
   getSharedReport: { windowSeconds: 60, maxRequests: 30 },
   createEcpaySupportPayment: { windowSeconds: 60, maxRequests: 5 },
   getEcpaySupportPaymentStatus: { windowSeconds: 60, maxRequests: 20 },
@@ -566,101 +563,6 @@ function normalizeHistoricalScores(value: unknown) {
   if (value === null || value === undefined || value === '') return null;
   const scores = parseHistoricalScores(value).filter((item) => Number.isFinite(item.points));
   return scores.length ? scores : null;
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
-
-function sharedText(value: unknown, field: string, maxLength: number, required = false) {
-  if (value === undefined || value === null) {
-    if (required) throw new Error(`Shared report field ${field} is required.`);
-    return undefined;
-  }
-  if (typeof value !== 'string') throw new Error(`Shared report field ${field} must be text.`);
-  const text = value.trim();
-  if ((required && !text) || text.length > maxLength || /[\u0000-\u001f\u007f]/.test(text)) {
-    throw new Error(`Shared report field ${field} is invalid.`);
-  }
-  return text || undefined;
-}
-
-function sharedNumber(value: unknown, field: string, min = -10_000, max = 10_000) {
-  if (value === undefined || value === null) return undefined;
-  if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max) {
-    throw new Error(`Shared report field ${field} is invalid.`);
-  }
-  return value;
-}
-
-function sanitizeSharedVolunteerChoice(value: unknown) {
-  if (!isRecord(value)) throw new Error('Shared volunteer choice is invalid.');
-  return {
-    county: sharedText(value.county, 'choices.county', 80),
-    code: sharedText(value.code, 'choices.code', 40, true),
-    name: sharedText(value.name, 'choices.name', 160, true),
-    levelInfo: sharedText(value.levelInfo, 'choices.levelInfo', 80),
-    shift: sharedText(value.shift, 'choices.shift', 80),
-    groupCode: sharedText(value.groupCode, 'choices.groupCode', 40),
-    groupName: sharedText(value.groupName, 'choices.groupName', 160),
-    deptCode: sharedText(value.deptCode, 'choices.deptCode', 40, true),
-    deptName: sharedText(value.deptName, 'choices.deptName', 160),
-    preferenceRank: sharedNumber(value.preferenceRank, 'choices.preferenceRank', 1, 30),
-    preferenceScore: sharedNumber(value.preferenceScore, 'choices.preferenceScore', 0, 100),
-    sharesPreferenceRank: typeof value.sharesPreferenceRank === 'boolean'
-      ? value.sharesPreferenceRank
-      : undefined,
-  };
-}
-
-function sanitizeSharedReport(kind: string, value: unknown) {
-  if (!isRecord(value)) throw new Error('Invalid shared report content.');
-
-  if (kind === 'volunteer') {
-    if (!Array.isArray(value.choices) || value.choices.length > 30) {
-      throw new Error('Invalid volunteer report content.');
-    }
-    const region = sharedText(value.region, 'region', 32, true);
-    if (!/^[a-z-]{2,32}$/.test(region!)) throw new Error('Invalid shared report region.');
-    return {
-      region,
-      regionName: sharedText(value.regionName, 'regionName', 80),
-      createdAt: sharedText(value.createdAt, 'createdAt', 40),
-      choices: value.choices.map(sanitizeSharedVolunteerChoice),
-    };
-  }
-
-  if (kind === 'analysis') {
-    if (!isRecord(value.results)) throw new Error('Invalid analysis report content.');
-    const results = value.results;
-    const schools = Array.isArray(results.eligibleSchools) ? results.eligibleSchools : [];
-    if (schools.length > 100) throw new Error('Too many schools in shared analysis report.');
-    const analysisReport = isRecord(results.analysisReport) ? results.analysisReport : undefined;
-    return {
-      createdAt: sharedText(value.createdAt, 'createdAt', 40),
-      results: {
-        totalPoints: sharedNumber(results.totalPoints, 'results.totalPoints', 0, 100),
-        totalCredits: sharedNumber(results.totalCredits, 'results.totalCredits', 0, 100),
-        analysisReport: analysisReport ? {
-          analysisSummary: sharedText(analysisReport.analysisSummary, 'analysisSummary', 2_000),
-          suggestion: sharedText(analysisReport.suggestion, 'suggestion', 2_000),
-        } : undefined,
-        eligibleSchools: schools.map((school) => {
-          if (!isRecord(school)) throw new Error('Shared analysis school is invalid.');
-          return {
-            name: sharedText(school.name, 'schools.name', 160, true),
-            type: sharedText(school.type, 'schools.type', 80),
-            group: sharedText(school.group, 'schools.group', 160),
-            ownership: sharedText(school.ownership, 'schools.ownership', 40),
-            points: sharedNumber(school.points, 'schools.points', 0, 100),
-            zone: sharedText(school.zone, 'schools.zone', 20),
-          };
-        }),
-      },
-    };
-  }
-
-  throw new Error('Invalid shared report type.');
 }
 
 function assertScores(value: unknown): asserts value is Scores {
@@ -1155,13 +1057,20 @@ async function handleAction(payload: Record<string, any>, request: Request) {
 
     case 'createSharedReport': {
       const kind = String(payload.kind || '');
+      const report = payload.payload;
       if (kind !== 'analysis' && kind !== 'volunteer') throw new Error('Invalid shared report type.');
-      const report = sanitizeSharedReport(kind, payload.payload);
+      if (!report || typeof report !== 'object' || Array.isArray(report)) throw new Error('Invalid shared report content.');
+      if (kind === 'analysis' && (!report.results || typeof report.results !== 'object')) {
+        throw new Error('Invalid analysis report content.');
+      }
+      if (kind === 'volunteer' && (!Array.isArray(report.choices) || report.choices.length > 30)) {
+        throw new Error('Invalid volunteer report content.');
+      }
 
-      // Store only the canonical fields above, and cap bytes (not characters)
-      // so multibyte text cannot evade the storage limit.
-      const encodedPayloadBytes = new TextEncoder().encode(JSON.stringify(report)).byteLength;
-      if (encodedPayloadBytes > 32 * 1024) throw new Error('Shared report is too large.');
+      // A snapshot is deliberately bounded: this public endpoint must not become
+      // a general-purpose file store.
+      const encodedPayload = JSON.stringify(report);
+      if (encodedPayload.length > 150_000) throw new Error('Shared report is too large.');
 
       const { data, error } = await withTimeout(
         supabase
