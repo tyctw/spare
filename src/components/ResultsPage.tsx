@@ -14,7 +14,6 @@ import {
   Flame,
   History,
   Layers,
-  Library,
   Lightbulb,
   List,
   MapPin,
@@ -591,7 +590,6 @@ export default function ResultsPage() {
                   const ownership = formatSchoolOwnership(school.ownership || 'public');
                   const ownershipKey = getSchoolOwnershipKey(school.ownership);
                   const ownershipColor = ownershipKey === 'private' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
-                  const OwnershipIcon = ownershipKey === 'private' ? Building2 : Library;
                   const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 4);
                   const latestHistoricalScore = historicalScores[0];
                   const historicalTrend = getHistoricalTrend(historicalScores);
@@ -620,8 +618,8 @@ export default function ResultsPage() {
                         )}
                         <div className={`flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 ${ownershipColor}`}>
                           <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">屬性</span>
-                          <div className="flex min-w-0 items-center justify-center gap-1 text-center text-sm font-black leading-tight">
-                            <OwnershipIcon className="w-3.5 h-3.5" /> {ownership}
+                          <div className="text-center text-sm font-black leading-tight">
+                            {ownership}
                           </div>
                         </div>
                         <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-emerald-300 bg-emerald-100 px-2.5 py-2.5 text-emerald-800">
