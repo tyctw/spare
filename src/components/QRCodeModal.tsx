@@ -15,7 +15,7 @@ export default function QRCodeModal({ isOpen, onClose, onScan }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const requestRef = useRef<number>();
+  const requestRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!isOpen) { 
@@ -32,7 +32,7 @@ export default function QRCodeModal({ isOpen, onClose, onScan }: Props) {
   }, [isOpen, mode]);
 
   const stopCamera = () => {
-    if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    if (requestRef.current !== null) cancelAnimationFrame(requestRef.current);
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;

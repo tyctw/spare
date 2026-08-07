@@ -8,6 +8,7 @@ import {
   Route,
   Sparkles,
 } from "lucide-react";
+import type { ReactNode } from "react";
 import { withBasePath } from "../lib/routes";
 
 export default function GeneralComprehensiveHighSchoolPage() {
@@ -177,7 +178,7 @@ function SchoolTypeCard({
   bullets,
 }: {
   title: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   tone: "sky" | "emerald";
   intro: string;
   bullets: string[];
