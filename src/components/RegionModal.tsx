@@ -39,6 +39,18 @@ interface Props {
 }
 
 export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect }: Props) {
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    if (!isOpen) return undefined;
+    closeButtonRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -47,15 +59,18 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
           <motion.div
             initial={{ scale: 0.96, opacity: 0, y: 18 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.96, opacity: 0, y: 18 }}
             className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-sky-50 shadow-[10px_10px_0_#0f172a]"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="region-modal-title"
           >
             <header className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-white via-sky-50 to-amber-50 px-5 py-5 text-slate-900 sm:px-8 sm:py-7">
-              <MapPin className="absolute -right-7 -top-8 h-40 w-40 text-sky-300/35" strokeWidth={1.5} />
+              <MapPin aria-hidden="true" className="absolute -right-7 -top-8 h-40 w-40 text-sky-300/35" strokeWidth={1.5} />
               <div className="relative flex items-start justify-between gap-4">
                 <div>
-                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-3 py-1 text-[10px] font-black tracking-[0.18em] text-sky-700"><Sparkles className="h-3.5 w-3.5" />ADMISSION REGION</div>
-                  <h2 className="text-2xl font-black tracking-tight sm:text-4xl">選擇你的就學區</h2>
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-3 py-1 text-[10px] font-black tracking-[0.18em] text-sky-700"><Sparkles aria-hidden="true" className="h-3.5 w-3.5" />ADMISSION REGION</div>
+                  <h2 id="region-modal-title" className="text-2xl font-black tracking-tight sm:text-4xl">選擇你的就學區</h2>
                 </div>
-                <button onClick={onClose} aria-label="關閉選擇就學區視窗" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-slate-600 shadow-[2px_2px_0_#0f172a] transition hover:bg-sky-100 hover:text-sky-800"><X className="h-5 w-5" /></button>
+                <button ref={closeButtonRef} onClick={onClose} aria-label="關閉選擇就學區視窗" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-slate-600 shadow-[2px_2px_0_#0f172a] transition hover:bg-sky-100 hover:text-sky-800 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600"><X aria-hidden="true" className="h-5 w-5" /></button>
               </div>
             </header>
 
@@ -74,15 +89,17 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                       key={region.id}
                       disabled={!region.active}
                       onClick={() => { onSelect(region.id); onClose(); }}
+                      aria-pressed={isSelected}
+                      aria-label={`${region.name}，${region.desc}${region.active ? isSelected ? '，目前已選取' : '，可選擇' : '，尚未開放'}`}
                       className={`group relative min-h-[166px] overflow-hidden rounded-2xl border-[3px] p-4 text-left transition-all ${
-                        isSelected ? tone.selected : region.active ? 'border-slate-900 bg-white shadow-[3px_3px_0_#0f172a] hover:-translate-y-1 hover:shadow-[5px_5px_0_#0f172a]' : 'cursor-not-allowed border-slate-300 bg-slate-50 opacity-65'
+                        isSelected ? tone.selected : region.active ? 'border-slate-900 bg-white shadow-[3px_3px_0_#0f172a] hover:-translate-y-1 hover:shadow-[5px_5px_0_#0f172a] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600' : 'cursor-not-allowed border-slate-300 bg-slate-50 opacity-65'
                       }`}
                     >
                       {!region.active && <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_9px,#94a3b8_9px,#94a3b8_11px)]" />}
                       <div className={`absolute inset-x-0 top-0 h-16 bg-gradient-to-b ${tone.wash}`} />
                       <div className="relative flex items-start justify-between">
-                        <div className={`grid h-12 w-12 place-items-center rounded-2xl border-2 border-white shadow-[0_3px_10px_rgba(15,23,42,0.14)] ${tone.icon}`}><RegionIcon className="h-6 w-6" strokeWidth={2.5} /></div>
-                        {isSelected && <span className="grid h-6 w-6 place-items-center rounded-full bg-sky-600 text-white"><Check className="h-4 w-4" strokeWidth={3} /></span>}
+                        <div aria-hidden="true" className={`grid h-12 w-12 place-items-center rounded-2xl border-2 border-white shadow-[0_3px_10px_rgba(15,23,42,0.14)] ${tone.icon}`}><RegionIcon className="h-6 w-6" strokeWidth={2.5} /></div>
+                        {isSelected && <span aria-label="已選取" className="grid h-6 w-6 place-items-center rounded-full bg-sky-600 text-white"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
                       </div>
                       <div className="relative mt-5">
                         <h3 className="text-lg font-black text-slate-900">{region.name}</h3>
