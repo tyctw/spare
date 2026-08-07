@@ -197,8 +197,10 @@ export const printResults = (data: any, regionName: string) => {
   const typeStr = data.scores.schoolType === 'all' ? '普通與職業類科' : data.scores.schoolType;
   const groupStr = data.scores.schoolType === '職業類科' && data.vocationalGroups ? `<div class="info-item"><div class="info-label">職業群別</div><div class="info-value">${data.vocationalGroups.includes('all') ? '全群別不拘' : data.vocationalGroups.join(', ')}</div></div>` : '';
 
-  const currentUrl = window.location.href;
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(currentUrl)}`;
+  const rawCurrentUrl = window.location.href;
+  // Keep the raw URL for QR encoding, but never interpolate it into popup HTML.
+  const currentUrl = escapeHtml(rawCurrentUrl);
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(rawCurrentUrl)}`;
 
   let creditsHtml = '';
   if (data.results.totalCredits) {
@@ -785,8 +787,10 @@ export const printSchoolTypes = () => {
   }
 
   const currentDate = new Date().toLocaleString('zh-TW');
-  const currentUrl = window.location.href;
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(currentUrl)}`;
+  const rawCurrentUrl = window.location.href;
+  // Keep the raw URL for QR encoding, but never interpolate it into popup HTML.
+  const currentUrl = escapeHtml(rawCurrentUrl);
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(rawCurrentUrl)}`;
 
   const html = `
     <!DOCTYPE html>
