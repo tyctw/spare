@@ -11,6 +11,7 @@ const supportPaymentStorageKey = 'spare.support.payment';
 
 type SupportPaymentTracking = {
   merchantTradeNo: string;
+  statusLookupToken: string;
   createdAt: number;
 };
 
@@ -47,7 +48,9 @@ export default function SupportPage() {
         return;
       }
 
-      if (!tracking.merchantTradeNo || Date.now() - tracking.createdAt > 24 * 60 * 60 * 1000) {
+      if (!tracking.merchantTradeNo
+        || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(tracking.statusLookupToken || '')
+        || Date.now() - tracking.createdAt > 24 * 60 * 60 * 1000) {
         window.sessionStorage.removeItem(supportPaymentStorageKey);
         return;
       }
@@ -59,6 +62,7 @@ export default function SupportPage() {
           const payment = await callBackend<{ status: string; amount?: number }>({
             action: 'getEcpaySupportPaymentStatus',
             merchantTradeNo: tracking.merchantTradeNo,
+            statusLookupToken: tracking.statusLookupToken,
           }, { timeoutMs: 8_000 });
 
           if (payment.status === 'paid') {
@@ -103,13 +107,21 @@ export default function SupportPage() {
     setIsSubmitting(true);
     setNotice('');
     try {
-      const payment = await callBackend<{ actionUrl: string; fields: Record<string, string | number> }>(
+      const payment = await callBackend<{
+        actionUrl: string;
+        fields: Record<string, string | number>;
+        statusLookupToken: string;
+      }>(
         { action: 'createEcpaySupportPayment', amount },
         { timeoutMs: 12_000 },
       );
       const merchantTradeNo = String(payment.fields.MerchantTradeNo || '');
-      if (merchantTradeNo) {
-        const tracking: SupportPaymentTracking = { merchantTradeNo, createdAt: Date.now() };
+      if (merchantTradeNo && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(payment.statusLookupToken || '')) {
+        const tracking: SupportPaymentTracking = {
+          merchantTradeNo,
+          statusLookupToken: payment.statusLookupToken,
+          createdAt: Date.now(),
+        };
         window.sessionStorage.setItem(supportPaymentStorageKey, JSON.stringify(tracking));
       }
       const form = document.createElement('form');
