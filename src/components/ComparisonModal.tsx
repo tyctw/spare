@@ -191,6 +191,26 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                           </td>
                         ))}
                       </tr>
+                      <tr className="border-b border-slate-200">
+                        <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">招生名額（一般生）</td>
+                        {schools.map((s, i) => (
+                          <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-700 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
+                            {s.admissionQuota === null || s.admissionQuota === undefined ? (
+                              <span className="text-slate-400">尚未公告</span>
+                            ) : (
+                              <div className="flex flex-col gap-1">
+                                <span className="text-lg font-black text-indigo-700">{s.admissionQuota} 名</span>
+                                {s.admissionQuotaYear && <span className="text-xs text-slate-500">{s.admissionQuotaYear}</span>}
+                                {s.admissionQuotaSourceUrl && (
+                                  <a href={s.admissionQuotaSourceUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-700 hover:underline">
+                                    <ExternalLink className="h-3 w-3" />官方公告
+                                  </a>
+                                )}
+                              </div>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
                       <tr className="">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">學校名額與特招</td>
                         {schools.map((s, i) => <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-600 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.notes || s.special || '-'}</td>)}
