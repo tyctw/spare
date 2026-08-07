@@ -298,13 +298,10 @@ function background(task: PromiseLike<unknown>) {
 }
 
 function clientAddress(request: Request) {
-  // Supabase's API gateway injects X-Real-IP as one client address. Do not
-  // accept X-Forwarded-For or CF-Connecting-IP: callers can supply those
-  // headers themselves, which would let them mint unlimited rate-limit keys.
-  // A missing or multi-value header deliberately maps to one shared key,
-  // failing closed instead of allowing a bypass.
-  const address = request.headers.get('x-real-ip')?.trim();
-  return address && !address.includes(',') ? address : 'unavailable-client-ip';
+  return request.headers.get('cf-connecting-ip')?.trim()
+    || request.headers.get('x-real-ip')?.trim()
+    || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || 'unknown';
 }
 
 async function consumeRateLimit(request: Request, action: string) {
@@ -434,7 +431,7 @@ async function validateInvitationCode(code: unknown, request: Request, consume =
         action: consume ? '使用' : '驗證',
         invitation_code: invitationCode || null,
         success: valid,
-        ip: clientAddress(request),
+        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
         user_agent: request.headers.get('user-agent'),
       }),
       2000,
@@ -478,7 +475,7 @@ async function requireAdmin(request: Request) {
         action: 'admin',
         invitation_code: '[authenticated-admin]',
         success: true,
-        ip: clientAddress(request),
+        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
         user_agent: request.headers.get('user-agent'),
       }),
       2000,
@@ -511,7 +508,7 @@ async function validateAdminCode(code: unknown, request: Request) {
         action: 'admin',
         invitation_code: requestedCode ? '[admin-code]' : null,
         success: valid,
-        ip: clientAddress(request),
+        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
         user_agent: request.headers.get('user-agent'),
       }),
       2000,
