@@ -953,20 +953,30 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       };
       const checkMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
 
-      const { error } = await supabase.from('support_payments').insert({
-        merchant_trade_no: merchantTradeNo,
-        amount,
-        status: 'pending',
-        payment_method: 'ALL',
-      });
-      if (error) throw error;
+      const { data: payment, error } = await supabase
+        .from('support_payments')
+        .insert({
+          merchant_trade_no: merchantTradeNo,
+          amount,
+          status: 'pending',
+          payment_method: 'ALL',
+        })
+        .select('status_lookup_token')
+        .single();
+      if (error || !payment?.status_lookup_token) throw error || new Error('Could not create payment tracking token.');
 
-      return { actionUrl: config.actionUrl, fields: { ...fields, CheckMacValue: checkMacValue } };
+      return {
+        actionUrl: config.actionUrl,
+        fields: { ...fields, CheckMacValue: checkMacValue },
+        statusLookupToken: payment.status_lookup_token,
+      };
     }
 
     case 'getEcpaySupportPaymentStatus': {
       const merchantTradeNo = String(payload.merchantTradeNo || '');
-      if (!/^[A-Za-z0-9]{8,32}$/.test(merchantTradeNo)) {
+      const statusLookupToken = String(payload.statusLookupToken || '').trim();
+      if (!/^[A-Za-z0-9]{8,32}$/.test(merchantTradeNo)
+        || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(statusLookupToken)) {
         throw new Error('Invalid support payment reference.');
       }
 
@@ -974,6 +984,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         .from('support_payments')
         .select('status, amount')
         .eq('merchant_trade_no', merchantTradeNo)
+        .eq('status_lookup_token', statusLookupToken)
         .maybeSingle();
       if (error) throw error;
       return data || { status: 'not_found' };
