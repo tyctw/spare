@@ -126,7 +126,6 @@ const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: num
   adminUpsertSchool: { windowSeconds: 60, maxRequests: 10 },
   adminDeleteSchool: { windowSeconds: 60, maxRequests: 10 },
   adminClearHistoricalScores: { windowSeconds: 60, maxRequests: 5 },
-  ecpayCallback: { windowSeconds: 60, maxRequests: 30 },
 };
 
 const json = (request: Request, body: unknown, status = 200) =>
@@ -211,7 +210,7 @@ const ecpayConfig = () => {
   const hashKey = Deno.env.get('ECPAY_HASH_KEY')?.trim();
   const hashIv = Deno.env.get('ECPAY_HASH_IV')?.trim();
   const mode = Deno.env.get('ECPAY_MODE')?.trim().toLowerCase() || 'production';
-  const returnUrl = Deno.env.get('ECPAY_RETURN_URL')?.trim() || `${supabaseUrl}/functions/v1/backend`;
+  const returnUrl = Deno.env.get('ECPAY_RETURN_URL')?.trim() || `${supabaseUrl}/functions/v1/ecpay-callback`;
   const clientBackUrl = Deno.env.get('ECPAY_CLIENT_BACK_URL')?.trim() || 'https://tyctw.github.io/spare/support/success';
 
   if (!merchantId || !hashKey || !hashIv) throw new Error('ECPay payment is not configured. Set ECPAY_MERCHANT_ID, ECPAY_HASH_KEY, and ECPAY_HASH_IV.');
@@ -1548,12 +1547,6 @@ Deno.serve(async (request) => {
   const path = new URL(request.url).pathname;
 
   try {
-    if (request.headers.get('content-type')?.includes('application/x-www-form-urlencoded')) {
-      if (!await consumeRateLimit(request, 'ecpayCallback')) {
-        return new Response('0|Rate limit exceeded', { status: 429, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-      }
-      return await handleEcpayCallback(request);
-    }
     if (!request.headers.get('content-type')?.includes('application/json')) {
       return json(request, { error: 'Content-Type must be application/json.' }, 415);
     }

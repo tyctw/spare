@@ -1,4 +1,9 @@
 project_id = "spare-main"
 
 [functions.backend]
+verify_jwt = true
+
+# ECPay cannot attach this application's JWT to its server-to-server callback.
+# Keep that one route public and validate its signed callback payload there.
+[functions.ecpay-callback]
 verify_jwt = false
