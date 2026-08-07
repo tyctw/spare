@@ -211,7 +211,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                           </td>
                         ))}
                       </tr>
-                      {false && (<tr className="">}
+                      {false && (<tr className="">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">學校名額與特招</td>
                         {schools.map((s, i) => <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-600 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.notes || s.special || '-'}</td>)}
                       </tr>)}
