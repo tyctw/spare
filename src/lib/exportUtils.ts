@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { formatSchoolOwnership, formatSchoolOwnershipPreference } from './schoolDisplay';
 
 // The print popup inherits this page's origin, so dynamic values must remain
@@ -105,8 +105,8 @@ export const exportJson = (data: any) => {
   saveAs(blob, `115年_會考落點分析_${data.scores.region}.json`);
 };
 
-export const exportExcel = (data: any, regionName: string) => {
-  const wb = XLSX.utils.book_new();
+export const exportExcel = async (data: any, regionName: string) => {
+  const wb = new ExcelJS.Workbook();
   
   // 1. Summary Sheet
   const summary = [
@@ -137,8 +137,8 @@ export const exportExcel = (data: any, regionName: string) => {
     ["版權宣告", `TW全國會考落點分析 © ${new Date().getFullYear()}`],
     ["分析來源網址", window.location.href]
   ];
-  const summaryWs = XLSX.utils.aoa_to_sheet(summary);
-  XLSX.utils.book_append_sheet(wb, summaryWs, "分析摘要與成績");
+  const summaryWs = wb.addWorksheet("分析摘要與成績");
+  summaryWs.addRows(summary);
 
   // 2. Schools Sheet
   if (data.results.eligibleSchools?.length) {
@@ -154,7 +154,8 @@ export const exportExcel = (data: any, regionName: string) => {
         s.minScore || s.points || s.score || "--"
       ])
     ];
-    const schoolsWs = XLSX.utils.aoa_to_sheet(schoolsData);
+    const schoolsWs = wb.addWorksheet("推薦學校清單");
+    schoolsWs.addRows(schoolsData);
     
     // Auto-size columns slightly
     schoolsWs['!cols'] = [
@@ -167,13 +168,16 @@ export const exportExcel = (data: any, regionName: string) => {
       { wch: 15 }
     ];
     
-    XLSX.utils.book_append_sheet(wb, schoolsWs, "推薦學校清單");
   } else {
-    const emptyWs = XLSX.utils.aoa_to_sheet([["無符合條件之推薦學校"]]);
-    XLSX.utils.book_append_sheet(wb, emptyWs, "推薦學校清單");
+    const emptyWs = wb.addWorksheet("推薦學校清單");
+    emptyWs.addRow(["無符合條件之推薦學校"]);
   }
 
-  XLSX.writeFile(wb, `115年_會考落點分析_${regionName}.xlsx`);
+  const content = await wb.xlsx.writeBuffer();
+  saveAs(
+    new Blob([content], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+    `115年_會考落點分析_${regionName}.xlsx`,
+  );
 };
 
 export const printResults = (data: any, regionName: string) => {

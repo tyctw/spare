@@ -421,7 +421,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     const { exportTxt, exportExcel, exportJson, printResults } = await import('./lib/exportUtils');
     switch (type) {
       case 'txt': exportTxt(payload, regionName); break;
-      case 'excel': exportExcel(payload, regionName); break;
+      case 'excel': await exportExcel(payload, regionName); break;
       case 'json': exportJson(payload); break;
       case 'print': printResults(payload, regionName); break;
     }

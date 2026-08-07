@@ -344,14 +344,14 @@ export default function ResultsPage() {
     });
   };
 
-  const handleExport = (type: 'txt' | 'excel' | 'json' | 'print') => {
+  const handleExport = async (type: 'txt' | 'excel' | 'json' | 'print') => {
     const payload = { scores, results, identity: scores?.identity, vocationalGroups };
     switch (type) {
       case 'txt':
         exportTxt(payload, regionName);
         break;
       case 'excel':
-        exportExcel(payload, regionName);
+        await exportExcel(payload, regionName);
         break;
       case 'json':
         exportJson(payload);
