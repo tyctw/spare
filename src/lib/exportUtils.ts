@@ -2,6 +2,26 @@ import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import { formatSchoolOwnership, formatSchoolOwnershipPreference } from './schoolDisplay';
 
+// The print popup inherits this page's origin, so dynamic values must remain
+// text rather than becoming markup in the generated document.
+const escapeHtml = (value: unknown) => String(value ?? '')
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
+const escapePrintData = (value: unknown): unknown => {
+  if (typeof value === 'string') return escapeHtml(value);
+  if (Array.isArray(value)) return value.map(escapePrintData);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, child]) => [key, escapePrintData(child)]),
+    );
+  }
+  return value;
+};
+
 export const exportTxt = (data: any, regionName: string) => {
   const content = `===============================================
                115年 會考落點分析報告                
@@ -157,6 +177,11 @@ export const exportExcel = (data: any, regionName: string) => {
 };
 
 export const printResults = (data: any, regionName: string) => {
+  // `data` may contain values from shared reports and database records. Escape
+  // every string before it is interpolated into the popup HTML below.
+  data = escapePrintData(data) as typeof data;
+  regionName = escapeHtml(regionName);
+
   const printWindow = window.open('', '_blank');
   if (!printWindow) {
     alert('無法開啟列印視窗，請檢查是否被瀏覽器阻擋。');
