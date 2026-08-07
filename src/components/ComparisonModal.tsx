@@ -194,15 +194,15 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                       <tr className="border-b border-slate-200">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">招生名額（一般生）</td>
                         {schools.map((s, i) => (
-                          <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-700 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
+                          <td key={s.name} className={`p-4 border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
                             {s.admissionQuota === null || s.admissionQuota === undefined ? (
                               <span className="text-slate-400">尚未公告</span>
                             ) : (
-                              <div className="flex flex-col gap-1">
+                              <div className="min-w-[132px] rounded-xl border-2 border-indigo-200 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(99,102,241,0.18)]">
                                 <span className="text-lg font-black text-indigo-700">{s.admissionQuota} 名</span>
-                                {s.admissionQuotaYear && <span className="text-xs text-slate-500">{s.admissionQuotaYear}</span>}
+                                {s.admissionQuotaYear && <span className="ml-2 inline-flex rounded-md bg-indigo-100 px-1.5 py-0.5 text-[10px] font-black text-indigo-700">{s.admissionQuotaYear}</span>}
                                 {s.admissionQuotaSourceUrl && (
-                                  <a href={s.admissionQuotaSourceUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-700 hover:underline">
+                                  <a href={s.admissionQuotaSourceUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-lg border border-emerald-300 bg-emerald-50 px-2 py-1.5 text-[11px] font-black text-emerald-700 transition-colors hover:bg-emerald-100 hover:text-emerald-800">
                                     <ExternalLink className="h-3 w-3" />官方公告
                                   </a>
                                 )}
