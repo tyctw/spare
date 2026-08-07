@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ExternalLink, Trash2, List, History } from 'lucide-react';
+import { X, ExternalLink, Trash2, List } from 'lucide-react';
 import { formatSchoolOwnership } from '../lib/schoolDisplay';
 
 interface Props {
@@ -56,7 +56,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-0 sm:p-4">
           <motion.div
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
@@ -68,9 +68,9 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
             initial={{ scale: 0.95, opacity: 0, y: 20 }} 
             animate={{ scale: 1, opacity: 1, y: 0 }} 
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative w-full max-w-5xl bg-slate-50 rounded-[2rem] border-4 border-slate-900 overflow-hidden shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] max-h-[90vh] flex flex-col"
+            className="relative h-[100dvh] w-full max-w-5xl bg-slate-50 border-0 sm:h-auto sm:max-h-[90vh] sm:rounded-[2rem] sm:border-4 border-slate-900 overflow-hidden shadow-none sm:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col"
           >
-            <div className="p-6 bg-indigo-400 border-b-4 border-slate-900 relative overflow-hidden shrink-0">
+            <div className="p-4 sm:p-6 bg-indigo-400 border-b-4 border-slate-900 relative overflow-hidden shrink-0">
               <div className="absolute right-0 top-0 opacity-20 -translate-y-1/4 translate-x-1/4">
                 <List className="w-32 h-32 text-slate-900" />
               </div>
@@ -108,7 +108,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
               </div>
             </div>
             
-            <div className="p-6 overflow-y-auto w-full custom-scrollbar">
+            <div className="p-3 sm:p-6 overflow-y-auto w-full custom-scrollbar">
               {schools.length === 0 ? (
                 <div className="text-center py-24 bg-white border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] rounded-3xl mx-4">
                   <div className="w-20 h-20 bg-slate-100 rounded-full border-4 border-slate-900 flex items-center justify-center mx-auto mb-4 -rotate-6">
@@ -118,9 +118,12 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                   <p className="text-sm font-bold text-slate-500 mt-2">請先在分析結果中勾選加入比較清單</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] bg-white mx-1">
-                  <table className="w-full text-left border-collapse min-w-[600px]">
-                    <thead>
+                <div className="relative overflow-x-auto rounded-2xl sm:rounded-3xl border-4 border-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] bg-white mx-0 sm:mx-1 overscroll-x-contain">
+                  <div className="sticky left-0 z-20 w-max rounded-br-xl border-b-2 border-r-2 border-slate-900 bg-amber-200 px-2 py-1 text-[10px] font-black text-slate-900 sm:hidden">
+                    ← 左右滑動比較 →
+                  </div>
+                  <table className="w-full text-left border-collapse min-w-[640px] [&_th]:p-3 sm:[&_th]:p-5 [&_td]:p-3 sm:[&_td]:p-5">
+                    <thead className="[&>tr>th:first-child]:sticky [&>tr>th:first-child]:left-0 [&>tr>th:first-child]:z-10 [&>tr>th:first-child]:bg-slate-900">
                       <tr className="bg-slate-900 text-white">
                         <th className="p-5 font-black border-r border-slate-700 w-1/4">比較維度</th>
                         {schools.map((s, i) => (
@@ -136,7 +139,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="bg-white text-sm md:text-base">
+                    <tbody className="bg-white text-sm md:text-base [&>tr>td:first-child]:sticky [&>tr>td:first-child]:left-0 [&>tr>td:first-child]:z-10 [&>tr>td:first-child]:bg-slate-50">
                       <tr className="border-b border-slate-200">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">就學區</td>
                         {schools.map((s, i) => <td key={s.name} className={`p-5 font-bold border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.region || '未知'}</td>)}
@@ -180,7 +183,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                       </tr>
                       <tr className="border-b border-slate-200">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">
-                          <span className="inline-flex items-center gap-1.5"><History className="w-4 h-4" />歷年成績</span>
+                          歷年成績
                         </td>
                         {schools.map((s, i) => (
                           <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-700 leading-relaxed ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
