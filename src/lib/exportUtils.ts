@@ -143,7 +143,7 @@ export const exportExcel = async (data: any, regionName: string) => {
   // 2. Schools Sheet
   if (data.results.eligibleSchools?.length) {
     const schoolsData = [
-      ["推薦排名", "學校名稱", "群別/科系", "學校類型", "公立/私立", "落點區間", "預估錄取門檻"],
+      ["序號", "學校名稱", "群別/科系", "學校類型", "公立/私立", "落點區間", "預估錄取門檻"],
       ...data.results.eligibleSchools.map((s: any, index: number) => [
         index + 1,
         s.name, 
@@ -258,7 +258,7 @@ export const printResults = (data: any, regionName: string) => {
       <table>
         <thead>
           <tr>
-            <th width="10%">排名</th>
+            <th width="10%">序號</th>
             <th width="25%">學校名稱</th>
             <th width="25%">群別/科系/類型</th>
             <th width="10%">公私立</th>
