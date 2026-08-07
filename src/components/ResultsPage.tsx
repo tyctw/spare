@@ -306,14 +306,16 @@ export default function ResultsPage() {
     );
   }
 
-  const { scores, results, vocationalGroups = [] } = stored;
+  const { scores, results } = stored;
+  const vocationalGroups = Array.isArray(stored.vocationalGroups) ? stored.vocationalGroups : [];
+  const eligibleSchools = Array.isArray(results.eligibleSchools) ? results.eligibleSchools : [];
   const regionName = ALL_REGIONS.find((region) => region.id === scores?.region)?.name || scores?.region || '未選擇';
   const schoolTypeLabel = scores?.schoolType === 'all' ? '全部類型' : scores?.schoolType || '全部類型';
   const ownershipLabel =
     scores?.schoolOwnership === 'all' ? '公私立皆可' : scores?.schoolOwnership === 'public' ? '公立' : '私立';
   const isAllVocationalGroups = vocationalGroups.length === 1 && vocationalGroups[0] === 'all';
 
-  const filteredSchools = (results.eligibleSchools || [])
+  const filteredSchools = eligibleSchools
     .filter((school: any) => {
       const matchText =
         !filterText ||

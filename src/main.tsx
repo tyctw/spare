@@ -4,6 +4,7 @@ import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
 import { applyPageSeo } from './lib/seo.ts';
 import RelatedReading from './components/RelatedReading.tsx';
+import AppErrorBoundary from './components/AppErrorBoundary.tsx';
 
 const App = lazy(() => import('./App.tsx'));
 const AdvantagesPage = lazy(() => import('./components/AdvantagesPage.tsx'));
@@ -101,5 +102,5 @@ const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary
 const showRelatedReading = informationalPaths.has(path) || path.startsWith('/scoring-rules/');
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><Suspense fallback={<PageLoading />}>{page}{showRelatedReading && <RelatedReading path={path} />}</Suspense></StrictMode>,
+  <StrictMode><AppErrorBoundary><Suspense fallback={<PageLoading />}>{page}{showRelatedReading && <RelatedReading path={path} />}</Suspense></AppErrorBoundary></StrictMode>,
 );
