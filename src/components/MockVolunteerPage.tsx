@@ -37,6 +37,40 @@ const createChoiceId = (school: SchoolItem) =>
 
 const SHARED_COPY_STORAGE_KEY = 'mock-volunteer-import';
 
+// The shared-report endpoint is intentionally public. Never interpolate data
+// originating from it into the print document without HTML encoding.
+const escapeHtml = (value: unknown) => String(value ?? '')
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
+const sanitizeSharedChoice = (value: unknown): SchoolItem | null => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+
+  const record = value as Record<string, unknown>;
+  const text = (key: string, maxLength = 160) =>
+    typeof record[key] === 'string'
+      ? record[key].replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, maxLength)
+      : '';
+
+  const choice = {
+    id: '',
+    county: text('county'),
+    code: text('code', 40),
+    name: text('name'),
+    levelInfo: text('levelInfo'),
+    shift: text('shift', 80),
+    groupCode: text('groupCode', 40),
+    groupName: text('groupName'),
+    deptCode: text('deptCode', 40),
+    deptName: text('deptName'),
+  };
+
+  return choice.name && choice.code && choice.deptCode ? choice : null;
+};
+
 const isSameVolunteerOption = (first: SchoolItem, second: SchoolItem) =>
   first.code === second.code
   && first.deptCode === second.deptCode
@@ -204,7 +238,12 @@ export default function MockVolunteerPage() {
     try {
       const imported = JSON.parse(raw);
       if (Array.isArray(imported.choices)) {
-        setSelectedChoices(imported.choices.map((choice: SchoolItem) => ({ ...choice, id: createChoiceId(choice) })));
+        const choices = imported.choices
+          .slice(0, 30)
+          .map(sanitizeSharedChoice)
+          .filter((choice): choice is SchoolItem => choice !== null)
+          .map((choice) => ({ ...choice, id: createChoiceId(choice) }));
+        setSelectedChoices(choices);
         if (typeof imported.region === 'string' && MOCK_VOLUNTEER_REGIONS.some((item) => item.id === imported.region)) setRegion(imported.region);
         setNotice('已建立個人副本：可在此自由調整，原分享清單不會被修改。');
       }
@@ -421,10 +460,10 @@ export default function MockVolunteerPage() {
           (choice, index) => `
           <tr>
             <td class="seq">${index + 1}</td>
-            <td><strong>${choice.name}</strong></td>
-            <td>${choice.deptName || ''}${choice.shift ? ` <span>(${choice.shift})</span>` : ''}</td>
-            <td>${choice.groupName || choice.levelInfo || ''}</td>
-            <td>${choice.county || ''}</td>
+            <td><strong>${escapeHtml(choice.name)}</strong></td>
+            <td>${escapeHtml(choice.deptName)}${choice.shift ? ` <span>(${escapeHtml(choice.shift)})</span>` : ''}</td>
+            <td>${escapeHtml(choice.groupName || choice.levelInfo)}</td>
+            <td>${escapeHtml(choice.county)}</td>
             <td class="score">${choicePreferenceScores[index] ? `第${choicePreferenceScores[index].rank}志願序・${choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}` : '—'}</td>
           </tr>
           `,
@@ -435,7 +474,7 @@ export default function MockVolunteerPage() {
       <!doctype html>
       <html lang="zh-Hant">
         <head>
-          <title>${activeRegionName}${isBlankForm ? ' 討論用空白志願表' : ' 模擬志願選填表'}</title>
+          <title>${escapeHtml(activeRegionName)}${isBlankForm ? ' 討論用空白志願表' : ' 模擬志願選填表'}</title>
           <style>
             @page { size: A4 portrait; margin: 9mm 8mm; }
             * { box-sizing: border-box; }
@@ -456,7 +495,7 @@ export default function MockVolunteerPage() {
           </style>
         </head>
         <body>
-          <h1>${activeRegionName}${isBlankForm ? ' 討論用空白志願表' : ' 模擬志願選填表'}</h1>
+          <h1>${escapeHtml(activeRegionName)}${isBlankForm ? ' 討論用空白志願表' : ' 模擬志願選填表'}</h1>
           <p>${isBlankForm ? '供討論與手寫排序使用，共 30 個志願欄位。' : `列印日期：${new Date().toLocaleDateString('zh-TW')}，共 ${selectedChoices.length} 個志願。`}正式選填仍應以招生簡章與官方公告為準。</p>
           <table>
             <colgroup>
