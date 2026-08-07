@@ -32,6 +32,8 @@ type SchoolRow = {
   min_science: number | null;
   min_social: number | null;
   min_composition: number | null;
+  admission_quota: number | null;
+  admission_quota_source_url: string | null;
   created_at?: string;
   updated_at?: string;
 };
@@ -763,6 +765,8 @@ function filterSchools(
         points: Number(row.points),
         credits: row.credits === null || row.credits === '' ? null : Number(row.credits),
         historicalScores: parseHistoricalScores(row.historical_scores),
+        admissionQuota: row.admission_quota,
+        admissionQuotaSourceUrl: row.admission_quota_source_url,
         type: row.type,
         ownership: row.ownership,
         group: row.vocational_group,
@@ -1217,7 +1221,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         let query = supabase
           .from('schools')
           .select(
-            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, created_at, updated_at',
+            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, admission_quota, admission_quota_source_url, created_at, updated_at',
           )
           .order('region')
           .order('points', { ascending: false });
@@ -1281,6 +1285,8 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         min_science: nullableNumber(school.min_science),
         min_social: nullableNumber(school.min_social),
         min_composition: nullableNumber(school.min_composition),
+        admission_quota: nullableNumber(school.admission_quota ?? school.admissionQuota),
+        admission_quota_source_url: String(school.admission_quota_source_url ?? school.admissionQuotaSourceUrl ?? '').trim() || null,
         updated_at: new Date().toISOString(),
       };
 
@@ -1289,7 +1295,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
           .from('schools')
           .upsert(row)
           .select(
-            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, created_at, updated_at',
+            'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, admission_quota, admission_quota_source_url, created_at, updated_at',
           )
           .single(),
         5000,
@@ -1344,7 +1350,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
             .update({ historical_scores: null, updated_at: now })
             .in('id', chunk)
             .select(
-              'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, created_at, updated_at',
+              'id, region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, admission_quota, admission_quota_source_url, created_at, updated_at',
             ),
           8000,
           `admin clear historical scores ${index}`,
@@ -1374,7 +1380,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
           supabase
             .from('schools')
             .select(
-              'region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition',
+              'region, name, district, points, credits, historical_scores, type, ownership, vocational_group, min_chinese, min_english, min_math, min_science, min_social, min_composition, admission_quota, admission_quota_source_url',
             )
             .eq('region', region),
           5000,
