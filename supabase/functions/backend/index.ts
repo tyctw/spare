@@ -83,11 +83,30 @@ type CacheEntry<T> = {
   value: T;
 };
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+const defaultAllowedOrigins = ['https://tyctw.github.io'];
+const allowedOrigins = new Set(
+  (Deno.env.get('ALLOWED_ORIGINS') || defaultAllowedOrigins.join(','))
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+);
+
+function isAllowedOrigin(request: Request) {
+  const origin = request.headers.get('origin');
+  return origin !== null && allowedOrigins.has(origin);
+}
+
+function corsHeaders(request: Request) {
+  const origin = request.headers.get('origin');
+  if (!origin || !allowedOrigins.has(origin)) return { Vary: 'Origin' };
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Max-Age': '600',
+    Vary: 'Origin',
+  };
+}
 
 const MAX_JSON_BODY_BYTES = 64 * 1024;
 const MAX_FORM_BODY_BYTES = 32 * 1024;
@@ -110,10 +129,10 @@ const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: num
   ecpayCallback: { windowSeconds: 60, maxRequests: 30 },
 };
 
-const json = (body: unknown, status = 200) =>
+const json = (request: Request, body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' },
+    headers: { ...corsHeaders(request), 'Content-Type': 'application/json; charset=utf-8' },
   });
 
 const inappropriateContentPatterns = [
@@ -279,10 +298,13 @@ function background(task: PromiseLike<unknown>) {
 }
 
 function clientAddress(request: Request) {
-  return request.headers.get('cf-connecting-ip')?.trim()
-    || request.headers.get('x-real-ip')?.trim()
-    || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || 'unknown';
+  // Supabase's API gateway injects X-Real-IP as one client address. Do not
+  // accept X-Forwarded-For or CF-Connecting-IP: callers can supply those
+  // headers themselves, which would let them mint unlimited rate-limit keys.
+  // A missing or multi-value header deliberately maps to one shared key,
+  // failing closed instead of allowing a bypass.
+  const address = request.headers.get('x-real-ip')?.trim();
+  return address && !address.includes(',') ? address : 'unavailable-client-ip';
 }
 
 async function consumeRateLimit(request: Request, action: string) {
@@ -412,7 +434,7 @@ async function validateInvitationCode(code: unknown, request: Request, consume =
         action: consume ? '使用' : '驗證',
         invitation_code: invitationCode || null,
         success: valid,
-        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        ip: clientAddress(request),
         user_agent: request.headers.get('user-agent'),
       }),
       2000,
@@ -423,6 +445,52 @@ async function validateInvitationCode(code: unknown, request: Request, consume =
   return valid;
 }
 
+async function requireAdmin(request: Request) {
+  const authorization = request.headers.get('authorization') || '';
+  const token = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
+  if (!token) throw new Error('Administrator authentication is required.');
+
+  // Validate the Supabase Auth JWT server-side. A caller can no longer gain
+  // privileged access by knowing an application-wide password.
+  const { data: authData, error: authError } = await withTimeout(
+    supabase.auth.getUser(token),
+    3000,
+    'verify administrator session',
+  );
+  const user = authData.user;
+  if (authError || !user) throw new Error('Administrator authentication is invalid or expired.');
+
+  const { data: membership, error: membershipError } = await withTimeout(
+    supabase
+      .from('admin_users')
+      .select('user_id')
+      .eq('user_id', user.id)
+      .maybeSingle(),
+    3000,
+    'verify administrator role',
+  );
+  if (membershipError) throw membershipError;
+  if (!membership) throw new Error('Administrator role is required.');
+
+  background(
+    withTimeout(
+      supabase.from('invitation_logs').insert({
+        action: 'admin',
+        invitation_code: '[authenticated-admin]',
+        success: true,
+        ip: clientAddress(request),
+        user_agent: request.headers.get('user-agent'),
+      }),
+      2000,
+      'insert admin audit log',
+    ),
+  );
+
+  return user;
+}
+
+// Retained temporarily only to keep the historical source diff small. No
+// privileged route calls this function; all routes below use requireAdmin().
 async function validateAdminCode(code: unknown, request: Request) {
   const adminCode = Deno.env.get('ADMIN_ACCESS_CODE')?.trim();
   const requestedCode = String(code || '').trim();
@@ -443,7 +511,7 @@ async function validateAdminCode(code: unknown, request: Request) {
         action: 'admin',
         invitation_code: requestedCode ? '[admin-code]' : null,
         success: valid,
-        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        ip: clientAddress(request),
         user_agent: request.headers.get('user-agent'),
       }),
       2000,
@@ -1131,7 +1199,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     }
 
     case 'adminListSchools': {
-      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+      await requireAdmin(request);
 
       const pageSize = 1000;
       const rows: SchoolRow[] = [];
@@ -1165,7 +1233,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     }
 
     case 'adminUpsertSchool': {
-      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+      await requireAdmin(request);
 
       const school = payload.school || {};
       const validRegions = new Set([
@@ -1228,7 +1296,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     }
 
     case 'adminDeleteSchool': {
-      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+      await requireAdmin(request);
 
       const id = String(payload.id || '');
 
@@ -1248,7 +1316,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     }
 
     case 'adminClearHistoricalScores': {
-      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+      await requireAdmin(request);
 
       const ids = Array.isArray(payload.ids)
         ? [...new Set(payload.ids.map((id: unknown) => String(id || '').trim()).filter(Boolean))]
@@ -1461,8 +1529,11 @@ async function handleEcpayCallback(request: Request) {
 }
 
 Deno.serve(async (request) => {
-  if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
-  if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  if (request.method === 'OPTIONS') {
+    if (!isAllowedOrigin(request)) return new Response('Origin not allowed', { status: 403, headers: { Vary: 'Origin' } });
+    return new Response('ok', { headers: corsHeaders(request) });
+  }
+  if (request.method !== 'POST') return json(request, { error: 'Method not allowed' }, 405);
 
   const start = Date.now();
   const path = new URL(request.url).pathname;
@@ -1473,6 +1544,9 @@ Deno.serve(async (request) => {
         return new Response('0|Rate limit exceeded', { status: 429, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
       }
       return await handleEcpayCallback(request);
+    }
+    if (!request.headers.get('content-type')?.includes('application/json')) {
+      return json(request, { error: 'Content-Type must be application/json.' }, 415);
     }
     const rawBody = await withTimeout(readRequestText(request, MAX_JSON_BODY_BYTES), 3000, 'read request json');
     let payload: Record<string, any>;
@@ -1486,7 +1560,7 @@ Deno.serve(async (request) => {
     }
     const action = String(payload.action || 'unknown');
     if (!await consumeRateLimit(request, action)) {
-      return json({ error: 'Too many requests. Please try again later.' }, 429);
+      return json(request, { error: 'Too many requests. Please try again later.' }, 429);
     }
     const result = await handleAction(payload, request);
 
@@ -1496,7 +1570,7 @@ Deno.serve(async (request) => {
       ms: Date.now() - start,
     });
 
-    return json(result);
+    return json(request, result);
   } catch (error) {
     console.error({
       path,
@@ -1507,6 +1581,6 @@ Deno.serve(async (request) => {
     const message = error instanceof Error ? error.message : '未知錯誤';
     const status = message.includes('邀請碼') ? 401 : 400;
 
-    return json({ error: message }, status);
+    return json(request, { error: message }, status);
   }
 });
