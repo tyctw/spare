@@ -1982,59 +1982,24 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         title="資料不齊全"
         icon={<AlertCircle className="w-8 h-8 text-rose-500" />}
       >
-        <div className="space-y-5 text-left">
-          <div className="relative overflow-hidden rounded-3xl border-4 border-slate-900 bg-rose-50 p-4 text-slate-900 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:p-6">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full border-4 border-rose-200 bg-rose-100" />
-            <div className="pointer-events-none absolute -bottom-12 -left-12 h-28 w-28 rounded-full border-4 border-amber-200 bg-amber-100" />
-            <button
-              type="button"
-              onClick={() => setActiveModal(null)}
-              aria-label="關閉資料不齊全提示"
-              className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <div className="relative z-10 flex items-start gap-3 sm:gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-4 border-slate-900 bg-rose-400 text-xl shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:h-14 sm:w-14 sm:text-2xl">!</div>
-              <div>
-                <div className="hidden text-xs font-black tracking-[0.16em] text-rose-700 sm:block">ACTION REQUIRED</div>
-                <p className="text-lg font-black text-slate-900 sm:mt-1 sm:text-xl">還有 {missingFields.length} 個資料待填寫</p>
-                <p className="mt-0.5 text-xs font-bold leading-relaxed text-slate-600 sm:mt-1 sm:text-sm">點選項目即可直接前往填寫。</p>
-              </div>
+        <div className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white text-left shadow-[8px_8px_0_#0f172a]">
+          <header className="relative overflow-hidden border-b-2 border-slate-900 bg-rose-400 px-5 py-5 sm:px-7 sm:py-6">
+            <div aria-hidden="true" className="absolute -right-8 -top-8 h-36 w-36 rounded-full border-[18px] border-rose-300/80" />
+            <div aria-hidden="true" className="absolute right-16 top-10 h-4 w-4 rounded-full bg-amber-300" />
+            <div className="relative flex items-start justify-between gap-4">
+              <div className="flex items-center gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white text-rose-600 shadow-[2px_2px_0_#0f172a]"><AlertCircle className="h-6 w-6" strokeWidth={2.75} /></div><div><p className="text-[10px] font-black tracking-[0.18em] text-rose-900">ACTION REQUIRED</p><h2 className="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">資料尚未填寫完成</h2></div></div>
+              <button type="button" onClick={() => setActiveModal(null)} aria-label="關閉資料不齊全提示" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-rose-100 active:translate-y-0 active:shadow-none"><X className="h-5 w-5" /></button>
             </div>
-            <div className="relative z-10 mt-3 border-t-2 border-dashed border-rose-200 pt-3 sm:mt-5 sm:pt-4">
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <span className="text-sm font-black text-slate-900">待補資料</span>
-                <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-rose-600 ring-1 ring-rose-200">可直接跳轉</span>
-              </div>
+          </header>
+          <div className="bg-[#fffafb] p-5 sm:p-6">
+            <div className="flex items-center justify-between"><h3 className="text-base font-black text-slate-900">待補資料</h3><span className="rounded-full border border-rose-200 bg-white px-3 py-1 text-xs font-black text-rose-600">共 {missingFields.length} 項</span></div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {missingFields.map((field, index) => (
+                <button type="button" key={field} onClick={() => focusMissingField(field)} title={`前往填寫${field}`} className="group flex min-h-12 items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-2.5 py-2.5 text-left shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:border-rose-400 hover:bg-rose-50 hover:shadow-[3px_3px_0_#0f172a] active:translate-y-0 active:shadow-none odd:last:col-span-2 sm:gap-3 sm:px-3"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-rose-300 bg-rose-100 text-xs font-black text-rose-700">{index + 1}</span><span className="min-w-0 flex-1 text-xs font-black text-slate-800 sm:text-sm">{field}</span><ChevronRight className="h-4 w-4 shrink-0 text-rose-500 transition group-hover:translate-x-0.5" /></button>
+              ))}
             </div>
-            <div className="relative z-10 w-16 h-16 bg-white border-4 border-slate-900 rounded-2xl flex items-center justify-center -rotate-6 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hidden">
-              <span className="text-3xl">⚠️</span>
-            </div>
-            <div className="relative z-10 [&>p]:hidden">
-              <p className="text-lg font-black mb-2">請填寫完整的資訊</p>
-              <p className="text-sm font-bold text-slate-600 mb-4">系統需要完整的資料才能為您進行最準確的落點分析運算。</p>
-              <div className="relative z-10 grid grid-cols-2 gap-2">
-                {missingFields.map((field, index) => (
-                  <button
-                    type="button"
-                    key={index}
-                    onClick={() => focusMissingField(field)}
-                    className="inline-flex min-h-10 items-center justify-center gap-1 rounded-xl border-2 border-slate-900 bg-white px-2 py-1.5 text-xs font-black text-rose-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none sm:min-h-11 sm:px-3 sm:py-2 sm:text-sm"
-                    title={`前往填寫${field}`}
-                  >
-                    {field}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <button 
-              onClick={() => setActiveModal(null)}
-              className="relative z-10 mt-3 inline-flex w-full items-center justify-center rounded-xl border-2 border-slate-900 bg-slate-900 px-8 py-2.5 text-sm font-black text-white shadow-[4px_4px_0px_0px_rgba(251,191,36,1)] transition-all hover:bg-slate-800 active:translate-y-1 active:shadow-none sm:mt-5 sm:py-3"
-            >
-              我知道了，繼續填寫
-            </button>
           </div>
+          <footer className="border-t-2 border-slate-900 bg-white p-4 sm:px-6 sm:py-5"><button type="button" onClick={() => setActiveModal(null)} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-slate-900 bg-slate-900 px-5 py-3.5 text-sm font-black text-white shadow-[3px_3px_0_#fbbf24] transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-[4px_4px_0_#fbbf24] active:translate-y-0 active:shadow-none"><Check className="h-5 w-5" />我知道了，繼續填寫</button></footer>
         </div>
       </InfoModal>
 
