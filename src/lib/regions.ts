@@ -3,8 +3,8 @@
  * remains in its own chunk and is requested only after the user opens it.
  */
 export const REGIONS = [
-  { id: 'taoyuan', name: '桃園區' },
-  { id: 'taipei', name: '臺北區' },
+  { id: 'taoyuan', name: '桃連區' },
+  { id: 'taipei', name: '基北區' },
   { id: 'central', name: '中投區' },
   { id: 'changhua', name: '彰化區' },
   { id: 'tainan', name: '臺南區' },
