@@ -3,9 +3,9 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
 import { applyPageSeo } from './lib/seo.ts';
-import RelatedReading from './components/RelatedReading.tsx';
 
 const App = lazy(() => import('./App.tsx'));
+const RelatedReading = lazy(() => import('./components/RelatedReading.tsx'));
 const AdvantagesPage = lazy(() => import('./components/AdvantagesPage.tsx'));
 const ChangelogPage = lazy(() => import('./components/ChangelogPage.tsx'));
 const DisclaimerPage = lazy(() => import('./components/DisclaimerPage.tsx'));

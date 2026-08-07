@@ -8,11 +8,7 @@ import {
   Target, Lightbulb, Flame, ShieldCheck, Layers, Brain, Copyright, Database, Instagram, AtSign, Languages, GraduationCap, Presentation, UsersRound
 } from 'lucide-react';
 import { InfoModal } from './components/InfoModals';
-import DisclaimerModal from './components/DisclaimerModal';
-import CyberAuthOverlay from './components/CyberAuthOverlay';
-import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
 import { callBackend, isBackendError, normalizeInvitationCode } from './lib/api';
-import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
 // Layout Components
 import AppHeader from './components/layout/AppHeader';
@@ -21,6 +17,7 @@ import HeroBanner from './components/layout/HeroBanner';
 import NavigationDrawer from './components/layout/NavigationDrawer';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 import { withBasePath } from './lib/routes';
+import { REGIONS } from './lib/regions';
 
 // Keep the analysis form and navigation in the first bundle. These dialogs are
 // fetched only when requested, so they do not delay the first meaningful paint.
@@ -36,6 +33,10 @@ const DataProviderModal = React.lazy(() => import('./components/DataProviderModa
 const SharePlatformModal = React.lazy(() => import('./components/SharePlatformModal'));
 const RatingModal = React.lazy(() => import('./components/RatingModal'));
 const AuthFailModal = React.lazy(() => import('./components/AuthFailModal'));
+const DisclaimerModal = React.lazy(() => import('./components/DisclaimerModal'));
+const CyberAuthOverlay = React.lazy(() => import('./components/CyberAuthOverlay'));
+const QuantumLoadingOverlay = React.lazy(() => import('./components/QuantumLoadingOverlay'));
+const RegionModal = React.lazy(() => import('./components/RegionModal'));
 
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
@@ -407,14 +408,14 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         alert('最多只能比較 4 所學校');
         return prev;
       }
-      const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未知';
+      const regionName = REGIONS.find(r => r.id === formData.region)?.name || '未知';
       return [...prev, { ...school, region: regionName }];
     });
   };
 
   const handleExport = async (type: 'txt' | 'excel' | 'json' | 'print') => {
     if (!results) return;
-    const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未選擇';
+    const regionName = REGIONS.find(r => r.id === formData.region)?.name || '未選擇';
     const payload = { scores: formData, results, identity: formData.identity, vocationalGroups };
     // Spreadsheet generation is an occasional action; defer its dependency
     // until the visitor actually chooses an export format.
@@ -702,7 +703,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     <div className="flex items-center gap-3">
                       {formData.region ? (
                         <>
-                          <span className="text-lg sm:text-xl">{ALL_REGIONS.find(r => r.id === formData.region)?.name || '未知區域'}</span>
+                          <span className="text-lg sm:text-xl">{REGIONS.find(r => r.id === formData.region)?.name || '未知區域'}</span>
                         </>
                       ) : (
                         <span className="text-lg sm:text-xl">選擇就學區</span>
@@ -910,8 +911,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         </div>
       </div>
 
-      <CyberAuthOverlay 
-        isOpen={status === 'auth'}
+      {status === 'auth' && <CyberAuthOverlay 
+        isOpen
         code={formData.invitationCode}
         onSuccess={() => {
           localStorage.setItem('invitationAuthCache', JSON.stringify({
@@ -930,11 +931,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
             setErrorMessage(message || '驗證服務暫時無法使用，請稍後再試。');
           }
         }}
-      />
+      />}
 
-      <QuantumLoadingOverlay 
-        isOpen={status === 'quantum'}
-      />
+      {status === 'quantum' && <QuantumLoadingOverlay isOpen />}
 
       {/* 分析完成後統一導向獨立結果頁，不在首頁呈現分析結果。 */}
       <AnimatePresence>
@@ -1267,7 +1266,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                       const ownership = formatSchoolOwnership(school.ownership || 'public');
                       const ownershipColor = ownership === '私立' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
                       const OwnershipIcon = ownership === '私立' ? Building2 : Library;
-                      const schoolDistrictName = school.district || ALL_REGIONS.find(r => r.id === (school.region || formData.region))?.name || school.region || '未知區域';
+                      const schoolDistrictName = school.district || REGIONS.find(r => r.id === (school.region || formData.region))?.name || school.region || '未知區域';
                       const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 4);
                       const latestHistoricalScore = historicalScores[0];
                       const historicalTrend = getHistoricalTrend(historicalScores);
@@ -1492,12 +1491,12 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       />
       )}
 
-      <RegionModal 
-        isOpen={isRegionOpen} 
+      {isRegionOpen && <RegionModal 
+        isOpen
         onClose={() => setIsRegionOpen(false)}
         selectedRegion={formData.region}
         onSelect={(region) => updateForm('region', region)} 
-      />
+      />}
       
       {isComparisonOpen && (
         <ComparisonModal
@@ -1968,11 +1967,11 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         <AuthFailModal isOpen onClose={() => setActiveModal(null)} />
       )}
 
-      <RegionScoringModal
-        isOpen={activeModal === 'scoringMethod'}
+      {activeModal === 'scoringMethod' && <RegionScoringModal
+        isOpen
         onClose={() => setActiveModal(null)}
         selectedRegion={formData.region}
-      />
+      />}
       </Suspense>
 
       <InfoModal 
