@@ -27,7 +27,7 @@ export function InfoModal({ isOpen, onClose, title, icon, children, bare = false
             aria-modal="true"
             aria-label={bare ? title : undefined}
             aria-labelledby={bare ? undefined : 'info-modal-title'}
-            className={`relative w-full max-h-[90vh] overflow-hidden ${bare ? 'max-w-xl' : 'max-w-2xl bg-white rounded-3xl shadow-2xl border-2 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col'}`}
+            className={`relative w-full ${bare ? 'max-w-xl overflow-visible' : 'max-h-[90vh] max-w-2xl overflow-hidden rounded-3xl border-2 border-slate-900 bg-white shadow-2xl shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] flex flex-col'}`}
           >
             {!bare && (
               <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
@@ -39,7 +39,7 @@ export function InfoModal({ isOpen, onClose, title, icon, children, bare = false
               </button>
               </div>
             )}
-            <div className={bare ? 'max-h-[90vh] overflow-y-auto' : 'p-6 overflow-y-auto font-medium text-slate-700 space-y-4'}>
+            <div className={bare ? '' : 'p-6 overflow-y-auto font-medium text-slate-700 space-y-4'}>
               {children}
             </div>
             {!bare && (
