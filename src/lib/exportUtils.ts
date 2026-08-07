@@ -665,7 +665,7 @@ export const printResults = (data: any, regionName: string) => {
           box-shadow: none;
         }
         .report-header { gap: 9px; margin-bottom: 12px; }
-        .report-badge { border-radius: 999px; background: #312e81; font-size: 9px; }
+        .report-badge { border-radius: 2px; background: #312e81; font-size: 9px; }
         .report-header h3 { font-size: 15px; line-height: 1.5; }
         .report-metrics { gap: 8px; margin-bottom: 12px; }
         .metric-item { padding: 9px 6px; border: 1px solid #e0e7ff; border-radius: 9px; }
