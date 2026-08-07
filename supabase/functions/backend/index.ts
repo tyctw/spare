@@ -89,6 +89,27 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
+const MAX_JSON_BODY_BYTES = 64 * 1024;
+const MAX_FORM_BODY_BYTES = 32 * 1024;
+const DEFAULT_RATE_LIMIT = { windowSeconds: 60, maxRequests: 20 };
+const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: number }> = {
+  wakeup: { windowSeconds: 60, maxRequests: 10 },
+  analyzeScores: { windowSeconds: 60, maxRequests: 8 },
+  validateInvitationCode: { windowSeconds: 60, maxRequests: 10 },
+  getVolunteerSchools: { windowSeconds: 60, maxRequests: 20 },
+  createSharedReport: { windowSeconds: 60, maxRequests: 10 },
+  getSharedReport: { windowSeconds: 60, maxRequests: 30 },
+  createEcpaySupportPayment: { windowSeconds: 60, maxRequests: 5 },
+  getEcpaySupportPaymentStatus: { windowSeconds: 60, maxRequests: 20 },
+  submitFeedback: { windowSeconds: 3600, maxRequests: 5 },
+  reportError: { windowSeconds: 3600, maxRequests: 5 },
+  adminListSchools: { windowSeconds: 60, maxRequests: 10 },
+  adminUpsertSchool: { windowSeconds: 60, maxRequests: 10 },
+  adminDeleteSchool: { windowSeconds: 60, maxRequests: 10 },
+  adminClearHistoricalScores: { windowSeconds: 60, maxRequests: 5 },
+  ecpayCallback: { windowSeconds: 60, maxRequests: 30 },
+};
+
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -179,6 +200,7 @@ const ecpayConfig = () => {
     merchantId,
     hashKey,
     hashIv,
+    mode,
     returnUrl,
     clientBackUrl,
     actionUrl: mode === 'stage' ? 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5' : 'https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5',
@@ -254,6 +276,69 @@ function background(task: PromiseLike<unknown>) {
   if (typeof runtime.EdgeRuntime?.waitUntil === 'function') {
     runtime.EdgeRuntime.waitUntil(guarded);
   }
+}
+
+function clientAddress(request: Request) {
+  return request.headers.get('cf-connecting-ip')?.trim()
+    || request.headers.get('x-real-ip')?.trim()
+    || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || 'unknown';
+}
+
+async function consumeRateLimit(request: Request, action: string) {
+  const hasConfiguredLimit = Object.prototype.hasOwnProperty.call(actionRateLimits, action);
+  const limit = hasConfiguredLimit ? actionRateLimits[action] : DEFAULT_RATE_LIMIT;
+  // Only the hash is stored in the rate-limit table, not the visitor IP itself.
+  const clientKey = await sha256(clientAddress(request));
+  const { data, error } = await withTimeout(
+    supabase.rpc('consume_api_rate_limit', {
+      requested_client_key: clientKey,
+      requested_action: hasConfiguredLimit ? action : 'unknown',
+      requested_window_seconds: limit.windowSeconds,
+      requested_max_requests: limit.maxRequests,
+    }),
+    3000,
+    'rate limit check',
+  );
+
+  if (error) throw error;
+  return data === true;
+}
+
+async function readRequestText(request: Request, maxBytes: number) {
+  const declaredLength = Number(request.headers.get('content-length'));
+  if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
+    throw new Error('Request body is too large.');
+  }
+
+  if (!request.body) return '';
+
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > maxBytes) {
+        await reader.cancel();
+        throw new Error('Request body is too large.');
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  const body = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(body);
 }
 
 function taipeiParts(date: Date) {
@@ -1260,8 +1345,8 @@ async function handleAction(payload: Record<string, any>, request: Request) {
 
 async function handleEcpayCallback(request: Request) {
   const config = ecpayConfig();
-  const formData = await request.formData();
-  const fields = Object.fromEntries(Array.from(formData.entries()).map(([key, value]) => [key, String(value)]));
+  const body = await readRequestText(request, MAX_FORM_BODY_BYTES);
+  const fields = Object.fromEntries(new URLSearchParams(body).entries());
   const receivedCheckMacValue = fields.CheckMacValue;
   const expectedCheckMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
 
@@ -1309,9 +1394,15 @@ async function handleEcpayCallback(request: Request) {
   const simulated = fields.SimulatePaid === '1';
   const targetStatus = succeeded ? 'paid' : 'failed';
 
-  // A simulated callback is signed but does not represent a settled payment.
+  // Simulated payments are useful only against ECPay's stage environment. They
+  // must never mark a production donation as settled.
+  if (simulated && config.mode !== 'stage') {
+    console.warn('Ignored simulated ECPay payment outside stage mode', { merchantTradeNo });
+    return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
   // A duplicate callback for the same ECPay trade is safe and acknowledged.
-  if (simulated || (payment.status !== 'pending' && payment.ecpay_trade_no === tradeNo)) {
+  if (payment.status !== 'pending' && payment.ecpay_trade_no === tradeNo) {
     return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
   }
 
@@ -1367,9 +1458,25 @@ Deno.serve(async (request) => {
 
   try {
     if (request.headers.get('content-type')?.includes('application/x-www-form-urlencoded')) {
+      if (!await consumeRateLimit(request, 'ecpayCallback')) {
+        return new Response('0|Rate limit exceeded', { status: 429, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+      }
       return await handleEcpayCallback(request);
     }
-    const payload = await withTimeout(request.json(), 3000, 'parse request json');
+    const rawBody = await withTimeout(readRequestText(request, MAX_JSON_BODY_BYTES), 3000, 'read request json');
+    let payload: Record<string, any>;
+    try {
+      payload = JSON.parse(rawBody);
+    } catch {
+      throw new Error('Invalid JSON request body.');
+    }
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      throw new Error('Invalid JSON request body.');
+    }
+    const action = String(payload.action || 'unknown');
+    if (!await consumeRateLimit(request, action)) {
+      return json({ error: 'Too many requests. Please try again later.' }, 429);
+    }
     const result = await handleAction(payload, request);
 
     console.log({
