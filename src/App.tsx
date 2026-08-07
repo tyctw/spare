@@ -16,7 +16,9 @@ import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
 // Layout Components
 import AppHeader from './components/layout/AppHeader';
+import Footer from './components/layout/Footer';
 import HeroBanner from './components/layout/HeroBanner';
+import NavigationDrawer from './components/layout/NavigationDrawer';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 import { withBasePath } from './lib/routes';
 
@@ -34,8 +36,6 @@ const DataProviderModal = React.lazy(() => import('./components/DataProviderModa
 const SharePlatformModal = React.lazy(() => import('./components/SharePlatformModal'));
 const RatingModal = React.lazy(() => import('./components/RatingModal'));
 const AuthFailModal = React.lazy(() => import('./components/AuthFailModal'));
-const Footer = React.lazy(() => import('./components/layout/Footer'));
-const NavigationDrawer = React.lazy(() => import('./components/layout/NavigationDrawer'));
 
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
@@ -1665,7 +1665,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       )}
 
       {isNavMenuOpen && (
-        <Suspense fallback={null}><NavigationDrawer isOpen onClose={() => setIsNavMenuOpen(false)} setActiveModal={setActiveModal} /></Suspense>
+        <NavigationDrawer isOpen onClose={() => setIsNavMenuOpen(false)} setActiveModal={setActiveModal} />
       )}
 
       {/* Navigation Drawer */}
@@ -2038,7 +2038,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         </div>
       </InfoModal>
 
-      <Suspense fallback={<div className="min-h-px" aria-hidden="true" />}><Footer /></Suspense>
+      <Footer />
 
     </div>
   );

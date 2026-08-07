@@ -83,16 +83,59 @@ type CacheEntry<T> = {
   value: T;
 };
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+const defaultAllowedOrigins = ['https://tyctw.github.io'];
+const allowedOrigins = new Set(
+  (Deno.env.get('ALLOWED_ORIGINS') || defaultAllowedOrigins.join(','))
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+);
+
+function isAllowedOrigin(request: Request) {
+  const origin = request.headers.get('origin');
+  return origin !== null && allowedOrigins.has(origin);
+}
+
+function corsHeaders(request: Request) {
+  const origin = request.headers.get('origin');
+  if (!origin || !allowedOrigins.has(origin)) return { Vary: 'Origin' };
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Max-Age': '600',
+    Vary: 'Origin',
+  };
+}
+
+const MAX_JSON_BODY_BYTES = 64 * 1024;
+const MAX_FORM_BODY_BYTES = 32 * 1024;
+const DEFAULT_RATE_LIMIT = { windowSeconds: 60, maxRequests: 20 };
+const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: number }> = {
+  wakeup: { windowSeconds: 60, maxRequests: 10 },
+  analyzeScores: { windowSeconds: 60, maxRequests: 8 },
+  validateInvitationCode: { windowSeconds: 60, maxRequests: 10 },
+  getVolunteerSchools: { windowSeconds: 60, maxRequests: 20 },
+  // Sharing is intentionally anonymous, so use a low daily quota rather than
+  // a short burst-only limit. This prevents the endpoint from being used as
+  // general-purpose storage while still allowing normal family sharing.
+  createSharedReport: { windowSeconds: 86_400, maxRequests: 12 },
+  getSharedReport: { windowSeconds: 60, maxRequests: 30 },
+  createEcpaySupportPayment: { windowSeconds: 60, maxRequests: 5 },
+  getEcpaySupportPaymentStatus: { windowSeconds: 60, maxRequests: 20 },
+  submitFeedback: { windowSeconds: 3600, maxRequests: 5 },
+  reportError: { windowSeconds: 3600, maxRequests: 5 },
+  adminListSchools: { windowSeconds: 60, maxRequests: 10 },
+  adminUpsertSchool: { windowSeconds: 60, maxRequests: 10 },
+  adminDeleteSchool: { windowSeconds: 60, maxRequests: 10 },
+  adminClearHistoricalScores: { windowSeconds: 60, maxRequests: 5 },
+  ecpayCallback: { windowSeconds: 60, maxRequests: 30 },
 };
 
-const json = (body: unknown, status = 200) =>
+const json = (request: Request, body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' },
+    headers: { ...corsHeaders(request), 'Content-Type': 'application/json; charset=utf-8' },
   });
 
 const inappropriateContentPatterns = [
@@ -138,6 +181,55 @@ const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const supabase = createClient(supabaseUrl, serviceRoleKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
+
+type EcpayPayload = Record<string, string | number>;
+
+const ecpayUrlEncode = (value: string) => encodeURIComponent(value)
+  .replace(/%20/g, '+')
+  .replace(/%2D/g, '-')
+  .replace(/%5F/g, '_')
+  .replace(/%2E/g, '.')
+  .replace(/%21/g, '!')
+  .replace(/%2A/g, '*')
+  .replace(/%28/g, '(')
+  .replace(/%29/g, ')')
+  .toLowerCase();
+
+const sha256 = async (value: string) => {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
+};
+
+const ecpayCheckMacValue = async (params: EcpayPayload, hashKey: string, hashIv: string) => {
+  const body = Object.entries(params)
+    .filter(([key]) => key !== 'CheckMacValue')
+    .sort(([left], [right]) => left.toLowerCase().localeCompare(right.toLowerCase()))
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&');
+  return sha256(ecpayUrlEncode(`HashKey=${hashKey}&${body}&HashIV=${hashIv}`));
+};
+
+const ecpayConfig = () => {
+  const merchantId = Deno.env.get('ECPAY_MERCHANT_ID')?.trim();
+  const hashKey = Deno.env.get('ECPAY_HASH_KEY')?.trim();
+  const hashIv = Deno.env.get('ECPAY_HASH_IV')?.trim();
+  const mode = Deno.env.get('ECPAY_MODE')?.trim().toLowerCase() || 'production';
+  const returnUrl = Deno.env.get('ECPAY_RETURN_URL')?.trim() || `${supabaseUrl}/functions/v1/backend`;
+  const clientBackUrl = Deno.env.get('ECPAY_CLIENT_BACK_URL')?.trim() || 'https://tyctw.github.io/spare/support/success';
+
+  if (!merchantId || !hashKey || !hashIv) throw new Error('ECPay payment is not configured. Set ECPAY_MERCHANT_ID, ECPAY_HASH_KEY, and ECPAY_HASH_IV.');
+  return {
+    merchantId,
+    hashKey,
+    hashIv,
+    mode,
+    returnUrl,
+    clientBackUrl,
+    actionUrl: mode === 'stage' ? 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5' : 'https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5',
+  };
+};
+
+const createMerchantTradeNo = () => `SP${Date.now()}${crypto.getRandomValues(new Uint16Array(1))[0].toString(36).toUpperCase()}`.slice(0, 20);
 
 const SCHOOL_CACHE_TTL_MS = 20 * 60 * 1000;
 const VOLUNTEER_SCHOOL_CACHE_TTL_MS = 30 * 60 * 1000;
@@ -206,6 +298,69 @@ function background(task: PromiseLike<unknown>) {
   if (typeof runtime.EdgeRuntime?.waitUntil === 'function') {
     runtime.EdgeRuntime.waitUntil(guarded);
   }
+}
+
+function clientAddress(request: Request) {
+  return request.headers.get('cf-connecting-ip')?.trim()
+    || request.headers.get('x-real-ip')?.trim()
+    || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || 'unknown';
+}
+
+async function consumeRateLimit(request: Request, action: string) {
+  const hasConfiguredLimit = Object.prototype.hasOwnProperty.call(actionRateLimits, action);
+  const limit = hasConfiguredLimit ? actionRateLimits[action] : DEFAULT_RATE_LIMIT;
+  // Only the hash is stored in the rate-limit table, not the visitor IP itself.
+  const clientKey = await sha256(clientAddress(request));
+  const { data, error } = await withTimeout(
+    supabase.rpc('consume_api_rate_limit', {
+      requested_client_key: clientKey,
+      requested_action: hasConfiguredLimit ? action : 'unknown',
+      requested_window_seconds: limit.windowSeconds,
+      requested_max_requests: limit.maxRequests,
+    }),
+    3000,
+    'rate limit check',
+  );
+
+  if (error) throw error;
+  return data === true;
+}
+
+async function readRequestText(request: Request, maxBytes: number) {
+  const declaredLength = Number(request.headers.get('content-length'));
+  if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
+    throw new Error('Request body is too large.');
+  }
+
+  if (!request.body) return '';
+
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > maxBytes) {
+        await reader.cancel();
+        throw new Error('Request body is too large.');
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  const body = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(body);
 }
 
 function taipeiParts(date: Date) {
@@ -290,31 +445,81 @@ async function validateInvitationCode(code: unknown, request: Request, consume =
   return valid;
 }
 
+async function requireAdmin(request: Request) {
+  const authorization = request.headers.get('authorization') || '';
+  const token = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
+  if (!token) throw new Error('Administrator authentication is required.');
+
+  // Validate the Supabase Auth JWT server-side. A caller can no longer gain
+  // privileged access by knowing an application-wide password.
+  const { data: authData, error: authError } = await withTimeout(
+    supabase.auth.getUser(token),
+    3000,
+    'verify administrator session',
+  );
+  const user = authData.user;
+  if (authError || !user) throw new Error('Administrator authentication is invalid or expired.');
+
+  const { data: membership, error: membershipError } = await withTimeout(
+    supabase
+      .from('admin_users')
+      .select('user_id')
+      .eq('user_id', user.id)
+      .maybeSingle(),
+    3000,
+    'verify administrator role',
+  );
+  if (membershipError) throw membershipError;
+  if (!membership) throw new Error('Administrator role is required.');
+
+  background(
+    withTimeout(
+      supabase.from('invitation_logs').insert({
+        action: 'admin',
+        invitation_code: '[authenticated-admin]',
+        success: true,
+        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        user_agent: request.headers.get('user-agent'),
+      }),
+      2000,
+      'insert admin audit log',
+    ),
+  );
+
+  return user;
+}
+
+// Retained temporarily only to keep the historical source diff small. No
+// privileged route calls this function; all routes below use requireAdmin().
 async function validateAdminCode(code: unknown, request: Request) {
   const adminCode = Deno.env.get('ADMIN_ACCESS_CODE')?.trim();
   const requestedCode = String(code || '').trim();
 
-  if (adminCode) {
-    const valid = requestedCode === adminCode;
-
-    background(
-      withTimeout(
-        supabase.from('invitation_logs').insert({
-          action: 'admin',
-          invitation_code: requestedCode ? '[admin-code]' : null,
-          success: valid,
-          ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
-          user_agent: request.headers.get('user-agent'),
-        }),
-        2000,
-        'insert admin log',
-      ),
-    );
-
-    return valid;
+  // Admin access must never fall back to an invitation code. Invitation codes
+  // grant end-user access only; using one here would let a public code control
+  // privileged school-management actions when this secret is misconfigured.
+  if (!adminCode) {
+    console.error('ADMIN_ACCESS_CODE is not configured; refusing admin access.');
+    throw new Error('管理功能尚未完成安全設定');
   }
 
-  return validateInvitationCode(requestedCode, request);
+  const valid = requestedCode.length > 0 && requestedCode === adminCode;
+
+  background(
+    withTimeout(
+      supabase.from('invitation_logs').insert({
+        action: 'admin',
+        invitation_code: requestedCode ? '[admin-code]' : null,
+        success: valid,
+        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        user_agent: request.headers.get('user-agent'),
+      }),
+      2000,
+      'insert admin log',
+    ),
+  );
+
+  return valid;
 }
 
 function assertAdmin(valid: boolean) {
@@ -361,6 +566,101 @@ function normalizeHistoricalScores(value: unknown) {
   if (value === null || value === undefined || value === '') return null;
   const scores = parseHistoricalScores(value).filter((item) => Number.isFinite(item.points));
   return scores.length ? scores : null;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function sharedText(value: unknown, field: string, maxLength: number, required = false) {
+  if (value === undefined || value === null) {
+    if (required) throw new Error(`Shared report field ${field} is required.`);
+    return undefined;
+  }
+  if (typeof value !== 'string') throw new Error(`Shared report field ${field} must be text.`);
+  const text = value.trim();
+  if ((required && !text) || text.length > maxLength || /[\u0000-\u001f\u007f]/.test(text)) {
+    throw new Error(`Shared report field ${field} is invalid.`);
+  }
+  return text || undefined;
+}
+
+function sharedNumber(value: unknown, field: string, min = -10_000, max = 10_000) {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max) {
+    throw new Error(`Shared report field ${field} is invalid.`);
+  }
+  return value;
+}
+
+function sanitizeSharedVolunteerChoice(value: unknown) {
+  if (!isRecord(value)) throw new Error('Shared volunteer choice is invalid.');
+  return {
+    county: sharedText(value.county, 'choices.county', 80),
+    code: sharedText(value.code, 'choices.code', 40, true),
+    name: sharedText(value.name, 'choices.name', 160, true),
+    levelInfo: sharedText(value.levelInfo, 'choices.levelInfo', 80),
+    shift: sharedText(value.shift, 'choices.shift', 80),
+    groupCode: sharedText(value.groupCode, 'choices.groupCode', 40),
+    groupName: sharedText(value.groupName, 'choices.groupName', 160),
+    deptCode: sharedText(value.deptCode, 'choices.deptCode', 40, true),
+    deptName: sharedText(value.deptName, 'choices.deptName', 160),
+    preferenceRank: sharedNumber(value.preferenceRank, 'choices.preferenceRank', 1, 30),
+    preferenceScore: sharedNumber(value.preferenceScore, 'choices.preferenceScore', 0, 100),
+    sharesPreferenceRank: typeof value.sharesPreferenceRank === 'boolean'
+      ? value.sharesPreferenceRank
+      : undefined,
+  };
+}
+
+function sanitizeSharedReport(kind: string, value: unknown) {
+  if (!isRecord(value)) throw new Error('Invalid shared report content.');
+
+  if (kind === 'volunteer') {
+    if (!Array.isArray(value.choices) || value.choices.length > 30) {
+      throw new Error('Invalid volunteer report content.');
+    }
+    const region = sharedText(value.region, 'region', 32, true);
+    if (!/^[a-z-]{2,32}$/.test(region!)) throw new Error('Invalid shared report region.');
+    return {
+      region,
+      regionName: sharedText(value.regionName, 'regionName', 80),
+      createdAt: sharedText(value.createdAt, 'createdAt', 40),
+      choices: value.choices.map(sanitizeSharedVolunteerChoice),
+    };
+  }
+
+  if (kind === 'analysis') {
+    if (!isRecord(value.results)) throw new Error('Invalid analysis report content.');
+    const results = value.results;
+    const schools = Array.isArray(results.eligibleSchools) ? results.eligibleSchools : [];
+    if (schools.length > 100) throw new Error('Too many schools in shared analysis report.');
+    const analysisReport = isRecord(results.analysisReport) ? results.analysisReport : undefined;
+    return {
+      createdAt: sharedText(value.createdAt, 'createdAt', 40),
+      results: {
+        totalPoints: sharedNumber(results.totalPoints, 'results.totalPoints', 0, 100),
+        totalCredits: sharedNumber(results.totalCredits, 'results.totalCredits', 0, 100),
+        analysisReport: analysisReport ? {
+          analysisSummary: sharedText(analysisReport.analysisSummary, 'analysisSummary', 2_000),
+          suggestion: sharedText(analysisReport.suggestion, 'suggestion', 2_000),
+        } : undefined,
+        eligibleSchools: schools.map((school) => {
+          if (!isRecord(school)) throw new Error('Shared analysis school is invalid.');
+          return {
+            name: sharedText(school.name, 'schools.name', 160, true),
+            type: sharedText(school.type, 'schools.type', 80),
+            group: sharedText(school.group, 'schools.group', 160),
+            ownership: sharedText(school.ownership, 'schools.ownership', 40),
+            points: sharedNumber(school.points, 'schools.points', 0, 100),
+            zone: sharedText(school.zone, 'schools.zone', 20),
+          };
+        }),
+      },
+    };
+  }
+
+  throw new Error('Invalid shared report type.');
 }
 
 function assertScores(value: unknown): asserts value is Scores {
@@ -789,10 +1089,112 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     case 'wakeup':
       return { message: 'System is awake and ready!' };
 
-    case 'getInvitationCode':
-      return {
-        invitationCode: rollingCode(String(payload.prefix || 'TW').toUpperCase(), new Date()),
+    case 'createEcpaySupportPayment': {
+      const amount = Number(payload.amount);
+      if (!Number.isInteger(amount) || amount < 10 || amount > 50_000) {
+        throw new Error('Support amount must be a whole number between NT$10 and NT$50,000.');
+      }
+
+      const config = ecpayConfig();
+      const merchantTradeNo = createMerchantTradeNo();
+      const now = new Date();
+      const merchantTradeDate = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      const fields: EcpayPayload = {
+        MerchantID: config.merchantId,
+        MerchantTradeNo: merchantTradeNo,
+        MerchantTradeDate: merchantTradeDate,
+        PaymentType: 'aio',
+        TotalAmount: amount,
+        TradeDesc: 'Support',
+        ItemName: '網站小額支持',
+        ReturnURL: config.returnUrl,
+        ChoosePayment: 'ALL',
+        ClientBackURL: config.clientBackUrl,
+        NeedExtraPaidInfo: 'Y',
+        EncryptType: 1,
+        CustomField1: 'website-support',
       };
+      const checkMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
+
+      const { data: payment, error } = await supabase
+        .from('support_payments')
+        .insert({
+          merchant_trade_no: merchantTradeNo,
+          amount,
+          status: 'pending',
+          payment_method: 'ALL',
+        })
+        .select('status_lookup_token')
+        .single();
+      if (error || !payment?.status_lookup_token) throw error || new Error('Could not create payment tracking token.');
+
+      return {
+        actionUrl: config.actionUrl,
+        fields: { ...fields, CheckMacValue: checkMacValue },
+        statusLookupToken: payment.status_lookup_token,
+      };
+    }
+
+    case 'getEcpaySupportPaymentStatus': {
+      const merchantTradeNo = String(payload.merchantTradeNo || '');
+      const statusLookupToken = String(payload.statusLookupToken || '').trim();
+      if (!/^[A-Za-z0-9]{8,32}$/.test(merchantTradeNo)
+        || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(statusLookupToken)) {
+        throw new Error('Invalid support payment reference.');
+      }
+
+      const { data, error } = await supabase
+        .from('support_payments')
+        .select('status, amount')
+        .eq('merchant_trade_no', merchantTradeNo)
+        .eq('status_lookup_token', statusLookupToken)
+        .maybeSingle();
+      if (error) throw error;
+      return data || { status: 'not_found' };
+    }
+
+    case 'createSharedReport': {
+      const kind = String(payload.kind || '');
+      if (kind !== 'analysis' && kind !== 'volunteer') throw new Error('Invalid shared report type.');
+      const report = sanitizeSharedReport(kind, payload.payload);
+
+      // Store only the canonical fields above, and cap bytes (not characters)
+      // so multibyte text cannot evade the storage limit.
+      const encodedPayloadBytes = new TextEncoder().encode(JSON.stringify(report)).byteLength;
+      if (encodedPayloadBytes > 32 * 1024) throw new Error('Shared report is too large.');
+
+      const { data, error } = await withTimeout(
+        supabase
+          .from('shared_reports')
+          .insert({ kind, payload: report })
+          .select('token')
+          .single(),
+        5000,
+        'create shared report',
+      );
+      if (error) throw error;
+      return { token: data.token };
+    }
+
+    case 'getSharedReport': {
+      const token = String(payload.token || '').trim();
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(token)) {
+        throw new Error('Invalid shared report link.');
+      }
+      const { data, error } = await withTimeout(
+        supabase
+          .from('shared_reports')
+          .select('kind, payload, expires_at')
+          .eq('token', token)
+          .gt('expires_at', new Date().toISOString())
+          .maybeSingle(),
+        5000,
+        'load shared report',
+      );
+      if (error) throw error;
+      if (!data) throw new Error('This shared report has expired or is unavailable.');
+      return { kind: data.kind, payload: data.payload, expiresAt: data.expires_at };
+    }
 
     case 'validateInvitationCode':
       return {
@@ -885,7 +1287,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     }
 
     case 'adminListSchools': {
-      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+      await requireAdmin(request);
 
       const pageSize = 1000;
       const rows: SchoolRow[] = [];
@@ -919,7 +1321,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     }
 
     case 'adminUpsertSchool': {
-      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+      await requireAdmin(request);
 
       const school = payload.school || {};
       const validRegions = new Set([
@@ -982,7 +1384,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     }
 
     case 'adminDeleteSchool': {
-      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+      await requireAdmin(request);
 
       const id = String(payload.id || '');
 
@@ -1002,7 +1404,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     }
 
     case 'adminClearHistoricalScores': {
-      assertAdmin(await validateAdminCode(payload.invitationCode, request));
+      await requireAdmin(request);
 
       const ids = Array.isArray(payload.ids)
         ? [...new Set(payload.ids.map((id: unknown) => String(id || '').trim()).filter(Boolean))]
@@ -1108,15 +1510,146 @@ async function handleAction(payload: Record<string, any>, request: Request) {
   }
 }
 
+async function handleEcpayCallback(request: Request) {
+  const config = ecpayConfig();
+  const body = await readRequestText(request, MAX_FORM_BODY_BYTES);
+  const fields = Object.fromEntries(new URLSearchParams(body).entries());
+  const receivedCheckMacValue = fields.CheckMacValue;
+  const expectedCheckMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
+
+  if (!receivedCheckMacValue || receivedCheckMacValue !== expectedCheckMacValue) {
+    console.error('Invalid ECPay CheckMacValue', { merchantTradeNo: fields.MerchantTradeNo });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  const merchantTradeNo = fields.MerchantTradeNo || '';
+  const tradeNo = fields.TradeNo || '';
+  const tradeAmount = Number(fields.TradeAmt);
+
+  if (fields.MerchantID !== config.merchantId || !/^[A-Za-z0-9]{8,32}$/.test(merchantTradeNo)) {
+    console.error('Invalid ECPay merchant or order reference', { merchantId: fields.MerchantID, merchantTradeNo });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (!Number.isSafeInteger(tradeAmount) || tradeAmount <= 0) {
+    console.error('Invalid ECPay payment amount', { merchantTradeNo, tradeAmount: fields.TradeAmt });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (!tradeNo) {
+    console.error('Missing ECPay trade number', { merchantTradeNo });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  const { data: payment, error: paymentError } = await supabase
+    .from('support_payments')
+    .select('amount, status, ecpay_trade_no')
+    .eq('merchant_trade_no', merchantTradeNo)
+    .maybeSingle();
+
+  if (paymentError || !payment) {
+    console.error('Unknown ECPay order', { merchantTradeNo, error: paymentError });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (payment.amount !== tradeAmount) {
+    console.error('ECPay payment amount mismatch', { merchantTradeNo, expectedAmount: payment.amount, tradeAmount });
+    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  const succeeded = fields.RtnCode === '1';
+  const simulated = fields.SimulatePaid === '1';
+  const targetStatus = succeeded ? 'paid' : 'failed';
+
+  // Simulated payments are useful only against ECPay's stage environment. They
+  // must never mark a production donation as settled.
+  if (simulated && config.mode !== 'stage') {
+    console.warn('Ignored simulated ECPay payment outside stage mode', { merchantTradeNo });
+    return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  // A duplicate callback for the same ECPay trade is safe and acknowledged.
+  if (payment.status !== 'pending' && payment.ecpay_trade_no === tradeNo) {
+    return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (payment.status !== 'pending') {
+    console.error('Invalid ECPay payment state transition', { merchantTradeNo, status: payment.status, tradeNo });
+    return new Response('0|Error', { status: 409, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  const { data: updatedPayment, error } = await supabase
+    .from('support_payments')
+    .update({
+      status: targetStatus,
+      ecpay_trade_no: tradeNo,
+      payment_type: fields.PaymentType || null,
+      paid_at: succeeded ? new Date().toISOString() : null,
+      callback_payload: fields,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('merchant_trade_no', merchantTradeNo)
+    .eq('status', 'pending')
+    .select('status, ecpay_trade_no')
+    .maybeSingle();
+
+  if (error) {
+    console.error('Could not record ECPay callback', error);
+    return new Response('0|Error', { status: 500, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  if (!updatedPayment) {
+    // Another delivery may have completed the same pending order first. Only
+    // acknowledge it when it resulted in the exact same ECPay transaction.
+    const { data: currentPayment, error: currentPaymentError } = await supabase
+      .from('support_payments')
+      .select('status, ecpay_trade_no')
+      .eq('merchant_trade_no', merchantTradeNo)
+      .maybeSingle();
+
+    if (currentPaymentError || currentPayment?.status !== targetStatus || currentPayment.ecpay_trade_no !== tradeNo) {
+      console.error('Could not safely reconcile ECPay callback', { merchantTradeNo, tradeNo, currentPaymentError });
+      return new Response('0|Error', { status: 409, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+    }
+  }
+
+  return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+}
+
 Deno.serve(async (request) => {
-  if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
-  if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  if (request.method === 'OPTIONS') {
+    if (!isAllowedOrigin(request)) return new Response('Origin not allowed', { status: 403, headers: { Vary: 'Origin' } });
+    return new Response('ok', { headers: corsHeaders(request) });
+  }
+  if (request.method !== 'POST') return json(request, { error: 'Method not allowed' }, 405);
 
   const start = Date.now();
   const path = new URL(request.url).pathname;
 
   try {
-    const payload = await withTimeout(request.json(), 3000, 'parse request json');
+    if (request.headers.get('content-type')?.includes('application/x-www-form-urlencoded')) {
+      if (!await consumeRateLimit(request, 'ecpayCallback')) {
+        return new Response('0|Rate limit exceeded', { status: 429, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+      }
+      return await handleEcpayCallback(request);
+    }
+    if (!request.headers.get('content-type')?.includes('application/json')) {
+      return json(request, { error: 'Content-Type must be application/json.' }, 415);
+    }
+    const rawBody = await withTimeout(readRequestText(request, MAX_JSON_BODY_BYTES), 3000, 'read request json');
+    let payload: Record<string, any>;
+    try {
+      payload = JSON.parse(rawBody);
+    } catch {
+      throw new Error('Invalid JSON request body.');
+    }
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      throw new Error('Invalid JSON request body.');
+    }
+    const action = String(payload.action || 'unknown');
+    if (!await consumeRateLimit(request, action)) {
+      return json(request, { error: 'Too many requests. Please try again later.' }, 429);
+    }
     const result = await handleAction(payload, request);
 
     console.log({
@@ -1125,7 +1658,7 @@ Deno.serve(async (request) => {
       ms: Date.now() - start,
     });
 
-    return json(result);
+    return json(request, result);
   } catch (error) {
     console.error({
       path,
@@ -1136,6 +1669,6 @@ Deno.serve(async (request) => {
     const message = error instanceof Error ? error.message : '未知錯誤';
     const status = message.includes('邀請碼') ? 401 : 400;
 
-    return json({ error: message }, status);
+    return json(request, { error: message }, status);
   }
 });

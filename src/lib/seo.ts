@@ -110,7 +110,9 @@ const setMetaContent = (selector: string, content: string) => {
 };
 
 export const applyPageSeo = (path: string) => {
-  const metadata = pageMetadata[path] || pageMetadata['/'];
+  const metadata = path.startsWith('/scoring-rules/')
+    ? { title: '各就學區超額比序計分規則｜全國會考落點分析', description: '整理各就學區免試入學超額比序項目、會考換算與官方簡章入口；正式規則以當學年度公告為準。' }
+    : pageMetadata[path] || pageMetadata['/'];
   const pageUrl = path === '/' ? `${siteUrl}/` : `${siteUrl}${path}`;
   const canonicalUrl = path === '/' ? `${siteUrl}/` : `${siteUrl}${path}`;
 
