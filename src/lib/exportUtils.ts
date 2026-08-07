@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { formatSchoolOwnership, formatSchoolOwnershipPreference } from './schoolDisplay';
 
 // The print popup inherits this page's origin, so dynamic values must remain
@@ -105,8 +105,8 @@ export const exportJson = (data: any) => {
   saveAs(blob, `115年_會考落點分析_${data.scores.region}.json`);
 };
 
-export const exportExcel = (data: any, regionName: string) => {
-  const wb = XLSX.utils.book_new();
+export const exportExcel = async (data: any, regionName: string) => {
+  const wb = new ExcelJS.Workbook();
   
   // 1. Summary Sheet
   const summary = [
@@ -137,8 +137,8 @@ export const exportExcel = (data: any, regionName: string) => {
     ["版權宣告", `TW全國會考落點分析 © ${new Date().getFullYear()}`],
     ["分析來源網址", window.location.href]
   ];
-  const summaryWs = XLSX.utils.aoa_to_sheet(summary);
-  XLSX.utils.book_append_sheet(wb, summaryWs, "分析摘要與成績");
+  const summaryWs = wb.addWorksheet("分析摘要與成績");
+  summaryWs.addRows(summary);
 
   // 2. Schools Sheet
   if (data.results.eligibleSchools?.length) {
@@ -154,7 +154,8 @@ export const exportExcel = (data: any, regionName: string) => {
         s.minScore || s.points || s.score || "--"
       ])
     ];
-    const schoolsWs = XLSX.utils.aoa_to_sheet(schoolsData);
+    const schoolsWs = wb.addWorksheet("推薦學校清單");
+    schoolsWs.addRows(schoolsData);
     
     // Auto-size columns slightly
     schoolsWs['!cols'] = [
@@ -167,13 +168,16 @@ export const exportExcel = (data: any, regionName: string) => {
       { wch: 15 }
     ];
     
-    XLSX.utils.book_append_sheet(wb, schoolsWs, "推薦學校清單");
   } else {
-    const emptyWs = XLSX.utils.aoa_to_sheet([["無符合條件之推薦學校"]]);
-    XLSX.utils.book_append_sheet(wb, emptyWs, "推薦學校清單");
+    const emptyWs = wb.addWorksheet("推薦學校清單");
+    emptyWs.addRow(["無符合條件之推薦學校"]);
   }
 
-  XLSX.writeFile(wb, `115年_會考落點分析_${regionName}.xlsx`);
+  const content = await wb.xlsx.writeBuffer();
+  saveAs(
+    new Blob([content], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+    `115年_會考落點分析_${regionName}.xlsx`,
+  );
 };
 
 export const printResults = (data: any, regionName: string) => {
@@ -193,8 +197,10 @@ export const printResults = (data: any, regionName: string) => {
   const typeStr = data.scores.schoolType === 'all' ? '普通與職業類科' : data.scores.schoolType;
   const groupStr = data.scores.schoolType === '職業類科' && data.vocationalGroups ? `<div class="info-item"><div class="info-label">職業群別</div><div class="info-value">${data.vocationalGroups.includes('all') ? '全群別不拘' : data.vocationalGroups.join(', ')}</div></div>` : '';
 
-  const currentUrl = window.location.href;
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(currentUrl)}`;
+  const rawCurrentUrl = window.location.href;
+  // Keep the raw URL for QR encoding, but never interpolate it into popup HTML.
+  const currentUrl = escapeHtml(rawCurrentUrl);
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(rawCurrentUrl)}`;
 
   let creditsHtml = '';
   if (data.results.totalCredits) {
@@ -553,6 +559,136 @@ export const printResults = (data: any, regionName: string) => {
         }
         .footer p { margin: 4px 0; }
         .footer strong { color: #0f172a; }
+
+        /* Results report redesign: a calmer editorial layout that remains
+           legible on both screen previews and A4 printouts. */
+        body {
+          background: #eef4ff;
+          color: #172033;
+          font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+        .print-wrapper {
+          max-width: 190mm;
+          margin: 18px auto;
+          padding: 12mm 12mm 10mm;
+          border: 0;
+          border-top: 9px solid #2563eb;
+          border-radius: 18px;
+          box-shadow: 0 18px 55px rgba(30, 64, 175, .12);
+        }
+        .watermark { display: none; }
+        .header {
+          align-items: center;
+          gap: 18px;
+          border-bottom: 1px solid #cbd5e1;
+          padding-bottom: 18px;
+          margin-bottom: 22px;
+        }
+        .header-left h1 {
+          font-size: 27px;
+          letter-spacing: .04em;
+          line-height: 1.25;
+        }
+        .header-left p {
+          display: inline-block;
+          margin-top: 3px;
+          padding: 4px 10px;
+          border-radius: 999px;
+          background: #eff6ff;
+          color: #1d4ed8;
+          font-size: 11px;
+          font-weight: 700;
+        }
+        .qr-box { padding: 5px; border-color: #bfdbfe; border-radius: 10px; }
+        .qr-box img { width: 64px; height: 64px; }
+        .site-link { max-width: 110px; font-size: 8px; }
+        .section { margin-bottom: 20px; break-inside: avoid; }
+        .section-title {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 0;
+          margin: 0 0 10px;
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          color: #0f172a;
+          font-size: 16px;
+          font-weight: 900;
+        }
+        .section-title::before {
+          width: 7px;
+          height: 22px;
+          border-radius: 99px;
+          background: linear-gradient(180deg, #2563eb, #7c3aed);
+          content: "";
+        }
+        .info-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 1px;
+          padding: 1px;
+          overflow: hidden;
+          border: 1px solid #dbeafe;
+          border-radius: 12px;
+          background: #dbeafe;
+        }
+        .info-item { min-height: 52px; padding: 10px 12px; background: #fff; }
+        .info-label { width: 76px; color: #64748b; font-size: 11px; }
+        .info-value { color: #1e293b; font-size: 14px; }
+        .scores-wrapper { gap: 12px; }
+        .scores-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 7px;
+          padding: 0;
+          border: 0;
+          background: transparent;
+        }
+        .score-item { padding: 10px 6px; border: 1px solid #dbeafe; border-radius: 10px; background: #f8fbff; }
+        .score-label { margin-bottom: 2px; color: #64748b; font-size: 11px; }
+        .score-val { color: #1d4ed8; font-size: 20px; line-height: 1.15; }
+        .result-summary {
+          min-width: 148px;
+          padding: 15px;
+          border: 0;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #1d4ed8, #4338ca);
+          color: #fff;
+        }
+        .result-summary-title, .result-point, .result-summary div { color: #dbeafe !important; }
+        .result-summary-title { margin-bottom: 8px; font-size: 11px; }
+        .result-point { margin-bottom: 3px; font-size: 12px; }
+        .result-point strong { display: block; margin: 0; color: #fff; font-size: 31px; line-height: 1.1; }
+        .report-card {
+          padding: 17px;
+          border: 1px solid #c7d2fe;
+          border-radius: 14px;
+          background: linear-gradient(135deg, #f8faff, #f5f3ff);
+          box-shadow: none;
+        }
+        .report-header { gap: 9px; margin-bottom: 12px; }
+        .report-badge { border-radius: 2px; background: #312e81; font-size: 9px; }
+        .report-header h3 { font-size: 15px; line-height: 1.5; }
+        .report-metrics { gap: 8px; margin-bottom: 12px; }
+        .metric-item { padding: 9px 6px; border: 1px solid #e0e7ff; border-radius: 9px; }
+        .metric-label { font-size: 10px; }
+        .metric-val { font-size: 18px; }
+        .report-suggestion { padding: 12px; border-left: 3px solid #818cf8; border-radius: 7px; background: #fff; font-size: 12px; }
+        table { border: 1px solid #cbd5e1; border-radius: 10px; }
+        th, td { padding: 9px 10px; font-size: 11px; line-height: 1.4; }
+        th { background: #0f172a; color: #fff; font-size: 10px; letter-spacing: .02em; }
+        tbody tr:nth-child(even) { background: #f8fafc; }
+        tbody tr { break-inside: avoid; page-break-inside: avoid; }
+        thead { display: table-header-group; }
+        .badge { padding: 3px 7px; font-size: 10px; white-space: nowrap; }
+        .footer { margin-top: 26px; padding-top: 14px; border-top: 1px solid #cbd5e1; font-size: 9px; }
+        @media print {
+          @page { margin: 8mm; }
+          body { background: #fff; }
+          .print-wrapper { max-width: none; margin: 0; padding: 0; border-top-width: 6px; box-shadow: none; }
+          .section { break-inside: avoid; page-break-inside: avoid; }
+          .btn-print { display: none !important; }
+        }
       </style>
     </head>
     <body>
@@ -651,8 +787,10 @@ export const printSchoolTypes = () => {
   }
 
   const currentDate = new Date().toLocaleString('zh-TW');
-  const currentUrl = window.location.href;
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(currentUrl)}`;
+  const rawCurrentUrl = window.location.href;
+  // Keep the raw URL for QR encoding, but never interpolate it into popup HTML.
+  const currentUrl = escapeHtml(rawCurrentUrl);
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(rawCurrentUrl)}`;
 
   const html = `
     <!DOCTYPE html>

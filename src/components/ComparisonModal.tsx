@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ExternalLink, Trash2, List, History } from 'lucide-react';
+import { X, ExternalLink, Trash2, List } from 'lucide-react';
 import { formatSchoolOwnership } from '../lib/schoolDisplay';
 
 interface Props {
@@ -56,7 +56,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-0 sm:p-4">
           <motion.div
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
@@ -68,9 +68,9 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
             initial={{ scale: 0.95, opacity: 0, y: 20 }} 
             animate={{ scale: 1, opacity: 1, y: 0 }} 
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative w-full max-w-5xl bg-slate-50 rounded-[2rem] border-4 border-slate-900 overflow-hidden shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] max-h-[90vh] flex flex-col"
+            className="relative h-[100dvh] w-full max-w-6xl bg-slate-100 border-0 sm:h-auto sm:max-h-[90vh] sm:rounded-[2rem] sm:border-4 border-slate-900 overflow-hidden shadow-none sm:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col"
           >
-            <div className="p-6 bg-indigo-400 border-b-4 border-slate-900 relative overflow-hidden shrink-0">
+            <div className="p-4 sm:p-6 bg-indigo-400 border-b-4 border-slate-900 relative overflow-hidden shrink-0">
               <div className="absolute right-0 top-0 opacity-20 -translate-y-1/4 translate-x-1/4">
                 <List className="w-32 h-32 text-slate-900" />
               </div>
@@ -108,7 +108,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
               </div>
             </div>
             
-            <div className="p-6 overflow-y-auto w-full custom-scrollbar">
+            <div className="bg-slate-100 p-3 sm:p-6 overflow-y-auto w-full custom-scrollbar">
               {schools.length === 0 ? (
                 <div className="text-center py-24 bg-white border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] rounded-3xl mx-4">
                   <div className="w-20 h-20 bg-slate-100 rounded-full border-4 border-slate-900 flex items-center justify-center mx-auto mb-4 -rotate-6">
@@ -118,17 +118,21 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                   <p className="text-sm font-bold text-slate-500 mt-2">請先在分析結果中勾選加入比較清單</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-3xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] bg-white mx-1">
-                  <table className="w-full text-left border-collapse min-w-[600px]">
+                <div className="relative overflow-x-auto rounded-2xl sm:rounded-3xl border-4 border-slate-900 bg-slate-200 p-2 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] mx-0 sm:mx-1 overscroll-x-contain">
+                  <div className="sticky left-0 z-20 w-max rounded-br-xl border-b-2 border-r-2 border-slate-900 bg-amber-200 px-2 py-1 text-[10px] font-black text-slate-900 sm:hidden">
+                    ← 左右滑動比較 →
+                  </div>
+                  <table className="w-full min-w-[760px] border-separate border-spacing-2 text-left [&_tbody_tr]:border-0 [&_tbody_td]:rounded-xl [&_tbody_td]:border-2 [&_tbody_td]:border-slate-200 [&_tbody_td]:bg-white [&_tbody_td]:px-4 [&_tbody_td]:py-3 [&_tbody_td]:align-middle [&_tbody_td:first-child]:!border-slate-900 [&_tbody_td:first-child]:!bg-slate-900 [&_tbody_td:first-child]:text-xs [&_tbody_td:first-child]:uppercase [&_tbody_td:first-child]:tracking-wide [&_tbody_td:first-child]:!text-white">
                     <thead>
-                      <tr className="bg-slate-900 text-white">
-                        <th className="p-5 font-black border-r border-slate-700 w-1/4">比較維度</th>
+                      <tr className="text-white">
+                        <th className="w-[168px] rounded-xl border-2 border-slate-900 bg-slate-900 p-4 text-xs font-black uppercase tracking-[0.18em] text-white shadow-[2px_2px_0_#0f172a]">比較維度</th>
                         {schools.map((s, i) => (
-                          <th key={s.name} className={`p-5 font-black border-r border-slate-700 min-w-[200px] relative ${i % 2 === 0 ? 'bg-indigo-900' : 'bg-slate-800'}`}>
-                            <div className="pr-8">{s.name}</div>
+                          <th key={s.name} className={`min-w-[205px] rounded-xl border-2 border-slate-900 p-4 font-black relative shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${i % 2 === 0 ? 'bg-indigo-700' : 'bg-slate-800'}`}>
+                            <div className="mb-1 text-[10px] font-black tracking-[0.16em] text-amber-300">OPTION {String(i + 1).padStart(2, '0')}</div>
+                            <div className="pr-8 leading-snug">{s.name}</div>
                             <button 
                               onClick={() => onRemove(s.name)} 
-                              className="absolute top-1/2 -translate-y-1/2 right-4 w-6 h-6 bg-rose-500 text-white rounded-full border-2 border-white flex items-center justify-center hover:bg-rose-600 hover:scale-110 transition-transform shadow-md"
+                              className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-rose-500 text-white shadow-md transition-transform hover:scale-110 hover:bg-rose-600"
                             >
                               <X className="w-3 h-3 stroke-[3]" />
                             </button>
@@ -136,7 +140,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="bg-white text-sm md:text-base">
+                    <tbody className="text-sm md:text-base">
                       <tr className="border-b border-slate-200">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">就學區</td>
                         {schools.map((s, i) => <td key={s.name} className={`p-5 font-bold border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.region || '未知'}</td>)}
@@ -163,10 +167,8 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                       <tr className="border-b border-slate-200">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">公立 / 私立</td>
                         {schools.map((s, i) => (
-                          <td key={s.name} className={`p-5 font-bold border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
-                            <span className={`px-2 py-1 rounded-md border-2 border-slate-900 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] ${formatSchoolOwnership(s.ownership) === '公立' ? 'bg-sky-200' : 'bg-amber-200'}`}>
-                              {formatSchoolOwnership(s.ownership)}
-                            </span>
+                          <td key={s.name} className={`p-5 font-bold text-slate-700 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
+                            {formatSchoolOwnership(s.ownership)}
                           </td>
                         ))}
                       </tr>
@@ -175,12 +177,8 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                         {schools.map((s, i) => <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-700 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.group || '-'}</td>)}
                       </tr>
                       <tr className="border-b border-slate-200">
-                        <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">錄取門檻</td>
-                        {schools.map((s, i) => <td key={s.name} className={`p-5 font-black border-r border-slate-200 text-rose-600 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.minScore || s.points || s.score || '無資料'}</td>)}
-                      </tr>
-                      <tr className="border-b border-slate-200">
                         <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">
-                          <span className="inline-flex items-center gap-1.5"><History className="w-4 h-4" />歷年成績</span>
+                          歷年成績
                         </td>
                         {schools.map((s, i) => (
                           <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-700 leading-relaxed ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
@@ -188,9 +186,24 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                           </td>
                         ))}
                       </tr>
-                      <tr className="">
-                        <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">學校名額與特招</td>
-                        {schools.map((s, i) => <td key={s.name} className={`p-5 font-bold border-r border-slate-200 text-slate-600 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>{s.notes || s.special || '-'}</td>)}
+                      <tr className="border-b border-slate-200">
+                        <td className="p-5 font-black bg-slate-50 border-r border-slate-200 text-slate-900">招生名額（一般生）</td>
+                        {schools.map((s, i) => (
+                          <td key={s.name} className={`p-4 border-r border-slate-200 ${i % 2 === 0 ? 'bg-indigo-50/30' : 'bg-transparent'}`}>
+                            {s.admissionQuota === null || s.admissionQuota === undefined ? (
+                              <span className="text-slate-400">尚未公告</span>
+                            ) : (
+                              <div className="min-w-[132px] rounded-xl border-2 border-indigo-200 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(99,102,241,0.18)]">
+                                <span className="text-lg font-black text-indigo-700">{s.admissionQuota} 名</span>
+                                {s.admissionQuotaSourceUrl && (
+                                  <a href={s.admissionQuotaSourceUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-lg border border-emerald-300 bg-emerald-50 px-2 py-1.5 text-[11px] font-black text-emerald-700 transition-colors hover:bg-emerald-100 hover:text-emerald-800">
+                                    <ExternalLink className="h-3 w-3" />官方公告
+                                  </a>
+                                )}
+                              </div>
+                            )}
+                          </td>
+                        ))}
                       </tr>
                     </tbody>
                   </table>

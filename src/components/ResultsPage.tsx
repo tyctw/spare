@@ -14,7 +14,6 @@ import {
   Flame,
   History,
   Layers,
-  Library,
   Lightbulb,
   List,
   MapPin,
@@ -263,6 +262,7 @@ export default function ResultsPage() {
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   React.useEffect(() => {
     if (!stored?.results) return;
@@ -275,6 +275,13 @@ export default function ResultsPage() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [stored]);
+
+  React.useEffect(() => {
+    const updateScrollTopVisibility = () => setShowScrollTop(window.scrollY > 320);
+    updateScrollTopVisibility();
+    window.addEventListener('scroll', updateScrollTopVisibility, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrollTopVisibility);
+  }, []);
 
   if (!stored?.results) {
     return (
@@ -299,14 +306,16 @@ export default function ResultsPage() {
     );
   }
 
-  const { scores, results, vocationalGroups = [] } = stored;
+  const { scores, results } = stored;
+  const vocationalGroups = Array.isArray(stored.vocationalGroups) ? stored.vocationalGroups : [];
+  const eligibleSchools = Array.isArray(results.eligibleSchools) ? results.eligibleSchools : [];
   const regionName = ALL_REGIONS.find((region) => region.id === scores?.region)?.name || scores?.region || '未選擇';
   const schoolTypeLabel = scores?.schoolType === 'all' ? '全部類型' : scores?.schoolType || '全部類型';
   const ownershipLabel =
     scores?.schoolOwnership === 'all' ? '公私立皆可' : scores?.schoolOwnership === 'public' ? '公立' : '私立';
   const isAllVocationalGroups = vocationalGroups.length === 1 && vocationalGroups[0] === 'all';
 
-  const filteredSchools = (results.eligibleSchools || [])
+  const filteredSchools = eligibleSchools
     .filter((school: any) => {
       const matchText =
         !filterText ||
@@ -344,14 +353,14 @@ export default function ResultsPage() {
     });
   };
 
-  const handleExport = (type: 'txt' | 'excel' | 'json' | 'print') => {
+  const handleExport = async (type: 'txt' | 'excel' | 'json' | 'print') => {
     const payload = { scores, results, identity: scores?.identity, vocationalGroups };
     switch (type) {
       case 'txt':
         exportTxt(payload, regionName);
         break;
       case 'excel':
-        exportExcel(payload, regionName);
+        await exportExcel(payload, regionName);
         break;
       case 'json':
         exportJson(payload);
@@ -583,7 +592,6 @@ export default function ResultsPage() {
                   const ownership = formatSchoolOwnership(school.ownership || 'public');
                   const ownershipKey = getSchoolOwnershipKey(school.ownership);
                   const ownershipColor = ownershipKey === 'private' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
-                  const OwnershipIcon = ownershipKey === 'private' ? Building2 : Library;
                   const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 4);
                   const latestHistoricalScore = historicalScores[0];
                   const historicalTrend = getHistoricalTrend(historicalScores);
@@ -612,8 +620,8 @@ export default function ResultsPage() {
                         )}
                         <div className={`flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 ${ownershipColor}`}>
                           <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">屬性</span>
-                          <div className="flex min-w-0 items-center justify-center gap-1 text-center text-sm font-black leading-tight">
-                            <OwnershipIcon className="w-3.5 h-3.5" /> {ownership}
+                          <div className="text-center text-sm font-black leading-tight">
+                            {ownership}
                           </div>
                         </div>
                         <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-emerald-300 bg-emerald-100 px-2.5 py-2.5 text-emerald-800">
@@ -722,15 +730,17 @@ export default function ResultsPage() {
 
       <Footer />
 
-      <button
-        type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-200 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
-        aria-label="回到頁面最上方"
-        title="回到頁面最上方"
-      >
-        <ArrowUp className="h-6 w-6" />
-      </button>
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-200 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
+          aria-label="回到頁面最上方"
+          title="回到頁面最上方"
+        >
+          <ArrowUp className="h-6 w-6" />
+        </button>
+      )}
 
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} onExport={handleExport} />
       <HistoricalScoresDialog school={historicalScoreSchool} onClose={() => setHistoricalScoreSchool(null)} />
