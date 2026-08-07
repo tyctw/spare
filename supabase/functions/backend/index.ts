@@ -297,11 +297,23 @@ function background(task: PromiseLike<unknown>) {
   }
 }
 
+const IPV4_ADDRESS_PATTERN = /^(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
+const IPV6_ADDRESS_PATTERN = /^[0-9a-f:]+$/i;
+
 function clientAddress(request: Request) {
-  return request.headers.get('cf-connecting-ip')?.trim()
-    || request.headers.get('x-real-ip')?.trim()
-    || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || 'unknown';
+  // This function is deployed behind Supabase's Cloudflare edge, which sets
+  // CF-Connecting-IP. Never use X-Forwarded-For or X-Real-IP here: callers
+  // can supply those headers themselves and create a fresh rate-limit bucket
+  // for every request.
+  const address = request.headers.get('cf-connecting-ip')?.trim() || '';
+  if (IPV4_ADDRESS_PATTERN.test(address) || (address.includes(':') && IPV6_ADDRESS_PATTERN.test(address))) {
+    return address;
+  }
+
+  // Fail closed. If the trusted edge header is unexpectedly unavailable, all
+  // such traffic shares one bucket rather than allowing an attacker to choose
+  // arbitrary client identifiers through request headers.
+  return 'unavailable-client-address';
 }
 
 async function consumeRateLimit(request: Request, action: string) {
@@ -431,7 +443,7 @@ async function validateInvitationCode(code: unknown, request: Request, consume =
         action: consume ? '使用' : '驗證',
         invitation_code: invitationCode || null,
         success: valid,
-        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        ip: clientAddress(request),
         user_agent: request.headers.get('user-agent'),
       }),
       2000,
@@ -475,7 +487,7 @@ async function requireAdmin(request: Request) {
         action: 'admin',
         invitation_code: '[authenticated-admin]',
         success: true,
-        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        ip: clientAddress(request),
         user_agent: request.headers.get('user-agent'),
       }),
       2000,
@@ -508,7 +520,7 @@ async function validateAdminCode(code: unknown, request: Request) {
         action: 'admin',
         invitation_code: requestedCode ? '[admin-code]' : null,
         success: valid,
-        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        ip: clientAddress(request),
         user_agent: request.headers.get('user-agent'),
       }),
       2000,
