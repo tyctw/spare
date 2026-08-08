@@ -791,22 +791,32 @@ export const printResults = (data: any, regionName: string) => {
         table { border: 1px solid #cbd5e1; border-radius: 10px; }
         th, td { padding: 9px 10px; font-size: 11px; line-height: 1.4; }
         th { background: #0f172a; color: #fff; font-size: 10px; letter-spacing: .02em; }
+        .schools-table th,
+        .schools-table td {
+          border-right: 1px solid #cbd5e1;
+        }
+        .schools-table th { border-right-color: rgba(255, 255, 255, .42); }
+        .schools-table th:last-child,
+        .schools-table td:last-child { border-right: 0; }
         .schools-table .preference-heading {
           width: 12%;
           background: #1e3a8a;
           text-align: center;
           white-space: nowrap;
+          border-right: 1.5px solid #64748b;
         }
         .schools-table .preference-cell {
           padding: 5px 7px;
           text-align: center;
           vertical-align: middle;
+          border-right: 1.5px solid #64748b;
+          border-bottom: 1px solid #94a3b8;
         }
         .preference-line {
           display: inline-block;
           width: 25px;
           height: 25px;
-          border: 1.5px solid #94a3b8;
+          border: 2px solid #1e3a8a;
           border-radius: 5px;
           background: #fff;
         }
