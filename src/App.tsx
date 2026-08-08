@@ -463,7 +463,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
             <motion.section 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="relative flex flex-col overflow-hidden rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-6 shadow-[0_18px_42px_-26px_rgba(180,83,9,0.42)] ring-1 ring-white"
+              className="relative p-6 bg-[#fffbea] border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
             >
               {/* Decorative elements */}
               <div className="absolute -right-5 -top-5 text-amber-700/15 pointer-events-none">
@@ -471,7 +471,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               </div>
 
               <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2 relative z-10">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-sm shadow-amber-500/30">
+                <div className="w-8 h-8 rounded-full bg-amber-100 border-2 border-slate-900 flex items-center justify-center">
                   <KeyRound className="w-4 h-4 text-amber-600" />
                 </div>
                 <span>系統授權碼</span>
@@ -479,12 +479,12 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               <p className="text-xs font-bold text-slate-600 mb-4 relative z-10">請輸入由主辦單位提供之專屬邀請碼以解鎖進階分析</p>
 
               {/* Announcement */}
-              <div className="relative z-10 mb-5 overflow-hidden rounded-2xl border border-amber-200/80 bg-white/70 p-4 shadow-[0_12px_24px_-18px_rgba(180,83,9,0.38)] before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-gradient-to-r before:from-amber-400 before:via-orange-400 before:to-rose-400">
-                <div aria-hidden="true" className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-amber-200/50 blur-2xl" />
-                <div aria-hidden="true" className="absolute bottom-0 left-0 h-16 w-24 rounded-tr-full bg-orange-100/80" />
+              <div className="relative z-10 mb-5 overflow-hidden rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-white to-orange-100 p-4 shadow-[0_8px_24px_rgba(245,158,11,0.16)]">
+                <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-amber-300/50 blur-2xl" />
+                <div className="absolute bottom-0 left-0 h-16 w-24 rounded-tr-full bg-orange-200/40" />
                 <div className="relative">
                   <div className="flex items-center justify-between gap-3">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1.5 text-xs font-black tracking-wide text-white shadow-md shadow-amber-500/25">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-black tracking-wide text-white shadow-sm">
                       <span className="text-base leading-none">📢</span>
                       <span>限時公告</span>
                     </div>
@@ -496,11 +496,11 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   <button
                     type="button"
                     onClick={() => updateForm('invitationCode', 'TYCTW')}
-                    className="group mt-3 flex w-full items-center justify-between gap-3 rounded-xl border border-amber-200/80 bg-amber-50/60 p-3 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-amber-400 hover:bg-white hover:shadow-lg hover:shadow-amber-500/15 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="mt-3 flex w-full items-center justify-between gap-3 rounded-xl border border-indigo-200 bg-white/90 p-3 text-left transition hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     title="點擊自動填入邀請碼"
                   >
                     <span className="min-w-0 text-xs font-bold leading-5 text-slate-600">點擊邀請碼，一鍵填入並解鎖所有進階功能</span>
-                    <span className="shrink-0 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 px-3 py-1.5 font-mono text-sm font-black tracking-[0.16em] text-white shadow-md shadow-violet-500/25 transition-transform group-hover:scale-105">TYCTW</span>
+                    <span className="shrink-0 rounded-lg bg-indigo-600 px-3 py-1.5 font-mono text-sm font-black tracking-[0.16em] text-white shadow-sm">TYCTW</span>
                   </button>
                 </div>
               </div>
