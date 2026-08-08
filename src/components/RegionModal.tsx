@@ -70,7 +70,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
               <MapPin aria-hidden="true" className="absolute -right-7 -top-8 h-40 w-40 text-sky-300/35" strokeWidth={1.5} />
               <div className="relative flex items-start justify-between gap-4">
                 <div>
-                  <h2 id="region-modal-title" className="flex items-center gap-3 text-3xl font-black tracking-tight sm:text-5xl"><MapPin aria-hidden="true" className="h-8 w-8 text-sky-600 sm:h-10 sm:w-10" />選擇分析區域</h2>
+                  <h2 id="region-modal-title" className="flex items-center gap-2.5 text-2xl font-black tracking-tight sm:text-4xl"><MapPin aria-hidden="true" className="h-7 w-7 text-sky-600 sm:h-9 sm:w-9" />選擇分析區域</h2>
                 </div>
                 <button ref={closeButtonRef} onClick={onClose} aria-label="關閉選擇就學區視窗" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-slate-600 shadow-[2px_2px_0_#0f172a] transition hover:bg-sky-100 hover:text-sky-800 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600"><X aria-hidden="true" className="h-5 w-5" /></button>
               </div>
@@ -81,7 +81,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-[10px] font-black tracking-[0.14em] text-slate-500">目前分析區域</p>
-                    <p className="mt-1 text-xl font-black text-slate-900">{selectedRegionName || '請選擇下方區域'}</p>
+                    <p className="mt-1 text-lg font-black text-slate-900">{selectedRegionName || '請選擇下方區域'}</p>
                   </div>
                   <div className="grid h-11 w-11 place-items-center rounded-xl border-2 border-slate-900 bg-amber-300"><MapPinned aria-hidden="true" className="h-5 w-5" strokeWidth={2.8} /></div>
                 </div>
@@ -114,8 +114,8 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                         {isSelected && <span aria-label="已選取" className="grid h-6 w-6 place-items-center rounded-full bg-sky-600 text-white"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
                       </div>
                       <div className="relative mt-5">
-                        <h3 className="text-lg font-black text-slate-900">{region.name}</h3>
-                        <p className="mt-1 text-xs font-bold leading-5 text-slate-500">{region.desc}</p>
+                        <h3 className="text-base font-black text-slate-900">{region.name}</h3>
+                        <p className="mt-1 text-[11px] font-bold leading-4 text-slate-500">{region.desc}</p>
                         {!region.active && <span className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-slate-200 px-2 py-1 text-[9px] font-black tracking-wider text-slate-500"><span className={`h-1.5 w-1.5 rounded-full ${tone.dot}`} />籌備中</span>}
                       </div>
                     </button>
@@ -135,7 +135,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                     <div key={region.id} aria-label={`${region.name}，尚未開放`} className="relative min-h-[126px] overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 opacity-75">
                       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_9px,#94a3b8_9px,#94a3b8_11px)]" />
                       <div className="relative flex items-start justify-between"><div className="grid h-10 w-10 place-items-center rounded-xl border-2 border-slate-200 bg-white text-slate-400"><RegionIcon className="h-5 w-5" /></div><span className="rounded-md bg-slate-200 px-2 py-1 text-[9px] font-black tracking-wider text-slate-500">籌備中</span></div>
-                      <div className="relative mt-4"><h4 className="text-base font-black text-slate-500">{region.name}</h4><p className="mt-1 text-xs font-bold text-slate-400">{region.desc}</p></div>
+                      <div className="relative mt-4"><h4 className="text-sm font-black text-slate-500">{region.name}</h4><p className="mt-1 text-[11px] font-bold text-slate-400">{region.desc}</p></div>
                     </div>
                   );
                 })}
