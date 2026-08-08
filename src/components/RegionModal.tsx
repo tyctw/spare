@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X, Building2, Check, Cpu, Landmark, MapPin, MapPinned, Mountain,
-  ShipWheel, Sparkles, Sunrise, Sun, TreePine, Waves, Wheat,
+  ShipWheel, Sunrise, Sun, TreePine, Waves, Wheat,
 } from 'lucide-react';
 
 export const ALL_REGIONS = [
@@ -70,8 +70,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
               <MapPin aria-hidden="true" className="absolute -right-7 -top-8 h-40 w-40 text-sky-300/35" strokeWidth={1.5} />
               <div className="relative flex items-start justify-between gap-4">
                 <div>
-                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-3 py-1 text-[10px] font-black tracking-[0.18em] text-sky-700"><Sparkles aria-hidden="true" className="h-3.5 w-3.5" />ADMISSION REGION</div>
-                  <h2 id="region-modal-title" className="text-2xl font-black tracking-tight sm:text-4xl">分析區域</h2>
+                  <h2 id="region-modal-title" className="flex items-center gap-3 text-3xl font-black tracking-tight sm:text-5xl"><MapPin aria-hidden="true" className="h-8 w-8 text-sky-600 sm:h-10 sm:w-10" />選擇分析區域</h2>
                 </div>
                 <button ref={closeButtonRef} onClick={onClose} aria-label="關閉選擇就學區視窗" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-slate-600 shadow-[2px_2px_0_#0f172a] transition hover:bg-sky-100 hover:text-sky-800 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600"><X aria-hidden="true" className="h-5 w-5" /></button>
               </div>
