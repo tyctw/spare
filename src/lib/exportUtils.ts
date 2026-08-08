@@ -588,8 +588,8 @@ export const printResults = (data: any, regionName: string) => {
           margin: -12mm -12mm 24px;
           padding: 13mm 12mm 10mm;
           border: 0;
-          background: #102a43;
-          color: #fff;
+          background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 58%, #f5f3ff 100%);
+          color: #0f172a;
         }
         .header::before {
           position: absolute;
@@ -597,9 +597,9 @@ export const printResults = (data: any, regionName: string) => {
           right: -21mm;
           width: 108mm;
           height: 108mm;
-          border: 1px solid rgba(191, 219, 254, .25);
+          border: 1px solid rgba(96, 165, 250, .24);
           border-radius: 50%;
-          box-shadow: 0 0 0 13mm rgba(59, 130, 246, .10), 0 0 0 28mm rgba(99, 102, 241, .08);
+          box-shadow: 0 0 0 13mm rgba(96, 165, 250, .10), 0 0 0 28mm rgba(167, 139, 250, .08);
           content: "";
         }
         .header::after {
@@ -618,11 +618,11 @@ export const printResults = (data: any, regionName: string) => {
           z-index: 1;
           right: 12mm;
           bottom: 10mm;
-          color: #bae6fd;
+          color: #64748b;
           font-size: 9px;
           letter-spacing: .06em;
         }
-        .report-region strong { margin-left: 5px; color: #fff; font-size: 11px; font-weight: 800; }
+        .report-region strong { margin-left: 5px; color: #1e3a8a; font-size: 11px; font-weight: 800; }
         /* The legacy label markup is deliberately replaced visually here so
            the masthead remains clean even for reports generated from older
            saved payloads. */
@@ -630,7 +630,7 @@ export const printResults = (data: any, regionName: string) => {
         .header-left::before {
           display: block;
           max-width: 430px;
-          color: #fff;
+          color: #0f172a;
           font-size: 29px;
           font-weight: 900;
           letter-spacing: .035em;
@@ -640,7 +640,7 @@ export const printResults = (data: any, regionName: string) => {
         .header-left::after {
           display: block;
           margin-top: 11px;
-          color: #dbeafe;
+          color: #475569;
           font-size: 10px;
           font-weight: 600;
           letter-spacing: .04em;
@@ -651,7 +651,7 @@ export const printResults = (data: any, regionName: string) => {
           align-items: center;
           gap: 7px;
           margin: 0 0 8px;
-          color: #bae6fd;
+          color: #1d4ed8;
           font-size: 10px;
           font-weight: 800;
           letter-spacing: .16em;
@@ -667,7 +667,7 @@ export const printResults = (data: any, regionName: string) => {
         .header-left h1 {
           max-width: 430px;
           margin: 0;
-          color: #fff;
+          color: #0f172a;
           font-size: 29px;
           font-weight: 900;
           letter-spacing: .035em;
@@ -682,28 +682,38 @@ export const printResults = (data: any, regionName: string) => {
           border: 0;
           border-radius: 0;
           background: transparent;
-          color: #dbeafe;
+          color: #475569;
           font-size: 10px;
           font-weight: 600;
         }
-        .header-left p strong { color: #fff; font-weight: 800; }
+        .header-left p strong { color: #1e3a8a; font-weight: 800; }
         .header-right {
           display: flex;
           flex-direction: row;
           align-items: center;
           gap: 10px;
-          min-width: 142px;
-          margin-bottom: 16px;
+          min-width: 168px;
+          margin-bottom: 20px;
           padding: 8px 10px;
-          border: 1px solid rgba(186, 230, 253, .28);
+          border: 1px solid #bfdbfe;
           border-radius: 12px;
-          background: rgba(15, 23, 42, .22);
+          background: rgba(255, 255, 255, .84);
+          box-shadow: 0 7px 18px rgba(30, 64, 175, .08);
           text-align: left;
         }
-        .qr-box { flex: 0 0 auto; padding: 4px; border: 0; border-radius: 7px; background: #fff; }
+        .qr-box { flex: 0 0 auto; padding: 4px; border: 1px solid #e2e8f0; border-radius: 7px; background: #fff; }
         .qr-box img { width: 54px; height: 54px; }
-        .site-link { max-width: 64px; margin: 0; color: #dbeafe; font-size: 0; line-height: 1.45; word-break: break-all; }
+        .site-link { max-width: 84px; margin: 0; color: #475569; font-size: 0; line-height: 1.45; word-break: normal; }
+        .site-link::before {
+          display: block;
+          font-size: 8px;
+          content: "\\6383 \\63cf QR Code\\A \\958b\\555f\\5b8c\\6574\\5831\\544a";
+          white-space: pre;
+        }
         .site-link::before { display: block; font-size: 8px; content: "掃描 QR Code\A 開啟完整報告"; white-space: pre; }
+        .site-link::before {
+          content: "\\6383 \\63cf QR Code\\A \\958b\\555f\\5b8c\\6574\\5831\\544a";
+        }
         .section { margin-bottom: 20px; break-inside: avoid; }
         .section-title {
           display: flex;
