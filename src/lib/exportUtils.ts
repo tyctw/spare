@@ -577,31 +577,133 @@ export const printResults = (data: any, regionName: string) => {
           box-shadow: 0 18px 55px rgba(30, 64, 175, .12);
         }
         .watermark { display: none; }
+        /* First-page report masthead */
         .header {
-          align-items: center;
+          position: relative;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
           gap: 18px;
-          border-bottom: 1px solid #cbd5e1;
-          padding-bottom: 18px;
-          margin-bottom: 22px;
+          align-items: stretch;
+          overflow: hidden;
+          margin: -12mm -12mm 24px;
+          padding: 13mm 12mm 10mm;
+          border: 0;
+          background: #102a43;
+          color: #fff;
+        }
+        .header::before {
+          position: absolute;
+          top: -54mm;
+          right: -21mm;
+          width: 108mm;
+          height: 108mm;
+          border: 1px solid rgba(191, 219, 254, .25);
+          border-radius: 50%;
+          box-shadow: 0 0 0 13mm rgba(59, 130, 246, .10), 0 0 0 28mm rgba(99, 102, 241, .08);
+          content: "";
+        }
+        .header::after {
+          position: absolute;
+          bottom: 0;
+          left: 12mm;
+          width: 49mm;
+          height: 4px;
+          border-radius: 99px;
+          background: linear-gradient(90deg, #38bdf8, #a78bfa);
+          content: "";
+        }
+        .header-left, .header-right { position: relative; z-index: 1; }
+        .report-region {
+          position: absolute;
+          z-index: 1;
+          right: 12mm;
+          bottom: 10mm;
+          color: #bae6fd;
+          font-size: 9px;
+          letter-spacing: .06em;
+        }
+        .report-region strong { margin-left: 5px; color: #fff; font-size: 11px; font-weight: 800; }
+        /* The legacy label markup is deliberately replaced visually here so
+           the masthead remains clean even for reports generated from older
+           saved payloads. */
+        .header-left h1, .header-left p { display: none; }
+        .header-left::before {
+          display: block;
+          max-width: 430px;
+          color: #fff;
+          font-size: 29px;
+          font-weight: 900;
+          letter-spacing: .035em;
+          line-height: 1.22;
+          content: "會考落點分析結果報告";
+        }
+        .header-left::after {
+          display: block;
+          margin-top: 11px;
+          color: #dbeafe;
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: .04em;
+          content: "PERSONALISED ADMISSION PLANNING REPORT";
+        }
+        .report-kicker {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          margin: 0 0 8px;
+          color: #bae6fd;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: .16em;
+        }
+        .report-kicker::before {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #38bdf8;
+          box-shadow: 0 0 0 4px rgba(56, 189, 248, .16);
+          content: "";
         }
         .header-left h1 {
-          font-size: 27px;
-          letter-spacing: .04em;
-          line-height: 1.25;
+          max-width: 430px;
+          margin: 0;
+          color: #fff;
+          font-size: 29px;
+          font-weight: 900;
+          letter-spacing: .035em;
+          line-height: 1.22;
         }
         .header-left p {
-          display: inline-block;
-          margin-top: 3px;
-          padding: 4px 10px;
-          border-radius: 999px;
-          background: #eff6ff;
-          color: #1d4ed8;
-          font-size: 11px;
-          font-weight: 700;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 5px 13px;
+          margin: 10px 0 0;
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          color: #dbeafe;
+          font-size: 10px;
+          font-weight: 600;
         }
-        .qr-box { padding: 5px; border-color: #bfdbfe; border-radius: 10px; }
-        .qr-box img { width: 64px; height: 64px; }
-        .site-link { max-width: 110px; font-size: 8px; }
+        .header-left p strong { color: #fff; font-weight: 800; }
+        .header-right {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 10px;
+          min-width: 142px;
+          margin-bottom: 16px;
+          padding: 8px 10px;
+          border: 1px solid rgba(186, 230, 253, .28);
+          border-radius: 12px;
+          background: rgba(15, 23, 42, .22);
+          text-align: left;
+        }
+        .qr-box { flex: 0 0 auto; padding: 4px; border: 0; border-radius: 7px; background: #fff; }
+        .qr-box img { width: 54px; height: 54px; }
+        .site-link { max-width: 64px; margin: 0; color: #dbeafe; font-size: 0; line-height: 1.45; word-break: break-all; }
+        .site-link::before { display: block; font-size: 8px; content: "掃描 QR Code\A 開啟完整報告"; white-space: pre; }
         .section { margin-bottom: 20px; break-inside: avoid; }
         .section-title {
           display: flex;
@@ -686,6 +788,8 @@ export const printResults = (data: any, regionName: string) => {
           @page { margin: 8mm; }
           body { background: #fff; }
           .print-wrapper { max-width: none; margin: 0; padding: 0; border-top-width: 6px; box-shadow: none; }
+          .header { margin: 0 0 7mm; padding: 10mm 9mm 8mm; }
+          .report-region { right: 9mm; bottom: 8mm; }
           .section { break-inside: avoid; page-break-inside: avoid; }
           .btn-print { display: none !important; }
         }
@@ -701,6 +805,7 @@ export const printResults = (data: any, regionName: string) => {
         <div class="watermark">落點分析</div>
         <div class="content-relative">
           <div class="header">
+          <div class="report-region">分析區域 <strong>${regionName}</strong></div>
           <div class="header-left">
             <h1>115年會考落點分析報告</h1>
             <p>分析區域：<strong>${regionName}</strong> &nbsp;|&nbsp; 報告產生時間：${new Date().toLocaleString('zh-TW')}</p>
