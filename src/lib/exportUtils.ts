@@ -794,6 +794,47 @@ export const printResults = (data: any, regionName: string) => {
         thead { display: table-header-group; }
         .badge { padding: 3px 7px; font-size: 10px; white-space: nowrap; }
         .footer { margin-top: 26px; padding-top: 14px; border-top: 1px solid #cbd5e1; font-size: 9px; }
+        .footer {
+          margin-top: 28px;
+          padding: 14px 16px;
+          border: 1px solid #cbd5e1;
+          border-radius: 12px;
+          background: #f8fafc;
+          text-align: left;
+        }
+        .footer > p { display: none; }
+        .report-disclaimer { display: grid; gap: 8px; }
+        .report-disclaimer-label {
+          display: inline-flex;
+          align-items: center;
+          width: fit-content;
+          padding: 4px 8px;
+          border-radius: 5px;
+          background: #fff7ed;
+          color: #9a3412;
+          font-size: 10px;
+          font-weight: 900;
+          letter-spacing: .06em;
+        }
+        .report-disclaimer-copy {
+          margin: 0;
+          color: #475569;
+          font-size: 10px;
+          font-weight: 600;
+          line-height: 1.75;
+        }
+        .report-disclaimer-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px 10px;
+          padding-top: 9px;
+          border-top: 1px solid #e2e8f0;
+          color: #64748b;
+          font-size: 9px;
+          font-weight: 700;
+        }
+        .report-disclaimer-meta strong { color: #1e3a8a; }
+        .report-disclaimer-meta a { color: #2563eb; text-decoration: none; }
         @media print {
           @page { margin: 8mm; }
           body { background: #fff; }
@@ -872,6 +913,11 @@ export const printResults = (data: any, regionName: string) => {
         </div>
 
         <div class="footer">
+          <div class="report-disclaimer">
+            <div class="report-disclaimer-label">&#12304;&#31995;&#32113;&#20813;&#36012;&#32882;&#26126;&#12305;</div>
+            <p class="report-disclaimer-copy">&#26412;&#31995;&#32113;&#20998;&#26512;&#32080;&#26524;&#20677;&#20379;&#21443;&#32771;&#65292;&#19981;&#20195;&#34920;&#23526;&#38555;&#37636;&#21462;&#32080;&#26524;&#12290;&#23526;&#38555;&#37636;&#21462;&#24773;&#27841;&#21487;&#33021;&#26371;&#22240;&#30070;&#24180;&#24230;&#25307;&#29983;&#25919;&#31574;&#35722;&#21270;&#12289;&#32771;&#29983;&#25972;&#39636;&#34920;&#29694;&#12289;&#29305;&#31278;&#36523;&#20998;&#21152;&#20998;&#12289;&#21508;&#26657;&#25307;&#29983;&#21517;&#38989;&#35519;&#25972;&#31561;&#22240;&#32032;&#32780;&#26377;&#25152;&#19981;&#21516;&#12290;&#35531;&#21209;&#24517;&#20197;&#21508;&#26657;&#26368;&#26032;&#23448;&#26041;&#30332;&#24067;&#20043;&#12300;&#20813;&#35430;&#20837;&#23416;&#25307;&#29983;&#31777;&#31456;&#12301;&#28858;&#26368;&#32066;&#20381;&#25818;&#12290;</p>
+            <div class="report-disclaimer-meta"><strong>&#84;&#87;&#20840;&#22283;&#26371;&#32771;&#33853;&#40670;&#20998;&#26512;&#24341;&#25806; &copy; 2026</strong><span>&#38750;&#25919;&#24220;&#23448;&#26041;&#27231;&#27083;</span><span>|</span><a href="${currentUrl}">&#40670;&#27492;&#36820;&#22238;&#32178;&#31449;</a></div>
+          </div>
           <p><strong>【系統免責聲明】</strong> 本系統分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因當年度招生政策變化、<br/>考生整體表現、特種身分加分、各校招生名額調整等因素而有所不同。請務必以各校最新官方發布之「免試入學招生簡章」為最終依據。</p>
           <p>TW全國會考落點分析引擎 © ${new Date().getFullYear()} (非政府官方機構) | <a href="${currentUrl}" style="color: #3b82f6; text-decoration: none;">點此返回網站</a></p>
         </div>
