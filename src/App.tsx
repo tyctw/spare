@@ -729,9 +729,15 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="p-6 sm:p-8 bg-sky-100 border-2 border-slate-900 rounded-3xl shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
+              className="relative overflow-hidden p-6 sm:p-8 bg-sky-100 border-2 border-slate-900 rounded-3xl shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
             >
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-7 -top-8 rotate-12 text-sky-300/55">
+                <Calculator className="h-40 w-40" strokeWidth={1.2} />
+              </div>
+              <div aria-hidden="true" className="pointer-events-none absolute -right-1 top-28 rotate-[-14deg] text-indigo-300/35">
+                <PenTool className="h-20 w-20" strokeWidth={1.3} />
+              </div>
+              <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
                   <h2 className="text-xl font-black flex items-center gap-2 text-slate-900 mb-1">
                     <Calculator className="w-6 h-6 text-indigo-600" /> 會考成績評估
@@ -746,7 +752,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="relative z-10 flex flex-col gap-3 sm:gap-4">
                 {[
                   { id: 'chinese', label: '國文', icon: BookOpen, color: 'text-rose-600', bgBorder: 'bg-rose-50 border-rose-300 focus:ring-rose-400 focus:border-rose-400 hover:border-rose-400', theme: 'bg-white' },
                   { id: 'english', label: '英文', icon: Languages, color: 'text-amber-600', bgBorder: 'bg-amber-50 border-amber-300 focus:ring-amber-400 focus:border-amber-400 hover:border-amber-400', theme: 'bg-white' },
