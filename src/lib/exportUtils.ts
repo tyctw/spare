@@ -246,6 +246,7 @@ export const printResults = (data: any, regionName: string) => {
 
       rowsHtml += `
       <tr>
+        <td class="preference-cell"><span class="preference-line"></span></td>
         <td style="font-weight: 600; color: #64748b;">#${i + 1}</td>
         <td style="font-weight: 700; color: #0f172a;">${s.name}</td>
         <td>${s.group || s.type || '-'}</td>
@@ -257,9 +258,10 @@ export const printResults = (data: any, regionName: string) => {
     });
 
     schoolsHtml = `
-      <table>
+      <table class="schools-table">
         <thead>
           <tr>
+            <th class="preference-heading">&#24535;&#39000;&#25490;&#24207;</th>
             <th width="10%">排名</th>
             <th width="25%">學校名稱</th>
             <th width="25%">群別/科系/類型</th>
@@ -789,6 +791,25 @@ export const printResults = (data: any, regionName: string) => {
         table { border: 1px solid #cbd5e1; border-radius: 10px; }
         th, td { padding: 9px 10px; font-size: 11px; line-height: 1.4; }
         th { background: #0f172a; color: #fff; font-size: 10px; letter-spacing: .02em; }
+        .schools-table .preference-heading {
+          width: 12%;
+          background: #1e3a8a;
+          text-align: center;
+          white-space: nowrap;
+        }
+        .schools-table .preference-cell {
+          padding: 5px 7px;
+          text-align: center;
+          vertical-align: middle;
+        }
+        .preference-line {
+          display: inline-block;
+          width: 25px;
+          height: 25px;
+          border: 1.5px solid #94a3b8;
+          border-radius: 5px;
+          background: #fff;
+        }
         tbody tr:nth-child(even) { background: #f8fafc; }
         tbody tr { break-inside: avoid; page-break-inside: avoid; }
         thead { display: table-header-group; }
