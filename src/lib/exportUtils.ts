@@ -139,6 +139,31 @@ export const exportExcel = async (data: any, regionName: string) => {
   ];
   const summaryWs = wb.addWorksheet("分析摘要與成績");
   summaryWs.addRows(summary);
+  summaryWs.mergeCells('A1:B1');
+  summaryWs.views = [{ showGridLines: false }];
+  summaryWs.pageSetup = { orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
+  summaryWs.getColumn(1).width = 28;
+  summaryWs.getColumn(2).width = 48;
+  summaryWs.getRow(1).height = 30;
+  summaryWs.getCell('A1').font = { bold: true, size: 16, color: { argb: 'FFFFFFFF' } };
+  summaryWs.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
+  summaryWs.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
+  summaryWs.eachRow((row, rowNumber) => {
+    if (rowNumber === 1 || !row.getCell(1).value) return;
+    const label = String(row.getCell(1).value);
+    const value = row.getCell(2);
+    if (!value.value && label.length < 30) {
+      row.getCell(1).font = { bold: true, color: { argb: 'FF1E3A8A' } };
+      row.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E7FF' } };
+      row.getCell(1).alignment = { vertical: 'middle' };
+      row.height = 22;
+      return;
+    }
+    row.getCell(1).font = { bold: true, color: { argb: 'FF334155' } };
+    value.alignment = { vertical: 'middle', wrapText: true };
+    row.getCell(1).border = { bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } } };
+    value.border = { bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } } };
+  });
 
   // 2. Schools Sheet
   if (data.results.eligibleSchools?.length) {
@@ -156,6 +181,35 @@ export const exportExcel = async (data: any, regionName: string) => {
     ];
     const schoolsWs = wb.addWorksheet("推薦學校清單");
     schoolsWs.addRows(schoolsData);
+    schoolsWs.views = [{ state: 'frozen', ySplit: 1, showGridLines: false }];
+    schoolsWs.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
+    schoolsWs.autoFilter = { from: 'A1', to: `G${schoolsWs.rowCount}` };
+    [10, 28, 22, 18, 12, 14, 18].forEach((width, index) => {
+      schoolsWs.getColumn(index + 1).width = width;
+    });
+    const schoolsHeader = schoolsWs.getRow(1);
+    schoolsHeader.height = 26;
+    schoolsHeader.eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
+      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+    });
+    for (let rowNumber = 2; rowNumber <= schoolsWs.rowCount; rowNumber += 1) {
+      const row = schoolsWs.getRow(rowNumber);
+      row.height = 22;
+      row.eachCell((cell) => {
+        cell.alignment = { vertical: 'middle', wrapText: true };
+        cell.border = { bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } } };
+        if (rowNumber % 2 === 0) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+      });
+      const zoneCell = row.getCell(6);
+      const zone = data.results.eligibleSchools[rowNumber - 2]?.zone;
+      const zoneColors: Record<string, string> = { reach: 'FFFEE2E2', target: 'FFFEF3C7', safe: 'FFDCFCE7' };
+      if (zoneColors[zone]) {
+        zoneCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: zoneColors[zone] } };
+        zoneCell.font = { bold: true, color: { argb: 'FF334155' } };
+      }
+    }
     
     // Auto-size columns slightly
     schoolsWs['!cols'] = [
@@ -246,7 +300,7 @@ export const printResults = (data: any, regionName: string) => {
 
       rowsHtml += `
       <tr>
-        <td class="preference-cell"><span class="preference-line"></span></td>
+        <td class="preference-cell"></td>
         <td style="font-weight: 600; color: #64748b;">#${i + 1}</td>
         <td style="font-weight: 700; color: #0f172a;">${s.name}</td>
         <td>${s.group || s.type || '-'}</td>
@@ -259,6 +313,15 @@ export const printResults = (data: any, regionName: string) => {
 
     schoolsHtml = `
       <table class="schools-table">
+        <colgroup>
+          <col style="width: 8%" />
+          <col style="width: 7%" />
+          <col style="width: 33%" />
+          <col style="width: 10%" />
+          <col style="width: 9%" />
+          <col style="width: 15%" />
+          <col style="width: 18%" />
+        </colgroup>
         <thead>
           <tr>
             <th class="preference-heading">&#24535;&#39000;&#25490;&#24207;</th>
@@ -795,6 +858,21 @@ export const printResults = (data: any, regionName: string) => {
         .schools-table td {
           border-right: 1px solid #cbd5e1;
         }
+        .schools-table {
+          width: 100%;
+          table-layout: fixed;
+        }
+        .schools-table th,
+        .schools-table td {
+          padding: 7px 6px;
+          overflow-wrap: anywhere;
+        }
+        .schools-table th { text-align: center; }
+        .schools-table td:nth-child(1),
+        .schools-table td:nth-child(2),
+        .schools-table td:nth-child(5),
+        .schools-table td:nth-child(6),
+        .schools-table td:nth-child(7) { text-align: center; }
         .schools-table th { border-right-color: rgba(255, 255, 255, .42); }
         .schools-table th:last-child,
         .schools-table td:last-child { border-right: 0; }
@@ -812,18 +890,28 @@ export const printResults = (data: any, regionName: string) => {
           border-right: 1.5px solid #64748b;
           border-bottom: 1px solid #94a3b8;
         }
-        .preference-line {
-          display: inline-block;
-          width: 25px;
-          height: 25px;
-          border: 2px solid #1e3a8a;
-          border-radius: 5px;
-          background: #fff;
-        }
         tbody tr:nth-child(even) { background: #f8fafc; }
         tbody tr { break-inside: avoid; page-break-inside: avoid; }
         thead { display: table-header-group; }
-        .badge { padding: 3px 7px; font-size: 10px; white-space: nowrap; }
+        .schools-table td:nth-child(6) { text-align: center; }
+        .schools-table .badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 48px;
+          padding: 4px 8px;
+          border: 1px solid transparent;
+          border-radius: 999px;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: .04em;
+          line-height: 1.1;
+          white-space: nowrap;
+        }
+        .schools-table .eval-reach { border-color: #fca5a5; background: #fef2f2; color: #b91c1c; }
+        .schools-table .eval-target { border-color: #93c5fd; background: #eff6ff; color: #1d4ed8; }
+        .schools-table .eval-safe { border-color: #86efac; background: #f0fdf4; color: #15803d; }
+        .schools-table .eval-normal { border-color: #cbd5e1; background: #f8fafc; color: #475569; }
         .footer { margin-top: 26px; padding-top: 14px; border-top: 1px solid #cbd5e1; font-size: 9px; }
         .footer {
           margin-top: 28px;
@@ -947,7 +1035,7 @@ export const printResults = (data: any, regionName: string) => {
           <div class="report-disclaimer">
             <div class="report-disclaimer-label">&#12304;&#31995;&#32113;&#20813;&#36012;&#32882;&#26126;&#12305;</div>
             <p class="report-disclaimer-copy">&#26412;&#31995;&#32113;&#20998;&#26512;&#32080;&#26524;&#20677;&#20379;&#21443;&#32771;&#65292;&#19981;&#20195;&#34920;&#23526;&#38555;&#37636;&#21462;&#32080;&#26524;&#12290;&#23526;&#38555;&#37636;&#21462;&#24773;&#27841;&#21487;&#33021;&#26371;&#22240;&#30070;&#24180;&#24230;&#25307;&#29983;&#25919;&#31574;&#35722;&#21270;&#12289;&#32771;&#29983;&#25972;&#39636;&#34920;&#29694;&#12289;&#29305;&#31278;&#36523;&#20998;&#21152;&#20998;&#12289;&#21508;&#26657;&#25307;&#29983;&#21517;&#38989;&#35519;&#25972;&#31561;&#22240;&#32032;&#32780;&#26377;&#25152;&#19981;&#21516;&#12290;&#35531;&#21209;&#24517;&#20197;&#21508;&#26657;&#26368;&#26032;&#23448;&#26041;&#30332;&#24067;&#20043;&#12300;&#20813;&#35430;&#20837;&#23416;&#25307;&#29983;&#31777;&#31456;&#12301;&#28858;&#26368;&#32066;&#20381;&#25818;&#12290;</p>
-            <div class="report-disclaimer-meta"><strong>&#84;&#87;&#20840;&#22283;&#26371;&#32771;&#33853;&#40670;&#20998;&#26512;&#24341;&#25806; &copy; 2026</strong><span>&#38750;&#25919;&#24220;&#23448;&#26041;&#27231;&#27083;</span><span>|</span><a href="${currentUrl}">&#40670;&#27492;&#36820;&#22238;&#32178;&#31449;</a></div>
+            <div class="report-disclaimer-meta"><strong>&#84;&#87;&#20840;&#22283;&#26371;&#32771;&#33853;&#40670;&#20998;&#26512;&#24341;&#25806; &copy; 2026</strong><span>&#38750;&#25919;&#24220;&#23448;&#26041;&#27231;&#27083;</span><span>|</span><a href="${currentUrl}">${currentUrl}</a></div>
           </div>
           <p><strong>【系統免責聲明】</strong> 本系統分析結果僅供參考，不代表實際錄取結果。實際錄取情況可能會因當年度招生政策變化、<br/>考生整體表現、特種身分加分、各校招生名額調整等因素而有所不同。請務必以各校最新官方發布之「免試入學招生簡章」為最終依據。</p>
           <p>TW全國會考落點分析引擎 © ${new Date().getFullYear()} (非政府官方機構) | <a href="${currentUrl}" style="color: #3b82f6; text-decoration: none;">點此返回網站</a></p>

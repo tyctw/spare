@@ -26,6 +26,18 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  @media (forced-colors: active) {
+    :focus-visible {
+      outline: 3px solid Highlight;
+      outline-offset: 4px;
+    }
+
+    .skip-link {
+      border: 2px solid ButtonText;
+      forced-color-adjust: auto;
+    }
+  }
 }
 
 /* Disclaimer page hero: use the same light, welcoming palette as the guide pages. */

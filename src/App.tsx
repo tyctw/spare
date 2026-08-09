@@ -10,7 +10,6 @@ import {
 import { InfoModal } from './components/InfoModals';
 import DisclaimerModal from './components/DisclaimerModal';
 import CyberAuthOverlay from './components/CyberAuthOverlay';
-import QuantumLoadingOverlay from './components/QuantumLoadingOverlay';
 import { callBackend, isBackendError, normalizeInvitationCode } from './lib/api';
 import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
@@ -534,7 +533,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   rel="noopener noreferrer"
                   className="text-xs font-bold text-amber-600 hover:text-amber-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
                 >
-                  點此獲取邀請碼
+                  尚未取得邀請碼？點此獲取
                 </a>
               </div>
             </motion.section>
@@ -911,8 +910,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       </div>
 
       <CyberAuthOverlay 
-        isOpen={status === 'auth'}
+        isOpen={status === 'auth' || status === 'quantum'}
         code={formData.invitationCode}
+        skipValidation={status === 'quantum'}
         onSuccess={() => {
           localStorage.setItem('invitationAuthCache', JSON.stringify({
             code: normalizeInvitationCode(formData.invitationCode),
@@ -930,10 +930,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
             setErrorMessage(message || '驗證服務暫時無法使用，請稍後再試。');
           }
         }}
-      />
-
-      <QuantumLoadingOverlay 
-        isOpen={status === 'quantum'}
       />
 
       {/* 分析完成後統一導向獨立結果頁，不在首頁呈現分析結果。 */}

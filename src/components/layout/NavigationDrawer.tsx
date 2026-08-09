@@ -191,10 +191,12 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
   const [searchTerm, setSearchTerm] = useState('');
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
+    triggerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeButtonRef.current?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -204,7 +206,10 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      triggerRef.current?.focus();
+    };
   }, [isOpen, onClose]);
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -262,6 +267,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            aria-hidden="true"
             className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm"
           />
           <motion.div

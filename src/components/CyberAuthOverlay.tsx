@@ -1,26 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { KeyRound, Check, ShieldAlert, Zap } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import {
+  Activity,
+  Award,
+  Calculator,
+  Check,
+  KeyRound,
+  ShieldAlert,
+  Sparkles,
+  Target,
+  Zap,
+} from 'lucide-react';
 import { callBackend, isBackendError, normalizeInvitationCode } from '../lib/api';
 
 interface Props {
   isOpen: boolean;
   code: string;
+  /** Used when the invitation code was verified recently. */
+  skipValidation?: boolean;
   onSuccess: () => void;
   onFail: (reason: 'invalid' | 'service', message?: string) => void;
 }
 
-export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Props) {
-  const [status, setStatus] = useState<'validating' | 'success' | 'fail'>('validating');
+type OverlayStatus = 'validating' | 'analyzing' | 'fail';
+
+const validationSteps = ['讀取邀請碼', '驗證使用權限', '建立安全工作階段'];
+
+const analysisSteps = [
+  { label: '成績資料建模', detail: '轉換各科等級與加權規則', icon: Calculator, color: 'bg-amber-300', ring: 'border-amber-400' },
+  { label: '比對歷年資料', detail: '搜尋相近的錄取分布', icon: Activity, color: 'bg-sky-300', ring: 'border-sky-400' },
+  { label: '校科適配排序', detail: '依志願條件評估落點區間', icon: Target, color: 'bg-violet-300', ring: 'border-violet-400' },
+  { label: '產生個人報告', detail: '整理推薦清單與填選策略', icon: Award, color: 'bg-emerald-300', ring: 'border-emerald-400' },
+];
+
+export default function CyberAuthOverlay({ isOpen, code, skipValidation = false, onSuccess, onFail }: Props) {
+  const [status, setStatus] = useState<OverlayStatus>('validating');
   const [currentStep, setCurrentStep] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
-
-  const steps = [
-    '\u555f\u52d5\u6388\u6b0a\u9a57\u8b49\u7a0b\u5e8f...',
-    '\u540c\u6b65\u9080\u8acb\u78bc\u6191\u8b49...',
-    '\u6aa2\u67e5\u7cfb\u7d71\u6388\u6b0a\u72c0\u614b...',
-    '\u78ba\u8a8d\u5b89\u5168\u9023\u7dda...'
-  ];
 
   useEffect(() => {
     if (!isOpen) {
@@ -30,117 +46,129 @@ export default function CyberAuthOverlay({ isOpen, code, onSuccess, onFail }: Pr
       return;
     }
 
-    const stepInterval = setInterval(() => {
-      setCurrentStep(step => (step + 1) % steps.length);
-    }, 900);
+    if (skipValidation) {
+      setStatus('analyzing');
+      setCurrentStep(0);
+      return;
+    }
 
+    setStatus('validating');
+    const stepInterval = window.setInterval(() => {
+      setCurrentStep((step) => (step + 1) % validationSteps.length);
+    }, 700);
     const controller = new AbortController();
     const normalizedCode = normalizeInvitationCode(code);
 
     if (!normalizedCode) {
-      clearInterval(stepInterval);
+      window.clearInterval(stepInterval);
       setStatus('fail');
-      setErrorMsg('\u8acb\u8f38\u5165\u9080\u8acb\u78bc');
+      setErrorMsg('請先輸入邀請碼。');
       onFail('invalid');
       return () => controller.abort();
     }
 
-    callBackend<{ valid: boolean }>({
-      action: 'validateInvitationCode',
-      invitationCode: normalizedCode,
-    }, { timeoutMs: 12_000, signal: controller.signal })
-      .then(res => {
-        clearInterval(stepInterval);
-        if (res.valid) {
-          setStatus('success');
-          onSuccess();
-        } else {
+    callBackend<{ valid: boolean }>({ action: 'validateInvitationCode', invitationCode: normalizedCode }, { timeoutMs: 12_000, signal: controller.signal })
+      .then((result) => {
+        window.clearInterval(stepInterval);
+        if (!result.valid) {
           setStatus('fail');
-          setErrorMsg('\u9080\u8acb\u78bc\u7121\u6548\u6216\u5df2\u904e\u671f');
+          setErrorMsg('邀請碼無效或已無法使用。');
           onFail('invalid');
+          return;
         }
+        onSuccess();
       })
-      .catch((err: unknown) => {
+      .catch((error: unknown) => {
         if (controller.signal.aborted) return;
-        clearInterval(stepInterval);
-        console.error(err);
+        window.clearInterval(stepInterval);
+        const message = isBackendError(error) ? error.message : '驗證服務暫時無法使用，請稍後再試。';
         setStatus('fail');
-        const message = isBackendError(err) ? err.message : '\u9a57\u8b49\u670d\u52d9\u66ab\u6642\u7121\u6cd5\u4f7f\u7528\uff0c\u8acb\u7a0d\u5f8c\u518d\u8a66';
         setErrorMsg(message);
         onFail('service', message);
       });
 
     return () => {
-      clearInterval(stepInterval);
+      window.clearInterval(stepInterval);
       controller.abort();
     };
-  }, [isOpen, code]);
+  }, [isOpen, code, skipValidation]);
+
+  useEffect(() => {
+    if (!isOpen || status !== 'analyzing') return;
+    const interval = window.setInterval(() => setCurrentStep((step) => (step + 1) % analysisSteps.length), 1300);
+    return () => window.clearInterval(interval);
+  }, [isOpen, status]);
+
+  const isAnalyzing = status === 'analyzing';
+  const activeAnalysis = analysisSteps[currentStep];
+  const ActiveAnalysisIcon = activeAnalysis.icon;
+  const completedValidationSteps = validationSteps.length;
+  const progressStep = isAnalyzing ? completedValidationSteps + currentStep : currentStep;
+  const totalSteps = completedValidationSteps + analysisSteps.length;
+  const activeLabel = isAnalyzing ? activeAnalysis.label : validationSteps[currentStep];
+  const activeDetail = isAnalyzing ? activeAnalysis.detail : '安全驗證不會儲存你的邀請碼。';
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 50, opacity: 0 }}
-            className="w-full max-w-md bg-white p-8 rounded-3xl border-4 border-slate-900 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col items-center text-center relative overflow-hidden"
+        <motion.div className="fixed inset-0 z-[2000] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} aria-live="polite">
+          <motion.section
+            role="dialog"
+            aria-modal="true"
+            aria-label={isAnalyzing ? '正在進行落點分析' : '正在驗證邀請碼'}
+            initial={{ opacity: 0, y: 24, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 18, scale: 0.96 }}
+            transition={{ type: 'spring', damping: 24, stiffness: 280 }}
+            className="relative w-full max-w-xl overflow-hidden rounded-[30px] border-4 border-slate-900 bg-[#fffdf8] p-5 shadow-[12px_12px_0_#0f172a] sm:p-8"
           >
-            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#0f172a 2px, transparent 2px)', backgroundSize: '16px 16px' }} />
-
-            <div className="relative z-10 w-full">
-              <div className="mb-6 flex justify-center relative">
-                {status === 'validating' && (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
-                    className="absolute inset-0 m-auto w-28 h-28 border-4 border-dashed border-amber-300 rounded-full"
-                  />
-                )}
-                <motion.div
-                  initial={{ rotate: -10 }}
-                  animate={status === 'validating' ? { rotate: [5, -5, 5] } : status === 'success' ? { rotate: 0, scale: 1.1 } : { rotate: 0 }}
-                  transition={status === 'validating' ? { repeat: Infinity, duration: 0.5, ease: 'easeInOut' } : { type: 'spring' }}
-                  className={`w-24 h-24 rounded-3xl border-4 border-slate-900 flex items-center justify-center relative z-10 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] ${status === 'success' ? 'bg-emerald-400' : status === 'fail' ? 'bg-rose-400' : 'bg-amber-400'}`}
-                >
-                  {status === 'success' ? (
-                    <Check className="w-12 h-12 text-slate-900" strokeWidth={3} />
-                  ) : status === 'fail' ? (
-                    <ShieldAlert className="w-12 h-12 text-slate-900" strokeWidth={3} />
-                  ) : (
-                    <KeyRound className="w-12 h-12 text-slate-900" strokeWidth={3} />
-                  )}
-                </motion.div>
-              </div>
-
-              <h2 className="text-2xl font-black text-slate-900 mb-2">
-                {status === 'success' ? '\u6388\u6b0a\u6210\u529f\uff01' : status === 'fail' ? '\u6191\u8b49\u7121\u6548\uff01' : '\u9a57\u8b49\u9080\u8acb\u78bc\u4e2d...'}
-              </h2>
-              <div className="text-slate-500 font-bold mb-8 h-6 flex items-center justify-center gap-2">
-                {status === 'validating' ? <><Zap className="w-4 h-4 text-amber-500 fill-amber-500" /> {steps[currentStep]}</> : status === 'success' ? '\u9a57\u8b49\u5b8c\u6210\uff0c\u6b63\u5728\u9032\u5165\u7cfb\u7d71...' : (errorMsg || '\u6388\u6b0a\u5931\u6557')}
-              </div>
-
-              {status === 'validating' && (
-                <div className="w-full">
-                  <div
-                    className="w-full h-8 bg-slate-50 rounded-xl border-4 border-slate-900 p-0.5 overflow-hidden shadow-[inset_2px_2px_0px_rgba(0,0,0,0.1)] relative"
-                    role="progressbar"
-                    aria-label="\u6b63\u5728\u9a57\u8b49\u9080\u8acb\u78bc"
-                  >
-                    <motion.div
-                      className="h-full w-1/3 rounded-md border-x-4 border-slate-900 bg-indigo-500 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,0.1)_10px,rgba(0,0,0,0.1)_20px)]"
-                      animate={{ x: ['-120%', '320%'] }}
-                      transition={{ repeat: Infinity, duration: 1.15, ease: 'linear' }}
-                    />
+            <div className="pointer-events-none absolute inset-0 opacity-[0.45]" style={{ backgroundImage: 'radial-gradient(#c7d2fe 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
+            <div className="relative">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1 text-[11px] font-black tracking-[0.14em] text-indigo-700">
+                    <span className={`h-2 w-2 rounded-full ${status === 'fail' ? 'bg-rose-500' : 'bg-emerald-500 animate-pulse'}`} />
+                    {isAnalyzing ? 'ANALYSIS ENGINE' : 'SECURE ACCESS'}
                   </div>
-                  <div className="mt-3 text-center font-black text-slate-600 text-sm tracking-widest">
-                    {'\u5b89\u5168\u9a57\u8b49\u9032\u884c\u4e2d'}
-                  </div>
+                  <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+                    {isAnalyzing ? '正在建立你的落點地圖' : status === 'fail' ? '驗證未完成' : '正在確認分析資格'}
+                  </h2>
+                  <p className="mt-2 text-sm font-bold leading-6 text-slate-600">
+                    {isAnalyzing ? '系統正在交叉比對成績、就學區與志願偏好。' : status === 'fail' ? errorMsg : '正在以加密連線驗證邀請碼，請稍候。'}
+                  </p>
                 </div>
-              )}
+                <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-4 border-slate-900 shadow-[3px_3px_0_#0f172a] ${status === 'fail' ? 'bg-rose-300' : isAnalyzing ? activeAnalysis.color : 'bg-amber-300'}`}>
+                  {status === 'fail' ? <ShieldAlert className="h-7 w-7" strokeWidth={2.8} /> : isAnalyzing ? <Sparkles className="h-7 w-7" strokeWidth={2.5} /> : <KeyRound className="h-7 w-7" strokeWidth={2.5} />}
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-3xl border-2 border-slate-900 bg-white/90 p-5">
+                {status === 'fail' ? (
+                  <div className="flex items-center gap-3 text-sm font-bold text-rose-700"><ShieldAlert className="h-5 w-5 shrink-0" />請關閉提示後確認邀請碼，再重新開始分析。</div>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 ${isAnalyzing ? activeAnalysis.color : 'bg-amber-300'}`}>
+                        {isAnalyzing ? <ActiveAnalysisIcon className="h-5 w-5" /> : <KeyRound className="h-5 w-5" />}
+                      </div>
+                      <div>
+                        <AnimatePresence mode="wait"><motion.p key={activeLabel} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} className="text-sm font-black text-slate-900">{activeLabel}</motion.p></AnimatePresence>
+                        <p className="text-xs font-bold text-slate-500">{activeDetail}</p>
+                      </div>
+                    </div>
+                    <div className="mt-5 flex gap-1.5" aria-label={`完整分析流程，第 ${progressStep + 1} 步，共 ${totalSteps} 步`}>
+                      {Array.from({ length: totalSteps }, (_, index) => (
+                        <span key={index} className={`h-2 flex-1 rounded-full transition-colors ${index < progressStep ? 'bg-emerald-400' : index === progressStep ? isAnalyzing ? 'bg-indigo-500' : 'bg-amber-400' : 'bg-slate-200'}`} />
+                      ))}
+                    </div>
+                    <p className="mt-3 text-center text-[11px] font-black tracking-wider text-slate-500">完整流程 {progressStep + 1} / {totalSteps}</p>
+                  </>
+                )}
+              </div>
+              <p className="mt-4 text-center text-xs font-bold text-slate-500"><Check className="mr-1 inline h-3.5 w-3.5 text-emerald-600" />資料僅用於本次分析，結果僅供選填規劃參考。</p>
             </div>
-          </motion.div>
-        </div>
+          </motion.section>
+        </motion.div>
       )}
     </AnimatePresence>
   );
