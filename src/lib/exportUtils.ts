@@ -564,23 +564,19 @@ export const printResults = (data: any, regionName: string) => {
           line-height: 1.6;
         }
 
+        :root { --print-table-grid: #94a3b8; }
         table {
           width: 100%;
-          border-collapse: separate;
-          border-spacing: 0;
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          overflow: hidden;
+          border-collapse: collapse;
+          border: 1px solid var(--print-table-grid);
         }
-        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        th, td { padding: 14px 16px; text-align: left; border: 1px solid var(--print-table-grid); font-size: 14px; }
         th { 
           background-color: #f8fafc; 
           font-weight: 800; 
           color: #334155; 
           font-size: 14px; 
-          border-bottom: 2px solid #cbd5e1; 
         }
-        tbody tr:last-child td { border-bottom: none; }
         tbody tr:nth-child(even) { background-color: #fbfcfd; }
         tbody tr:hover { background-color: #f1f5f9; }
         
@@ -851,13 +847,9 @@ export const printResults = (data: any, regionName: string) => {
         .metric-label { font-size: 10px; }
         .metric-val { font-size: 18px; }
         .report-suggestion { padding: 12px; border-left: 3px solid #818cf8; border-radius: 7px; background: #fff; font-size: 12px; }
-        table { border: 1px solid #cbd5e1; border-radius: 10px; }
+        table { border: 1px solid var(--print-table-grid); border-radius: 0; }
         th, td { padding: 9px 10px; font-size: 11px; line-height: 1.4; }
         th { background: #0f172a; color: #fff; font-size: 10px; letter-spacing: .02em; }
-        .schools-table th,
-        .schools-table td {
-          border-right: 1px solid #cbd5e1;
-        }
         .schools-table {
           width: 100%;
           table-layout: fixed;
@@ -873,22 +865,19 @@ export const printResults = (data: any, regionName: string) => {
         .schools-table td:nth-child(5),
         .schools-table td:nth-child(6),
         .schools-table td:nth-child(7) { text-align: center; }
-        .schools-table th { border-right-color: rgba(255, 255, 255, .42); }
-        .schools-table th:last-child,
-        .schools-table td:last-child { border-right: 0; }
         .schools-table .preference-heading {
           width: 12%;
           background: #1e3a8a;
           text-align: center;
           white-space: nowrap;
-          border-right: 1.5px solid #64748b;
+          border-right: 1px solid var(--print-table-grid);
         }
         .schools-table .preference-cell {
           padding: 5px 7px;
           text-align: center;
           vertical-align: middle;
-          border-right: 1.5px solid #64748b;
-          border-bottom: 1px solid #94a3b8;
+          border-right: 1px solid var(--print-table-grid);
+          border-bottom: 1px solid var(--print-table-grid);
         }
         tbody tr:nth-child(even) { background: #f8fafc; }
         tbody tr { break-inside: avoid; page-break-inside: avoid; }
@@ -1157,14 +1146,15 @@ export const printSchoolTypes = () => {
           border-left: 4px solid #3b82f6;
         }
         
+        :root { --print-table-grid: #94a3b8; }
         table {
           width: 100%;
           border-collapse: collapse;
           margin-bottom: 12px;
-          border: 1px solid #0f172a;
+          border: 1px solid var(--print-table-grid);
         }
         th, td {
-          border: 1px solid #cbd5e1;
+          border: 1px solid var(--print-table-grid);
           padding: 4px 8px;
           text-align: left;
         }
@@ -1172,7 +1162,6 @@ export const printSchoolTypes = () => {
           background-color: #f1f5f9;
           font-weight: 800;
           color: #0f172a;
-          border-bottom: 2px solid #0f172a;
         }
         td {
           font-weight: 600;

@@ -797,12 +797,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
                             就學區換算積分
                           </span>
-                          <div className={`flex items-center gap-2 bg-white border-2 border-slate-900 px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] shrink-0 hover:-translate-y-0.5 transition-transform`}>
-                             <div className="w-5 h-5 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
-                               <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                             </div>
-                             <span className="text-sm sm:text-base font-black text-slate-900 tracking-tight">{scoreText}</span>
-                          </div>
+                          <span className="shrink-0 text-base font-black tracking-tight text-slate-900 sm:text-lg">{scoreText}</span>
                         </div>
                       ) : null;
                     })()}
@@ -868,12 +863,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                           <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                           就學區換算積分
                         </span>
-                        <div className={`flex items-center gap-2 bg-slate-800 border-2 border-slate-700 px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_0px_rgba(251,191,36,0.3)] shrink-0 hover:-translate-y-0.5 transition-transform`}>
-                           <div className="w-5 h-5 rounded-full bg-amber-400/20 flex items-center justify-center border border-amber-400/30">
-                             <Award className="w-3.5 h-3.5 text-amber-400" />
-                           </div>
-                           <span className="text-sm sm:text-base font-black text-amber-400 tracking-tight">{compScore}</span>
-                        </div>
+                        <span className="shrink-0 text-base font-black tracking-tight text-amber-400 sm:text-lg">{compScore}</span>
                       </div>
                     ) : null;
                   })()}
