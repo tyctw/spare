@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <script>
+      (function () {
+        var base = '/spare/';
+        var pathname = window.location.pathname;
+
+        if (pathname.indexOf(base) === 0) {
+          var route = pathname.slice(base.length);
+          var search = window.location.search ? '&' + window.location.search.slice(1) : '';
+          window.location.replace(base + '?route=/' + route + search + window.location.hash);
+          return;
+        }
+
+        window.location.replace(base);
+      })();
+    </script>
+  </body>
+</html>

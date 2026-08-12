@@ -1,0 +1,242 @@
+import { useEffect, useState } from 'react';
+import {
+  ArrowLeft,
+  BadgeCheck,
+  CalendarDays,
+  CircleUserRound,
+  Home,
+  Crown,
+  LogIn,
+  LogOut,
+  ReceiptText,
+  ShieldCheck,
+  Sparkles,
+  Trash2,
+} from 'lucide-react';
+import { callBackend } from '../lib/api';
+import {
+  clearLineSessionToken,
+  consumeLineLoginCodeFromFragment,
+  getMembershipStatus,
+  type MembershipStatus,
+} from '../lib/membership';
+import { withBasePath } from '../lib/routes';
+
+type AccountState = 'loading' | 'ready' | 'error';
+type MembershipPurchase = {
+  reference: string;
+  plan: 'monthly' | 'yearly';
+  amount: number;
+  status: 'pending' | 'paid' | 'failed' | 'refunded';
+  paidAt?: string;
+  expiresAt?: string;
+  createdAt: string;
+};
+
+const formatDate = (value?: string) => value
+  ? new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long' }).format(new Date(value))
+  : '—';
+
+export default function MembershipAccountPage() {
+  const [state, setState] = useState<AccountState>('loading');
+  const [membership, setMembership] = useState<MembershipStatus>({ active: false });
+  const [lineName, setLineName] = useState('');
+  const [purchases, setPurchases] = useState<MembershipPurchase[]>([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [accountNotice, setAccountNotice] = useState('');
+
+  const refresh = async () => {
+    const [line, status, history] = await Promise.all([
+      callBackend<{ loggedIn: boolean; name?: string }>({ action: 'getLineLoginSession' }),
+      getMembershipStatus(),
+      callBackend<{ purchases: MembershipPurchase[] }>({ action: 'getMembershipPurchaseHistory' }),
+    ]);
+    setLineName(line.loggedIn ? line.name || 'LINE 會員' : '');
+    setMembership(status);
+    setPurchases(history.purchases || []);
+    setState('ready');
+  };
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        await consumeLineLoginCodeFromFragment();
+        await refresh();
+      } catch {
+        setState('error');
+      }
+    })();
+  }, []);
+
+  const loginWithLine = () => {
+    const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
+    if (!supabaseUrl) {
+      setState('error');
+      return;
+    }
+    window.location.assign(`${supabaseUrl}/functions/v1/line-login?returnTo=/membership/account`);
+  };
+
+  const logout = async () => {
+    clearLineSessionToken();
+    setMembership({ active: false });
+    setLineName('');
+    setPurchases([]);
+    await callBackend({ action: 'revokeLineLoginSession' }).catch(() => undefined);
+  };
+
+  const deleteAccount = async () => {
+    setDeletingAccount(true);
+    setAccountNotice('');
+    try {
+      const result = await callBackend<{ deleted: boolean; reason?: 'ACTIVE_MEMBERSHIP' | 'NOT_LOGGED_IN' }>({
+        action: 'deleteMembershipAccount',
+      });
+      if (!result.deleted) {
+        setAccountNotice(result.reason === 'ACTIVE_MEMBERSHIP'
+          ? '免廣告資格仍有效，請於到期後再刪除帳號。'
+          : '登入狀態已失效，請重新登入後再試。');
+        setDeleteDialogOpen(false);
+        return;
+      }
+      clearLineSessionToken();
+      setMembership({ active: false });
+      setLineName('');
+      setPurchases([]);
+      setDeleteDialogOpen(false);
+      setAccountNotice('帳號已刪除，LINE 身分連結與此裝置的登入狀態已移除。');
+    } catch {
+      setAccountNotice('暫時無法刪除帳號，請稍後再試或聯絡客服。');
+    } finally {
+      setDeletingAccount(false);
+    }
+  };
+
+  const planName = membership.plan === 'yearly' ? '年費會員' : '月費會員';
+  const remainingDays = membership.expiresAt
+    ? Math.max(0, Math.ceil((new Date(membership.expiresAt).getTime() - Date.now()) / 86_400_000))
+    : 0;
+
+  return (
+    <main id="main-content" aria-labelledby="member-account-title" className="min-h-screen overflow-hidden bg-[#f5f6ff] px-4 py-6 text-slate-900 sm:px-6 sm:py-10">
+      <div aria-hidden="true" className="fixed -left-28 top-20 h-72 w-72 rounded-full bg-violet-200/60 blur-3xl" />
+      <div aria-hidden="true" className="fixed -right-24 bottom-0 h-80 w-80 rounded-full bg-sky-200/60 blur-3xl" />
+      <section className="relative mx-auto max-w-4xl">
+        <a href={withBasePath('/membership')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0_#161b35]">
+          <ArrowLeft className="h-4 w-4" />會員免廣告
+        </a>
+
+        <header className="mt-5 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[5px_5px_0_#161b35] sm:mt-6 sm:p-7">
+          <div className="flex items-start justify-between gap-4 sm:items-center">
+            <div className="min-w-0">
+              <p className="flex items-center gap-2 text-[11px] font-black tracking-[.16em] text-violet-700"><Crown className="h-4 w-4 fill-amber-300 text-violet-700" />MEMBER ACCOUNT</p>
+              <h1 id="member-account-title" className="mt-1.5 text-2xl font-black tracking-tight sm:text-4xl">我的會員帳號</h1>
+              <p className="mt-2 max-w-xl text-sm font-bold leading-6 text-slate-600">資格、效期與常用操作都集中在這裡，確認後就能繼續專心查落點。</p>
+            </div>
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35] sm:h-14 sm:w-14 sm:rounded-2xl"><CircleUserRound className="h-5 w-5 sm:h-7 sm:w-7" /></div>
+          </div>
+        </header>
+
+        {state === 'loading' ? (
+          <div role="status" aria-live="polite" aria-busy="true" className="mt-5 rounded-2xl border-2 border-slate-900 bg-white p-8 text-center font-black shadow-[5px_5px_0_#161b35]">正在確認會員資格…</div>
+        ) : state === 'error' ? (
+          <div role="alert" className="mt-5 rounded-2xl border-2 border-rose-700 bg-rose-50 p-6 text-center shadow-[5px_5px_0_#161b35]">
+            <p className="font-black text-rose-800">暫時無法確認帳號狀態</p>
+            <button type="button" onClick={() => { setState('loading'); void refresh().catch(() => setState('error')); }} className="mt-4 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black">重新整理</button>
+          </div>
+        ) : (
+          <>
+          <div className="mt-5 grid gap-5 lg:grid-cols-[1.15fr_.85fr] lg:items-stretch">
+            <article className={`rounded-[2rem] border-2 border-slate-900 p-6 shadow-[6px_6px_0_#161b35] sm:p-7 ${membership.active ? 'bg-emerald-50' : 'bg-white'}`}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 ${membership.active ? 'bg-emerald-300' : 'bg-slate-100'}`}>
+                    {membership.active ? <BadgeCheck className="h-7 w-7" /> : <ShieldCheck className="h-7 w-7 text-slate-500" />}
+                  </div>
+                  <div>
+                    <p className="text-xs font-black tracking-[.16em] text-slate-500">會員資格</p>
+                    <h2 className="mt-1 text-2xl font-black">{membership.active ? '免廣告資格有效' : '尚未啟用免廣告'}</h2>
+                  </div>
+                </div>
+                {membership.active && <span className="rounded-full border border-emerald-300 bg-white px-3 py-1 text-xs font-black text-emerald-700">廣告已關閉</span>}
+              </div>
+
+              {membership.active ? <>
+                <p className="mt-5 text-sm font-bold leading-6 text-slate-700">你正在使用 {planName}，查校、比對與規劃時不會載入 Google 廣告。</p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-emerald-200 bg-white px-4 py-3"><p className="text-xs font-black text-slate-500">目前方案</p><p className="mt-1 text-lg font-black">{planName}</p></div>
+                  <div className="rounded-2xl border border-emerald-200 bg-white px-4 py-3"><p className="text-xs font-black text-slate-500">距離到期</p><p className="mt-1 text-lg font-black">還有 {remainingDays} 天</p><p className="text-xs font-bold text-slate-500">至 {formatDate(membership.expiresAt)}</p></div>
+                </div>
+                <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                  <a href={withBasePath('/')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5"><Home className="h-4 w-4" />開始查落點</a>
+                  <a href={withBasePath('/membership')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-black shadow-[3px_3px_0_#161b35]"><Sparkles className="h-4 w-4 text-indigo-600" />續購或查看方案</a>
+                </div>
+              </> : <>
+                <p className="mt-5 text-sm font-bold leading-6 text-slate-600">登入 LINE 後可確認既有資格；尚未購買時，可直接從方案頁啟用免廣告。</p>
+                <a href={withBasePath('/membership')} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5"><Sparkles className="h-4 w-4" />前往啟用免廣告</a>
+              </>}
+            </article>
+
+            <div>
+            <section className="h-full overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[5px_5px_0_#161b35]">
+              <div className="flex items-center justify-between gap-4 border-b-2 border-slate-900 bg-violet-50 px-5 py-4">
+                <div className="flex items-center gap-3"><div className="grid h-9 w-9 place-items-center rounded-xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35]"><ReceiptText className="h-4 w-4" /></div><div><p className="text-[10px] font-black tracking-[.16em] text-violet-700">PURCHASE HISTORY</p><h2 className="mt-0.5 text-lg font-black">購買紀錄</h2></div></div>
+                <span className="rounded-full border border-violet-200 bg-white px-2.5 py-1 text-[11px] font-black text-violet-700">最多 20 筆</span>
+              </div>
+              {purchases.length ? <div className="space-y-3 bg-slate-50/70 p-3">{purchases.map((purchase) => {
+                const paid = purchase.status === 'paid';
+                const statusLabel = purchase.status === 'paid' ? '已付款' : purchase.status === 'pending' ? '處理中' : purchase.status === 'refunded' ? '已退款' : '未完成';
+                return <div key={`${purchase.reference}-${purchase.createdAt}`} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-base font-black">{purchase.plan === 'yearly' ? '年費會員' : '月費會員'}</p><p className="mt-0.5 text-sm font-black text-indigo-700">NT${purchase.amount}</p></div><span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-black ${paid ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : purchase.status === 'refunded' ? 'border-amber-200 bg-amber-50 text-amber-700' : 'border-slate-200 bg-slate-50 text-slate-600'}`}>{statusLabel}</span></div>
+                  <div className="mt-3 border-t border-dashed border-slate-200 pt-3 text-xs font-bold leading-5 text-slate-500"><p>訂單末碼 <span className="font-black text-slate-700">{purchase.reference}</span></p><p>{paid ? `付款日 ${formatDate(purchase.paidAt)} · 有效至 ${formatDate(purchase.expiresAt)}` : `建立日 ${formatDate(purchase.createdAt)}`}</p></div>
+                </div>;
+              })}</div> : <div className="px-5 py-7 text-center text-sm font-bold text-slate-500">登入 LINE 後，這裡會顯示你的會員購買紀錄。</div>}
+            </section>
+            </div>
+          </div>
+          <aside className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-6 shadow-[6px_6px_0_#161b35] sm:p-7">
+              <p className="text-xs font-black tracking-[.16em] text-slate-500">LINE 身分確認</p>
+              <div className="mt-4 rounded-2xl border border-indigo-100 bg-[#f7f9ff] p-4">
+                <p className="text-sm font-black text-slate-500">登入帳號</p>
+                <p className="mt-1 break-all text-xl font-black">{lineName || '尚未登入 LINE'}</p>
+              </div>
+              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-sm font-medium leading-6 text-slate-600">LINE 僅用於確認與恢復會員資格。登入狀態有效 15 分鐘；登出後，此裝置會立刻恢復一般使用者顯示。</p>
+              </div>
+              <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-2">
+                {lineName ? (
+                  <button type="button" onClick={() => void logout()} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 font-black text-slate-700 transition hover:border-slate-400 hover:bg-white"><LogOut className="h-4 w-4" />登出 LINE</button>
+                ) : (
+                  <button type="button" onClick={loginWithLine} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-400 px-4 py-3 font-black shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-emerald-500 active:translate-y-0 active:shadow-none"><LogIn className="h-4 w-4" />使用 LINE 登入</button>
+                )}
+              </div>
+              {lineName && <div className="mt-5 border-t border-slate-200 pt-4">
+                <p className="text-xs font-black tracking-[.14em] text-rose-700">帳號刪除</p>
+                <p className="mt-1 text-xs font-medium leading-5 text-slate-600">刪除後會移除 LINE 身分連結與此裝置登入狀態；付款交易紀錄會依法保留，但不再與你的 LINE 帳號連結。</p>
+                {membership.active ? (
+                  <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black leading-5 text-amber-800">免廣告資格仍有效，請於到期後再刪除帳號。</p>
+                ) : (
+                  <button type="button" onClick={() => setDeleteDialogOpen(true)} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm font-black text-rose-800 transition hover:border-rose-500 hover:bg-rose-100"><Trash2 className="h-4 w-4" />刪除帳號</button>
+                )}
+              </div>}
+              {accountNotice && <p role="status" aria-live="polite" className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold leading-5 text-indigo-800">{accountNotice}</p>}
+          </aside>
+          </>
+        )}
+      </section>
+      {deleteDialogOpen && <div role="presentation" className="fixed inset-0 z-50 grid place-items-center bg-slate-950/45 p-4">
+        <section role="dialog" aria-modal="true" aria-labelledby="delete-account-title" aria-describedby="delete-account-description" className="w-full max-w-md rounded-[1.75rem] border-2 border-slate-900 bg-white p-6 shadow-[7px_7px_0_#161b35] sm:p-7">
+          <div className="grid h-11 w-11 place-items-center rounded-xl border-2 border-rose-800 bg-rose-100 text-rose-800"><Trash2 className="h-5 w-5" /></div>
+          <h2 id="delete-account-title" className="mt-4 text-2xl font-black">確認刪除帳號？</h2>
+          <p id="delete-account-description" className="mt-2 text-sm font-medium leading-6 text-slate-600">這會移除你的 LINE 身分連結和目前登入狀態。交易紀錄會保留作為必要的付款與帳務資料，但不再與你的 LINE 帳號連結。</p>
+          <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black leading-5 text-amber-800">此操作無法復原；日後如需使用會員服務，需重新登入並重新購買方案。</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <button type="button" onClick={() => setDeleteDialogOpen(false)} disabled={deletingAccount} className="rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-black transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">保留帳號</button>
+            <button type="button" onClick={() => void deleteAccount()} disabled={deletingAccount} className="rounded-xl border-2 border-rose-800 bg-rose-700 px-4 py-3 font-black text-white shadow-[3px_3px_0_#7f1d1d] transition hover:bg-rose-800 disabled:cursor-not-allowed disabled:opacity-50">{deletingAccount ? '正在刪除…' : '確認刪除'}</button>
+          </div>
+        </section>
+      </div>}
+    </main>
+  );
+}

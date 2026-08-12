@@ -1,0 +1,284 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+    font-synthesis: none;
+    background-color: #F8FAFC;
+  }
+
+  :focus-visible {
+    outline: 4px solid #f59e0b;
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    :focus-visible {
+      outline: 3px solid Highlight;
+      outline-offset: 4px;
+    }
+
+    .skip-link {
+      border: 2px solid ButtonText;
+      forced-color-adjust: auto;
+    }
+  }
+
+  @media (prefers-contrast: more) {
+    :focus-visible {
+      outline-width: 5px;
+      outline-offset: 4px;
+    }
+  }
+}
+
+/* Disclaimer page hero: use the same light, welcoming palette as the guide pages. */
+.disclaimer-page > section:first-child {
+  background-color: #fffbeb;
+  color: #0f172a;
+}
+
+.disclaimer-page > section:first-child .text-slate-200 {
+  color: #334155;
+}
+
+.disclaimer-page > section:first-child .text-amber-200 {
+  color: #92400e;
+}
+
+.disclaimer-page > section:first-child [class*="bg-white/10"] {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.disclaimer-page > section:first-child [class*="border-white/30"] {
+  border-color: #0f172a;
+}
+
+.disclaimer-page > section:first-child [class*="rgba(255,255,255"] {
+  box-shadow: 5px 5px 0 0 #0f172a;
+}
+
+/* Keep the full-disclaimer link visually secondary and inside the scrollable modal content. */
+.custom-scrollbar > a[href*="/disclaimer"] {
+  display: none;
+  width: fit-content;
+  margin-left: auto;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid #0f172a;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 2px 2px 0 0 #0f172a;
+  text-decoration: none;
+}
+
+.custom-scrollbar > a[href*="/disclaimer"]:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .skip-link {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 9999;
+    transform: translateY(-150%);
+    border: 2px solid #0f172a;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    color: #0f172a;
+    padding: 0.75rem 1rem;
+    font-weight: 900;
+    box-shadow: 4px 4px 0 0 rgba(15, 23, 42, 1);
+    transition: transform 160ms ease;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+  }
+
+  /* Support centre contact panel: a focused, action-led finish for policy pages. */
+  .support-contact-panel {
+    background:
+      radial-gradient(circle at 92% 12%, rgba(251, 191, 36, 0.42), transparent 23rem),
+      linear-gradient(135deg, #eff6ff 0%, #fefce8 52%, #ffffff 100%);
+    color: #0f172a;
+  }
+
+  .support-contact-orb {
+    position: absolute;
+    right: -4.5rem;
+    bottom: -5.5rem;
+    width: 13rem;
+    height: 13rem;
+    border: 1.4rem solid rgba(37, 99, 235, 0.12);
+    border-radius: 9999px;
+  }
+
+  .support-contact-email,
+  .support-contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 1rem;
+    padding: 0.875rem 1rem;
+    text-decoration: none;
+    transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+  }
+
+  .support-contact-email {
+    background: #ffffff;
+  }
+
+  .support-contact-link {
+    background: rgba(255, 255, 255, 0.82);
+    color: #0f172a;
+  }
+
+  .support-contact-email:hover,
+  .support-contact-link:hover {
+    transform: translateY(-2px);
+    border-color: #fbbf24;
+  }
+
+  .support-contact-link:hover {
+    background: #ffffff;
+  }
+
+  .support-contact-panel .text-white,
+  .support-contact-panel .text-slate-100 {
+    color: #0f172a;
+  }
+
+  .support-contact-panel .text-amber-200 {
+    color: #a16207;
+  }
+
+  .support-contact-panel .bg-white\/10 {
+    border-color: #bfdbfe;
+    background: rgba(255, 255, 255, 0.74);
+  }
+
+  .support-contact-panel .border-white\/20 {
+    border-color: #bfdbfe;
+  }
+
+  .support-contact-panel .border-white\/80 {
+    border-color: #0f172a;
+  }
+
+  .support-contact-panel .shadow-\[3px_3px_0_\#fff\] {
+    box-shadow: 3px 3px 0 #0f172a;
+  }
+
+  .support-contact-link .text-slate-300 {
+    color: #475569;
+  }
+
+  .support-contact-link .text-slate-400 {
+    color: #64748b;
+  }
+
+  .policy-section-anchor {
+    scroll-margin-top: 1.25rem;
+  }
+
+  .policy-page-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-height: 3rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    color: #334155;
+    font-size: 0.875rem;
+    font-weight: 800;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+
+  .policy-page-nav-link > span:first-child {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: #e0e7ff;
+    color: #3730a3;
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+
+  .policy-page-nav-link:hover {
+    transform: translateX(2px);
+    border-color: #6366f1;
+    background: #eef2ff;
+    color: #312e81;
+  }
+
+  /* Keep the shared preference report's summary cards separate from its hero copy. */
+  main:has(.before\:bg-indigo-200) header + section {
+    margin-top: 1.5rem !important;
+  }
+
+  @media (max-width: 639px) {
+    main:has(.before\:bg-indigo-200) header + section {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    main:has(.before\:bg-indigo-200) header + section > article {
+      padding: 0.75rem;
+    }
+
+    main:has(.before\:bg-indigo-200) header + section > article p:last-child {
+      font-size: 0.875rem;
+    }
+  }
+}
