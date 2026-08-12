@@ -21,7 +21,7 @@ VITE_SUPABASE_URL=https://<你的專案>.supabase.co
 VITE_SUPABASE_ANON_KEY=<Supabase publishable／anon key>
 ```
 
-`public/_headers` 會在 Pages 回應中加入 CSP、反嵌入與其他安全標頭；`public/_redirects` 讓 React 的直接網址與重新整理正常回到單頁應用程式。
+`public/_headers` 會在 Pages 回應中加入 CSP、反嵌入與其他安全標頭。Pages 專案請在 Dashboard 啟用 SPA fallback；Workers Builds 已由 `wrangler.jsonc` 的靜態資產設定自動處理單頁路由，不需要 `_redirects`。
 
 ## 上線前同步更新
 
