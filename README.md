@@ -38,3 +38,15 @@ SITE_URL=https://<你的 Pages 網址>
 2. 將隱私權與服務條款網址改為新的 Pages 網址。
 
 ECPay callback 仍維持 Supabase `ecpay-callback` Function；不需放入 Cloudflare Pages。
+
+## Cloudflare Workers Builds 部署
+
+若 Cloudflare 顯示的是 **Workers Builds**（不是 Pages），本專案已包含 `wrangler.jsonc`。設定如下：
+
+| 設定 | 值 |
+| --- | --- |
+| Worker name | `analyze` |
+| Build command | `npm ci && npm run build` |
+| Deploy command | `npx wrangler deploy` |
+
+Worker 會提供 `dist` 靜態資產、處理單頁路由回退，並在 HTTP 回應實際加入 CSP 與反嵌入安全標頭。
