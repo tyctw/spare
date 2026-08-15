@@ -132,4 +132,4 @@ const startAdvertisingAfterInteraction = () => {
 window.addEventListener('pointerdown', startAdvertisingAfterInteraction, { once: true, passive: true });
 window.addEventListener('keydown', startAdvertisingAfterInteraction, { once: true });
 window.addEventListener('touchstart', startAdvertisingAfterInteraction, { once: true, passive: true });
-window.setTimeout(startAdvertising, 7_000);
+window.setTimeout(startAdvertising, 5_000);

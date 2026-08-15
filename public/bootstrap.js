@@ -65,5 +65,5 @@
     Promise.resolve(window.__lineLoginExchangePromise).catch(function () { return false; }).then(startThirdPartyServices);
   }
   window.addEventListener('admission-third-party-ready', startWhenAllowed, { once: true });
-  window.setTimeout(startWhenAllowed, 7000);
+  window.setTimeout(startWhenAllowed, 5000);
 }());
