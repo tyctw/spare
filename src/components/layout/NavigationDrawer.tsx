@@ -352,7 +352,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               : 'custom-scrollbar flex-1 space-y-4 overflow-y-auto p-6'}>
               {mobileCategory ? (
                 <section>
-                  <div className="mb-5 flex items-center gap-3 px-1">
+                  <div className="sticky top-[-1rem] z-10 -mx-4 -mt-4 mb-5 flex items-center gap-3 rounded-t-[2rem] bg-white px-5 py-3 shadow-[0_3px_8px_rgba(15,23,42,0.06)]">
                     <button type="button" onClick={() => setMobileCategory(null)} className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-slate-900 transition hover:bg-slate-300" aria-label="返回主選單">
                       <ChevronRight className="h-6 w-6 rotate-180" />
                     </button>
