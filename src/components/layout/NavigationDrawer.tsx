@@ -481,11 +481,6 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                 })
               )}
 
-              <a href={withBasePath('/support')} className="flex items-center justify-between rounded-[1.5rem] border-2 border-slate-900 bg-rose-400 px-5 py-4 text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] lg:hidden">
-                <span><span className="block text-base font-black">支持免費升學工具</span><span className="mt-0.5 block text-xs font-bold">讓免費升學工具持續陪你前進</span></span>
-                <ArrowRight className="h-5 w-5 shrink-0" />
-              </a>
-
               <div className="flex justify-center gap-4 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                 <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-pink-50 text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all group-hover:scale-110 group-hover:bg-pink-100 group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:scale-95">
@@ -504,7 +499,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
 
             </div>
 
-            <div className="hidden border-t-4 border-slate-900 bg-slate-900 p-3 lg:block"><a href={withBasePath('/support')} className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-400 px-4 py-2 text-xs font-black text-slate-900 shadow-[2px_2px_0_#fbbf24] transition hover:-translate-y-0.5 hover:bg-rose-300 hover:shadow-[3px_3px_0_#fbbf24] active:translate-y-0 active:shadow-none"><Heart className="h-3.5 w-3.5 fill-current" />前往小額支持<ArrowRight className="h-3.5 w-3.5" /></a></div>
+            <div className="shrink-0 border-t-2 border-slate-900 bg-slate-900 p-1.5"><a href={withBasePath('/support')} className="flex items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-rose-400 px-4 py-1.5 text-xs font-black text-slate-900 shadow-[2px_2px_0_#fbbf24] transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-[3px_3px_0_#fbbf24] active:translate-y-0 active:shadow-none"><Heart className="h-3.5 w-3.5 fill-current" />前往小額支持<ArrowRight className="h-3.5 w-3.5" /></a></div>
           </motion.div>
         </>
       )}
