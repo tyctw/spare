@@ -123,9 +123,9 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
             <div className={`bg-indigo-600 border-slate-900 flex items-center justify-center text-white font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all ${isScrolled ? 'w-10 h-10 rounded-xl border-2 text-xl' : 'w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border-2 sm:border-3 text-xl sm:text-2xl'}`}>
               會
             </div>
-            <div className="hidden min-[450px]:flex flex-col">
-              <h1 className={`font-black text-slate-900 tracking-tight leading-none transition-all ${isScrolled ? 'text-lg' : 'text-lg sm:text-xl'}`}>會考落點分析</h1>
-              <span className={`font-bold text-slate-500 mt-1 transition-all ${isScrolled ? 'text-[10px] h-0 opacity-0 overflow-hidden' : 'text-[10px] h-auto opacity-100'}`}>升學選擇的好幫手</span>
+            <div className="flex flex-col">
+              <h1 className={`font-black text-slate-900 tracking-tight leading-none transition-all ${isScrolled ? 'text-base min-[450px]:text-lg' : 'text-base min-[450px]:text-lg sm:text-xl'}`}>會考落點分析</h1>
+              <span className={`mt-1 hidden font-bold text-slate-500 transition-all min-[450px]:block ${isScrolled ? 'h-0 overflow-hidden text-[10px] opacity-0' : 'h-auto text-[10px] opacity-100'}`}>升學選擇的好幫手</span>
             </div>
           </a>
 

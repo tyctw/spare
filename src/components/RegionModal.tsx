@@ -61,7 +61,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-slate-950/55 backdrop-blur-sm" onClick={onClose} />
           <motion.div
             initial={{ scale: 0.96, opacity: 0, y: 18 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.96, opacity: 0, y: 18 }}
-            className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-sky-50 shadow-[10px_10px_0_#0f172a]"
+            className="relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-sky-50 shadow-[5px_5px_0_#0f172a]"
             role="dialog"
             aria-modal="true"
             aria-labelledby="region-modal-title"
