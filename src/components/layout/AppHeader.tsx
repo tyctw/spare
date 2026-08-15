@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Search, Share2, Menu, Compass, Target, CalendarDays, CircleHelp, ArrowRight, X, Instagram } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
 import { menuCategories, type MenuCategory, type MenuItem } from './NavigationDrawer';
+import { categoryOverviewPaths } from '../../lib/categoryOverview';
 
 function ThreadsIcon({ className }: { className?: string }) {
   return (
@@ -81,7 +82,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
     return () => window.removeEventListener('resize', updateNavigationMode);
   }, []);
   const findCategory = (id: string) => menuCategories.find((category) => category.id === id)!;
-  const navigationLinks: Array<{ id: string; label: string; icon: typeof Compass; title: string; description: string; categories: MenuCategory[] }> = [
+  const navigationLinks: Array<{ id: keyof typeof categoryOverviewPaths; label: string; icon: typeof Compass; title: string; description: string; categories: MenuCategory[] }> = [
     { id: 'find', label: '我要查資料', icon: Compass, title: '我要查資料', description: '快速找到適合的學校、科別與升學方向', categories: [findCategory('find')] },
     { id: 'choose', label: '我要選志願', icon: Target, title: '我要選志願', description: '依據成績與目標，安排你的志願順序', categories: [findCategory('choose')] },
     { id: 'plan', label: '我要規劃升學', icon: CalendarDays, title: '我要規劃升學', description: '從興趣探索到重要時程，一次準備好', categories: [findCategory('plan')] },
@@ -136,7 +137,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                 key={id}
                 onMouseEnter={() => { keepMenuOpen(); setActiveMenu(id); }}
                 onFocus={() => { keepMenuOpen(); setActiveMenu(id); }}
-                onClick={() => setActiveMenu(id)}
+                onClick={() => { window.location.href = withBasePath(categoryOverviewPaths[id]); }}
                 aria-haspopup="true"
                 aria-expanded={activeMenu === id}
                 aria-controls="desktop-mega-menu"
@@ -166,6 +167,10 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                         <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
                       </button>
                     ))}
+                    <div className="mt-3 grid w-full grid-cols-2 gap-2">
+                      <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1.5 rounded-lg bg-white/70 px-2 py-2 text-xs font-black text-slate-600 transition hover:bg-white hover:text-pink-600" aria-label="前往 Instagram，新分頁開啟"><Instagram className="h-4 w-4" />Instagram</a>
+                      <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1.5 rounded-lg bg-white/70 px-2 py-2 text-xs font-black text-slate-600 transition hover:bg-white hover:text-slate-900" aria-label="前往 Threads，新分頁開啟"><ThreadsIcon className="h-4 w-4" />Threads</a>
+                    </div>
                     <a href={withBasePath('/support')} className="group mt-3 flex items-center justify-between rounded-xl border-2 border-rose-200 bg-rose-400 px-3 py-3 text-left text-slate-900 transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                       <span>
                         <span className="block text-sm font-black">支持免費升學工具</span>
@@ -173,10 +178,6 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                       </span>
                       <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
                     </a>
-                    <div className="mt-3 grid w-full grid-cols-2 gap-2">
-                      <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1.5 rounded-lg bg-white/70 px-2 py-2 text-xs font-black text-slate-600 transition hover:bg-white hover:text-pink-600" aria-label="前往 Instagram，新分頁開啟"><Instagram className="h-4 w-4" />Instagram</a>
-                      <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1.5 rounded-lg bg-white/70 px-2 py-2 text-xs font-black text-slate-600 transition hover:bg-white hover:text-slate-900" aria-label="前往 Threads，新分頁開啟"><ThreadsIcon className="h-4 w-4" />Threads</a>
-                    </div>
                   </div>
                 </div>
                 <div className="order-1">

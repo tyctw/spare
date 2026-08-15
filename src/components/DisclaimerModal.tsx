@@ -11,7 +11,7 @@ const notices = [
 ];
 
 export default function DisclaimerModal({ isOpen, onClose }: Props) {
-  return <AnimatePresence>{isOpen && <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+  return <AnimatePresence>{isOpen && <div className="fixed inset-0 z-[160] flex items-center justify-center p-4 sm:p-6">
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-slate-950/55 backdrop-blur-sm" />
     <motion.section initial={{ scale: 0.95, opacity: 0, y: 18 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 18 }} transition={{ type: 'spring', damping: 24, stiffness: 280 }} role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title" className="relative flex max-h-[90dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0_#0f172a]">
       <header className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-[#eef3ff] px-5 py-5 sm:px-7 sm:py-6">

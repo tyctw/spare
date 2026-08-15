@@ -11,6 +11,7 @@ import { initializeAdvertising } from './lib/membership.ts';
 const App = lazy(() => import('./App.tsx'));
 const AdvantagesPage = lazy(() => import('./components/AdvantagesPage.tsx'));
 const ChangelogPage = lazy(() => import('./components/ChangelogPage.tsx'));
+const CategoryOverviewPage = lazy(() => import('./components/CategoryOverviewPage.tsx'));
 const DisclaimerPage = lazy(() => import('./components/DisclaimerPage.tsx'));
 const FaqGlossaryPage = lazy(() => import('./components/FaqGlossaryPage.tsx'));
 const FiveYearCollegeRulesPage = lazy(() => import('./components/FiveYearCollegeRulesPage.tsx'));
@@ -77,6 +78,11 @@ const page =
   path === '/terms' ? <LegalPage kind="terms" /> :
   path === '/advantages' ? <AdvantagesPage /> :
   path === '/changelog' ? <ChangelogPage /> :
+  path === '/guide/find' ? <CategoryOverviewPage categoryId="find" /> :
+  path === '/guide/choose' ? <CategoryOverviewPage categoryId="choose" /> :
+  path === '/guide/plan' ? <CategoryOverviewPage categoryId="plan" /> :
+  path === '/guide/member' ? <CategoryOverviewPage categoryId="member" /> :
+  path === '/guide/help' ? <CategoryOverviewPage categoryId="help" /> :
   path === '/disclaimer' ? <DisclaimerPage /> :
   path === '/faq-glossary' ? <FaqGlossaryPage /> :
   path === '/five-year-college-rules' ? <FiveYearCollegeRulesPage /> :
