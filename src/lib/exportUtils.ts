@@ -233,13 +233,13 @@ export const exportExcel = async (data: any, regionName: string) => {
   );
 };
 
-export const printResults = (data: any, regionName: string) => {
+export const printResults = (data: any, regionName: string, existingWindow?: Window) => {
   // `data` may contain values from shared reports and database records. Escape
   // every string before it is interpolated into the popup HTML below.
   data = escapePrintData(data) as typeof data;
   regionName = escapeHtml(regionName);
 
-  const printWindow = window.open('', '_blank');
+  const printWindow = existingWindow || window.open('', '_blank');
   if (!printWindow) {
     alert('無法開啟列印視窗，請檢查是否被瀏覽器阻擋。');
     return;
@@ -954,7 +954,7 @@ export const printResults = (data: any, regionName: string) => {
       </style>
     </head>
     <body>
-      <button class="btn-print" onclick="window.print()">
+      <button class="btn-print" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
         列印分析報告
       </button>
@@ -1030,14 +1030,6 @@ export const printResults = (data: any, regionName: string) => {
         </div>
         </div>
       </div>
-      
-      <script>
-        window.onload = function() {
-          setTimeout(function() {
-             window.print();
-          }, 500);
-        }
-      </script>
     </body>
     </html>
   `;
@@ -1045,6 +1037,17 @@ export const printResults = (data: any, regionName: string) => {
   printWindow.document.open();
   printWindow.document.write(html);
   printWindow.document.close();
+
+  const print = () => {
+    if (!printWindow.closed) {
+      printWindow.focus();
+      printWindow.print();
+    }
+  };
+  printWindow.document.querySelector<HTMLButtonElement>('.btn-print')?.addEventListener('click', print);
+  // Allow the document and its QR image a moment to paint before opening the
+  // native dialog, without relying on CSP-blocked inline popup scripts.
+  window.setTimeout(print, 500);
 };
 
 export const printSchoolTypes = () => {

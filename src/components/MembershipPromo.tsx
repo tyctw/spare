@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Crown, KeyRound, Sparkles } from 'lucide-react';
-import { getMembershipStatus, MEMBERSHIP_STATUS_EVENT, type MembershipStatus } from '../lib/membership';
+import { MEMBERSHIP_STATUS_EVENT, type MembershipStatus } from '../lib/membership';
 import { withBasePath } from '../lib/routes';
 
 export default function MembershipPromo() {
@@ -16,7 +16,6 @@ export default function MembershipPromo() {
     };
 
     window.addEventListener(MEMBERSHIP_STATUS_EVENT, handleMembershipStatus);
-    void getMembershipStatus().then(applyStatus).catch(() => undefined);
     return () => {
       isMounted = false;
       window.removeEventListener(MEMBERSHIP_STATUS_EVENT, handleMembershipStatus);

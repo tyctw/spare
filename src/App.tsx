@@ -16,10 +16,10 @@ import RegionModal, { ALL_REGIONS } from './components/RegionModal';
 import RegionScoringModal, { REGION_SCORING_DATA } from './components/RegionScoringModal';
 // Layout Components
 import AppHeader from './components/layout/AppHeader';
+import NavigationDrawer from './components/layout/NavigationDrawer';
 import Footer from './components/layout/Footer';
 import HeroBanner from './components/layout/HeroBanner';
 import MembershipPromo from './components/MembershipPromo';
-import NavigationDrawer from './components/layout/NavigationDrawer';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 import { withBasePath } from './lib/routes';
 
@@ -271,10 +271,21 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     };
 
     window.addEventListener(MEMBERSHIP_STATUS_EVENT, handleMembershipStatus);
-    void getMembershipStatus().then(applyMembershipStatus).catch(() => applyMembershipStatus({ active: false }));
+
+    // Membership is rechecked immediately before a protected action. Defer the
+    // passive homepage check so a slow network cannot compete with the LCP.
+    const checkMembership = () => {
+      void getMembershipStatus().then(applyMembershipStatus).catch(() => applyMembershipStatus({ active: false }));
+    };
+    const idleCallback = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(checkMembership, { timeout: 4_000 })
+      : null;
+    const timeout = idleCallback === null ? window.setTimeout(checkMembership, 3_000) : null;
     return () => {
       isCurrent = false;
       window.removeEventListener(MEMBERSHIP_STATUS_EVENT, handleMembershipStatus);
+      if (idleCallback !== null) window.cancelIdleCallback(idleCallback);
+      if (timeout !== null) window.clearTimeout(timeout);
     };
   }, []);
 
@@ -445,14 +456,33 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     if (!results) return;
     const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未選擇';
     const payload = { scores: formData, results, identity: formData.identity, vocationalGroups };
+
+    // A popup must be created in this click event. Waiting for the export
+    // module first causes modern browsers to treat it as an unsolicited popup.
+    const printWindow = type === 'print' ? window.open('', '_blank') : null;
+    if (type === 'print' && !printWindow) {
+      alert('無法開啟列印視窗，請檢查是否被瀏覽器阻擋。');
+      return;
+    }
+    if (printWindow) {
+      printWindow.document.write('<!doctype html><title>正在準備列印報告</title><p style="font-family:system-ui;padding:2rem">正在準備列印報告…</p>');
+      printWindow.document.close();
+    }
+
     // Spreadsheet generation is an occasional action; defer its dependency
     // until the visitor actually chooses an export format.
-    const { exportTxt, exportExcel, exportJson, printResults } = await import('./lib/exportUtils');
-    switch (type) {
-      case 'txt': exportTxt(payload, regionName); break;
-      case 'excel': await exportExcel(payload, regionName); break;
-      case 'json': exportJson(payload); break;
-      case 'print': printResults(payload, regionName); break;
+    try {
+      const { exportTxt, exportExcel, exportJson, printResults } = await import('./lib/exportUtils');
+      switch (type) {
+        case 'txt': exportTxt(payload, regionName); break;
+        case 'excel': await exportExcel(payload, regionName); break;
+        case 'json': exportJson(payload); break;
+        case 'print': printResults(payload, regionName, printWindow!); break;
+      }
+    } catch (error) {
+      if (printWindow && !printWindow.closed) printWindow.close();
+      console.error('Export failed:', error);
+      alert('匯出報告時發生錯誤，請稍後再試。');
     }
   };
 
@@ -467,8 +497,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       <AppHeader 
         isScrolled={isScrolled} 
         onShareClick={() => setActiveModal('sharePlatform')} 
-        onMenuClick={() => setIsNavMenuOpen(true)} 
-        isMenuOpen={isNavMenuOpen}
+        onMenuClick={() => setIsNavMenuOpen(true)}
+        setActiveModal={setActiveModal}
       />
 
       <main id="main-content" aria-label="主要內容" className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">

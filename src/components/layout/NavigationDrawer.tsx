@@ -21,7 +21,6 @@ import {
   Instagram,
   Link as LinkIcon,
   Map,
-  Menu,
   Megaphone,
   ListOrdered,
   Route,
@@ -45,12 +44,12 @@ function ThreadsIcon({ className }: { className?: string }) {
   );
 }
 
-type MenuAction =
+export type MenuAction =
   | { type: 'route'; href: string }
   | { type: 'modal'; id: string }
   | { type: 'external'; href: string };
 
-interface MenuItem {
+export interface MenuItem {
   id: string;
   label: string;
   description: string;
@@ -61,7 +60,7 @@ interface MenuItem {
   action: MenuAction;
 }
 
-interface MenuCategory {
+export interface MenuCategory {
   id: string;
   label: string;
   description: string;
@@ -78,7 +77,7 @@ interface NavigationDrawerProps {
   setActiveModal: (modal: any) => void;
 }
 
-const menuCategories: MenuCategory[] = [
+export const menuCategories: MenuCategory[] = [
   {
     id: 'find',
     label: '我要查資料',
@@ -188,23 +187,15 @@ const menuCategories: MenuCategory[] = [
   },
 ];
 
-const quickActionRecommendation = (() => {
-  const month = new Date().getMonth() + 1;
-
-  if (month <= 3) return { label: '準備期', ids: ['home', 'search', 'importantDates', 'instructions'] };
-  if (month <= 5) return { label: '考前準備', ids: ['importantDates', 'instructions', 'holland', 'schoolTypes'] };
-  if (month <= 7) return { label: '成績與選填', ids: ['scoreInquiry', 'home', 'mockVolunteer', 'strategy'] };
-  if (month <= 8) return { label: '放榜與報到', ids: ['importantDates', 'schoolTypes', 'vocational', 'holland'] };
-  return { label: '探索規劃', ids: ['holland', 'vocational', 'schoolTypes', 'search'] };
-})();
-
-const quickActions = quickActionRecommendation.ids
-  .map((id) => menuCategories.flatMap((category) => category.items).find((item) => item.id === id))
-  .filter(Boolean) as MenuItem[];
+const isCompactNavigationViewport = () => typeof window !== 'undefined' && (
+  window.innerWidth < 1024 || window.matchMedia('(hover: none), (pointer: coarse)').matches
+);
 
 export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerProps) {
   const [expandedCategory, setExpandedCategory] = useState('choose');
+  const [mobileCategory, setMobileCategory] = useState<MenuCategory | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isCompactNavigation, setIsCompactNavigation] = useState(isCompactNavigationViewport);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -227,6 +218,21 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
       triggerRef.current?.focus();
     };
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen) setMobileCategory(null);
+  }, [isOpen]);
+
+  useEffect(() => {
+    const updateNavigationMode = () => setIsCompactNavigation(isCompactNavigationViewport());
+    updateNavigationMode();
+    window.addEventListener('resize', updateNavigationMode);
+    return () => window.removeEventListener('resize', updateNavigationMode);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && !isCompactNavigation) onClose();
+  }, [isCompactNavigation, isOpen, onClose]);
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
   const filteredCategories = useMemo(() => {
@@ -274,6 +280,9 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
     }
   };
 
+  // 桌機只使用頁首懸浮導覽；漢堡選單不在桌機渲染，避免兩套選單重疊。
+  if (!isCompactNavigation) return null;
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -282,15 +291,16 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.1, ease: 'easeOut' }}
             onClick={onClose}
             aria-hidden="true"
             className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm"
           />
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.14, ease: 'easeOut' }}
             id="main-navigation-drawer"
             role="dialog"
             aria-modal="true"
@@ -298,77 +308,75 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
             aria-describedby="main-navigation-description"
             ref={drawerRef}
             onKeyDown={handleDrawerKeyDown}
-            className="fixed right-0 top-0 z-[110] flex h-full w-[380px] max-w-full flex-col overflow-hidden border-l-4 border-slate-900 bg-slate-50 shadow-[-8px_0px_0px_0px_rgba(15,23,42,0.1)]"
+            className={isCompactNavigation
+              ? 'fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col overflow-hidden bg-slate-900'
+              : `fixed left-1/2 top-3 z-[110] flex max-h-[calc(100vh-1.5rem)] ${mobileCategory ? 'w-[min(94vw,760px)]' : 'w-[min(94vw,960px)]'} -translate-x-1/2 flex-col overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-slate-50 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:top-5 sm:max-h-[calc(100vh-2.5rem)]`}
           >
-            <div className="shrink-0 border-b-4 border-slate-900 bg-amber-400 p-5">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <Menu className="h-6 w-6 text-slate-900" />
-                  <h2 id="main-navigation-title" className="text-2xl font-black tracking-tight text-slate-900">主選單</h2>
-                </div>
-                <button
-                  ref={closeButtonRef}
-                  type="button"
-                  onClick={onClose}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl border-4 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-slate-100 active:translate-y-1 active:shadow-none"
-                  aria-label="關閉主選單"
-                >
-                  <X className="h-6 w-6 text-slate-900" />
-                </button>
-              </div>
-              <p id="main-navigation-description" className="sr-only">可使用搜尋、分類與常用捷徑找到網站功能；按 Escape 可關閉選單。</p>
-              <label className="relative mt-4 block">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <input
-                  value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                  aria-label="搜尋主選單項目"
-                  placeholder="想找學校、選志願、查日程..."
-                  className="h-12 w-full rounded-xl border-4 border-slate-900 bg-white pl-11 pr-12 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-sky-50"
-                />
-                {searchTerm && (
+            <div className={isCompactNavigation ? 'flex shrink-0 items-center gap-3 bg-slate-900 px-3 py-4' : 'flex shrink-0 justify-end px-4 pt-4 pb-0'}>
+              <h2 id="main-navigation-title" className="sr-only">主選單</h2>
+              {isCompactNavigation && (
+                <div className="flex min-w-0 flex-1 items-center justify-between rounded-[1.8rem] bg-white px-5 py-3 text-slate-900">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-indigo-600 text-sm font-black text-white">會</span>
+                    <span className="truncate text-base font-black">會考落點分析</span>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => setSearchTerm('')}
-                    className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg border-2 border-slate-900 bg-slate-100 transition hover:bg-white"
-                    aria-label="清除搜尋"
+                    onClick={() => {
+                      window.dispatchEvent(new Event('open-site-search'));
+                      onClose();
+                    }}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition hover:bg-slate-100"
+                    aria-label="搜尋全站功能"
                   >
-                    <X className="h-4 w-4" />
+                    <Search className="h-6 w-6" />
                   </button>
-                )}
-              </label>
+                </div>
+              )}
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={onClose}
+                className={isCompactNavigation
+                  ? 'flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.6rem] border-2 border-blue-700 bg-blue-600 text-white transition hover:bg-blue-500 active:scale-95'
+                  : 'flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 transition hover:bg-slate-100 active:scale-95'}
+                aria-label="關閉主選單"
+              >
+                <X className={isCompactNavigation ? 'h-8 w-8' : 'h-6 w-6'} />
+              </button>
+              <p id="main-navigation-description" className="sr-only">可使用搜尋、分類與常用捷徑找到網站功能；按 Escape 可關閉選單。</p>
             </div>
 
-            <div className="custom-scrollbar flex-1 space-y-4 overflow-y-auto p-6">
-              {!normalizedSearch && (
-                <section aria-labelledby="quick-actions-title" className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <h3 id="quick-actions-title" className="text-sm font-black text-slate-500">常用捷徑</h3>
-                    <span className="rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-black text-slate-500">{quickActionRecommendation.label}</span>
+            <div className={isCompactNavigation
+              ? 'custom-scrollbar flex-1 space-y-3 overflow-y-auto rounded-t-[2rem] bg-white p-4'
+              : 'custom-scrollbar flex-1 space-y-4 overflow-y-auto p-6'}>
+              {mobileCategory ? (
+                <section>
+                  <div className="mb-5 flex items-center gap-3 px-1">
+                    <button type="button" onClick={() => setMobileCategory(null)} className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-slate-900 transition hover:bg-slate-300" aria-label="返回主選單">
+                      <ChevronRight className="h-6 w-6 rotate-180" />
+                    </button>
+                    <div>
+                      <p className="text-xs font-black text-slate-500">{mobileCategory.description}</p>
+                      <h3 className="text-2xl font-black text-slate-900">{mobileCategory.label}</h3>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {quickActions.map((item) => {
+                  <div className="space-y-3">
+                    {mobileCategory.items.map((item) => {
                       const ItemIcon = item.icon;
-
                       return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => runAction(item.action)}
-                          className="group flex min-h-[92px] flex-col items-start justify-between rounded-xl border-2 border-slate-900 bg-slate-50 p-3 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-white active:translate-y-0 active:shadow-none"
-                        >
-                          <span className={`rounded-lg border-2 border-slate-900 p-1.5 ${item.bg}`}>
-                            <ItemIcon className={`h-4 w-4 ${item.color}`} />
+                        <button key={item.id} type="button" onClick={() => runAction(item.action)} className="flex w-full items-center justify-between rounded-[1.7rem] bg-slate-100 px-5 py-5 text-left transition hover:bg-slate-200">
+                          <span className="flex min-w-0 items-center gap-4">
+                            <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white ${item.color}`}><ItemIcon className="h-5 w-5" /></span>
+                            <span className="min-w-0"><span className="block text-lg font-black text-slate-900">{item.label}</span><span className="mt-1 block text-sm font-bold leading-snug text-slate-600">{item.description}</span></span>
                           </span>
-                          <span className="mt-2 text-sm font-black leading-tight text-slate-900">{item.label}</span>
+                          <ChevronRight className="ml-3 h-5 w-5 shrink-0 text-slate-400" />
                         </button>
                       );
                     })}
                   </div>
                 </section>
-              )}
-
-              {filteredCategories.length === 0 ? (
+              ) : filteredCategories.length === 0 ? (
                 <div className="rounded-2xl border-4 border-dashed border-slate-300 bg-white p-8 text-center">
                   <Search className="mx-auto h-10 w-10 text-slate-300" />
                   <div className="mt-3 text-lg font-black text-slate-900">找不到符合的功能</div>
@@ -382,30 +390,47 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                 </div>
               ) : (
                 filteredCategories.map((category) => {
-                  const isExpanded = Boolean(normalizedSearch) || expandedCategory === category.id;
+                  const isMobileViewport = isCompactNavigation;
+                  const isExpanded = Boolean(normalizedSearch) || (!isMobileViewport && expandedCategory === category.id);
                   const CategoryIcon = category.icon;
 
                   return (
-                    <div key={category.id} className={`overflow-hidden rounded-2xl border-4 border-slate-900 ${category.bg} shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]`}>
+                    <div
+                      key={category.id}
+                      className={isMobileViewport
+                        ? 'overflow-hidden rounded-[1.8rem] border-0 bg-slate-100 shadow-none'
+                        : `overflow-hidden rounded-2xl border-4 border-slate-900 ${category.bg} shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]`}
+                    >
                       <button
                         type="button"
-                        onClick={() => setExpandedCategory((current) => (current === category.id ? '' : category.id))}
+                        onClick={() => {
+                          if (isCompactNavigation) {
+                            setMobileCategory(category);
+                            return;
+                          }
+                          setExpandedCategory((current) => (current === category.id ? '' : category.id));
+                        }}
                         aria-expanded={isExpanded}
                         aria-controls={`nav-category-${category.id}`}
-                        className={`flex w-full items-center justify-between border-l-8 p-4 ${category.bg} ${category.accent} outline-none transition-colors hover:bg-opacity-80`}
+                        className={isMobileViewport
+                          ? 'flex min-h-[104px] w-full items-center justify-between bg-slate-100 px-7 py-4 text-left outline-none transition-colors hover:bg-slate-200'
+                          : `flex min-h-0 w-full items-center justify-between border-l-8 p-4 ${category.bg} ${category.accent} outline-none transition-colors hover:bg-opacity-80`}
                       >
-                        <div className="flex min-w-0 items-center gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                        <div className={`flex min-w-0 items-center ${isMobileViewport ? 'gap-0' : 'gap-3'}`}>
+                          <div className={`${isMobileViewport ? 'hidden' : 'flex'} h-10 w-10 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]`}>
                             <CategoryIcon className={`h-5 w-5 ${category.color}`} />
                           </div>
-                          <span className="min-w-0">
-                            <span className="block truncate text-lg font-black text-slate-900">{category.label}</span>
-                            <span className="block truncate text-xs font-bold text-slate-500">{category.description}</span>
+                          <span className="min-w-0 text-left">
+                            <span className={`block font-black text-slate-900 ${isMobileViewport ? 'text-xl' : 'truncate text-lg'}`}>{category.label}</span>
+                            <span className={`mt-1 block font-bold text-slate-500 ${isMobileViewport ? 'line-clamp-1 text-sm' : 'truncate text-xs'}`}>{category.description}</span>
                           </span>
                         </div>
-                        <div className="flex shrink-0 items-center gap-2">
+                        <div className={`${isMobileViewport ? 'hidden' : 'flex'} shrink-0 items-center gap-2`}>
                           <span className="rounded-lg border border-slate-200 bg-white/80 px-2 py-1 text-[11px] font-black text-slate-500">{category.items.length}</span>
                           <ChevronDown className={`h-5 w-5 text-slate-900 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                        </div>
+                        <div className={`${isMobileViewport ? 'flex' : 'hidden'} h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white/80 bg-white/70 shadow-sm ${category.color}`}>
+                          <CategoryIcon className="h-8 w-8" />
                         </div>
                       </button>
                       <AnimatePresence>
@@ -456,6 +481,11 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                 })
               )}
 
+              <a href={withBasePath('/support')} className="flex items-center justify-between rounded-[1.5rem] border-2 border-slate-900 bg-rose-400 px-5 py-4 text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] lg:hidden">
+                <span><span className="block text-base font-black">支持免費升學工具</span><span className="mt-0.5 block text-xs font-bold">讓免費升學工具持續陪你前進</span></span>
+                <ArrowRight className="h-5 w-5 shrink-0" />
+              </a>
+
               <div className="flex justify-center gap-4 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                 <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-pink-50 text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all group-hover:scale-110 group-hover:bg-pink-100 group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:scale-95">
@@ -473,7 +503,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               </div>
             </div>
 
-            <div className="border-t-4 border-slate-900 bg-slate-900 p-3"><a href={withBasePath('/support')} className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-400 px-4 py-2 text-xs font-black text-slate-900 shadow-[2px_2px_0_#fbbf24] transition hover:-translate-y-0.5 hover:bg-rose-300 hover:shadow-[3px_3px_0_#fbbf24] active:translate-y-0 active:shadow-none"><Heart className="h-3.5 w-3.5 fill-current" />前往小額支持<ArrowRight className="h-3.5 w-3.5" /></a></div>
+            <div className="hidden border-t-4 border-slate-900 bg-slate-900 p-3 lg:block"><a href={withBasePath('/support')} className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-400 px-4 py-2 text-xs font-black text-slate-900 shadow-[2px_2px_0_#fbbf24] transition hover:-translate-y-0.5 hover:bg-rose-300 hover:shadow-[3px_3px_0_#fbbf24] active:translate-y-0 active:shadow-none"><Heart className="h-3.5 w-3.5 fill-current" />前往小額支持<ArrowRight className="h-3.5 w-3.5" /></a></div>
           </motion.div>
         </>
       )}

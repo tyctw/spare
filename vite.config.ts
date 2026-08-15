@@ -10,7 +10,10 @@ import {defineConfig, loadEnv} from 'vite';
 const seoRoutes = [
   'advantages',
   'disclaimer',
+  'five-year-college-rules',
   'grade-level',
+  'grade-11-pathways',
+  'general-comprehensive-high-school',
   'faq-glossary',
   'historical-stats',
   'important-dates',
@@ -19,6 +22,13 @@ const seoRoutes = [
   'search',
   'holland',
   'school-types',
+  'scoring-rules/taipei',
+  'scoring-rules/taoyuan',
+  'scoring-rules/hsinchu',
+  'scoring-rules/central',
+  'scoring-rules/changhua',
+  'scoring-rules/tainan',
+  'scoring-rules/kaohsiung',
   'strategy',
   'support',
   'support/failed',
@@ -60,9 +70,7 @@ export default defineConfig(({mode}) => {
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
-    // GitHub Pages serves this project below /spare/. Cloudflare Pages serves
-    // it from the domain root, so set VITE_BASE_PATH=/ in its build settings.
-    base: env.VITE_BASE_PATH || '/spare/',
+    base: '/spare/',
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

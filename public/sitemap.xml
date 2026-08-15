@@ -11,7 +11,10 @@
     </image:image>
   </url>
   <url><loc>https://tyctw.github.io/spare/advantages</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://tyctw.github.io/spare/five-year-college-rules</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/grade-level</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/grade-11-pathways</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/general-comprehensive-high-school</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/faq-glossary</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/historical-stats</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/important-dates</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
@@ -20,6 +23,13 @@
   <url><loc>https://tyctw.github.io/spare/search</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/holland</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tyctw.github.io/spare/school-types</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/taipei</loc><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/taoyuan</loc><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/hsinchu</loc><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/central</loc><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/changhua</loc><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/tainan</loc><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/kaohsiung</loc><changefreq>yearly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tyctw.github.io/spare/strategy</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tyctw.github.io/spare/vocational-encyclopedia</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/site-map</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>

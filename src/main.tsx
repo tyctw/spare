@@ -113,12 +113,23 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode><AccessibilityEnhancements /><AppErrorBoundary><Suspense fallback={<PageLoading />}>{page}{showRelatedReading && <RelatedReading path={path} />}</Suspense></AppErrorBoundary></StrictMode>,
 );
 
-// Do not compete with the homepage's first paint and form hydration. The
-// verified membership check still runs shortly afterwards, before any ad is
-// eligible to load.
-const startAdvertisingWhenIdle = () => void initializeAdvertising();
-if ('requestIdleCallback' in window) {
-  window.requestIdleCallback(startAdvertisingWhenIdle, { timeout: 1_200 });
-} else {
-  window.setTimeout(startAdvertisingWhenIdle, 250);
-}
+// Advertising and analytics can create long tasks on low-end phones. Keep
+// them out of the critical rendering window; a member check still occurs when
+// the user starts analysis, and services also begin after the page is settled.
+let advertisingStarted = false;
+const startAdvertising = () => {
+  if (advertisingStarted) return;
+  advertisingStarted = true;
+  window.dispatchEvent(new Event('admission-third-party-ready'));
+  void initializeAdvertising();
+};
+const startAdvertisingAfterInteraction = () => {
+  startAdvertising();
+  window.removeEventListener('pointerdown', startAdvertisingAfterInteraction);
+  window.removeEventListener('keydown', startAdvertisingAfterInteraction);
+  window.removeEventListener('touchstart', startAdvertisingAfterInteraction);
+};
+window.addEventListener('pointerdown', startAdvertisingAfterInteraction, { once: true, passive: true });
+window.addEventListener('keydown', startAdvertisingAfterInteraction, { once: true });
+window.addEventListener('touchstart', startAdvertisingAfterInteraction, { once: true, passive: true });
+window.setTimeout(startAdvertising, 7_000);

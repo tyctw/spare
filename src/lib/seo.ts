@@ -19,9 +19,21 @@ const pageMetadata: Record<string, PageMeta> = {
     title: '關於我們｜全國會考落點分析',
     description: '認識全國會考落點分析如何整理升學資訊，協助國中生與家長規劃高中職、五專志願。',
   },
+  '/five-year-college-rules': {
+    title: '五專優先免試計分規則｜全國會考落點分析',
+    description: '了解五專優先免試入學的積分項目、志願序與同分比序規則，協助規劃適合自己的升學選擇。',
+  },
   '/grade-level': {
     title: '會考等級對照表｜答對題數與積分說明',
     description: '查詢國中教育會考各科等級、標示與答對題數對照，快速了解會考成績的判讀方式。',
+  },
+  '/grade-11-pathways': {
+    title: '高二班群怎麼選？｜全國會考落點分析',
+    description: '認識高二班群、自然與社會取向、數學 A／B 及 18 學群，規劃自己的高中學習路徑。',
+  },
+  '/general-comprehensive-high-school': {
+    title: '普通科與綜合高中怎麼選？｜全國會考落點分析',
+    description: '比較普通科與綜合高中的課程與探索方向，協助學生選擇適合自己的高中學程。',
   },
   '/faq-glossary': {
     title: '會考常見問答與名詞百科｜全國會考落點分析',

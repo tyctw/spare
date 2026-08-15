@@ -56,5 +56,14 @@
 
   // A LINE callback may contain a one-time exchange code. Wait until the
   // guard has removed and exchanged it before loading any third-party script.
-  Promise.resolve(window.__lineLoginExchangePromise).catch(function () { return false; }).then(startThirdPartyServices);
+  // Third-party tags are intentionally outside the first-render window so
+  // they cannot delay the homepage's content or interaction readiness.
+  var servicesStarted = false;
+  function startWhenAllowed() {
+    if (servicesStarted) return;
+    servicesStarted = true;
+    Promise.resolve(window.__lineLoginExchangePromise).catch(function () { return false; }).then(startThirdPartyServices);
+  }
+  window.addEventListener('admission-third-party-ready', startWhenAllowed, { once: true });
+  window.setTimeout(startWhenAllowed, 7000);
 }());
