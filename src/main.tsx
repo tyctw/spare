@@ -119,9 +119,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode><AccessibilityEnhancements /><AppErrorBoundary><Suspense fallback={<PageLoading />}>{page}{showRelatedReading && <RelatedReading path={path} />}</Suspense></AppErrorBoundary></StrictMode>,
 );
 
-// Advertising and analytics can create long tasks on low-end phones. Keep
-// them out of the critical rendering window; a member check still occurs when
-// the user starts analysis, and services also begin after the page is settled.
+// The homepage is the heaviest first view, so advertising waits for interaction
+// or a short fallback there. Other pages can begin their normal ad check now.
 let advertisingStarted = false;
 const startAdvertising = () => {
   if (advertisingStarted) return;
@@ -135,7 +134,11 @@ const startAdvertisingAfterInteraction = () => {
   window.removeEventListener('keydown', startAdvertisingAfterInteraction);
   window.removeEventListener('touchstart', startAdvertisingAfterInteraction);
 };
-window.addEventListener('pointerdown', startAdvertisingAfterInteraction, { once: true, passive: true });
-window.addEventListener('keydown', startAdvertisingAfterInteraction, { once: true });
-window.addEventListener('touchstart', startAdvertisingAfterInteraction, { once: true, passive: true });
-window.setTimeout(startAdvertising, 5_000);
+if (path === '/') {
+  window.addEventListener('pointerdown', startAdvertisingAfterInteraction, { once: true, passive: true });
+  window.addEventListener('keydown', startAdvertisingAfterInteraction, { once: true });
+  window.addEventListener('touchstart', startAdvertisingAfterInteraction, { once: true, passive: true });
+  window.setTimeout(startAdvertising, 5_000);
+} else {
+  startAdvertising();
+}
