@@ -24,6 +24,7 @@ const ImportantDatesPage = lazy(() => import('./components/ImportantDatesPage.ts
 const InstructionsPage = lazy(() => import('./components/InstructionsPage.tsx'));
 const LegalPage = lazy(() => import('./components/LegalPage.tsx'));
 const LatestNewsPage = lazy(() => import('./components/LatestNewsPage.tsx'));
+const NewsArticlePage = lazy(() => import('./components/NewsArticlePage.tsx'));
 const MockVolunteerPage = lazy(() => import('./components/MockVolunteerPage.tsx'));
 const SearchPage = lazy(() => import('./components/SearchPage.tsx'));
 const ResultsPage = lazy(() => import('./components/ResultsPage.tsx'));
@@ -69,6 +70,7 @@ const path = isAcademicGroupRoute ? '/general-comprehensive-high-school' : rawPa
 if (isAcademicGroupRoute) window.history.replaceState(null, '', withBasePath('/general-comprehensive-high-school'));
 const sharedReportToken = path.match(/^\/shared\/([0-9a-f-]+)$/i)?.[1];
 const scoringRulesRegionId = path.match(/^\/scoring-rules\/([a-z-]+)$/)?.[1];
+const newsArticleId = path.match(/^\/news\/(\d+)$/)?.[1];
 const redirectedRoute = new URLSearchParams(window.location.search).get('route');
 if (redirectedRoute) window.history.replaceState(null, '', withBasePath(path));
 applyPageSeo(path);
@@ -98,6 +100,7 @@ const page =
   path === '/site-map' ? <SiteMapPage /> :
   path === '/instructions' ? <InstructionsPage /> :
   path === '/news' ? <LatestNewsPage /> :
+  newsArticleId ? <NewsArticlePage articleId={newsArticleId} /> :
   path === '/holland' ? <HollandPage /> :
   path === '/school-types' ? <SchoolTypesPage /> :
   path === '/strategy' ? <StrategyPage /> :

@@ -1,4 +1,5 @@
 import { appBasePath } from './routes';
+import { getNewsArticle } from './news';
 
 const siteUrl = 'https://tyctw.github.io/spare';
 const siteName = '全國會考落點分析';
@@ -26,6 +27,26 @@ const pageMetadata: Record<string, PageMeta> = {
   '/grade-level': {
     title: '會考等級對照表｜答對題數與積分說明',
     description: '查詢國中教育會考各科等級、標示與答對題數對照，快速了解會考成績的判讀方式。',
+  },
+  '/guide/find': {
+    title: '我要查資料｜學校、科別與升學資訊｜全國會考落點分析',
+    description: '從學校、科別、群科、學制與歷年資料開始，整理會考升學規劃所需的資訊。',
+  },
+  '/guide/choose': {
+    title: '我要選志願｜會考志願選填工具說明｜全國會考落點分析',
+    description: '依成績、興趣與志願順序整理選填方向，使用落點分析與模擬志願序完成規劃。',
+  },
+  '/guide/plan': {
+    title: '我要規劃升學｜探索興趣與升學時程｜全國會考落點分析',
+    description: '整合興趣探索、學校類型、重要時程與升學方向，協助學生安排下一步。',
+  },
+  '/guide/member': {
+    title: '會員與資源｜會員方案與升學工具｜全國會考落點分析',
+    description: '查看會員資格、免廣告方案與延伸升學資源，持續完成個人升學規劃。',
+  },
+  '/guide/help': {
+    title: '使用協助｜會考落點分析操作說明｜全國會考落點分析',
+    description: '查找功能使用說明、常見問題、平台規範與更新資訊，快速取得操作協助。',
   },
   '/grade-11-pathways': {
     title: '高二班群怎麼選？｜全國會考落點分析',
@@ -126,7 +147,11 @@ const setMetaContent = (selector: string, content: string) => {
 };
 
 export const applyPageSeo = (path: string) => {
-  const metadata = path.startsWith('/scoring-rules/')
+  const newsArticleId = path.match(/^\/news\/(\d+)$/)?.[1];
+  const newsArticle = getNewsArticle(newsArticleId);
+  const metadata = newsArticle
+    ? { title: `${newsArticle.title}｜全國會考落點分析`, description: newsArticle.summary }
+    : path.startsWith('/scoring-rules/')
     ? { title: '各就學區超額比序計分規則｜全國會考落點分析', description: '整理各就學區免試入學超額比序項目、會考換算與官方簡章入口；正式規則以當學年度公告為準。' }
     : pageMetadata[path] || pageMetadata['/'];
   const pageUrl = path === '/' ? `${siteUrl}/` : `${siteUrl}${path}`;
@@ -146,6 +171,15 @@ export const applyPageSeo = (path: string) => {
 
   const canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (canonical) canonical.href = canonicalUrl;
+
+  document.getElementById('news-article-structured-data')?.remove();
+  if (newsArticle) {
+    const structuredData = document.createElement('script');
+    structuredData.id = 'news-article-structured-data';
+    structuredData.type = 'application/ld+json';
+    structuredData.text = JSON.stringify({ '@context': 'https://schema.org', '@type': 'NewsArticle', headline: newsArticle.title, description: newsArticle.summary, datePublished: newsArticle.publishedAt, dateModified: newsArticle.publishedAt, mainEntityOfPage: canonicalUrl, publisher: { '@type': 'Organization', name: siteName, url: siteUrl } });
+    document.head.appendChild(structuredData);
+  }
 
   // The app lives below /spare/ on GitHub Pages. This keeps future deployments
   // from accidentally emitting root-relative canonical URLs.

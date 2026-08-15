@@ -13,11 +13,20 @@
   <url><loc>https://tyctw.github.io/spare/advantages</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://tyctw.github.io/spare/five-year-college-rules</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/grade-level</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/guide/find</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/guide/choose</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/guide/plan</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/guide/member</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tyctw.github.io/spare/guide/help</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tyctw.github.io/spare/grade-11-pathways</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/general-comprehensive-high-school</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/faq-glossary</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/historical-stats</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/important-dates</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/news</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tyctw.github.io/spare/news/001</loc><lastmod>2026-07-06</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/news/002</loc><lastmod>2026-07-01</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/news/003</loc><lastmod>2025-11-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/instructions</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tyctw.github.io/spare/mock-volunteer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/search</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>

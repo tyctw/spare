@@ -150,7 +150,7 @@ export default function SupportPage() {
         <div aria-hidden="true" className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-indigo-200/70 blur-3xl" />
         <div aria-hidden="true" className="absolute -right-20 -top-24 h-96 w-96 rounded-full bg-sky-200/65 blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-6 sm:px-6 sm:pb-24 lg:px-8">
-          <a href={withBasePath('/')} className="inline-flex items-center gap-3 rounded-2xl border-4 border-slate-900 bg-white px-5 py-3 text-base font-black text-slate-800 shadow-[5px_5px_0_#0f172a] transition hover:-translate-y-0.5 hover:border-indigo-700 hover:text-indigo-700 active:translate-y-0 active:shadow-none"><ArrowLeft className="h-5 w-5" />回到首頁</a>
+          <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black text-slate-800 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:border-indigo-700 hover:text-indigo-700 active:translate-y-0 active:shadow-none"><ArrowLeft className="h-4 w-4" />回到首頁</a>
           <div className="mt-16 grid items-end gap-10 lg:grid-cols-[1fr_20rem]">
             <div className="max-w-3xl">
               <p className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-3 py-1.5 text-xs font-black tracking-[0.16em] text-indigo-700"><Heart className="h-3.5 w-3.5 fill-rose-500 text-rose-500" />SUPPORT THE NEXT STEP</p>
