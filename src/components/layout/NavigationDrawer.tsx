@@ -174,7 +174,7 @@ export const menuCategories: MenuCategory[] = [
       { id: 'site-map', label: '網站地圖', description: '一次查看全部功能頁面', keywords: '網站 地圖 sitemap 頁面', icon: Map, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/site-map' } },
       { id: 'support', label: '小額支持', description: '支持我們持續維護免費升學工具', keywords: '支持 贊助 小額 捐款 金流', icon: Heart, color: 'text-rose-600', bg: 'bg-rose-100', action: { type: 'route', href: '/support' } },
       { id: 'rating', label: '評分與回饋', description: '留下使用感受或建議', keywords: '評分 回饋 意見', icon: Star, color: 'text-amber-500', bg: 'bg-amber-100', action: { type: 'modal', id: 'rating' } },
-      { id: 'reportError', label: '問題回報', description: '資料錯誤或系統問題從這裡回報', keywords: '錯誤 問題 回報 bug', icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-100', action: { type: 'modal', id: 'reportError' } },
+      { id: 'reportError', label: '問題回報', description: '資料錯誤或系統問題從這裡回報', keywords: '錯誤 問題 回報 bug', icon: AlertCircle, color: 'text-red-500', bg: 'bg-red-100', action: { type: 'route', href: '/report-error' } },
     ],
   },
   {

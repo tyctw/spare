@@ -169,7 +169,9 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                             <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${item.bg} ${item.color}`}><ItemIcon className="h-4 w-4" /></span>
                             <span className="truncate">{item.label}</span>
                           </span>
-                          <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900">
+                            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                          </span>
                         </button>
                       );
                     })}
@@ -202,7 +204,9 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                               <span className="block">{item.label}</span>
                               <span className="mt-1 block text-xs font-bold leading-snug text-slate-500">{item.description}</span>
                             </span>
-                            <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900">
+                              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                            </span>
                           </span>
                         </button>
                       );
