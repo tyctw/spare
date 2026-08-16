@@ -487,7 +487,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 pb-32 overflow-hidden relative">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100">
       <a href="#main-content" className="skip-link">跳到主要內容</a>
       
       {/* Modern Background Blur Orbs */}
@@ -501,7 +501,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         setActiveModal={setActiveModal}
       />
 
-      <main id="main-content" aria-label="主要內容" className="max-w-6xl mx-auto px-4 mt-32 sm:mt-40 space-y-8 relative z-10">
+      <main id="main-content" aria-label="主要內容" className="relative z-10 mx-auto mt-32 w-full max-w-6xl flex-1 space-y-8 px-4 sm:mt-40">
         
         <HeroBanner />
 
