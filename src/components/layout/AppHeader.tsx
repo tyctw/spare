@@ -263,18 +263,28 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                   </div>
                 </div>
                 {globalSearchTerm && (
-                  <div className="mt-3 max-h-[70vh] overflow-y-auto rounded-[1.75rem] bg-white p-3 shadow-xl sm:p-4" aria-live="polite" aria-atomic="true">
+                  <div className="mx-auto mt-4 max-h-[75vh] w-[min(94vw,1440px)] max-w-none overflow-y-auto rounded-[2rem] bg-slate-50 p-3 shadow-[0_12px_35px_rgba(15,23,42,0.18)] sm:p-4" aria-live="polite" aria-atomic="true">
                     {globalSearchResults.length ? (
-                      <div className="grid gap-2 sm:grid-cols-2">
-                        {globalSearchResults.map((item) => (
-                          <button key={item.id} type="button" onClick={() => { setIsGlobalSearchOpen(false); setGlobalSearchTerm(''); runAction(item); }} className="group flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-left transition hover:bg-amber-50">
-                            <span><span className="block text-[11px] font-black text-slate-500">{item.categoryLabel}</span><span className="mt-0.5 block font-black text-slate-900">{item.label}</span><span className="mt-0.5 block text-xs font-bold text-slate-500">{item.description}</span></span>
-                            <ArrowRight className="ml-3 h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
-                          </button>
-                        ))}
+                      <div>
+                        <div className="mb-3 flex items-center justify-between gap-3 px-2">
+                          <div><p className="text-[11px] font-black tracking-[0.14em] text-indigo-600">SEARCH RESULTS</p><h2 className="mt-0.5 text-base font-black text-slate-900 sm:text-lg">找到符合的功能</h2></div>
+                          <span className="rounded-full border-2 border-slate-900 bg-amber-300 px-3 py-1 text-xs font-black text-slate-900">{globalSearchResults.length} 項結果</span>
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {globalSearchResults.map((item) => {
+                            const ItemIcon = item.icon;
+                            return (
+                              <button key={item.id} type="button" onClick={() => { setIsGlobalSearchOpen(false); setGlobalSearchTerm(''); runAction(item); }} className="group flex min-h-[118px] items-center gap-4 rounded-[1.4rem] border-2 border-slate-200 bg-white p-4 text-left shadow-[2px_2px_0_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-slate-900 hover:shadow-[4px_4px_0_#0f172a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2">
+                                <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 ${item.bg} ${item.color}`}><ItemIcon className="h-6 w-6" /></span>
+                                <span className="min-w-0 flex-1"><span className="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-500">{item.categoryLabel}</span><span className="mt-1.5 block font-black leading-tight text-slate-900">{item.label}</span><span className="mt-1 block line-clamp-2 text-xs font-bold leading-5 text-slate-500">{item.description}</span></span>
+                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></span>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     ) : (
-                      <p className="p-6 text-center font-bold text-slate-500">找不到相符的功能，請換個關鍵字試試。</p>
+                      <div className="px-5 py-10 text-center"><span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white text-slate-400"><Search className="h-6 w-6" /></span><p className="mt-4 font-black text-slate-800">找不到相符的功能</p><p className="mt-1 text-sm font-bold text-slate-500">試試學校、科別、志願或計分規則等關鍵字。</p></div>
                     )}
                   </div>
                 )}
