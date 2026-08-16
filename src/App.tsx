@@ -30,7 +30,6 @@ const VocationalModal = React.lazy(() => import('./components/VocationalModal'))
 const HollandTestModal = React.lazy(() => import('./components/HollandTestModal'));
 const ComparisonModal = React.lazy(() => import('./components/ComparisonModal'));
 const ExportModal = React.lazy(() => import('./components/ExportModal'));
-const ReportErrorModal = React.lazy(() => import('./components/ReportErrorModal'));
 const HistoricalStatsModal = React.lazy(() => import('./components/HistoricalStatsModal'));
 const ScoreInquiryModal = React.lazy(() => import('./components/ScoreInquiryModal'));
 const SharePlatformModal = React.lazy(() => import('./components/SharePlatformModal'));
@@ -202,7 +201,7 @@ export default function App() {
   const [memberAccess, setMemberAccess] = useState(false);
   
   // Modals state
-const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'reportError' | 'strategy' | 'historicalStats' | 'scoreInquiry' | null>(null);
+const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'strategy' | 'historicalStats' | 'scoreInquiry' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -1585,10 +1584,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
             setActiveModal(null);
           }}
         />
-      )}
-
-      {activeModal === 'reportError' && (
-        <ReportErrorModal isOpen onClose={() => setActiveModal(null)} />
       )}
 
       <InfoModal 
