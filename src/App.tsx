@@ -600,7 +600,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   href="https://tyctw.github.io/form/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-xs font-bold text-amber-600 hover:text-amber-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
+                  className="flex items-center gap-1 text-xs font-bold text-amber-600 underline decoration-2 decoration-amber-400 underline-offset-2 transition-transform hover:text-amber-700 active:scale-95"
                 >
                   尚未取得邀請碼？點此獲取
                 </a>
@@ -683,7 +683,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     <button 
                       type="button"
                       onClick={() => { window.location.href = withBasePath('/school-types'); }}
-                      className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
+                      className="flex items-center gap-1 text-xs font-bold text-emerald-600 underline decoration-2 decoration-emerald-400 underline-offset-2 transition-transform hover:text-emerald-700 active:scale-95"
                     >
                       <Building2 className="w-3 h-3" />
                       學校類型解析說明
@@ -720,7 +720,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                       </label>
                       <button 
                         onClick={() => { window.location.href = withBasePath('/vocational-encyclopedia'); }}
-                        className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 active:scale-95 transition-transform"
+                        className="flex items-center gap-1 text-xs font-bold text-emerald-600 underline decoration-2 decoration-emerald-400 underline-offset-2 transition-transform hover:text-emerald-700 active:scale-95"
                       >
                         <BookOpen className="w-3 h-3" />
                         職群/科系深入介紹百科
