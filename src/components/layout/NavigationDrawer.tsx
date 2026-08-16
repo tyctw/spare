@@ -199,6 +199,37 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
+  const hasHistoryEntryRef = useRef(false);
+  const isMobileCategoryOpenRef = useRef(false);
+
+  // On touch devices, make the browser back gesture dismiss the drawer before
+  // it leaves the current page. Closing by a UI control removes that temporary
+  // history entry as well, so it does not consume an extra back press later.
+  const closeDrawer = () => {
+    if (hasHistoryEntryRef.current) {
+      window.history.go(isMobileCategoryOpenRef.current ? -2 : -1);
+      return;
+    }
+    onClose();
+  };
+
+  const openMobileCategory = (category: MenuCategory) => {
+    setMobileCategory(category);
+    isMobileCategoryOpenRef.current = true;
+    window.history.pushState(
+      { ...(window.history.state ?? {}), navigationDrawerOpen: true, navigationDrawerLevel: 'category' },
+      '',
+      window.location.href,
+    );
+  };
+
+  const returnToMainMenu = () => {
+    if (isMobileCategoryOpenRef.current) {
+      window.history.back();
+      return;
+    }
+    setMobileCategory(null);
+  };
 
   useEffect(() => {
     if (!isOpen) return;
@@ -208,7 +239,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        closeDrawer();
       }
     };
 
@@ -218,6 +249,36 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
       triggerRef.current?.focus();
     };
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen || !isCompactNavigationViewport()) return;
+
+    window.history.pushState(
+      { ...(window.history.state ?? {}), navigationDrawerOpen: true, navigationDrawerLevel: 'root' },
+      '',
+      window.location.href,
+    );
+    hasHistoryEntryRef.current = true;
+
+    const handlePopState = (event: PopStateEvent) => {
+      const state = event.state as { navigationDrawerOpen?: boolean; navigationDrawerLevel?: string } | null;
+      if (state?.navigationDrawerOpen && state.navigationDrawerLevel === 'root') {
+        isMobileCategoryOpenRef.current = false;
+        setMobileCategory(null);
+        return;
+      }
+
+      hasHistoryEntryRef.current = false;
+      isMobileCategoryOpenRef.current = false;
+      onClose();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  // The drawer is mounted only while it is open. Register this listener once
+  // so rerenders do not replace the temporary history entry.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!isOpen) setMobileCategory(null);
@@ -231,8 +292,8 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
   }, []);
 
   useEffect(() => {
-    if (isOpen && !isCompactNavigation) onClose();
-  }, [isCompactNavigation, isOpen, onClose]);
+    if (isOpen && !isCompactNavigation) closeDrawer();
+  }, [isCompactNavigation, isOpen]);
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
   const filteredCategories = useMemo(() => {
@@ -260,7 +321,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
     }
 
     setActiveModal(action.id);
-    onClose();
+    closeDrawer();
   };
 
   const handleDrawerKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -292,7 +353,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.1, ease: 'easeOut' }}
-            onClick={onClose}
+            onClick={closeDrawer}
             aria-hidden="true"
             className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm"
           />
@@ -324,7 +385,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                     type="button"
                     onClick={() => {
                       window.dispatchEvent(new Event('open-site-search'));
-                      onClose();
+                      closeDrawer();
                     }}
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition hover:bg-slate-100"
                     aria-label="搜尋全站功能"
@@ -336,7 +397,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               <button
                 ref={closeButtonRef}
                 type="button"
-                onClick={onClose}
+                onClick={closeDrawer}
                 className={isCompactNavigation
                   ? 'flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.6rem] border-2 border-blue-700 bg-blue-600 text-white transition hover:bg-blue-500 active:scale-95'
                   : 'flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 transition hover:bg-slate-100 active:scale-95'}
@@ -353,7 +414,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               {mobileCategory ? (
                 <section>
                   <div className="sticky top-[-1rem] z-10 -mx-4 -mt-4 mb-5 flex items-center gap-3 rounded-t-[2rem] bg-white px-5 py-3 shadow-[0_3px_8px_rgba(15,23,42,0.06)]">
-                    <button type="button" onClick={() => setMobileCategory(null)} className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-slate-900 transition hover:bg-slate-300" aria-label="返回主選單">
+                    <button type="button" onClick={returnToMainMenu} className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-slate-900 transition hover:bg-slate-300" aria-label="返回主選單">
                       <ChevronRight className="h-6 w-6 rotate-180" />
                     </button>
                     <div>
@@ -405,7 +466,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                         type="button"
                         onClick={() => {
                           if (isCompactNavigation) {
-                            setMobileCategory(category);
+                            openMobileCategory(category);
                             return;
                           }
                           setExpandedCategory((current) => (current === category.id ? '' : category.id));
