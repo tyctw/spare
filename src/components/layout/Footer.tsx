@@ -9,8 +9,8 @@ const links = [
 ];
 
 export default function Footer() {
-  return <footer className="mt-16 border-t-4 border-slate-900 bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
-    <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl border-4 border-slate-900 bg-white shadow-[6px_6px_0_#0f172a]">
+  return <footer className="mt-12 w-full border-t-4 border-slate-900">
+    <div className="w-full bg-white">
       <div className="grid gap-7 p-6 sm:p-8 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
         <section className="relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-[#f5f7ff] p-4 shadow-[3px_3px_0_#0f172a] sm:p-5">
           <div aria-hidden="true" className="absolute -right-8 -top-8 h-28 w-28 rounded-full border-[18px] border-indigo-200/70" />
