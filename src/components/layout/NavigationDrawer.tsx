@@ -206,6 +206,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
   const [isCompactNavigation, setIsCompactNavigation] = useState(isCompactNavigationViewport);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const menuScrollRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const hasHistoryEntryRef = useRef(false);
   const isMobileCategoryOpenRef = useRef(false);
@@ -231,7 +232,12 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
     );
   };
 
+  const scrollMenuToTop = () => {
+    menuScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const returnToMainMenu = () => {
+    scrollMenuToTop();
     if (isMobileCategoryOpenRef.current) {
       window.history.back();
       return;
@@ -273,6 +279,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
       if (state?.navigationDrawerOpen && state.navigationDrawerLevel === 'root') {
         isMobileCategoryOpenRef.current = false;
         setMobileCategory(null);
+        requestAnimationFrame(scrollMenuToTop);
         return;
       }
 
@@ -416,7 +423,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               <p id="main-navigation-description" className="sr-only">可使用搜尋、分類與常用捷徑找到網站功能；按 Escape 可關閉選單。</p>
             </div>
 
-            <div className={isCompactNavigation
+            <div ref={menuScrollRef} className={isCompactNavigation
               ? 'custom-scrollbar flex-1 space-y-3 overflow-y-auto rounded-t-[2rem] bg-white p-4'
               : 'custom-scrollbar flex-1 space-y-4 overflow-y-auto p-6'}>
               {mobileCategory ? (
