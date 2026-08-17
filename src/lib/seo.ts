@@ -1,5 +1,6 @@
 import { appBasePath } from './routes';
 import { getNewsArticle } from './news';
+import { getAreaBySlug } from '../components/AreaPage';
 
 // Per-region metadata for /scoring-rules/:id pages
 const SCORING_RULES_META: Record<string, { title: string; description: string; cityKeywords: string }> = {
@@ -190,12 +191,18 @@ export const applyPageSeo = (path: string) => {
   const newsArticle = getNewsArticle(newsArticleId);
   const scoringRulesRegionId = path.match(/^\/scoring-rules\/([a-z-]+)$/)?.[1];
   const scoringRulesMeta = scoringRulesRegionId ? SCORING_RULES_META[scoringRulesRegionId] : null;
+  const areaSlug = path.match(/^\/area\/([a-z-]+)$/)?.[1];
+  const areaData = areaSlug ? getAreaBySlug(areaSlug) : null;
   const metadata = newsArticle
     ? { title: `${newsArticle.title}｜全國會考落點分析`, description: newsArticle.summary }
     : scoringRulesMeta
     ? { title: scoringRulesMeta.title, description: scoringRulesMeta.description }
     : path.startsWith('/scoring-rules/')
     ? { title: '各就學區超額比序計分規則｜全國會考落點分析', description: '整理各就學區免試入學超額比序項目、會考換算與官方簡章入口；正式規則以當學年度公告為準。' }
+    : areaData
+    ? { title: `${areaData.name}會考落點分析｜${areaData.cities}免試入學志願選填`, description: areaData.description }
+    : path.startsWith('/area/')
+    ? { title: '各就學區會考落點分析｜全國會考落點分析', description: '查詢全國 15 個免試入學就學區的會考落點分析與志願選填資訊。' }
     : pageMetadata[path] || pageMetadata['/'];
   const pageUrl = path === '/' ? `${siteUrl}/` : `${siteUrl}${path}`;
   const canonicalUrl = path === '/' ? `${siteUrl}/` : `${siteUrl}${path}`;
@@ -254,6 +261,45 @@ export const applyPageSeo = (path: string) => {
       ],
     });
     document.head.appendChild(regionStructuredData);
+  }
+
+  document.getElementById('area-page-structured-data')?.remove();
+  if (areaData) {
+    const areaStructuredData = document.createElement('script');
+    areaStructuredData.id = 'area-page-structured-data';
+    areaStructuredData.type = 'application/ld+json';
+    areaStructuredData.text = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            { '@type': 'ListItem', 'position': 1, 'name': '首頁', 'item': `${siteUrl}/` },
+            { '@type': 'ListItem', 'position': 2, 'name': `${areaData.name}會考落點分析`, 'item': canonicalUrl },
+          ],
+        },
+        {
+          '@type': 'FAQPage',
+          'mainEntity': areaData.faqs.map((faq) => ({
+            '@type': 'Question',
+            'name': faq.q,
+            'acceptedAnswer': { '@type': 'Answer', 'text': faq.a },
+          })),
+        },
+        {
+          '@type': 'WebPage',
+          '@id': `${canonicalUrl}#webpage`,
+          'url': canonicalUrl,
+          'name': `${areaData.name}會考落點分析`,
+          'description': areaData.description,
+          'inLanguage': 'zh-Hant-TW',
+          'keywords': areaData.keywords.join(', '),
+          'isPartOf': { '@id': `${siteUrl}/#website` },
+          'publisher': { '@type': 'Organization', 'name': siteName, 'url': `${siteUrl}/` },
+        },
+      ],
+    });
+    document.head.appendChild(areaStructuredData);
   }
 
   // The app lives below /spare/ on GitHub Pages. This keeps future deployments
