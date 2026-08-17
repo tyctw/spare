@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, Crown, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, Megaphone, Search, Shield, Sparkles, Target, UserRound } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, Crown, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, MapPin, Megaphone, Search, Shield, Sparkles, Target, UserRound } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import MissingFeatureCard from './MissingFeatureCard';
 
@@ -30,6 +30,23 @@ const categories: Category[] = [
     { title: '最新消息', desc: '查看系統公告、資料更新與重要考試資訊。', href: '/news', icon: Megaphone, tone: 'bg-rose-100 text-rose-700', keywords: '最新 消息 公告 更新 116 考試 日期' },
     { title: '會員免廣告', desc: '使用 LINE 登入確認資格，選擇免廣告方案。', href: '/membership', icon: Crown, tone: 'bg-violet-100 text-violet-700', keywords: '會員 免廣告 LINE 付款 月費 年費 方案' },
     { title: '我的會員帳號', desc: '查看目前方案、到期日與 LINE 登入狀態。', href: '/membership/account', icon: UserRound, tone: 'bg-emerald-100 text-emerald-700', keywords: '會員 帳號 到期 日 LINE 登入 免廣告' },
+  ] },
+  { title: '各就學區會考落點分析', desc: '查詢全國 15 個免試入學就學區的會考落點分析專頁，包含區域升學資訊、工具連結與常見問答。', items: [
+    { title: '基北區', desc: '臺北市、新北市、基隆市的會考落點分析與志願選填。', href: '/area/keelung-taipei', icon: MapPin, tone: 'bg-indigo-100 text-indigo-700', keywords: '基北 台北 新北 基隆 落點 分析 會考' },
+    { title: '桃連區', desc: '桃園市、連江縣的會考落點分析與志願選填。', href: '/area/taoyuan', icon: MapPin, tone: 'bg-emerald-100 text-emerald-700', keywords: '桃連 桃園 連江 落點 分析 會考' },
+    { title: '竹苗區', desc: '新竹縣市、苗栗縣的會考落點分析與志願選填。', href: '/area/hsinchu-miaoli', icon: MapPin, tone: 'bg-fuchsia-100 text-fuchsia-700', keywords: '竹苗 新竹 苗栗 落點 分析 會考' },
+    { title: '中投區', desc: '臺中市、南投縣的會考落點分析與志願選填。', href: '/area/taichung', icon: MapPin, tone: 'bg-amber-100 text-amber-700', keywords: '中投 台中 臺中 南投 落點 分析 會考' },
+    { title: '彰化區', desc: '彰化縣的會考落點分析與志願選填。', href: '/area/changhua', icon: MapPin, tone: 'bg-rose-100 text-rose-700', keywords: '彰化 落點 分析 會考' },
+    { title: '雲林區', desc: '雲林縣的會考落點分析與志願選填。', href: '/area/yunlin', icon: MapPin, tone: 'bg-lime-100 text-lime-700', keywords: '雲林 落點 分析 會考' },
+    { title: '嘉義區', desc: '嘉義縣市的會考落點分析與志願選填。', href: '/area/chiayi', icon: MapPin, tone: 'bg-teal-100 text-teal-700', keywords: '嘉義 落點 分析 會考' },
+    { title: '臺南區', desc: '臺南市的會考落點分析與志願選填。', href: '/area/tainan', icon: MapPin, tone: 'bg-sky-100 text-sky-700', keywords: '台南 臺南 落點 分析 會考' },
+    { title: '高雄區', desc: '高雄市的會考落點分析與志願選填。', href: '/area/kaohsiung', icon: MapPin, tone: 'bg-orange-100 text-orange-700', keywords: '高雄 落點 分析 會考' },
+    { title: '屏東區', desc: '屏東縣的會考落點分析與志願選填。', href: '/area/pingtung', icon: MapPin, tone: 'bg-yellow-100 text-yellow-700', keywords: '屏東 落點 分析 會考' },
+    { title: '宜蘭區', desc: '宜蘭縣的會考落點分析與志願選填。', href: '/area/yilan', icon: MapPin, tone: 'bg-cyan-100 text-cyan-700', keywords: '宜蘭 落點 分析 會考' },
+    { title: '花蓮區', desc: '花蓮縣的會考落點分析與志願選填。', href: '/area/hualien', icon: MapPin, tone: 'bg-green-100 text-green-700', keywords: '花蓮 落點 分析 會考' },
+    { title: '臺東區', desc: '臺東縣的會考落點分析與志願選填。', href: '/area/taitung', icon: MapPin, tone: 'bg-pink-100 text-pink-700', keywords: '台東 臺東 落點 分析 會考' },
+    { title: '澎湖區', desc: '澎湖縣的會考落點分析與志願選填。', href: '/area/penghu', icon: MapPin, tone: 'bg-blue-100 text-blue-700', keywords: '澎湖 落點 分析 會考' },
+    { title: '金門區', desc: '金門縣的會考落點分析與志願選填。', href: '/area/kinmen', icon: MapPin, tone: 'bg-stone-100 text-stone-700', keywords: '金門 落點 分析 會考' },
   ] },
   { title: '各區計分規則', desc: '查看一般免試入學的超額比序架構、會考換算與官方簡章入口；正式規定請以當年度公告為準。', items: [
     { title: '基北區計分規則', desc: '基隆、臺北、新北的超額比序與會考換算。', href: '/scoring-rules/taipei', icon: Calculator, tone: 'bg-indigo-100 text-indigo-700', keywords: '基北 基隆 台北 臺北 新北 計分 規則 超額比序' },
@@ -68,6 +85,21 @@ const searchAliases: Record<string, string> = {
   '/news': '最新 消息 公告 資料 更新',
   '/membership': '會員 免廣告 LINE 付款 月費 年費',
   '/membership/account': '會員 帳號 資格 到期 LINE 登入',
+  '/area/keelung-taipei': '基北 台北 新北 基隆 落點 分析 會考 志願',
+  '/area/taoyuan': '桃連 桃園 連江 落點 分析 會考 志願',
+  '/area/hsinchu-miaoli': '竹苗 新竹 苗栗 落點 分析 會考 志願',
+  '/area/taichung': '中投 台中 臺中 南投 落點 分析 會考 志願',
+  '/area/changhua': '彰化 落點 分析 會考 志願',
+  '/area/yunlin': '雲林 落點 分析 會考 志願',
+  '/area/chiayi': '嘉義 落點 分析 會考 志願',
+  '/area/tainan': '台南 臺南 落點 分析 會考 志願',
+  '/area/kaohsiung': '高雄 落點 分析 會考 志願',
+  '/area/pingtung': '屏東 落點 分析 會考 志願',
+  '/area/yilan': '宜蘭 落點 分析 會考 志願',
+  '/area/hualien': '花蓮 落點 分析 會考 志願',
+  '/area/taitung': '台東 臺東 落點 分析 會考 志願',
+  '/area/penghu': '澎湖 落點 分析 會考 志願',
+  '/area/kinmen': '金門 落點 分析 會考 志願',
   '/scoring-rules/taipei': '基北 台北 新北 基隆 免試 比序 積分 會考',
   '/scoring-rules/taoyuan': '桃連 桃園 連江 免試 比序 積分 會考',
   '/scoring-rules/central': '中投 台中 免試 比序 積分 會考',

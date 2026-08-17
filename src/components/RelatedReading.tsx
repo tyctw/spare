@@ -75,7 +75,12 @@ export default function RelatedReading({ path }: { path: string }) {
     { title: '填志願策略', description: '把區域規則轉成實際志願排序，避開不必要的志願序扣分。', href: '/strategy', icon: Target, tone: 'bg-orange-100 text-orange-800' },
     { title: '模擬志願序', description: '用清單試排校科與志願順序，再回頭核對你所在考區的規則。', href: '/mock-volunteer', icon: ListChecks, tone: 'bg-amber-100 text-amber-800' },
   ];
-  const items = path.startsWith('/scoring-rules/') ? scoringRuleRecommendations : recommendations[path] ?? fallback;
+  const areaRecommendations: Recommendation[] = [
+    { title: '開始落點分析', description: '輸入會考成績與就學區，查看推薦校科與落點區間。', href: '/', icon: Compass, tone: 'bg-indigo-100 text-indigo-800' },
+    { title: '填志願策略', description: '把區域規則轉成實際志願排序，避開不必要的志願序扣分。', href: '/strategy', icon: Target, tone: 'bg-orange-100 text-orange-800' },
+    { title: '模擬志願序', description: '用清單試排校科與志願順序，再回頭核對你所在考區的規則。', href: '/mock-volunteer', icon: ListChecks, tone: 'bg-amber-100 text-amber-800' },
+  ];
+  const items = path.startsWith('/scoring-rules/') ? scoringRuleRecommendations : path.startsWith('/area/') ? areaRecommendations : recommendations[path] ?? fallback;
   return <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8" aria-labelledby="related-reading-title">
     <div className="rounded-2xl border-4 border-slate-900 bg-slate-900 p-5 text-white shadow-[5px_5px_0px_0px_rgba(14,165,233,1)] sm:p-7">
       <p className="text-xs font-black tracking-[0.16em] text-sky-200">KEEP EXPLORING</p>
