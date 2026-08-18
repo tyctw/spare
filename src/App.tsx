@@ -947,23 +947,29 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       {/* Floating Action Bar */}
       <div className="sticky bottom-6 left-0 right-0 w-full px-4 z-50 pointer-events-none mt-8">
         <div className="max-w-2xl mx-auto pointer-events-auto">
-          <button
-            type="button"
-            onClick={handleAnalyze}
-            disabled={status === 'auth' || status === 'quantum'}
-            aria-busy={status === 'auth' || status === 'quantum'}
-            className="w-full flex items-center justify-center gap-3 bg-amber-400 border-4 border-slate-950 text-slate-950 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] ring-4 ring-amber-200/90 rounded-2xl py-4 px-8 text-2xl font-black transition-all hover:-translate-y-1 hover:bg-amber-300 hover:shadow-[7px_7px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] disabled:bg-slate-400 disabled:ring-0 group"
-          >
-            {status === 'quantum' ? (
-              <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                <Activity className="w-6 h-6" />
-              </motion.div>
-            ) : (
-              <>
-                開始落點分析
-              </>
-            )}
-          </button>
+          <div className="relative group">
+            <button
+              type="button"
+              onClick={handleAnalyze}
+              disabled={status === 'auth' || status === 'quantum'}
+              aria-busy={status === 'auth' || status === 'quantum'}
+              className="w-full relative flex items-center justify-center bg-amber-400 border-4 border-slate-950 text-slate-950 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rounded-2xl py-4 sm:py-5 px-6 transition-all hover:-translate-y-1.5 hover:bg-amber-300 hover:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] sm:hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] disabled:bg-slate-400 disabled:shadow-none disabled:translate-y-2 overflow-visible"
+            >
+              {status === 'quantum' ? (
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+                  <Activity className="w-8 h-8" />
+                </motion.div>
+              ) : (
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="bg-slate-900 text-amber-400 p-1.5 sm:p-2 rounded-xl">
+                    <Target className="w-6 h-6 sm:w-7 sm:h-7" />
+                  </div>
+                  <span className="text-3xl sm:text-4xl font-black tracking-tight">立即落點分析</span>
+                  <ArrowRight strokeWidth={4.5} className="w-7 h-7 sm:w-8 sm:h-8" />
+                </div>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
