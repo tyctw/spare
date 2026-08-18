@@ -233,7 +233,9 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
   };
 
   const scrollMenuToTop = () => {
-    menuScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    if (menuScrollRef.current) {
+      menuScrollRef.current.scrollTop = 0;
+    }
   };
 
   const returnToMainMenu = () => {
