@@ -98,7 +98,7 @@ function MembershipSupportLinks() {
       aria-labelledby="membership-support-title"
       className="mt-8 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#0f172a]"
     >
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(20rem,.8fr)]">
+      <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(16rem,.7fr)]">
         <div className="p-5 sm:p-8">
           <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700">
@@ -127,7 +127,7 @@ function MembershipSupportLinks() {
             tyctw.analyze@gmail.com
           </a>
         </div>
-        <div className="border-t-2 border-slate-900 bg-[#f7f9ff] p-5 sm:p-8 lg:border-l-2 lg:border-t-0">
+        <div className="border-t-2 border-slate-900 bg-[#f7f9ff] p-5 sm:p-8 md:border-l-2 md:border-t-0">
           <p className="text-[10px] sm:text-xs font-black tracking-[0.14em] text-slate-500">
             MEMBERSHIP INFORMATION
           </p>
@@ -137,7 +137,7 @@ function MembershipSupportLinks() {
           <p className="mt-2 text-sm font-bold leading-6 text-slate-600">
             查看付款異常、取消申請、退款方式與交易爭議的處理原則。
           </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 md:grid-cols-1">
             <a
               href={withBasePath("/after-sales-service")}
               className="group flex items-center justify-between rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-800 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]"
@@ -297,7 +297,7 @@ export default function MembershipPage() {
   if (membership.active)
     return (
       <main id="main-content" aria-labelledby="member-active-title" className="min-h-screen bg-[#f5f6ff] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
-        <section className="mx-auto max-w-3xl">
+        <section className="mx-auto max-w-5xl">
           <a
             href={withBasePath("/")}
             className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
@@ -339,9 +339,9 @@ export default function MembershipPage() {
                 <KeyRound className="mt-0.5 h-5 w-5 shrink-0" />
                 會員資格有效期間，回到首頁填妥成績後即可直接開始落點分析，無需再輸入系統授權碼。
               </div>
-              <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <a href={withBasePath("/")} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-5 py-3.5 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><Sparkles className="h-4 w-4" />開始使用落點分析</a>
-                <a href={withBasePath("/membership/account")} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-5 py-3.5 font-black text-slate-900 shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><BadgeCheck className="h-5 w-5 text-emerald-600" />我的會員帳號</a>
+              <div className="mt-7 flex flex-col sm:flex-row flex-wrap gap-4">
+                <a href={withBasePath("/")} className="inline-flex sm:w-auto w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-6 py-4 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><Sparkles className="h-4 w-4" />開始使用落點分析</a>
+                <a href={withBasePath("/membership/account")} className="inline-flex sm:w-auto w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-6 py-4 font-black text-slate-900 shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><BadgeCheck className="h-5 w-5 text-emerald-600" />我的會員帳號</a>
               </div>
               <div className="mt-6 border-t-2 border-slate-100 pt-5 text-center">
                 <button type="button" onClick={logoutFromLine} className="text-sm font-black text-slate-500 underline decoration-slate-300 decoration-2 underline-offset-4 transition hover:text-slate-900">登出 LINE</button>
