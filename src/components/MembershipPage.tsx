@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
-  BadgeCheck,
   CalendarDays,
   Check,
   CreditCard,
   Crown,
   EyeOff,
   HeartHandshake,
+  HelpCircle,
   KeyRound,
   LockKeyhole,
   LogIn,
@@ -15,6 +15,7 @@ import {
   MonitorSmartphone,
   ReceiptText,
   Sparkles,
+  X,
 } from "lucide-react";
 import { callBackend } from "../lib/api";
 import {
@@ -49,30 +50,35 @@ const plans = [
 ] as const;
 type PlanId = (typeof plans)[number]["id"];
 
-const benefits = [
+
+const membershipFaqs = [
   {
-    icon: EyeOff,
-    title: "專心不被打斷",
-    text: "不載入廣告，查校、比對與規劃更專注。",
-    tone: "bg-violet-100 text-violet-700",
+    q: '月費與年費有什麼差別？',
+    a: '月費方案 NT$49，有效期 30 天；年費方案 NT$399，有效期 365 天。年費等同每天約 NT$1.1，比連續購買 12 個月月費省下 NT$189。兩種方案均為一次付款，到期不自動續扣。',
   },
   {
-    icon: MonitorSmartphone,
-    title: "LINE 跨裝置確認",
-    text: "登入你的 LINE，即可在不同裝置找回資格。",
-    tone: "bg-emerald-100 text-emerald-700",
+    q: '付款後何時生效？',
+    a: '付款完成並收到系統確認後，會員資格即刻生效。以 LINE 帳號登入確認資格後，即可免輸入系統授權碼直接開始落點分析。若付款後資格未正常顯示，請來信客服確認。',
   },
   {
-    icon: KeyRound,
-    title: "免輸入系統授權碼",
-    text: "會員資格有效且登入 LINE 後，可直接開始落點分析。",
-    tone: "bg-sky-100 text-sky-700",
+    q: '到期後會自動扣款嗎？',
+    a: '不會。月費與年費均為一次性付款，期間結束後不會自動續費或扣款，無需手動取消。若要繼續使用，到期後再重新購買即可。',
   },
   {
-    icon: LockKeyhole,
-    title: "安全且不自動續扣",
-    text: "期間方案一次付款，到期前不會自動收費。",
-    tone: "bg-amber-100 text-amber-700",
+    q: '可以在多台裝置使用嗎？',
+    a: '可以。會員資格與你的 LINE 帳號綁定，在任何裝置上使用 LINE 登入後，系統即可自動確認資格並關閉廣告，無需重複購買。',
+  },
+  {
+    q: '會員期間可以跳過什麼步驟？',
+    a: '有效會員以 LINE 登入確認資格後，回到首頁填妥成績即可直接開始落點分析，無需另行輸入系統授權碼。廣告也會在會員有效期間全程關閉。',
+  },
+  {
+    q: '支援哪些付款方式？',
+    a: '透過綠界科技（ECPay）收款，支援信用卡、Apple Pay、網路 ATM、ATM 虛擬帳號、超商條碼與超商代碼。實際可選方式以付款頁面當下顯示為準。',
+  },
+  {
+    q: '可以申請退款嗎？',
+    a: '付款完成後，若遇到技術異常或未能如期使用，請來信說明情況，我們會依退款與取消政策個別處理。詳細說明請參閱「退款與取消政策」頁面。',
   },
 ];
 
@@ -80,6 +86,8 @@ const paymentMethods = {
   card: ["信用卡", "Apple Pay"],
   other: ["網路 ATM", "ATM 虛擬帳號", "超商條碼", "超商代碼"],
 };
+
+
 
 function MembershipSupportLinks() {
   return (
@@ -353,32 +361,50 @@ export default function MembershipPage() {
             />
             <div className="relative">
               <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/85 px-3 py-1.5 text-xs font-black tracking-[.16em] text-violet-700">
-                <Sparkles className="h-4 w-4 text-violet-600" />
-                會員免廣告
+                <Crown className="h-4 w-4 fill-amber-300 text-amber-500" />
+                會員專屬優點
               </span>
-              <h1 id="membership-page-title" className="mt-4 max-w-xl text-3xl font-black leading-[1.08] tracking-tight sm:text-4xl">
-                把注意力，
-                <br />
-                <span className="text-violet-700">留給你的選擇。</span>
+              <h1 id="membership-page-title" className="mt-4 text-2xl font-black leading-tight tracking-tight sm:text-3xl">
+                升級會員，<span className="text-violet-700">差在這裡</span>
               </h1>
-              <p className="mt-3 max-w-lg text-sm font-bold leading-6 text-slate-600">
-                不到一杯飲料的價格，換來 30 天專心查校、比對與規劃。使用 LINE
-                登入確認資格，可在不同裝置恢復。
-              </p>
-              <p className="mt-3 inline-flex items-center gap-2 rounded-xl border border-sky-200 bg-white/85 px-3 py-2 text-xs font-black leading-5 text-sky-800">
-                <KeyRound className="h-4 w-4 shrink-0" />有效會員登入 LINE 後，落點分析免輸入系統授權碼。
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 text-xs font-black text-slate-700">
-                  NT$49 起
-                </span>
-                <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 text-xs font-black text-slate-700">
-                  一次付款
-                </span>
-                <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 text-xs font-black text-slate-700">
-                  不自動續扣
-                </span>
-              </div>
+              <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600">
+                    <EyeOff className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-black">完全無廣告</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">全程不被廣告打斷，專注在志願選擇上。</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-600">
+                    <KeyRound className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-black">免輸入系統授權碼</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">登入 LINE 後直接開始落點分析，不必每次手動輸入。</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+                    <MonitorSmartphone className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-black">跨裝置找回資格</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">資格綁定 LINE，手機、電腦、平板都能直接確認。</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                    <LockKeyhole className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-black">一次付款不自動續扣</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">NT$49 起，方案到期後不扣款，無需手動取消。</p>
+                  </div>
+                </li>
+              </ul>
             </div>
           </section>
           <aside className="rounded-[2.5rem] border-2 border-slate-900 bg-white p-5 shadow-[9px_9px_0_#161b35] sm:p-6">
@@ -447,6 +473,7 @@ export default function MembershipPage() {
             )}
           </aside>
         </div>
+
         <section className="mt-8">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
@@ -542,100 +569,7 @@ export default function MembershipPage() {
             <ArrowRight className="h-5 w-5" />
           </button>
         </section>
-        <section
-          aria-labelledby="membership-details-title"
-          className="mt-8 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]"
-        >
-          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 sm:px-6">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-indigo-50 text-indigo-700">
-              <BadgeCheck className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xs font-black tracking-[.14em] text-indigo-600">
-                MEMBERSHIP DETAILS
-              </p>
-              <h2
-                id="membership-details-title"
-                className="mt-1 text-xl font-black"
-              >
-                方案保障與付款方式
-              </h2>
-            </div>
-          </div>
-          <div className="p-5 sm:p-6">
-            <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-              {benefits.map(({ icon: Icon, title, text, tone }) => (
-                <article
-                  key={title}
-                  className="flex gap-2.5 rounded-xl border border-slate-200 bg-white p-3"
-                >
-                  <div
-                    className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${tone}`}
-                  >
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black">{title}</h3>
-                    <p className="mt-0.5 text-xs font-bold leading-5 text-slate-600">
-                      {text}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <div className="mt-4 grid gap-3 rounded-2xl border border-indigo-100 bg-[#f7f9ff] p-3 sm:p-4 lg:grid-cols-[minmax(12rem,.72fr)_1fr_1.25fr] lg:items-stretch">
-              <div className="flex items-center gap-3">
-                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white text-indigo-700">
-                  <CreditCard className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="text-xs font-black tracking-[.14em] text-indigo-600">
-                    ECPAY SECURE PAYMENT
-                  </p>
-                  <h3 className="mt-0.5 text-base font-black">
-                    支援的付款方式
-                  </h3>
-                </div>
-              </div>
-              <div className="rounded-xl border border-indigo-100 bg-white p-3 shadow-sm">
-                <div className="mb-2 flex items-center gap-2">
-                  <div className="grid h-7 w-7 place-items-center rounded-lg bg-indigo-50 text-indigo-700"><CreditCard className="h-3.5 w-3.5" /></div>
-                  <p className="text-xs font-black text-slate-700">
-                    信用卡付款
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {paymentMethods.card.map((method) => (
-                    <span
-                      key={method}
-                      className="flex min-h-10 items-center justify-center rounded-lg border border-indigo-100 bg-indigo-50/60 px-2 py-2 text-center text-xs font-black text-indigo-900"
-                    >
-                      {method}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-                <p className="mb-2 text-xs font-black text-slate-700">
-                  非信用卡付款
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {paymentMethods.other.map((method) => (
-                    <span
-                      key={method}
-                      className="flex min-h-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-center text-xs font-black text-slate-700"
-                    >
-                      {method}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="mt-3 text-xs font-bold leading-5 text-slate-500">
-              實際可選的付款方式，依綠界付款頁當下顯示為準。
-            </p>
-          </div>
-        </section>
+
         {notice && (
           <p
             role="status"
@@ -645,6 +579,55 @@ export default function MembershipPage() {
             {notice}
           </p>
         )}
+        <section aria-labelledby="membership-faq-title" className="mt-8 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 sm:px-6">
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-amber-50 text-amber-600">
+              <HelpCircle className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xs font-black tracking-[.14em] text-amber-600">FAQ</p>
+              <h2 id="membership-faq-title" className="mt-0.5 text-xl font-black">常見問題</h2>
+            </div>
+          </div>
+          <div className="divide-y divide-slate-100 px-5 sm:px-6">
+            {membershipFaqs.map((faq) => (
+              <details key={faq.q} className="group py-1">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 font-black [&::-webkit-details-marker]:hidden">
+                  <span className="text-sm leading-6">{faq.q}</span>
+                  <span className="shrink-0 text-xl leading-none text-slate-400 transition group-open:rotate-45">+</span>
+                </summary>
+                <div className="pb-4">
+                  <p className="text-sm font-bold leading-7 text-slate-600">{faq.a}</p>
+                  {faq.q === '支援哪些付款方式？' && (
+                    <div className="mt-4 grid gap-3 rounded-2xl border border-indigo-100 bg-[#f7f9ff] p-3 sm:p-4 md:grid-cols-[1fr_1.25fr]">
+                      <div className="rounded-xl border border-indigo-100 bg-white p-3 shadow-sm">
+                        <div className="mb-2 flex items-center gap-2">
+                          <div className="grid h-7 w-7 place-items-center rounded-lg bg-indigo-50 text-indigo-700">
+                            <CreditCard className="h-3.5 w-3.5" />
+                          </div>
+                          <p className="text-xs font-black text-slate-700">信用卡付款</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          {paymentMethods.card.map((method) => (
+                            <span key={method} className="flex min-h-10 items-center justify-center rounded-lg border border-indigo-100 bg-indigo-50/60 px-2 py-2 text-center text-xs font-black text-indigo-900">{method}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                        <p className="mb-2 text-xs font-black text-slate-700">非信用卡付款</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {paymentMethods.other.map((method) => (
+                            <span key={method} className="flex min-h-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-center text-xs font-black text-slate-700">{method}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
         <MembershipSupportLinks />
       </section>
     </main>
