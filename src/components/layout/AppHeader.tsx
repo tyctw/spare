@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, Share2, Menu, Compass, Target, CalendarDays, CircleHelp, ArrowRight, X, Instagram } from 'lucide-react';
+import { Search, Share2, Menu, Compass, Target, CalendarDays, CircleHelp, ArrowRight, X, Instagram, Crown, LogIn } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
 import { menuCategories, type MenuCategory, type MenuItem } from './NavigationDrawer';
 import { categoryOverviewPaths } from '../../lib/categoryOverview';
+import { callBackend } from '../../lib/api';
+import { getMembershipStatus, type MembershipStatus } from '../../lib/membership';
 
 function ThreadsIcon({ className }: { className?: string }) {
   return (
@@ -24,6 +26,8 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false);
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
+  const [lineName, setLineName] = useState<string | null>(null);
+  const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const getCompactNavigation = () => typeof window !== 'undefined' && (
     window.innerWidth < 1024 || window.matchMedia('(hover: none), (pointer: coarse)').matches
   );
@@ -80,6 +84,20 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
     updateNavigationMode();
     window.addEventListener('resize', updateNavigationMode);
     return () => window.removeEventListener('resize', updateNavigationMode);
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const line = await callBackend<{ loggedIn: boolean; name?: string }>({
+          action: "getLineLoginSession",
+        });
+        if (line.loggedIn) setLineName(line.name || "LINE 會員");
+        setMembership(await getMembershipStatus());
+      } catch {
+        // ignore errors silently
+      }
+    })();
   }, []);
   const findCategory = (id: string) => menuCategories.find((category) => category.id === id)!;
   const navigationLinks: Array<{ id: keyof typeof categoryOverviewPaths; label: string; icon: typeof Compass; title: string; description: string; categories: MenuCategory[] }> = [
@@ -218,6 +236,23 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
           )}
 
           <div className="flex shrink-0 items-center gap-2">
+            {lineName ? (
+              <a 
+                href={withBasePath("/membership")} 
+                className={`hidden min-[450px]:flex items-center gap-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-900 bg-white px-2.5 sm:px-3 text-xs font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${isScrolled ? 'h-10' : 'h-10 sm:h-12'}`}
+              >
+                <Crown className={`h-4 w-4 ${membership?.active ? 'fill-amber-300 text-slate-900' : 'text-slate-400'}`} />
+                <span className="max-w-[70px] truncate text-slate-700">{lineName}</span>
+              </a>
+            ) : (
+              <a 
+                href={withBasePath("/membership")} 
+                className={`hidden min-[450px]:flex items-center gap-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-900 bg-white px-2.5 sm:px-3 text-xs font-black text-slate-600 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${isScrolled ? 'h-10' : 'h-10 sm:h-12'}`}
+              >
+                <LogIn className="h-4 w-4 text-slate-400" />
+                <span>登入</span>
+              </a>
+            )}
             <button
               type="button"
               onClick={() => setIsGlobalSearchOpen(true)}
