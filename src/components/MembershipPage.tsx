@@ -365,8 +365,8 @@ export default function MembershipPage() {
             <ArrowRight className="h-4 w-4 rotate-180" />
             回到落點分析
           </a>
-          <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-2 text-xs font-black text-indigo-700">
-            <Crown className="h-4 w-4 fill-amber-300 text-amber-500" />
+          <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-amber-300 px-4 py-2 text-sm font-black text-slate-900 shadow-[3px_3px_0_#161b35]">
+            <Crown className="h-4 w-4 fill-amber-100 text-slate-900" />
             會員中心
           </span>
         </nav>
