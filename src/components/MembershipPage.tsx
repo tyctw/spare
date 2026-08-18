@@ -297,7 +297,7 @@ export default function MembershipPage() {
   if (membership.active)
     return (
       <main id="main-content" aria-labelledby="member-active-title" className="min-h-screen bg-[#f5f6ff] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
-        <section className="mx-auto max-w-5xl">
+        <section className="mx-auto max-w-4xl">
           <a
             href={withBasePath("/")}
             className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
@@ -339,9 +339,17 @@ export default function MembershipPage() {
                 <KeyRound className="mt-0.5 h-5 w-5 shrink-0" />
                 會員資格有效期間，回到首頁填妥成績後即可直接開始落點分析，無需再輸入系統授權碼。
               </div>
-              <div className="mt-7 flex flex-col sm:flex-row flex-wrap gap-4">
-                <a href={withBasePath("/")} className="inline-flex sm:w-auto w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-6 py-4 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><Sparkles className="h-4 w-4" />開始使用落點分析</a>
-                <a href={withBasePath("/membership/account")} className="inline-flex sm:w-auto w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-6 py-4 font-black text-slate-900 shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><BadgeCheck className="h-5 w-5 text-emerald-600" />我的會員帳號</a>
+              <div className="mt-10 flex flex-col items-center justify-center border-t-2 border-slate-100 pt-8 pb-4">
+                <div className="grid w-full gap-4 sm:max-w-2xl sm:grid-cols-2">
+                  <a href={withBasePath("/")} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-slate-900 bg-indigo-600 px-6 py-4 sm:px-8 sm:py-5 text-base sm:text-lg font-black text-white shadow-[4px_4px_0_#161b35] transition hover:-translate-y-1 hover:shadow-[6px_6px_0_#161b35] active:translate-y-0 active:shadow-none">
+                    <Sparkles className="h-5 w-5 sm:h-6 sm:w-6" />
+                    開始使用落點分析
+                  </a>
+                  <a href={withBasePath("/membership/account")} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-slate-900 bg-white px-6 py-4 sm:px-8 sm:py-5 text-base sm:text-lg font-black text-slate-900 shadow-[4px_4px_0_#161b35] transition hover:-translate-y-1 hover:shadow-[6px_6px_0_#161b35] active:translate-y-0 active:shadow-none">
+                    <BadgeCheck className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
+                    我的會員帳號
+                  </a>
+                </div>
               </div>
               <div className="mt-6 border-t-2 border-slate-100 pt-5 text-center">
                 <button type="button" onClick={logoutFromLine} className="text-sm font-black text-slate-500 underline decoration-slate-300 decoration-2 underline-offset-4 transition hover:text-slate-900">登出 LINE</button>
