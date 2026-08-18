@@ -121,7 +121,7 @@ function MembershipSupportLinks() {
           </div>
           <a
             href="mailto:tyctw.analyze@gmail.com?subject=%E6%9C%83%E5%93%A1%E5%85%8D%E5%BB%A3%E5%91%8A%E5%8D%94%E5%8A%A9"
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-50 px-4 py-3.5 text-sm font-black text-indigo-700 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-indigo-100 active:translate-y-0 active:shadow-none sm:w-auto"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-indigo-50 px-4 py-3.5 text-sm font-black text-indigo-700 transition hover:border-slate-900 hover:bg-indigo-100 sm:w-auto"
           >
             <Mail className="h-4 w-4" />
             tyctw.analyze@gmail.com
@@ -137,26 +137,26 @@ function MembershipSupportLinks() {
           <p className="mt-2 text-sm font-bold leading-6 text-slate-600">
             查看付款異常、取消申請、退款方式與交易爭議的處理原則。
           </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 md:grid-cols-1">
+          <div className="mt-5 grid gap-2 sm:gap-3 grid-cols-2">
             <a
               href={withBasePath("/after-sales-service")}
-              className="group flex items-center justify-between rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-800 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]"
+              className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1.5 sm:gap-3 rounded-xl border-2 border-slate-200 bg-white p-2.5 sm:px-4 sm:py-3.5 text-center transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]"
             >
-              <span className="flex items-center gap-2">
-                <HeartHandshake className="h-4 w-4 text-indigo-600" />
-                售後服務
+              <span className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2">
+                <HeartHandshake className="h-5 w-5 sm:h-4 sm:w-4 shrink-0 text-indigo-600" />
+                <span className="text-xs sm:text-sm font-black text-slate-800">售後服務</span>
               </span>
-              <ArrowRight className="h-4 w-4 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900" />
+              <ArrowRight className="hidden sm:block h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900" />
             </a>
             <a
               href={withBasePath("/refund-cancellation-policy")}
-              className="group flex items-center justify-between rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-800 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]"
+              className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1.5 sm:gap-3 rounded-xl border-2 border-slate-200 bg-white p-2.5 sm:px-4 sm:py-3.5 text-center transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]"
             >
-              <span className="flex items-center gap-2">
-                <ReceiptText className="h-4 w-4 text-indigo-600" />
-                退款與取消政策
+              <span className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2">
+                <ReceiptText className="h-5 w-5 sm:h-4 sm:w-4 shrink-0 text-indigo-600" />
+                <span className="text-xs sm:text-sm font-black text-slate-800 leading-tight">退款與取消</span>
               </span>
-              <ArrowRight className="h-4 w-4 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900" />
+              <ArrowRight className="hidden sm:block h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900" />
             </a>
           </div>
         </div>
