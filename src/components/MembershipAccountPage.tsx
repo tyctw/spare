@@ -190,6 +190,16 @@ export default function MembershipAccountPage() {
                   </div>
                 </> : <>
                   <p className="text-sm font-bold leading-relaxed text-slate-600">登入 LINE 後可確認既有資格；尚未購買時，可直接從方案頁啟用免廣告。</p>
+                  <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3">
+                    <div className="min-w-0 rounded-2xl border-2 border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 sm:px-4 sm:py-3">
+                      <p className="text-[10px] font-black text-slate-500 sm:text-xs">專屬特權 1</p>
+                      <p className="mt-1 break-words text-sm font-black text-slate-800 sm:text-base">移除全部廣告</p>
+                    </div>
+                    <div className="min-w-0 rounded-2xl border-2 border-slate-200 bg-slate-50 p-3 transition hover:border-slate-300 sm:px-4 sm:py-3">
+                      <p className="text-[10px] font-black text-slate-500 sm:text-xs">專屬特權 2</p>
+                      <p className="mt-1 break-words text-sm font-black text-slate-800 sm:text-base">介面純淨無干擾</p>
+                    </div>
+                  </div>
                   <a href={withBasePath('/membership')} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3.5 text-sm font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 active:shadow-none"><Sparkles className="h-4 w-4" />前往啟用免廣告</a>
                 </>}
               </div>
