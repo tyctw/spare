@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, Calculator, Compass, ExternalLink, GraduationCap, HelpCircle, LineChart, ListChecks, MapPin, Search, Sparkles, Target } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import { AREA_SCHOOLS } from '../lib/areaSchools';
 
 type FAQ = { q: string; a: string };
 
@@ -323,6 +324,14 @@ export default function AreaPage({ slug }: { slug: string }) {
           </a>)}
         </div>
       </section>
+
+      {/* SEO Schools List */}
+      <div className="mt-16 border-t-2 border-slate-200 pt-8 pb-12">
+        <p className="text-[11px] font-bold leading-5 text-slate-400/80 text-justify break-words">
+          【{area.name}會考落點與高中職免試入學涵蓋學校】
+          {AREA_SCHOOLS[slug] ? AREA_SCHOOLS[slug].join('、') : ''}
+        </p>
+      </div>
     </div>
   </main>;
 }
