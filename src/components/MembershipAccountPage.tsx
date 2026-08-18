@@ -195,32 +195,73 @@ export default function MembershipAccountPage() {
             </section>
             </div>
           </div>
-          <aside className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-6 shadow-[6px_6px_0_#161b35] sm:p-7">
-              <p className="text-xs font-black tracking-[.16em] text-slate-500">LINE 身分確認</p>
-              <div className="mt-4 rounded-2xl border border-indigo-100 bg-[#f7f9ff] p-4">
-                <p className="text-sm font-black text-slate-500">登入帳號</p>
-                <p className="mt-1 break-all text-xl font-black">{lineName || '尚未登入 LINE'}</p>
+          <aside className="mt-5 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+            <div className="border-b-2 border-slate-900 bg-[#00c300]/10 p-6 sm:p-7">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-[#00c300] text-white">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black tracking-[.16em] text-[#00a000]">IDENTITY VERIFICATION</p>
+                  <h2 className="mt-0.5 text-lg font-black text-slate-900">LINE 身分確認</h2>
+                </div>
               </div>
-              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-sm font-medium leading-6 text-slate-600">LINE 僅用於確認與恢復會員資格。登入狀態有效 15 分鐘；登出後，此裝置會立刻恢復一般使用者顯示。</p>
-              </div>
-              <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-2">
+            </div>
+            
+            <div className="p-6 sm:p-7">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 transition-colors hover:border-slate-300">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-200 bg-white text-slate-400">
+                    <CircleUserRound className="h-6 w-6" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-black text-slate-400">登入帳號</p>
+                    <p className="mt-0.5 truncate text-lg font-black text-slate-900">{lineName || '尚未登入 LINE'}</p>
+                  </div>
+                </div>
+
+                <p className="rounded-xl bg-indigo-50/50 px-4 py-3 text-xs font-bold leading-relaxed text-indigo-800">
+                  LINE 僅用於確認與恢復會員資格。登入狀態有效 15 分鐘；登出後，此裝置會立刻恢復一般使用者顯示。
+                </p>
+
                 {lineName ? (
-                  <button type="button" onClick={() => void logout()} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 font-black text-slate-700 transition hover:border-slate-400 hover:bg-white"><LogOut className="h-4 w-4" />登出 LINE</button>
+                  <button type="button" onClick={() => void logout()} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-700 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]">
+                    <LogOut className="h-4 w-4 text-slate-400" />
+                    登出 LINE
+                  </button>
                 ) : (
-                  <button type="button" onClick={loginWithLine} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-400 px-4 py-3 font-black shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-emerald-500 active:translate-y-0 active:shadow-none"><LogIn className="h-4 w-4" />使用 LINE 登入</button>
+                  <button type="button" onClick={loginWithLine} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-[#00c300] px-4 py-3.5 text-sm font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-[#00a000] active:translate-y-0 active:shadow-none">
+                    <LogIn className="h-4 w-4" />
+                    使用 LINE 登入
+                  </button>
                 )}
               </div>
-              {lineName && <div className="mt-5 border-t border-slate-200 pt-4">
-                <p className="text-xs font-black tracking-[.14em] text-rose-700">帳號刪除</p>
-                <p className="mt-1 text-xs font-medium leading-5 text-slate-600">刪除後會移除 LINE 身分連結與此裝置登入狀態；付款交易紀錄會依法保留，但不再與你的 LINE 帳號連結。</p>
-                {membership.active ? (
-                  <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black leading-5 text-amber-800">免廣告資格仍有效，請於到期後再刪除帳號。</p>
-                ) : (
-                  <button type="button" onClick={() => setDeleteDialogOpen(true)} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm font-black text-rose-800 transition hover:border-rose-500 hover:bg-rose-100"><Trash2 className="h-4 w-4" />刪除帳號</button>
-                )}
-              </div>}
+
+              {lineName && (
+                <div className="mt-8 border-t-2 border-dashed border-rose-100 pt-6">
+                  <div className="flex items-center gap-2">
+                    <Trash2 className="h-4 w-4 text-rose-500" />
+                    <h3 className="text-sm font-black text-rose-700">帳號刪除</h3>
+                  </div>
+                  <p className="mt-2 text-xs font-bold leading-relaxed text-slate-500">
+                    刪除後會移除 LINE 身分連結與此裝置登入狀態；付款交易紀錄會依法保留，但不再與你的 LINE 帳號連結。
+                  </p>
+                  
+                  {membership.active ? (
+                     <div className="mt-4 flex items-start gap-2 rounded-xl border-2 border-amber-200 bg-amber-50 px-3 py-2.5">
+                       <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                       <p className="text-xs font-black leading-relaxed text-amber-800">免廣告資格仍有效，請於到期後再刪除帳號。</p>
+                     </div>
+                  ) : (
+                    <button type="button" onClick={() => setDeleteDialogOpen(true)} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-rose-200 bg-rose-50 px-4 py-3 text-sm font-black text-rose-700 transition hover:border-rose-900 hover:bg-rose-100 hover:text-rose-900">
+                      刪除帳號
+                    </button>
+                  )}
+                </div>
+              )}
+              
               {accountNotice && <p role="status" aria-live="polite" className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold leading-5 text-indigo-800">{accountNotice}</p>}
+            </div>
           </aside>
           </>
         )}
