@@ -231,11 +231,10 @@ export default function MembershipAccountPage() {
                 </p>
 
                 {lineName ? (
-                  <div className="mt-2 text-center">
-                    <button type="button" onClick={() => void logout()} className="text-sm font-black text-slate-500 underline decoration-slate-300 decoration-2 underline-offset-4 transition hover:text-slate-900">
-                      登出 LINE
-                    </button>
-                  </div>
+                  <button type="button" onClick={() => void logout()} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-700 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]">
+                    <LogOut className="h-4 w-4 text-slate-400" />
+                    登出 LINE
+                  </button>
                 ) : (
                   <button type="button" onClick={loginWithLine} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-[#00c300] px-4 py-3.5 text-sm font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-[#00a000] active:translate-y-0 active:shadow-none">
                     <LogIn className="h-4 w-4" />
