@@ -239,18 +239,20 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
             {lineName ? (
               <a 
                 href={withBasePath("/membership")} 
-                className={`hidden min-[450px]:flex items-center gap-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-900 bg-white px-2.5 sm:px-3 text-xs font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${isScrolled ? 'h-10' : 'h-10 sm:h-12'}`}
+                aria-label="會員中心"
+                className={`flex items-center justify-center gap-1.5 border-slate-900 font-black transition active:translate-y-1 active:shadow-none ${isScrolled ? 'h-10 w-10 min-[450px]:w-auto min-[450px]:px-2.5 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'h-10 w-10 sm:h-12 min-[450px]:w-auto min-[450px]:px-3 rounded-xl sm:rounded-2xl border-2 sm:border-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]'} ${membership?.active ? 'bg-amber-300 hover:bg-amber-200 text-slate-900' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}
               >
-                <Crown className={`h-4 w-4 ${membership?.active ? 'fill-amber-300 text-slate-900' : 'text-slate-400'}`} />
-                <span className="max-w-[70px] truncate text-slate-700">{lineName}</span>
+                <Crown className={`shrink-0 h-5 w-5 min-[450px]:h-4 min-[450px]:w-4 ${membership?.active ? 'fill-amber-100 text-slate-900' : 'text-slate-400'}`} />
+                <span className="hidden min-[450px]:inline-block max-w-[70px] truncate text-xs">{lineName}</span>
               </a>
             ) : (
               <a 
                 href={withBasePath("/membership")} 
-                className={`hidden min-[450px]:flex items-center gap-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-900 bg-white px-2.5 sm:px-3 text-xs font-black text-slate-600 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none ${isScrolled ? 'h-10' : 'h-10 sm:h-12'}`}
+                aria-label="登入"
+                className={`flex items-center justify-center gap-1.5 border-slate-900 bg-sky-300 hover:bg-sky-200 text-slate-900 font-black transition active:translate-y-1 active:shadow-none ${isScrolled ? 'h-10 w-10 min-[450px]:w-auto min-[450px]:px-2.5 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'h-10 w-10 sm:h-12 min-[450px]:w-auto min-[450px]:px-3 rounded-xl sm:rounded-2xl border-2 sm:border-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]'}`}
               >
-                <LogIn className="h-4 w-4 text-slate-400" />
-                <span>登入</span>
+                <LogIn className="shrink-0 h-5 w-5 min-[450px]:h-4 min-[450px]:w-4" />
+                <span className="hidden min-[450px]:inline-block text-xs">登入</span>
               </a>
             )}
             <button
