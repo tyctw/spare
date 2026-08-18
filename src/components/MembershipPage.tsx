@@ -282,7 +282,19 @@ export default function MembershipPage() {
             <div aria-hidden="true" className="absolute -right-10 -top-12 h-36 w-36 rounded-full border-[15px] border-violet-100" />
             <div className="relative border-b-2 border-slate-900 bg-violet-100 px-6 py-5 sm:px-8">
               <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white px-3 py-1 text-[11px] font-black tracking-[.14em] text-violet-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />SECURE MEMBER CHECK</span>
-              <div className="mt-4 flex items-center gap-4"><div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35]"><Crown className="h-6 w-6 fill-amber-300" /></div><div><h1 id="members    if (membership.active)
+              <div className="mt-4 flex items-center gap-4"><div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35]"><Crown className="h-6 w-6 fill-amber-300" /></div><div><h1 id="membership-check-title" className="text-2xl font-black tracking-tight sm:text-3xl">正在確認會員資格</h1><p className="mt-1 text-sm font-bold text-slate-600">請稍候，我們正在安全確認你的 LINE 身分。</p></div></div>
+            </div>
+            <div className="relative space-y-3 p-5 sm:p-6">
+              <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-black text-white">1</span><div className="min-w-0 flex-1"><p className="text-sm font-black">確認 LINE 安全工作階段</p><p className="text-xs font-bold text-emerald-700">已啟動安全驗證</p></div><Check className="h-5 w-5 text-emerald-600" /></div>
+              <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3"><span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-indigo-600 text-xs font-black text-white">2</span><div className="min-w-0 flex-1"><p className="text-sm font-black">查詢免廣告資格</p><p className="text-xs font-bold text-indigo-700">正在確認方案與有效期限</p></div><span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-600" /></div>
+              <p className="px-1 pt-1 text-center text-xs font-bold leading-5 text-slate-500">登入憑證不會儲存在網址或瀏覽器儲存空間。</p>
+            </div>
+          </article>
+        </section>
+      </main>
+    );
+
+  if (membership.active)
     return (
       <main id="main-content" aria-labelledby="member-active-title" className="min-h-screen bg-[#f5f6ff] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
         <section className="mx-auto max-w-3xl">
