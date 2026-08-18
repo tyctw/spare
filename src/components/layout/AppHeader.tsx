@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, Share2, Menu, Compass, Target, CalendarDays, CircleHelp, ArrowRight, X, Instagram, Crown, LogIn } from 'lucide-react';
+import { Search, Share2, Menu, Compass, Target, CalendarDays, CircleHelp, ArrowRight, X, Instagram } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
 import { menuCategories, type MenuCategory, type MenuItem } from './NavigationDrawer';
 import { categoryOverviewPaths } from '../../lib/categoryOverview';
-import { callBackend } from '../../lib/api';
-import { getMembershipStatus, type MembershipStatus } from '../../lib/membership';
 
 function ThreadsIcon({ className }: { className?: string }) {
   return (
@@ -26,8 +24,6 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false);
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
-  const [lineName, setLineName] = useState<string | null>(null);
-  const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const getCompactNavigation = () => typeof window !== 'undefined' && (
     window.innerWidth < 1024 || window.matchMedia('(hover: none), (pointer: coarse)').matches
   );
@@ -84,20 +80,6 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
     updateNavigationMode();
     window.addEventListener('resize', updateNavigationMode);
     return () => window.removeEventListener('resize', updateNavigationMode);
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const line = await callBackend<{ loggedIn: boolean; name?: string }>({
-          action: "getLineLoginSession",
-        });
-        if (line.loggedIn) setLineName(line.name || "LINE 會員");
-        setMembership(await getMembershipStatus());
-      } catch {
-        // ignore errors silently
-      }
-    })();
   }, []);
   const findCategory = (id: string) => menuCategories.find((category) => category.id === id)!;
   const navigationLinks: Array<{ id: keyof typeof categoryOverviewPaths; label: string; icon: typeof Compass; title: string; description: string; categories: MenuCategory[] }> = [
@@ -236,25 +218,6 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
           )}
 
           <div className="flex shrink-0 items-center gap-2">
-            {lineName ? (
-              <a 
-                href={withBasePath("/membership")} 
-                aria-label="會員中心"
-                className={`flex items-center justify-center gap-1.5 border-slate-900 font-black transition active:translate-y-1 active:shadow-none ${isScrolled ? 'h-10 w-10 min-[450px]:w-auto min-[450px]:px-2.5 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'h-10 w-10 sm:h-12 min-[450px]:w-auto min-[450px]:px-3 rounded-xl sm:rounded-2xl border-2 sm:border-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]'} ${membership?.active ? 'bg-amber-300 hover:bg-amber-200 text-slate-900' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}
-              >
-                <Crown className={`shrink-0 h-5 w-5 min-[450px]:h-4 min-[450px]:w-4 ${membership?.active ? 'fill-amber-100 text-slate-900' : 'text-slate-400'}`} />
-                <span className="hidden min-[450px]:inline-block max-w-[70px] truncate text-xs">{lineName}</span>
-              </a>
-            ) : (
-              <a 
-                href={withBasePath("/membership")} 
-                aria-label="登入"
-                className={`flex items-center justify-center gap-1.5 border-slate-900 bg-sky-300 hover:bg-sky-200 text-slate-900 font-black transition active:translate-y-1 active:shadow-none ${isScrolled ? 'h-10 w-10 min-[450px]:w-auto min-[450px]:px-2.5 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'h-10 w-10 sm:h-12 min-[450px]:w-auto min-[450px]:px-3 rounded-xl sm:rounded-2xl border-2 sm:border-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]'}`}
-              >
-                <LogIn className="shrink-0 h-5 w-5 min-[450px]:h-4 min-[450px]:w-4" />
-                <span className="hidden min-[450px]:inline-block text-xs">登入</span>
-              </a>
-            )}
             <button
               type="button"
               onClick={() => setIsGlobalSearchOpen(true)}
