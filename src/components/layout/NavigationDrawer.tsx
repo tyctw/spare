@@ -83,8 +83,8 @@ export const menuCategories: MenuCategory[] = [
     label: '我要查資料',
     description: '找學校、科別、群科與學校類型',
     icon: Search,
-    color: 'text-sky-500',
-    bg: 'bg-sky-50',
+    color: 'text-sky-600',
+    bg: 'bg-sky-100',
     accent: 'border-sky-500',
     items: [
       { id: 'search', label: '搜尋學校與科別', description: '用校名、科別、群別快速查資料', keywords: '搜尋 學校 科別 群別 縣市 代碼', icon: Search, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/search' } },
@@ -99,8 +99,8 @@ export const menuCategories: MenuCategory[] = [
     label: '我要選志願',
     description: '落點分析、志願排序與錄取資料',
     icon: Target,
-    color: 'text-amber-500',
-    bg: 'bg-amber-50',
+    color: 'text-amber-600',
+    bg: 'bg-amber-100',
     accent: 'border-amber-500',
     items: [
       { id: 'home', label: '落點分析', description: '輸入成績與條件，產生推薦清單', keywords: '首頁 落點 分析 會考 分數', icon: Calculator, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/' } },
@@ -123,8 +123,8 @@ export const menuCategories: MenuCategory[] = [
     label: '我要規劃升學',
     description: '興趣探索、時程與官方相關資源',
     icon: CalendarDays,
-    color: 'text-indigo-500',
-    bg: 'bg-indigo-50',
+    color: 'text-indigo-600',
+    bg: 'bg-indigo-100',
     accent: 'border-indigo-500',
     items: [
       { id: 'holland', label: 'Holland 興趣測驗', description: '先了解自己的興趣類型與適合群科', keywords: 'holland 興趣 測驗 性向 群科', icon: Brain, color: 'text-indigo-600', bg: 'bg-indigo-100', action: { type: 'route', href: '/holland' } },
@@ -138,8 +138,8 @@ export const menuCategories: MenuCategory[] = [
     label: '會員服務',
     description: '免廣告方案、LINE 資格與會員帳號',
     icon: Crown,
-    color: 'text-violet-500',
-    bg: 'bg-violet-50',
+    color: 'text-violet-600',
+    bg: 'bg-violet-100',
     accent: 'border-violet-500',
     items: [
       { id: 'membership', label: '會員免廣告', description: '查看方案並用 LINE 安全確認資格', keywords: '會員 免廣告 LINE 付款 月費 年費 方案', icon: Crown, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/membership' } },
@@ -151,8 +151,8 @@ export const menuCategories: MenuCategory[] = [
     label: '外部連結',
     description: '前往相關平台與延伸升學資源',
     icon: LinkIcon,
-    color: 'text-violet-500',
-    bg: 'bg-violet-50',
+    color: 'text-violet-600',
+    bg: 'bg-violet-100',
     accent: 'border-violet-500',
     items: [
       { id: 'officialVolunteer', label: '志願選填平台', description: '開啟外部志願選填平台', keywords: '志願 選填 外部 平台 官方', icon: LinkIcon, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'external', href: 'https://tyctw.github.io/volunteer/' } },
@@ -165,8 +165,8 @@ export const menuCategories: MenuCategory[] = [
     label: '使用協助',
     description: '操作說明、常見問題與意見回饋',
     icon: CircleHelp,
-    color: 'text-rose-500',
-    bg: 'bg-slate-100',
+    color: 'text-rose-600',
+    bg: 'bg-rose-100',
     accent: 'border-rose-500',
     items: [
       { id: 'instructions', label: '使用說明', description: '第一次使用可從這裡看操作流程', keywords: '使用 說明 教學 操作', icon: Info, color: 'text-rose-600', bg: 'bg-rose-100', action: { type: 'route', href: '/instructions' } },
@@ -182,8 +182,8 @@ export const menuCategories: MenuCategory[] = [
     label: '關於平台',
     description: '平台資訊、更新紀錄與使用規範',
     icon: Info,
-    color: 'text-emerald-500',
-    bg: 'bg-slate-100',
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-100',
     accent: 'border-emerald-500',
     items: [
       { id: 'advantages', label: '平台特色', description: '了解這個工具提供哪些輔助功能', keywords: '特色 優勢 功能 平台', icon: Sparkles, color: 'text-emerald-600', bg: 'bg-emerald-100', action: { type: 'route', href: '/advantages' } },
@@ -498,10 +498,10 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                         aria-expanded={isExpanded}
                         aria-controls={`nav-category-${category.id}`}
                         className={isMobileViewport
-                          ? 'flex min-h-[104px] w-full items-center justify-between bg-slate-100 px-7 py-4 text-left outline-none transition-colors hover:bg-slate-200'
+                          ? 'group flex min-h-[104px] w-full items-stretch justify-between bg-slate-100 text-left outline-none transition-colors hover:bg-slate-200'
                           : `flex min-h-0 w-full items-center justify-between border-l-8 p-4 ${category.bg} ${category.accent} outline-none transition-colors hover:bg-opacity-80`}
                       >
-                        <div className={`flex min-w-0 items-center ${isMobileViewport ? 'gap-0' : 'gap-3'}`}>
+                        <div className={`flex min-w-0 flex-1 ${isMobileViewport ? 'flex-col justify-center pl-7 py-4 pr-4' : 'items-center gap-3'}`}>
                           <div className={`${isMobileViewport ? 'hidden' : 'flex'} h-10 w-10 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]`}>
                             <CategoryIcon className={`h-5 w-5 ${category.color}`} />
                           </div>
@@ -514,8 +514,8 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                           <span className="rounded-lg border border-slate-200 bg-white/80 px-2 py-1 text-[11px] font-black text-slate-500">{category.items.length}</span>
                           <ChevronDown className={`h-5 w-5 text-slate-900 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                         </div>
-                        <div className={`${isMobileViewport ? 'flex' : 'hidden'} h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white/80 bg-white/70 shadow-sm ${category.color}`}>
-                          <CategoryIcon className="h-8 w-8" />
+                        <div className={`${isMobileViewport ? 'flex' : 'hidden'} w-24 shrink-0 items-center justify-center transition-colors group-hover:brightness-95 ${category.bg} ${category.color}`}>
+                          <CategoryIcon className="h-10 w-10" />
                         </div>
                       </button>
                       <AnimatePresence>
@@ -568,19 +568,22 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                 })
               )}
 
-              <div className="flex justify-center gap-4 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-pink-50 text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all group-hover:scale-110 group-hover:bg-pink-100 group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:scale-95">
-                    <Instagram className="h-5 w-5 transition-transform group-hover:rotate-0" />
+              <div className="grid grid-cols-2 gap-3">
+                <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.5rem] bg-slate-100 outline-none transition hover:bg-slate-200">
+                  <div className="flex w-14 shrink-0 items-center justify-center bg-pink-100 text-pink-600 transition-colors group-hover:brightness-95">
+                    <Instagram className="h-5 w-5 transition-transform group-hover:scale-110" />
                   </div>
-                  <span className="text-sm font-bold text-slate-700">Instagram</span>
+                  <div className="flex flex-1 items-center justify-center py-3.5 pr-3">
+                    <span className="text-[15px] font-black text-slate-700">Instagram</span>
+                  </div>
                 </a>
-                <div className="mx-2 h-10 w-0.5 rounded-full bg-slate-200" />
-                <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-center gap-2 outline-none">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-slate-50 text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all group-hover:scale-110 group-hover:bg-slate-100 group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:scale-95">
+                <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.5rem] bg-slate-100 outline-none transition hover:bg-slate-200">
+                  <div className="flex w-14 shrink-0 items-center justify-center bg-slate-200 text-slate-700 transition-colors group-hover:brightness-95">
                     <ThreadsIcon className="h-5 w-5 transition-transform group-hover:scale-110" />
                   </div>
-                  <span className="text-sm font-bold text-slate-700">Threads</span>
+                  <div className="flex flex-1 items-center justify-center py-3.5 pr-3">
+                    <span className="text-[15px] font-black text-slate-700">Threads</span>
+                  </div>
                 </a>
               </div>
 
