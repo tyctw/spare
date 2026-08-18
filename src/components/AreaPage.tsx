@@ -264,9 +264,9 @@ export default function AreaPage({ slug }: { slug: string }) {
             <h1 className="mt-4 text-4xl font-black sm:text-5xl">{area.name}會考落點分析</h1>
             <p className="mt-4 max-w-3xl text-lg font-bold leading-8 text-slate-700">{area.description}</p>
           </div>
-          <div className="shrink-0">
+          <div className="w-full lg:w-auto shrink-0">
             {area.active
-              ? <a href={withBasePath('/')} className="flex w-full justify-center sm:inline-flex sm:w-auto items-center gap-3 rounded-2xl border-4 border-slate-900 bg-indigo-600 px-6 py-4 text-lg font-black text-white shadow-[5px_5px_0_0_#0f172a] transition hover:bg-indigo-700"><Compass className="h-6 w-6" />開始落點分析</a>
+              ? <a href={withBasePath('/')} className="flex w-full justify-center lg:inline-flex lg:w-auto items-center gap-3 rounded-2xl border-4 border-slate-900 bg-indigo-600 px-6 py-4 text-lg font-black text-white shadow-[5px_5px_0_0_#0f172a] transition hover:bg-indigo-700"><Compass className="h-6 w-6" />開始落點分析</a>
               : <div className="w-full sm:w-auto rounded-2xl border-4 border-slate-900 bg-slate-200 px-6 py-4 text-center shadow-[5px_5px_0_0_#0f172a]"><p className="text-lg font-black text-slate-600">落點分析籌備中</p><p className="mt-1 text-sm font-bold text-slate-500">資料整理完成後將開放查詢</p></div>
             }
           </div>
