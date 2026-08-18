@@ -314,6 +314,7 @@ export default function MembershipAccountPage() {
               </div>
             </aside>
           </div>
+          </div>
           </>
         )}
       </section>
