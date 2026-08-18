@@ -174,8 +174,15 @@ export default function MembershipAccountPage() {
                 {membership.active ? <>
                   <p className="text-sm font-bold leading-relaxed text-slate-700">你正在使用 {planName}，查詢、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
                   <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3">
-                    <div className="rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-3 transition hover:border-emerald-200 sm:px-4 sm:py-3"><p className="text-[10px] font-black text-emerald-800 sm:text-xs">目前方案</p><p className="mt-1 text-base font-black text-emerald-950 sm:text-lg">{planName}</p></div>
-                    <div className="rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-3 transition hover:border-emerald-200 sm:px-4 sm:py-3"><p className="text-[10px] font-black text-emerald-800 sm:text-xs">距離到期</p><p className="mt-1 text-base font-black text-emerald-950 sm:text-lg">剩下 {remainingDays} 天</p><p className="text-[10px] font-bold text-emerald-700 sm:text-xs">至 {formatDate(membership.expiresAt)}</p></div>
+                    <div className="min-w-0 rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-3 transition hover:border-emerald-200 sm:px-4 sm:py-3">
+                      <p className="text-[10px] font-black text-emerald-800 sm:text-xs">目前方案</p>
+                      <p className="mt-1 break-words text-base font-black text-emerald-950 sm:text-lg">{planName}</p>
+                    </div>
+                    <div className="min-w-0 rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-3 transition hover:border-emerald-200 sm:px-4 sm:py-3">
+                      <p className="text-[10px] font-black text-emerald-800 sm:text-xs">距離到期</p>
+                      <p className="mt-1 break-words text-base font-black text-emerald-950 sm:text-lg">剩下 {remainingDays} 天</p>
+                      <p className="mt-0.5 break-words text-[10px] font-bold text-emerald-700 sm:text-xs">至 {formatDate(membership.expiresAt)}</p>
+                    </div>
                   </div>
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
                     <a href={withBasePath('/')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-indigo-700"><Home className="h-4 w-4" />回到落點分析</a>
