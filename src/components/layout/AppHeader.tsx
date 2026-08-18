@@ -267,7 +267,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                   </div>
                 </div>
                 {globalSearchTerm && (
-                  <div className="mx-auto mt-4 max-h-[75vh] w-[min(94vw,1440px)] max-w-none overflow-y-auto rounded-[2rem] bg-slate-50 p-3 shadow-[0_12px_35px_rgba(15,23,42,0.18)] sm:p-4" aria-live="polite" aria-atomic="true">
+                  <div className="mx-auto mt-4 max-h-[75vh] w-full overflow-y-auto rounded-[2rem] bg-slate-50 p-3 shadow-[0_12px_35px_rgba(15,23,42,0.18)] sm:p-4" aria-live="polite" aria-atomic="true">
                     {globalSearchResults.length ? (
                       <div>
                         <div className="mb-3 flex items-center justify-between gap-3 px-2">
