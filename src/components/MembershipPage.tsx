@@ -36,9 +36,9 @@ const plans = [
     price: 49,
     duration: "30 天",
     note: "不到一杯飲料的價格，立即享有 30 天純淨無廣告",
-    comparison: "輕鬆無負擔，適合短期衝刺",
+    comparison: "🔥 新手推薦！銅板價立即關閉所有廣告",
     accent: "sky",
-    featured: false,
+    featured: true,
   },
   {
     id: "yearly",
@@ -48,7 +48,7 @@ const plans = [
     note: "平均每天只要 1.1 元，全年專注規劃，免去一切打擾",
     comparison: "🚀 最受歡迎！比月費激省 NT$189",
     accent: "indigo",
-    featured: true,
+    featured: false,
   },
 ] as const;
 type PlanId = (typeof plans)[number]["id"];
@@ -167,7 +167,7 @@ function MembershipSupportLinks() {
 
 export default function MembershipPage() {
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
-  const [selected, setSelected] = useState<PlanId>("yearly");
+  const [selected, setSelected] = useState<PlanId>("monthly");
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState("");
   const [lineName, setLineName] = useState("");
@@ -277,7 +277,7 @@ export default function MembershipPage() {
         <div aria-hidden="true" className="fixed -left-24 top-20 h-64 w-64 rounded-full bg-violet-200/60 blur-3xl" />
         <div aria-hidden="true" className="fixed -right-20 bottom-0 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
         <section className="relative mx-auto max-w-lg">
-          <a href={withBasePath("/")} className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-white/90 px-3 py-2 text-sm font-black text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-900"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
+          <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
           <article className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[7px_7px_0_#161b35]">
             <div aria-hidden="true" className="absolute -right-10 -top-12 h-36 w-36 rounded-full border-[15px] border-violet-100" />
             <div className="relative border-b-2 border-slate-900 bg-violet-100 px-6 py-5 sm:px-8">
@@ -300,7 +300,7 @@ export default function MembershipPage() {
         <section className="mx-auto max-w-3xl">
           <a
             href={withBasePath("/")}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-white/90 px-3 py-2 text-sm font-black text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-900"
+            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
           >
             <ArrowRight className="h-4 w-4 rotate-180" />
             回到落點分析
@@ -360,7 +360,7 @@ export default function MembershipPage() {
         <nav aria-label="會員頁面導覽" className="flex items-center justify-between">
           <a
             href={withBasePath("/")}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-white/90 px-3 py-2 text-sm font-black text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-900"
+            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
           >
             <ArrowRight className="h-4 w-4 rotate-180" />
             回到落點分析
@@ -403,8 +403,8 @@ export default function MembershipPage() {
                     <KeyRound className="h-4 w-4" />
                   </span>
                   <div>
-                    <p className="text-sm font-black">免輸入系統授權碼</p>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">登入 LINE 後直接開始落點分析，不必每次手動輸入。</p>
+                    <p className="text-sm font-black">無限次數落點分析</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">綁定 LINE 帳號，免輸入授權碼即可無限次數暢測。</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
@@ -540,7 +540,7 @@ export default function MembershipPage() {
                   role="radio"
                   aria-checked={active}
                   aria-label={`${plan.name}，NT$ ${plan.price}，${plan.duration}${active ? '，目前已選擇' : ''}`}
-                  className={`relative overflow-hidden rounded-[2rem] border-2 p-4 text-left transition sm:p-5 ${active ? "border-slate-900 bg-white shadow-[7px_7px_0_#161b35] -translate-y-1" : "border-slate-300 bg-white/70 hover:border-slate-900 hover:bg-white"} ${plan.featured ? "ring-4 ring-amber-200" : ""}`}
+                  className={`relative overflow-hidden rounded-[2rem] border-2 p-4 text-left transition sm:p-5 ${active ? "border-slate-900 bg-white shadow-[7px_7px_0_#161b35] -translate-y-1 ring-4 ring-amber-200" : "border-slate-300 bg-white/70 hover:border-slate-900 hover:bg-white"}`}
                 >
                   {plan.featured && (
                     <span className="absolute right-5 top-0 rounded-b-xl border-x-2 border-b-2 border-slate-900 bg-amber-300 px-3 py-1.5 text-xs font-black">
