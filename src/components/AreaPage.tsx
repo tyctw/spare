@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, Calculator, Compass, ExternalLink, GraduationCap, HelpCircle, LineChart, ListChecks, MapPin, Search, Sparkles, Target } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Building2, Calculator, Compass, ExternalLink, GraduationCap, HelpCircle, LineChart, ListChecks, MapPin, Search, Sparkles, Target } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { AREA_SCHOOLS } from '../lib/areaSchools';
 
@@ -326,12 +326,31 @@ export default function AreaPage({ slug }: { slug: string }) {
       </section>
 
       {/* SEO Schools List */}
-      <div className="mt-16 border-t-2 border-slate-200 pt-8 pb-12">
-        <p className="text-[11px] font-bold leading-5 text-slate-400/80 text-justify break-words">
-          【{area.name}會考落點與高中職免試入學涵蓋學校】
-          {AREA_SCHOOLS[slug] ? AREA_SCHOOLS[slug].join('、') : ''}
-        </p>
-      </div>
+      <section className="mb-10 mt-16">
+        <details className="group rounded-2xl border-3 border-slate-900 bg-slate-100 shadow-[3px_3px_0_0_#0f172a] transition-colors hover:bg-amber-50">
+          <summary className="cursor-pointer list-none px-5 py-4 font-black [&::-webkit-details-marker]:hidden">
+            <div className="flex items-center justify-between gap-3 text-slate-700 group-hover:text-slate-900">
+              <span className="flex items-center gap-2">
+                <Building2 className="h-5 w-5 text-indigo-600" />
+                {area.name}涵蓋高中職與五專學校列表
+              </span>
+              <span className="shrink-0 text-xl leading-none transition duration-300 group-open:rotate-45">+</span>
+            </div>
+          </summary>
+          <div className="border-t-3 border-slate-900 bg-white px-5 py-6 rounded-b-[14px]">
+            <div className="flex flex-wrap gap-2">
+              {AREA_SCHOOLS[slug]?.map(school => (
+                <span key={school} className="inline-block rounded-lg border-2 border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600">
+                  {school}
+                </span>
+              ))}
+            </div>
+            <p className="mt-5 text-[11px] font-bold text-slate-400">
+              * 上述清單包含{area.name}免試入學與共同就學區之相關學校，供會考落點分析與志願選填參考。
+            </p>
+          </div>
+        </details>
+      </section>
     </div>
   </main>;
 }
