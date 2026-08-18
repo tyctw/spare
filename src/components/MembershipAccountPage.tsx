@@ -154,7 +154,7 @@ export default function MembershipAccountPage() {
           <>
           <div className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
             <div className="flex flex-col gap-5">
-            <article className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+            <article className="shrink-0 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
               <div className={`border-b-2 border-slate-900 p-6 sm:p-7 ${membership.active ? 'bg-emerald-50' : 'bg-slate-50'}`}>
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
@@ -200,12 +200,12 @@ export default function MembershipAccountPage() {
                       <p className="mt-1 break-words text-sm font-black text-slate-800 sm:text-base">版面純淨無擾</p>
                     </div>
                   </div>
-                  <a href={withBasePath('/membership')} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3.5 text-sm font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 active:shadow-none"><Sparkles className="h-4 w-4" />前往啟用免廣告</a>
+                  <a href={withBasePath('/membership')} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3.5 text-sm font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-[#00a000] active:translate-y-0 active:shadow-none"><Sparkles className="h-4 w-4" />前往啟用免廣告</a>
                 </>}
               </div>
             </article>
 
-            <section className="h-full overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[5px_5px_0_#161b35]">
+            <section className="flex-1 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[5px_5px_0_#161b35]">
               <div className="flex items-center justify-between gap-4 border-b-2 border-slate-900 bg-violet-50 px-5 py-4">
                 <div className="flex items-center gap-3"><div className="grid h-9 w-9 place-items-center rounded-xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35]"><ReceiptText className="h-4 w-4" /></div><div><p className="text-[10px] font-black tracking-[.16em] text-violet-700">PURCHASE HISTORY</p><h2 className="mt-0.5 text-lg font-black">購買紀錄</h2></div></div>
                 <span className="rounded-full border border-violet-200 bg-white px-2.5 py-1 text-[11px] font-black text-violet-700">最多 20 筆</span>
@@ -222,7 +222,7 @@ export default function MembershipAccountPage() {
             </div>
             
             <div className="flex flex-col gap-5">
-              <aside className="flex flex-col h-full overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+              <aside className="flex flex-col flex-1 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
             <div className="border-b-2 border-slate-900 bg-[#00c300]/10 p-6 sm:p-7">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-[#00c300] text-white">
