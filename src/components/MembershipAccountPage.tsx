@@ -235,7 +235,7 @@ export default function MembershipAccountPage() {
               </div>
             </div>
             
-            <div className="flex flex-1 flex-col p-6 sm:p-7">
+            <div className="p-6 sm:p-7">
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 transition-colors hover:border-slate-300">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-200 bg-white text-slate-400">
@@ -265,7 +265,7 @@ export default function MembershipAccountPage() {
               </div>
 
               {lineName && (
-                <div className="mt-auto border-t-2 border-dashed border-rose-100 pt-6">
+                <div className="mt-8 border-t-2 border-dashed border-rose-100 pt-6">
                   <div className="flex items-center gap-2">
                     <Trash2 className="h-4 w-4 text-rose-500" />
                     <h3 className="text-sm font-black text-rose-700">帳號刪除</h3>
