@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
 import {
   ArrowLeft,
+  ArrowRight,
   BadgeCheck,
   CalendarDays,
   CircleUserRound,
+  FileText,
+  HeartHandshake,
   Home,
   Crown,
+  LifeBuoy,
   LogIn,
   LogOut,
+  Mail,
   ReceiptText,
   ShieldCheck,
   Sparkles,
@@ -194,7 +199,9 @@ export default function MembershipAccountPage() {
               })}</div> : <div className="px-5 py-7 text-center text-sm font-bold text-slate-500">登入 LINE 後，這裡會顯示你的會員購買紀錄。</div>}
             </section>
             </div>
-          <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+            
+            <div className="flex flex-col gap-5">
+              <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
             <div className="border-b-2 border-slate-900 bg-[#00c300]/10 p-6 sm:p-7">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-[#00c300] text-white">
@@ -263,6 +270,50 @@ export default function MembershipAccountPage() {
               {accountNotice && <p role="status" aria-live="polite" className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold leading-5 text-indigo-800">{accountNotice}</p>}
             </div>
           </aside>
+
+            {/* 客服與協助捷徑 */}
+            <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+              <div className="border-b-2 border-slate-900 bg-amber-50 p-6 sm:p-7">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-400 text-amber-950">
+                    <LifeBuoy className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black tracking-[.16em] text-amber-700">SUPPORT & FAQ</p>
+                    <h2 className="mt-0.5 text-lg font-black text-slate-900">客服與協助</h2>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-6 sm:p-7">
+                <p className="text-xs font-bold leading-relaxed text-slate-500">
+                  有付款或使用上的問題嗎？我們隨時為你提供協助。
+                </p>
+                <div className="mt-5 flex flex-col gap-3">
+                  <a href={withBasePath('/after-sales-service')} className="group flex items-center justify-between rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 transition hover:border-slate-900 hover:bg-white hover:shadow-[3px_3px_0_#0f172a]">
+                    <div className="flex items-center gap-3">
+                      <HeartHandshake className="h-5 w-5 text-slate-400 transition group-hover:text-indigo-600" />
+                      <span className="text-sm font-black text-slate-700 transition group-hover:text-slate-900">售後服務</span>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-900" />
+                  </a>
+                  <a href={withBasePath('/refund-cancellation-policy')} className="group flex items-center justify-between rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 transition hover:border-slate-900 hover:bg-white hover:shadow-[3px_3px_0_#0f172a]">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-slate-400 transition group-hover:text-indigo-600" />
+                      <span className="text-sm font-black text-slate-700 transition group-hover:text-slate-900">退款與取消政策</span>
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-900" />
+                  </a>
+                </div>
+                
+                <div className="mt-6 border-t-2 border-dashed border-slate-200 pt-5 text-center">
+                  <a href="mailto:tyctw.analyze@gmail.com?subject=會員問題協助" className="inline-flex items-center justify-center gap-2 text-sm font-black text-slate-500 underline decoration-slate-300 decoration-2 underline-offset-4 transition hover:text-indigo-700 hover:decoration-indigo-300">
+                    <Mail className="h-4 w-4" />
+                    tyctw.analyze@gmail.com
+                  </a>
+                </div>
+              </div>
+            </aside>
           </div>
           </>
         )}
