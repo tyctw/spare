@@ -288,20 +288,20 @@ export default function MembershipAccountPage() {
                 <p className="text-xs font-bold leading-relaxed text-slate-500">
                   有付款或使用上的問題嗎？我們隨時為你提供協助。
                 </p>
-                <div className="mt-5 flex flex-col gap-3">
-                  <a href={withBasePath('/after-sales-service')} className="group flex items-center justify-between rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 transition hover:border-slate-900 hover:bg-white hover:shadow-[3px_3px_0_#0f172a]">
-                    <div className="flex items-center gap-3">
-                      <HeartHandshake className="h-5 w-5 text-slate-400 transition group-hover:text-indigo-600" />
-                      <span className="text-sm font-black text-slate-700 transition group-hover:text-slate-900">售後服務</span>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-900" />
+                <div className="mt-5 grid gap-2 sm:gap-3 grid-cols-2">
+                  <a href={withBasePath('/after-sales-service')} className="group flex flex-col xl:flex-row items-center justify-center xl:justify-between gap-1.5 xl:gap-3 rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 xl:p-3.5 text-center transition hover:border-slate-900 hover:bg-white hover:shadow-[3px_3px_0_#0f172a]">
+                    <span className="flex flex-col xl:flex-row items-center gap-1.5 xl:gap-2">
+                      <HeartHandshake className="h-5 w-5 xl:h-4 xl:w-4 shrink-0 text-slate-400 transition group-hover:text-indigo-600" />
+                      <span className="text-xs xl:text-sm font-black text-slate-700 transition group-hover:text-slate-900">售後服務</span>
+                    </span>
+                    <ArrowRight aria-hidden="true" className="hidden xl:block h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-900" />
                   </a>
-                  <a href={withBasePath('/refund-cancellation-policy')} className="group flex items-center justify-between rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 transition hover:border-slate-900 hover:bg-white hover:shadow-[3px_3px_0_#0f172a]">
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-slate-400 transition group-hover:text-indigo-600" />
-                      <span className="text-sm font-black text-slate-700 transition group-hover:text-slate-900">退款與取消政策</span>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-900" />
+                  <a href={withBasePath('/refund-cancellation-policy')} className="group flex flex-col xl:flex-row items-center justify-center xl:justify-between gap-1.5 xl:gap-3 rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 xl:p-3.5 text-center transition hover:border-slate-900 hover:bg-white hover:shadow-[3px_3px_0_#0f172a]">
+                    <span className="flex flex-col xl:flex-row items-center gap-1.5 xl:gap-2">
+                      <FileText className="h-5 w-5 xl:h-4 xl:w-4 shrink-0 text-slate-400 transition group-hover:text-indigo-600" />
+                      <span className="text-xs xl:text-sm font-black text-slate-700 transition group-hover:text-slate-900 leading-tight">退款與取消</span>
+                    </span>
+                    <ArrowRight aria-hidden="true" className="hidden xl:block h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-slate-900" />
                   </a>
                 </div>
                 
