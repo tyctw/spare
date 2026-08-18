@@ -210,6 +210,11 @@ export const applyPageSeo = (path: string) => {
   document.title = metadata.title;
   document.documentElement.lang = 'zh-Hant-TW';
   setMetaContent('meta[name="description"]', metadata.description);
+  if (areaData) {
+    setMetaContent('meta[name="keywords"]', areaData.keywords.join(', '));
+  } else if (scoringRulesMeta && scoringRulesRegionId) {
+    setMetaContent('meta[name="keywords"]', `超額比序, 免試入學, 會考, ${scoringRulesMeta.cityKeywords}, 志願選填, 計分規則`);
+  }
   setMetaContent('meta[name="robots"]', metadata.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
   setMetaContent('meta[name="googlebot"]', metadata.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large');
   setMetaContent('meta[property="og:title"]', metadata.title);
