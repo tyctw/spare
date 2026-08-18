@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Check, CircleDollarSign, CreditCard, FileText, Heart, Info, Mail } from 'lucide-react';
+import { ArrowLeft, Check, CircleDollarSign, CreditCard, FileText, Heart, Info, Mail, HeartHandshake, ReceiptText } from 'lucide-react';
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
 
@@ -205,9 +205,21 @@ export default function SupportPage() {
               <p className="text-xs font-black tracking-[0.14em] text-slate-500">PAYMENT INFORMATION</p>
               <h2 className="mt-1 text-lg font-black text-slate-800">付款前請閱讀</h2>
               <p className="mt-2 text-sm font-medium leading-6 text-slate-600">了解售後與退款規則，讓每一筆支持更安心。</p>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                <a href={withBasePath('/after-sales-service')} className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:border-indigo-400 hover:text-indigo-700"><span>售後服務</span><span aria-hidden="true" className="text-indigo-500 transition group-hover:translate-x-1">→</span></a>
-                <a href={withBasePath('/refund-cancellation-policy')} className="group flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:border-indigo-400 hover:text-indigo-700"><span>退款與取消政策</span><span aria-hidden="true" className="text-indigo-500 transition group-hover:translate-x-1">→</span></a>
+              <div className="mt-5 grid gap-2 sm:gap-3 grid-cols-2">
+                <a href={withBasePath('/after-sales-service')} className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1.5 sm:gap-3 rounded-xl border border-slate-200 bg-white p-2.5 sm:px-4 sm:py-3.5 text-center transition hover:border-indigo-400 hover:text-indigo-700 hover:shadow-sm">
+                  <span className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2">
+                    <HeartHandshake className="h-5 w-5 sm:h-4 sm:w-4 shrink-0 text-indigo-500 transition group-hover:text-indigo-600" />
+                    <span className="text-xs sm:text-sm font-black text-slate-800 transition group-hover:text-indigo-700">售後服務</span>
+                  </span>
+                  <span aria-hidden="true" className="hidden sm:block text-indigo-500 transition group-hover:translate-x-1">→</span>
+                </a>
+                <a href={withBasePath('/refund-cancellation-policy')} className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1.5 sm:gap-3 rounded-xl border border-slate-200 bg-white p-2.5 sm:px-4 sm:py-3.5 text-center transition hover:border-indigo-400 hover:text-indigo-700 hover:shadow-sm">
+                  <span className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2">
+                    <ReceiptText className="h-5 w-5 sm:h-4 sm:w-4 shrink-0 text-indigo-500 transition group-hover:text-indigo-600" />
+                    <span className="text-xs sm:text-sm font-black text-slate-800 transition group-hover:text-indigo-700 leading-tight">退款與取消</span>
+                  </span>
+                  <span aria-hidden="true" className="hidden sm:block text-indigo-500 transition group-hover:translate-x-1">→</span>
+                </a>
               </div>
             </div>
           </div>
