@@ -147,7 +147,8 @@ export default function MembershipAccountPage() {
           </div>
         ) : (
           <>
-          <div className="mt-5 grid gap-5 lg:grid-cols-[1.15fr_.85fr] lg:items-stretch">
+          <div className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_.8fr] lg:items-start">
+            <div className="flex flex-col gap-5">
             <article className={`rounded-[2rem] border-2 border-slate-900 p-6 shadow-[6px_6px_0_#161b35] sm:p-7 ${membership.active ? 'bg-emerald-50' : 'bg-white'}`}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-4">
@@ -178,7 +179,6 @@ export default function MembershipAccountPage() {
               </>}
             </article>
 
-            <div>
             <section className="h-full overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[5px_5px_0_#161b35]">
               <div className="flex items-center justify-between gap-4 border-b-2 border-slate-900 bg-violet-50 px-5 py-4">
                 <div className="flex items-center gap-3"><div className="grid h-9 w-9 place-items-center rounded-xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35]"><ReceiptText className="h-4 w-4" /></div><div><p className="text-[10px] font-black tracking-[.16em] text-violet-700">PURCHASE HISTORY</p><h2 className="mt-0.5 text-lg font-black">購買紀錄</h2></div></div>
@@ -194,8 +194,7 @@ export default function MembershipAccountPage() {
               })}</div> : <div className="px-5 py-7 text-center text-sm font-bold text-slate-500">登入 LINE 後，這裡會顯示你的會員購買紀錄。</div>}
             </section>
             </div>
-          </div>
-          <aside className="mt-5 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+          <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
             <div className="border-b-2 border-slate-900 bg-[#00c300]/10 p-6 sm:p-7">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-[#00c300] text-white">
@@ -264,6 +263,7 @@ export default function MembershipAccountPage() {
               {accountNotice && <p role="status" aria-live="polite" className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold leading-5 text-indigo-800">{accountNotice}</p>}
             </div>
           </aside>
+          </div>
           </>
         )}
       </section>
