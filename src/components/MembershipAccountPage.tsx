@@ -122,7 +122,7 @@ export default function MembershipAccountPage() {
     <main id="main-content" aria-labelledby="member-account-title" className="min-h-screen overflow-hidden bg-[#f5f6ff] px-4 py-6 text-slate-900 sm:px-6 sm:py-10">
       <div aria-hidden="true" className="fixed -left-28 top-20 h-72 w-72 rounded-full bg-violet-200/60 blur-3xl" />
       <div aria-hidden="true" className="fixed -right-24 bottom-0 h-80 w-80 rounded-full bg-sky-200/60 blur-3xl" />
-      <section className="relative mx-auto max-w-4xl">
+      <section className="relative mx-auto max-w-5xl">
         <a href={withBasePath('/membership')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0_#161b35]">
           <ArrowLeft className="h-4 w-4" />會員免廣告
         </a>
@@ -225,10 +225,11 @@ export default function MembershipAccountPage() {
                 </p>
 
                 {lineName ? (
-                  <button type="button" onClick={() => void logout()} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-700 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]">
-                    <LogOut className="h-4 w-4 text-slate-400" />
-                    登出 LINE
-                  </button>
+                  <div className="mt-2 text-center">
+                    <button type="button" onClick={() => void logout()} className="text-sm font-black text-slate-500 underline decoration-slate-300 decoration-2 underline-offset-4 transition hover:text-slate-900">
+                      登出 LINE
+                    </button>
+                  </div>
                 ) : (
                   <button type="button" onClick={loginWithLine} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-[#00c300] px-4 py-3.5 text-sm font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-[#00a000] active:translate-y-0 active:shadow-none">
                     <LogIn className="h-4 w-4" />
@@ -272,9 +273,9 @@ export default function MembershipAccountPage() {
           <h2 id="delete-account-title" className="mt-4 text-2xl font-black">確認刪除帳號？</h2>
           <p id="delete-account-description" className="mt-2 text-sm font-medium leading-6 text-slate-600">這會移除你的 LINE 身分連結和目前登入狀態。交易紀錄會保留作為必要的付款與帳務資料，但不再與你的 LINE 帳號連結。</p>
           <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-black leading-5 text-amber-800">此操作無法復原；日後如需使用會員服務，需重新登入並重新購買方案。</p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <button type="button" onClick={() => setDeleteDialogOpen(false)} disabled={deletingAccount} className="rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-black transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">保留帳號</button>
-            <button type="button" onClick={() => void deleteAccount()} disabled={deletingAccount} className="rounded-xl border-2 border-rose-800 bg-rose-700 px-4 py-3 font-black text-white shadow-[3px_3px_0_#7f1d1d] transition hover:bg-rose-800 disabled:cursor-not-allowed disabled:opacity-50">{deletingAccount ? '正在刪除…' : '確認刪除'}</button>
+          <div className="mt-6 grid gap-2 sm:gap-3 grid-cols-2">
+            <button type="button" onClick={() => void deleteAccount()} disabled={deletingAccount} className="rounded-xl border-2 border-rose-800 bg-rose-700 p-2.5 sm:px-4 sm:py-3 text-sm sm:text-base font-black text-white shadow-[3px_3px_0_#7f1d1d] transition hover:bg-rose-800 disabled:cursor-not-allowed disabled:opacity-50">{deletingAccount ? '刪除中...' : '確定刪除'}</button>
+            <button type="button" onClick={() => setDeleteDialogOpen(false)} disabled={deletingAccount} className="rounded-xl border-2 border-slate-900 bg-white p-2.5 sm:px-4 sm:py-3 text-sm sm:text-base font-black transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">保留帳號</button>
           </div>
         </section>
       </div>}
