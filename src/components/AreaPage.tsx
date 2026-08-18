@@ -265,8 +265,8 @@ export default function AreaPage({ slug }: { slug: string }) {
           </div>
           <div className="shrink-0">
             {area.active
-              ? <a href={withBasePath('/')} className="inline-flex items-center gap-3 rounded-2xl border-4 border-slate-900 bg-indigo-600 px-6 py-4 text-lg font-black text-white shadow-[5px_5px_0_0_#0f172a] transition hover:bg-indigo-700"><Compass className="h-6 w-6" />開始落點分析</a>
-              : <div className="rounded-2xl border-4 border-slate-900 bg-slate-200 px-6 py-4 text-center shadow-[5px_5px_0_0_#0f172a]"><p className="text-lg font-black text-slate-600">落點分析籌備中</p><p className="mt-1 text-sm font-bold text-slate-500">資料整理完成後將開放查詢</p></div>
+              ? <a href={withBasePath('/')} className="flex w-full justify-center sm:inline-flex sm:w-auto items-center gap-3 rounded-2xl border-4 border-slate-900 bg-indigo-600 px-6 py-4 text-lg font-black text-white shadow-[5px_5px_0_0_#0f172a] transition hover:bg-indigo-700"><Compass className="h-6 w-6" />開始落點分析</a>
+              : <div className="w-full sm:w-auto rounded-2xl border-4 border-slate-900 bg-slate-200 px-6 py-4 text-center shadow-[5px_5px_0_0_#0f172a]"><p className="text-lg font-black text-slate-600">落點分析籌備中</p><p className="mt-1 text-sm font-bold text-slate-500">資料整理完成後將開放查詢</p></div>
             }
           </div>
         </div>
@@ -316,7 +316,7 @@ export default function AreaPage({ slug }: { slug: string }) {
       <section>
         <h2 className="text-2xl font-black">其他就學區</h2>
         <p className="mt-2 text-sm font-bold text-slate-600">查看全國其他就學區的會考落點分析入口。</p>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
           {otherAreas.map((a) => <a key={a.slug} href={withBasePath(`/area/${a.slug}`)} className="flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2.5 text-sm font-black shadow-[2px_2px_0_0_#0f172a] transition hover:bg-slate-50 hover:shadow-[3px_3px_0_0_#0f172a]">
             <MapPin className="h-3.5 w-3.5 shrink-0 text-rose-600" />{a.name}
             {!a.active && <span className="ml-auto rounded-full bg-slate-200 px-1.5 py-0.5 text-[10px] font-black text-slate-500">籌備中</span>}
