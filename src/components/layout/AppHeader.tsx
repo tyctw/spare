@@ -190,21 +190,21 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                 </div>
                 <div className="order-1">
                   <p className="mb-3 px-1 text-sm font-black text-slate-500">探索更多</p>
-                  <div className="-m-1 grid max-h-[calc(100vh-12rem)] grid-cols-3 gap-3 overflow-y-auto p-1 pr-2">
+                  <div className="-m-1 grid max-h-[calc(100vh-12rem)] grid-cols-2 gap-3 overflow-y-auto p-1 pr-2">
                     {selectedItems.map((item, itemIndex) => {
                       const ItemIcon = item.icon;
                       return (
                         <button key={item.id} type="button" onClick={() => runAction(item)} className={`group relative z-0 rounded-[1.35rem] border-2 border-slate-100 p-4 text-left transition hover:z-10 hover:-translate-y-0.5 hover:border-slate-900 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${itemIndex === 0 ? 'bg-amber-50' : 'bg-slate-50'}`}>
-                          <span className="flex items-center justify-between gap-2">
-                            <span className="text-[10px] font-black text-slate-500">{item.categoryLabel}</span>
-                            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.bg} ${item.color}`}><ItemIcon className="h-4 w-4" /></span>
-                          </span>
-                          <span className="mt-2 flex items-center justify-between gap-2 text-base font-black leading-snug text-slate-900">
-                            <span>
-                              <span className="block">{item.label}</span>
+                          <span className="flex items-start gap-3">
+                            <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${item.bg} ${item.color}`}>
+                              <ItemIcon className="h-5 w-5" />
+                            </span>
+                            <span className="flex min-w-0 flex-1 flex-col">
+                              <span className="text-[10px] font-black text-slate-500">{item.categoryLabel}</span>
+                              <span className="mt-0.5 block text-[15px] font-black leading-snug text-slate-900">{item.label}</span>
                               <span className="mt-1 block text-xs font-bold leading-snug text-slate-500">{item.description}</span>
                             </span>
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900">
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900 self-center">
                               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                             </span>
                           </span>
