@@ -70,35 +70,35 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             className="relative h-[100dvh] w-full max-w-6xl bg-slate-100 border-0 sm:h-auto sm:max-h-[90vh] sm:rounded-[2rem] sm:border-4 border-slate-900 overflow-hidden shadow-none sm:shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col"
           >
-            <div className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 p-4 sm:p-6">
-              <div className="pointer-events-none absolute -right-12 -top-16 h-52 w-52 rounded-full border-[18px] border-white/20" />
-              <div className="pointer-events-none absolute -bottom-20 right-32 h-40 w-40 rounded-full bg-amber-300/30 blur-2xl" />
-              <List className="pointer-events-none absolute -right-1 bottom-[-2.25rem] h-36 w-36 rotate-[-12deg] text-slate-900/15" />
+            <div className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-indigo-50 p-4 sm:p-6">
+              <div className="pointer-events-none absolute -right-12 -top-16 h-52 w-52 rounded-full border-[18px] border-indigo-200/60" />
+              <div className="pointer-events-none absolute -bottom-20 right-32 h-40 w-40 rounded-full bg-sky-200/60 blur-2xl" />
+              <List className="pointer-events-none absolute -right-1 bottom-[-2.25rem] h-36 w-36 text-indigo-900/5" />
               <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex min-w-0 items-center justify-between gap-3 sm:justify-start">
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 shadow-[4px_4px_0_#0f172a] sm:h-14 sm:w-14">
-                      <List className="h-5 w-5 text-slate-900 sm:h-7 sm:w-7" />
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-white shadow-[4px_4px_0_#0f172a] sm:h-14 sm:w-14">
+                      <List className="h-5 w-5 text-indigo-600 sm:h-7 sm:w-7" />
                     </div>
                     <div className="min-w-0">
                       <div className="mb-1 flex flex-wrap items-center gap-2">
-                        <span className="rounded-full border border-white/70 bg-white/20 px-2 py-0.5 text-[10px] font-black tracking-[0.16em] text-white">COMPARE LIST</span>
-                        <span className="rounded-full border-2 border-slate-900 bg-white px-2 py-0.5 text-[10px] font-black text-slate-900">已選 {schools.length} 所</span>
+                        <span className="rounded-full border border-indigo-200 bg-indigo-100/80 px-2 py-0.5 text-[10px] font-black tracking-[0.16em] text-indigo-700">ANALYSIS COMPARISON</span>
+                        <span className="rounded-full border border-slate-300 bg-white px-2 py-0.5 text-[10px] font-black text-slate-600">已選 {schools.length} 所</span>
                       </div>
-                      <h2 className="text-xl font-black tracking-tight text-white drop-shadow-[2px_2px_0_#312e81] sm:text-3xl">選擇比較清單</h2>
+                      <h2 className="text-xl font-black tracking-tight text-slate-900 sm:text-3xl">分析結果比較</h2>
                     </div>
                   </div>
-                  <button onClick={onClose} aria-label="關閉比較清單" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-amber-100 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:hidden">
+                  <button onClick={onClose} aria-label="關閉比較清單" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:hidden">
                     <X className="h-5 w-5" />
                   </button>
                 </div>
                 <div className="flex items-center justify-end gap-3">
                   {schools.length > 0 && (
-                    <button onClick={onClear} className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-400 px-4 py-2.5 text-sm font-black text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-rose-300 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:flex-none">
+                    <button onClick={onClear} className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-rose-600 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-rose-50 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:flex-none">
                       <Trash2 className="h-4 w-4" /> <span>清空全部</span>
                     </button>
                   )}
-                  <button onClick={onClose} aria-label="關閉比較清單" className="hidden h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-amber-100 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:flex">
+                  <button onClick={onClose} aria-label="關閉比較清單" className="hidden h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:flex">
                     <X className="h-5 w-5" />
                   </button>
                 </div>
@@ -108,7 +108,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
             <div className="bg-slate-100 p-3 sm:p-6 overflow-y-auto w-full custom-scrollbar">
               {schools.length === 0 ? (
                 <div className="text-center py-24 bg-white border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] rounded-3xl mx-4">
-                  <div className="w-20 h-20 bg-slate-100 rounded-full border-4 border-slate-900 flex items-center justify-center mx-auto mb-4 -rotate-6">
+                  <div className="w-20 h-20 bg-slate-100 rounded-full border-4 border-slate-900 flex items-center justify-center mx-auto mb-4">
                     <List className="w-10 h-10 text-slate-400" />
                   </div>
                   <p className="text-xl font-black text-slate-900">目前尚無比較學校</p>
