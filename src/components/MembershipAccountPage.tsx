@@ -152,7 +152,7 @@ export default function MembershipAccountPage() {
           </div>
         ) : (
           <>
-          <div className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_.8fr] lg:items-start">
+          <div className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
             <div className="flex flex-col gap-5">
             <article className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
               <div className={`border-b-2 border-slate-900 p-6 sm:p-7 ${membership.active ? 'bg-emerald-50' : 'bg-slate-50'}`}>
@@ -173,9 +173,9 @@ export default function MembershipAccountPage() {
               <div className="p-6 sm:p-7">
                 {membership.active ? <>
                   <p className="text-sm font-bold leading-relaxed text-slate-700">你正在使用 {planName}，查詢、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 px-4 py-3 transition hover:border-emerald-200"><p className="text-xs font-black text-emerald-800">目前方案</p><p className="mt-1 text-lg font-black text-emerald-950">{planName}</p></div>
-                    <div className="rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 px-4 py-3 transition hover:border-emerald-200"><p className="text-xs font-black text-emerald-800">距離到期</p><p className="mt-1 text-lg font-black text-emerald-950">剩下 {remainingDays} 天</p><p className="text-xs font-bold text-emerald-700">至 {formatDate(membership.expiresAt)}</p></div>
+                  <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3">
+                    <div className="rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-3 transition hover:border-emerald-200 sm:px-4 sm:py-3"><p className="text-[10px] font-black text-emerald-800 sm:text-xs">目前方案</p><p className="mt-1 text-base font-black text-emerald-950 sm:text-lg">{planName}</p></div>
+                    <div className="rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-3 transition hover:border-emerald-200 sm:px-4 sm:py-3"><p className="text-[10px] font-black text-emerald-800 sm:text-xs">距離到期</p><p className="mt-1 text-base font-black text-emerald-950 sm:text-lg">剩下 {remainingDays} 天</p><p className="text-[10px] font-bold text-emerald-700 sm:text-xs">至 {formatDate(membership.expiresAt)}</p></div>
                   </div>
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
                     <a href={withBasePath('/')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-indigo-700"><Home className="h-4 w-4" />回到落點分析</a>
@@ -205,7 +205,7 @@ export default function MembershipAccountPage() {
             </div>
             
             <div className="flex flex-col gap-5">
-              <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+              <aside className="flex flex-col h-full overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
             <div className="border-b-2 border-slate-900 bg-[#00c300]/10 p-6 sm:p-7">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-[#00c300] text-white">
@@ -218,7 +218,7 @@ export default function MembershipAccountPage() {
               </div>
             </div>
             
-            <div className="p-6 sm:p-7">
+            <div className="flex flex-1 flex-col p-6 sm:p-7">
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 transition-colors hover:border-slate-300">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-200 bg-white text-slate-400">
@@ -248,7 +248,7 @@ export default function MembershipAccountPage() {
               </div>
 
               {lineName && (
-                <div className="mt-8 border-t-2 border-dashed border-rose-100 pt-6">
+                <div className="mt-auto border-t-2 border-dashed border-rose-100 pt-6">
                   <div className="flex items-center gap-2">
                     <Trash2 className="h-4 w-4 text-rose-500" />
                     <h3 className="text-sm font-black text-rose-700">帳號刪除</h3>
