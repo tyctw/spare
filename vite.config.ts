@@ -56,6 +56,17 @@ const seoRoutes = [
   'site-map',
   'privacy',
   'terms',
+  'changelog',
+  'report-error',
+  'guide/find',
+  'guide/choose',
+  'guide/plan',
+  'guide/member',
+  'guide/help',
+  'news',
+  'news/001',
+  'news/002',
+  'news/003',
 ];
 
 const staticRouteEntries = () => ({
