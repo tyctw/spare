@@ -16,15 +16,18 @@ let currentCategory = null;
 const lines = code.split('\n');
 for (let i = 0; i < lines.length; i++) {
   const match = lines[i].match(/id:\s*'([a-z]+)'/);
-  // Match category declaration like `id: 'find',` which is mostly alone on the line.
   if (match && !lines[i].includes('label:') && !lines[i].includes('action:')) {
-    if (map[match[1]]) {
-      currentCategory = match[1];
-    }
+    currentCategory = match[1];
   }
   
-  if (currentCategory && lines[i].includes('action: {')) {
-    lines[i] = lines[i].replace(/color:\s*'[^']+',\s*bg:\s*'[^']+'/, `color: '${map[currentCategory].color}', bg: '${map[currentCategory].bg}'`);
+  if (currentCategory && map[currentCategory]) {
+    // If it's a category property (not inside an item)
+    if (lines[i].includes('color: ') && !lines[i].includes('action:')) {
+      lines[i] = lines[i].replace(/color:\s*'[^']+'/, `color: '${map[currentCategory].color}'`);
+    }
+    if (lines[i].includes('bg: ') && !lines[i].includes('action:')) {
+      lines[i] = lines[i].replace(/bg:\s*'[^']+'/, `bg: '${map[currentCategory].bg}'`);
+    }
   }
 }
 
