@@ -137,7 +137,7 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
   const latest = scores[0];
 
   return (
-    <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[140] flex items-center justify-center p-4">
       <button
         type="button"
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
@@ -997,13 +997,11 @@ export default function ResultsPage() {
       )}
 
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} onExport={handleExport} />
-      <HistoricalScoresDialog school={historicalScoreSchool} onClose={() => setHistoricalScoreSchool(null)} />
       <SchoolDetailDialog
         school={detailSchool}
         regionName={regionName}
         onClose={() => setDetailSchool(null)}
         onHistorical={(school) => {
-          setDetailSchool(null);
           setHistoricalScoreSchool(school);
         }}
         isCompared={comparisonSchools.some((item) => item.name === detailSchool?.name)}
@@ -1011,6 +1009,7 @@ export default function ResultsPage() {
           toggleComparison(school);
         }}
       />
+      <HistoricalScoresDialog school={historicalScoreSchool} onClose={() => setHistoricalScoreSchool(null)} />
       <ComparisonModal
         schools={comparisonSchools}
         isOpen={isComparisonOpen}
