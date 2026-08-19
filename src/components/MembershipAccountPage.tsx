@@ -13,6 +13,8 @@ import {
   LogIn,
   LogOut,
   Mail,
+  Ban,
+  Infinity,
   ReceiptText,
   ShieldCheck,
   Sparkles,
@@ -192,18 +194,34 @@ export default function MembershipAccountPage() {
                     <a href={withBasePath('/membership')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-black transition hover:-translate-y-0.5 hover:shadow-[3px_3px_0_#161b35]"><Sparkles className="h-4 w-4 text-indigo-600" />續購與查詢方案</a>
                   </div>
                 </> : <>
-                  <p className="text-sm font-bold leading-relaxed text-slate-600">登入 LINE 後可確認既有資格；尚未購買時，可直接從方案頁啟用免廣告。</p>
-                  <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3">
-                    <div className="flex min-w-0 flex-col justify-center rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 sm:p-5">
-                      <p className="text-[10px] font-black text-slate-500 sm:text-xs">專屬特權 1</p>
-                      <p className="mt-1 break-words text-sm font-black text-slate-800 sm:text-base">完全移除廣告</p>
+                  <div className="rounded-2xl bg-indigo-50/50 p-4 sm:p-5 mb-5 border-2 border-indigo-100/50">
+                    <p className="text-sm font-bold leading-relaxed text-indigo-900">
+                      登入 LINE 後可確認既有資格；尚未購買時，可直接從方案頁啟用免廣告。
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="group relative flex flex-col justify-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md sm:p-5">
+                      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-slate-50 transition-colors group-hover:bg-indigo-50" />
+                      <div className="relative z-10">
+                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600">
+                          <Ban className="h-5 w-5" />
+                        </div>
+                        <p className="text-[10px] font-black tracking-wider text-slate-400 uppercase sm:text-xs">專屬特權 1</p>
+                        <p className="mt-1 text-base font-black text-slate-800 transition-colors group-hover:text-indigo-950 sm:text-lg">完全移除廣告</p>
+                      </div>
                     </div>
-                    <div className="flex min-w-0 flex-col justify-center rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 sm:p-5">
-                      <p className="text-[10px] font-black text-slate-500 sm:text-xs">專屬特權 2</p>
-                      <p className="mt-1 break-words text-sm font-black text-slate-800 sm:text-base">無限次落點分析</p>
+                    <div className="group relative flex flex-col justify-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md sm:p-5">
+                      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-slate-50 transition-colors group-hover:bg-indigo-50" />
+                      <div className="relative z-10">
+                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600">
+                          <Infinity className="h-5 w-5" />
+                        </div>
+                        <p className="text-[10px] font-black tracking-wider text-slate-400 uppercase sm:text-xs">專屬特權 2</p>
+                        <p className="mt-1 text-base font-black text-slate-800 transition-colors group-hover:text-indigo-950 sm:text-lg">無限次落點分析</p>
+                      </div>
                     </div>
                   </div>
-                  <a href={withBasePath('/membership')} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3.5 text-sm font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-[#00a000] active:translate-y-0 active:shadow-none"><Sparkles className="h-4 w-4" />前往啟用免廣告</a>
+                  <a href={withBasePath('/membership')} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-4 text-sm font-black text-white shadow-[4px_4px_0_#161b35] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0_#161b35] active:translate-y-0 active:shadow-none"><Sparkles className="h-5 w-5" />前往啟用免廣告</a>
                 </>}
               </div>
             </article>
