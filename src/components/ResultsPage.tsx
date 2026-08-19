@@ -33,6 +33,7 @@ import { ALL_REGIONS } from './RegionModal';
 import { exportExcel, exportJson, exportTxt, printResults } from '../lib/exportUtils';
 import { withBasePath } from '../lib/routes';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
 
@@ -131,7 +132,10 @@ function AutoFitSingleLine({ text }: { text: string }) {
 }
 
 function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClose: () => void }) {
-  if (!school) return null;
+  const isOpen = !!school;
+  const handleClose = useModalHistory('HistoricalScores', isOpen, onClose);
+
+  if (!isOpen) return null;
 
   const scores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 6);
   const latest = scores[0];
@@ -142,7 +146,7 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
         type="button"
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
         aria-label="關閉歷年錄取成績"
-        onClick={onClose}
+        onClick={handleClose}
       />
       <section role="dialog" aria-modal="true" aria-labelledby="historical-scores-title" className="relative flex max-h-[88vh] w-full max-w-xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
         <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-amber-300 p-5 sm:p-6">
@@ -157,7 +161,7 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-4 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:bg-slate-100 active:translate-y-0.5 active:shadow-none"
             aria-label="關閉"
           >
@@ -280,7 +284,10 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
   isCompared: boolean;
   onToggleComparison: (school: any) => void;
 }) {
-  if (!school) return null;
+  const isOpen = !!school;
+  const handleClose = useModalHistory('SchoolDetail', isOpen, onClose);
+
+  if (!isOpen) return null;
 
   const ownership = formatSchoolOwnership(school.ownership || 'public');
   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === school.region)?.name || school.region || regionName;
@@ -292,7 +299,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
 
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
-      <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉學校完整資訊" onClick={onClose} />
+      <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉學校完整資訊" onClick={handleClose} />
       <section role="dialog" aria-modal="true" aria-labelledby="school-detail-title" className="relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
         <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-amber-300 p-5 sm:p-6">
           <div className="flex min-w-0 items-start gap-3">
@@ -304,7 +311,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
               <h2 id="school-detail-title" className="mt-1 break-words text-2xl font-black leading-tight text-slate-900 sm:text-3xl">{school.name}</h2>
             </div>
           </div>
-          <button type="button" onClick={onClose} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-4 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]" aria-label="關閉"><X className="h-5 w-5" /></button>
+          <button type="button" onClick={handleClose} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-4 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]" aria-label="關閉"><X className="h-5 w-5" /></button>
         </header>
         <div className="space-y-5 p-5 sm:p-6">
           <div className="grid grid-cols-4 items-stretch gap-2">

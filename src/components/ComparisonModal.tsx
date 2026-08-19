@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ExternalLink, Trash2, List } from 'lucide-react';
 import { formatSchoolOwnership } from '../lib/schoolDisplay';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 interface Props {
   isOpen: boolean;
@@ -53,6 +54,8 @@ const HistoricalScoresCell = ({ school }: { school: any }) => {
 };
 
 export default function ComparisonModal({ isOpen, onClose, schools, onRemove, onClear }: Props) {
+  const handleClose = useModalHistory('Comparison', isOpen, onClose);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -62,7 +65,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }}
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            onClick={onClose}
+            onClick={handleClose}
           />
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }} 
@@ -88,7 +91,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                       <h2 className="text-xl font-black tracking-tight text-slate-900 sm:text-3xl">分析結果比較</h2>
                     </div>
                   </div>
-                  <button onClick={onClose} aria-label="關閉比較清單" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:hidden">
+                  <button onClick={handleClose} aria-label="關閉比較清單" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:hidden">
                     <X className="h-5 w-5" />
                   </button>
                 </div>
@@ -98,7 +101,7 @@ export default function ComparisonModal({ isOpen, onClose, schools, onRemove, on
                       <Trash2 className="h-4 w-4" /> <span>清空全部</span>
                     </button>
                   )}
-                  <button onClick={onClose} aria-label="關閉比較清單" className="hidden h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:flex">
+                  <button onClick={handleClose} aria-label="關閉比較清單" className="hidden h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[3px_3px_0_#0f172a] transition-all hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-[4px_4px_0_#0f172a] active:translate-y-0 active:shadow-none sm:flex">
                     <X className="h-5 w-5" />
                   </button>
                 </div>

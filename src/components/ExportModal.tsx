@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, FileJson, FileText, FileSpreadsheet, Printer, Download } from 'lucide-react';
+import { useModalHistory } from '../hooks/useModalHistory';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -9,6 +10,8 @@ interface ExportModalProps {
 }
 
 export default function ExportModal({ isOpen, onClose, onExport }: ExportModalProps) {
+  const handleClose = useModalHistory('Export', isOpen, onClose);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -18,7 +21,7 @@ export default function ExportModal({ isOpen, onClose, onExport }: ExportModalPr
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            onClick={onClose}
+            onClick={handleClose}
           />
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -38,9 +41,11 @@ export default function ExportModal({ isOpen, onClose, onExport }: ExportModalPr
                   </div>
                   <h2 className="text-2xl font-black text-slate-900 tracking-tight">匯出報告</h2>
                 </div>
-                <button 
-                  onClick={onClose} 
-                  className="w-10 h-10 bg-white rounded-xl border-4 border-slate-900 flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-slate-100 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all active:translate-y-0 active:shadow-none"
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="w-10 h-10 bg-white rounded-xl border-4 border-slate-900 flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all relative z-10 shrink-0"
+                  aria-label="關閉"
                 >
                   <X className="w-5 h-5 text-slate-900" />
                 </button>
