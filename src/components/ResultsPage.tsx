@@ -827,6 +827,8 @@ export default function ResultsPage() {
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
                   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === (school.region || scores?.region))?.name || school.region || regionName;
                   const groupLabel = school.group || school.type || '普通科';
+                  const zoneLabel = school.zone === 'reach' ? '夢幻區' : school.zone === 'safe' ? '保守區' : '實際區';
+                  const zoneTone = school.zone === 'reach' ? 'border-rose-300 bg-rose-100 text-rose-800' : school.zone === 'safe' ? 'border-emerald-300 bg-emerald-100 text-emerald-800' : 'border-sky-300 bg-sky-100 text-sky-800';
 
                   return (
                     <article key={`${school.name}-${index}`} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
@@ -839,31 +841,33 @@ export default function ResultsPage() {
                           <h4 className="font-black text-xl text-slate-900 leading-tight">{school.name}</h4>
                         </div>
                       </div>
-                      <div className="grid grid-cols-4 items-stretch gap-2">
-                        {school.zone && (
-                          <div className={`flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 ${school.zone === 'reach' ? 'bg-rose-100 text-rose-800 border-rose-300' : school.zone === 'target' ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-emerald-100 text-emerald-800 border-emerald-300'}`}>
-                            <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">落點區間</span>
-                            <div className="text-center text-sm font-black leading-tight">
-                              {school.zone === 'reach' ? '夢幻區' : school.zone === 'target' ? '實際區' : '保守區'}
-                            </div>
-                          </div>
-                        )}
-                        <div className="flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
-                          <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">屬性</span>
-                          <div className="text-center text-sm font-black leading-tight">
-                            {ownership}
-                          </div>
-                        </div>
-                        <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
-                          <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">群別</span>
-                          <AutoFitSingleLine text={groupLabel} />
-                        </div>
-                        <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
-                          <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">地區</span>
-                          <div className="text-center text-sm font-black leading-tight">
-                            <span>{schoolDistrictName}</span>
-                          </div>
-                        </div>
+                      <div className="overflow-hidden rounded-xl border-2 border-slate-200">
+                        <table className="w-full table-fixed border-collapse text-center">
+                          <thead className="bg-slate-50 text-[11px] font-black text-slate-500">
+                            <tr className="border-b-2 border-slate-200">
+                              <th className="border-r-2 border-slate-200 py-2.5 px-2 w-1/4">落點區間</th>
+                              <th className="border-r-2 border-slate-200 py-2.5 px-2 w-1/4">屬性</th>
+                              <th className="border-r-2 border-slate-200 py-2.5 px-2 w-1/4">群別</th>
+                              <th className="py-2.5 px-2 w-1/4">地區</th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white">
+                            <tr>
+                              <td className={`border-r-2 border-slate-200 py-3 px-2 ${zoneTone}`}>
+                                <AutoFitSingleLine text={zoneLabel} />
+                              </td>
+                              <td className="border-r-2 border-slate-200 py-3 px-2 text-slate-700">
+                                <AutoFitSingleLine text={ownership} />
+                              </td>
+                              <td className="border-r-2 border-slate-200 py-3 px-2 text-slate-700">
+                                <AutoFitSingleLine text={groupLabel} />
+                              </td>
+                              <td className="py-3 px-2 text-slate-700">
+                                <AutoFitSingleLine text={schoolDistrictName} />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
 
 
