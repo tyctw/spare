@@ -314,23 +314,33 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
           <button type="button" onClick={handleClose} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-4 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]" aria-label="關閉"><X className="h-5 w-5" /></button>
         </header>
         <div className="space-y-5 p-5 sm:p-6">
-          <div className="grid grid-cols-4 items-stretch gap-2">
-            <div className={`flex min-w-0 flex-col items-center justify-center rounded-xl border-2 px-2 py-2 sm:px-3 sm:py-3 ${zoneTone}`}>
-              <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">落點區間</span>
-              <AutoFitSingleLine text={zoneLabel} />
-            </div>
-            <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-sky-300 bg-sky-100 px-2 py-2 text-sky-800 sm:px-3 sm:py-3">
-              <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">屬性</span>
-              <AutoFitSingleLine text={ownership} />
-            </div>
-            <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-emerald-300 bg-emerald-100 px-2 py-2 text-emerald-800 sm:px-3 sm:py-3">
-              <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">群別</span>
-              <AutoFitSingleLine text={school.group || school.type || '普通科'} />
-            </div>
-            <div className={`flex min-w-0 flex-col items-center justify-center rounded-xl border-2 px-2 py-2 sm:px-3 sm:py-3 ${regionTone}`}>
-              <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">地區</span>
-              <AutoFitSingleLine text={schoolDistrictName} />
-            </div>
+          <div className="overflow-hidden rounded-xl border-2 border-slate-200">
+            <table className="w-full table-fixed border-collapse text-center">
+              <thead className="bg-slate-50 text-[11px] font-black text-slate-500 sm:text-xs">
+                <tr className="border-b-2 border-slate-200">
+                  <th className="border-r-2 border-slate-200 py-2.5 px-2 w-1/4">落點區間</th>
+                  <th className="border-r-2 border-slate-200 py-2.5 px-2 w-1/4">屬性</th>
+                  <th className="border-r-2 border-slate-200 py-2.5 px-2 w-1/4">群別</th>
+                  <th className="py-2.5 px-2 w-1/4">地區</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white">
+                <tr>
+                  <td className={`border-r-2 border-slate-200 py-3 px-2 sm:px-3 ${zoneTone}`}>
+                    <AutoFitSingleLine text={zoneLabel} />
+                  </td>
+                  <td className="border-r-2 border-slate-200 py-3 px-2 sm:px-3 bg-sky-100 text-sky-800">
+                    <AutoFitSingleLine text={ownership} />
+                  </td>
+                  <td className="border-r-2 border-slate-200 py-3 px-2 sm:px-3 bg-emerald-100 text-emerald-800">
+                    <AutoFitSingleLine text={school.group || school.type || '普通科'} />
+                  </td>
+                  <td className={`py-3 px-2 sm:px-3 ${regionTone}`}>
+                    <AutoFitSingleLine text={schoolDistrictName} />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-4"><div className="text-sm font-black text-slate-500">落點判讀</div><p className="mt-2 text-sm font-bold leading-relaxed text-slate-700">{school.analysisNote || '目前未提供額外判讀。'}</p></div>
 
