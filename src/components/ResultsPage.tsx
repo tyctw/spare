@@ -342,7 +342,15 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
               </tbody>
             </table>
           </div>
-          <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-4"><div className="text-sm font-black text-slate-500">落點判讀</div><p className="mt-2 text-sm font-bold leading-relaxed text-slate-700">{school.analysisNote || '目前未提供額外判讀。'}</p></div>
+          <div className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-4">
+            <div className="flex items-center gap-1.5 text-sm font-black text-indigo-800">
+              <Sparkles className="h-4 w-4" />
+              落點判讀
+            </div>
+            <p className="mt-2 text-sm font-bold leading-relaxed text-indigo-950">
+              {school.analysisNote || '目前未提供額外判讀。'}
+            </p>
+          </div>
 
           {/* 歷年成績：與卡片相同的全寬卡片按鈕樣式 */}
           <button
@@ -868,11 +876,16 @@ export default function ResultsPage() {
 
 
                       {school.analysisNote && (
-                        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
-                          <div className="text-xs font-black text-slate-500">落點判讀</div>
-                          <p className="mt-1 text-sm font-bold leading-relaxed text-slate-700">{school.analysisNote}</p>
+                        <div className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3.5">
+                          <div className="flex items-center gap-1.5 text-xs font-black text-indigo-800">
+                            <Sparkles className="h-3.5 w-3.5" />
+                            落點判讀
+                          </div>
+                          <p className="mt-1 text-sm font-bold leading-relaxed text-indigo-950">
+                            {school.analysisNote}
+                          </p>
                           {school.creditDiff !== null && school.creditDiff !== undefined && school.scoreDiff === 0 && (
-                            <p className="mt-1 text-xs font-black text-emerald-700">
+                            <p className="mt-1 text-xs font-black text-indigo-700">
                               同分積點差 {school.creditDiff > 0 ? '+' : ''}{school.creditDiff}
                             </p>
                           )}
