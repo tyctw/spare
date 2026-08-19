@@ -301,13 +301,13 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
       <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉學校完整資訊" onClick={handleClose} />
       <section role="dialog" aria-modal="true" aria-labelledby="school-detail-title" className="relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
-        <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-amber-300 p-5 sm:p-6">
+        <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-100 p-5 sm:p-6">
           <div className="flex min-w-0 items-start gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
               <Building2 className="h-5 w-5 text-indigo-700" strokeWidth={3} />
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-black text-amber-900">學校完整資訊</div>
+              <div className="text-xs font-black text-indigo-900">學校完整資訊</div>
               <h2 id="school-detail-title" className="mt-1 break-words text-2xl font-black leading-tight text-slate-900 sm:text-3xl">{school.name}</h2>
             </div>
           </div>
