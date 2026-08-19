@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ArrowLeft,
   ArrowUp,
@@ -73,6 +73,12 @@ const getHistoricalTrend = (scores: any[]) => {
   return { label: '較前一年不變', tone: 'border-sky-200 bg-sky-50 text-sky-700' };
 };
 
+/** 判斷是否有歷年資料可計算趨勢（至少兩年）。 */
+const hasTrendData = (scores: any[]) =>
+  scores.length >= 2 &&
+  Number.isFinite(scores[0]?.numericPoints) &&
+  Number.isFinite(scores[1]?.numericPoints);
+
 const zoneMeta: Record<string, { label: string; icon: React.ElementType; tone: string; badge: string }> = {
   reach: { label: '夢幻區', icon: Flame, tone: 'text-rose-700 bg-rose-50 border-rose-200', badge: 'bg-rose-500' },
   target: { label: '實際區', icon: Target, tone: 'text-sky-700 bg-sky-50 border-sky-200', badge: 'bg-sky-500' },
@@ -129,6 +135,7 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
 
   const scores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 6);
   const latest = scores[0];
+  const trend = getHistoricalTrend(scores);
 
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
@@ -147,6 +154,11 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
             <div className="min-w-0">
               <div className="text-xs font-black text-amber-900">歷年錄取資料</div>
               <h2 id="historical-scores-title" className="mt-1 break-words text-xl font-black leading-tight text-slate-900 sm:text-2xl">{school.name}</h2>
+              <div className="mt-2">
+                <span className={`inline-flex rounded-lg border px-2.5 py-1 text-xs font-black ${scores.length > 0 && hasTrendData(scores) ? trend.tone : 'border-slate-200 bg-slate-100 text-slate-500'}`}>
+                  {scores.length > 0 && hasTrendData(scores) ? trend.label : historicalScoresPendingText}
+                </span>
+              </div>
             </div>
           </div>
           <button
