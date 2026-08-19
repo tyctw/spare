@@ -317,21 +317,19 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
           <div className="grid grid-cols-4 items-stretch gap-2">
             <div className={`flex min-w-0 flex-col items-center justify-center rounded-xl border-2 px-2 py-2 sm:px-3 sm:py-3 ${zoneTone}`}>
               <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">落點區間</span>
-              <div className="text-center text-xs font-black leading-tight sm:text-sm">{zoneLabel}</div>
+              <AutoFitSingleLine text={zoneLabel} />
             </div>
             <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-sky-300 bg-sky-100 px-2 py-2 text-sky-800 sm:px-3 sm:py-3">
               <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">屬性</span>
-              <div className="text-center text-xs font-black leading-tight sm:text-sm">{ownership}</div>
+              <AutoFitSingleLine text={ownership} />
             </div>
             <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-emerald-300 bg-emerald-100 px-2 py-2 text-emerald-800 sm:px-3 sm:py-3">
               <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">群別</span>
-              <div className="text-center text-xs font-black leading-tight sm:text-sm">
-                {school.group || school.type || '普通科'}
-              </div>
+              <AutoFitSingleLine text={school.group || school.type || '普通科'} />
             </div>
             <div className={`flex min-w-0 flex-col items-center justify-center rounded-xl border-2 px-2 py-2 sm:px-3 sm:py-3 ${regionTone}`}>
               <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">地區</span>
-              <div className="text-center text-xs font-black leading-tight sm:text-sm">{schoolDistrictName}</div>
+              <AutoFitSingleLine text={schoolDistrictName} />
             </div>
           </div>
           <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-4"><div className="text-sm font-black text-slate-500">落點判讀</div><p className="mt-2 text-sm font-bold leading-relaxed text-slate-700">{school.analysisNote || '目前未提供額外判讀。'}</p></div>
