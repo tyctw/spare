@@ -329,13 +329,13 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
                   <td className={`border-r-2 border-slate-200 py-3 px-2 sm:px-3 ${zoneTone}`}>
                     <AutoFitSingleLine text={zoneLabel} />
                   </td>
-                  <td className="border-r-2 border-slate-200 py-3 px-2 sm:px-3 bg-sky-100 text-sky-800">
+                  <td className="border-r-2 border-slate-200 py-3 px-2 sm:px-3 text-slate-700">
                     <AutoFitSingleLine text={ownership} />
                   </td>
-                  <td className="border-r-2 border-slate-200 py-3 px-2 sm:px-3 bg-emerald-100 text-emerald-800">
+                  <td className="border-r-2 border-slate-200 py-3 px-2 sm:px-3 text-slate-700">
                     <AutoFitSingleLine text={school.group || school.type || '普通科'} />
                   </td>
-                  <td className={`py-3 px-2 sm:px-3 ${regionTone}`}>
+                  <td className="py-3 px-2 sm:px-3 text-slate-700">
                     <AutoFitSingleLine text={schoolDistrictName} />
                   </td>
                 </tr>
@@ -821,8 +821,6 @@ export default function ResultsPage() {
                   const meta = zoneMeta[school.zone] || zoneMeta.target;
                   const ZoneIcon = meta.icon;
                   const ownership = formatSchoolOwnership(school.ownership || 'public');
-                  const ownershipKey = getSchoolOwnershipKey(school.ownership);
-                  const ownershipColor = ownershipKey === 'private' ? 'bg-purple-100 text-purple-800 border-purple-300' : 'bg-sky-100 text-sky-800 border-sky-300';
                   const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 4);
                   const latestHistoricalScore = historicalScores[0];
                   const historicalTrend = getHistoricalTrend(historicalScores);
@@ -850,17 +848,17 @@ export default function ResultsPage() {
                             </div>
                           </div>
                         )}
-                        <div className={`flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 ${ownershipColor}`}>
+                        <div className="flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
                           <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">屬性</span>
                           <div className="text-center text-sm font-black leading-tight">
                             {ownership}
                           </div>
                         </div>
-                        <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-emerald-300 bg-emerald-100 px-2.5 py-2.5 text-emerald-800">
+                        <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
                           <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">群別</span>
                           <AutoFitSingleLine text={groupLabel} />
                         </div>
-                        <div className={`flex min-w-0 flex-col items-center justify-center rounded-xl border-2 px-2.5 py-2.5 ${regionTone}`}>
+                        <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
                           <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">地區</span>
                           <div className="text-center text-sm font-black leading-tight">
                             <span>{schoolDistrictName}</span>
