@@ -326,7 +326,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
             <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-emerald-300 bg-emerald-100 px-2 py-2 text-emerald-800 sm:px-3 sm:py-3">
               <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">群別</span>
               <div className="text-center text-xs font-black leading-tight sm:text-sm">
-                <AutoFitSingleLine text={school.group || school.type || '普通科'} />
+                {school.group || school.type || '普通科'}
               </div>
             </div>
             <div className={`flex min-w-0 flex-col items-center justify-center rounded-xl border-2 px-2 py-2 sm:px-3 sm:py-3 ${regionTone}`}>
