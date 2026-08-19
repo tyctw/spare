@@ -278,7 +278,14 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
   );
 }
 
-function SchoolDetailDialog({ school, regionName, onClose, onHistorical }: { school: any | null; regionName: string; onClose: () => void; onHistorical: (school: any) => void }) {
+function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompared, onToggleComparison }: {
+  school: any | null;
+  regionName: string;
+  onClose: () => void;
+  onHistorical: (school: any) => void;
+  isCompared: boolean;
+  onToggleComparison: (school: any) => void;
+}) {
   if (!school) return null;
 
   const ownership = formatSchoolOwnership(school.ownership || 'public');
@@ -310,9 +317,23 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical }: { sch
             <div className={`rounded-xl border-2 p-3 ${regionTone}`}><div className="text-[11px] font-black opacity-70">地區</div><div className="mt-1 font-black">{schoolDistrictName}</div></div>
           </div>
           <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-4"><div className="text-sm font-black text-slate-500">落點判讀</div><p className="mt-2 text-sm font-bold leading-relaxed text-slate-700">{school.analysisNote || '目前未提供額外判讀。'}</p></div>
-          <div className="flex gap-2">
-            <button type="button" onClick={() => onHistorical(school)} className="inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-amber-50 px-2 py-3 text-xs font-black text-amber-800 sm:gap-2 sm:px-4 sm:text-sm"><History className="h-4 w-4 shrink-0" />歷年錄取成績</button>
-            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`} target="_blank" rel="noreferrer" className="inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-emerald-50 px-2 py-3 text-xs font-black text-emerald-800 sm:gap-2 sm:px-4 sm:text-sm"><MapPin className="h-4 w-4 shrink-0" />學校地圖</a>
+          <div className="grid grid-cols-3 gap-2">
+            <button type="button" onClick={() => onHistorical(school)} className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-amber-50 px-2 py-3 text-xs font-black text-amber-800 transition-all hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none sm:gap-2 sm:px-3 sm:text-sm"><History className="h-4 w-4 shrink-0" />歷年成績</button>
+            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`} target="_blank" rel="noreferrer" className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-emerald-50 px-2 py-3 text-xs font-black text-emerald-800 transition-all hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none sm:gap-2 sm:px-3 sm:text-sm"><MapPin className="h-4 w-4 shrink-0" />學校地圖</a>
+            <button
+              type="button"
+              onClick={() => onToggleComparison(school)}
+              aria-pressed={isCompared}
+              aria-label={`${isCompared ? '從比較清單移除' : '加入比較清單'}：${school.name}`}
+              className={`inline-flex min-w-0 items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 px-2 py-3 text-xs font-black transition-all sm:gap-2 sm:px-3 sm:text-sm ${
+                isCompared
+                  ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-indigo-500'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none'
+              }`}
+            >
+              {isCompared ? <Check className="h-4 w-4 shrink-0" /> : <List className="h-4 w-4 shrink-0" />}
+              {isCompared ? '已加入比較' : '加入比較'}
+            </button>
           </div>
         </div>
       </section>
@@ -942,6 +963,10 @@ export default function ResultsPage() {
         onHistorical={(school) => {
           setDetailSchool(null);
           setHistoricalScoreSchool(school);
+        }}
+        isCompared={comparisonSchools.some((item) => item.name === detailSchool?.name)}
+        onToggleComparison={(school) => {
+          toggleComparison(school);
         }}
       />
       <ComparisonModal
