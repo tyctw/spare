@@ -200,24 +200,28 @@ export default function MembershipAccountPage() {
                     </p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div className="group relative flex flex-col justify-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md sm:p-5">
+                    <div className="group relative flex items-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md sm:p-5">
                       <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-slate-50 transition-colors group-hover:bg-indigo-50" />
-                      <div className="relative z-10">
-                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600">
+                      <div className="relative z-10 flex items-center gap-3 sm:gap-4">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600 sm:h-11 sm:w-11">
                           <Ban className="h-5 w-5" />
                         </div>
-                        <p className="text-[10px] font-black tracking-wider text-slate-400 uppercase sm:text-xs">專屬特權 1</p>
-                        <p className="mt-1 text-base font-black text-slate-800 transition-colors group-hover:text-indigo-950 sm:text-lg">完全移除廣告</p>
+                        <div>
+                          <p className="text-[10px] font-black tracking-wider text-slate-400 uppercase sm:text-xs">專屬特權 1</p>
+                          <p className="mt-0.5 text-base font-black text-slate-800 transition-colors group-hover:text-indigo-950 sm:text-lg">完全移除廣告</p>
+                        </div>
                       </div>
                     </div>
-                    <div className="group relative flex flex-col justify-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md sm:p-5">
+                    <div className="group relative flex items-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md sm:p-5">
                       <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-slate-50 transition-colors group-hover:bg-indigo-50" />
-                      <div className="relative z-10">
-                        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600">
+                      <div className="relative z-10 flex items-center gap-3 sm:gap-4">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600 sm:h-11 sm:w-11">
                           <Infinity className="h-5 w-5" />
                         </div>
-                        <p className="text-[10px] font-black tracking-wider text-slate-400 uppercase sm:text-xs">專屬特權 2</p>
-                        <p className="mt-1 text-base font-black text-slate-800 transition-colors group-hover:text-indigo-950 sm:text-lg">無限次落點分析</p>
+                        <div>
+                          <p className="text-[10px] font-black tracking-wider text-slate-400 uppercase sm:text-xs">專屬特權 2</p>
+                          <p className="mt-0.5 text-base font-black text-slate-800 transition-colors group-hover:text-indigo-950 sm:text-lg">無限次落點分析</p>
+                        </div>
                       </div>
                     </div>
                   </div>
