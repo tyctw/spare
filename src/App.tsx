@@ -39,6 +39,15 @@ const AuthFailModal = React.lazy(() => import('./components/AuthFailModal'));
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
 
+/** SHA-256 雜湊邀請碼，回傳 hex 字串。localStorage 只存雜湊值，不留明文。 */
+async function hashInvitationCode(code: string): Promise<string> {
+  const encoded = new TextEncoder().encode(code);
+  const digest = await crypto.subtle.digest('SHA-256', encoded);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 const normalizeHistoricalScores = (scores: any[] = []) =>
   scores
     .filter((item) => item && item.points !== null && item.points !== undefined)
@@ -358,16 +367,22 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
 
     if (cachedAuth) {
       try {
-        const parsed = JSON.parse(cachedAuth) as { code?: string; timestamp?: number };
-        hasValidAuthCache =
-          parsed.code === invitationCode &&
+        const parsed = JSON.parse(cachedAuth) as { hash?: string; timestamp?: number; code?: string };
+        // 舊版快取含明文 code 欄位，視為無效並清除，強制重新驗證。
+        if (parsed.code !== undefined) {
+          localStorage.removeItem('invitationAuthCache');
+        } else if (
+          typeof parsed.hash === 'string' &&
           typeof parsed.timestamp === 'number' &&
-          now - parsed.timestamp < tenMinutes;
+          now - parsed.timestamp < tenMinutes
+        ) {
+          hasValidAuthCache = parsed.hash === await hashInvitationCode(invitationCode);
+        }
       } catch {
         localStorage.removeItem('invitationAuthCache');
       }
     }
-    
+
     if (hasValidAuthCache) {
       setStatus('quantum');
       void executeAnalysis();
@@ -977,9 +992,10 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         isOpen={status === 'auth' || status === 'quantum'}
         code={formData.invitationCode}
         skipValidation={status === 'quantum'}
-        onSuccess={() => {
+        onSuccess={async () => {
+          const hash = await hashInvitationCode(normalizeInvitationCode(formData.invitationCode));
           localStorage.setItem('invitationAuthCache', JSON.stringify({
-            code: normalizeInvitationCode(formData.invitationCode),
+            hash,
             timestamp: Date.now(),
           }));
           setStatus('quantum');
