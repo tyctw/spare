@@ -135,7 +135,6 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
 
   const scores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 6);
   const latest = scores[0];
-  const trend = getHistoricalTrend(scores);
 
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
@@ -154,11 +153,6 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
             <div className="min-w-0">
               <div className="text-xs font-black text-amber-900">歷年錄取資料</div>
               <h2 id="historical-scores-title" className="mt-1 break-words text-xl font-black leading-tight text-slate-900 sm:text-2xl">{school.name}</h2>
-              <div className="mt-2">
-                <span className={`inline-flex rounded-lg border px-2.5 py-1 text-xs font-black ${scores.length > 0 && hasTrendData(scores) ? trend.tone : 'border-slate-200 bg-slate-100 text-slate-500'}`}>
-                  {scores.length > 0 && hasTrendData(scores) ? trend.label : historicalScoresPendingText}
-                </span>
-              </div>
             </div>
           </div>
           <button
@@ -292,6 +286,9 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === school.region)?.name || school.region || regionName;
   const zoneLabel = school.zone === 'reach' ? '夢幻區' : school.zone === 'safe' ? '保守區' : '實際區';
   const zoneTone = school.zone === 'reach' ? 'border-rose-300 bg-rose-100 text-rose-800' : school.zone === 'safe' ? 'border-emerald-300 bg-emerald-100 text-emerald-800' : 'border-sky-300 bg-sky-100 text-sky-800';
+  const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 4);
+  const latestHistoricalScore = historicalScores[0];
+  const historicalTrend = getHistoricalTrend(historicalScores);
 
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
@@ -317,8 +314,53 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
             <div className={`rounded-xl border-2 p-3 ${regionTone}`}><div className="text-[11px] font-black opacity-70">地區</div><div className="mt-1 font-black">{schoolDistrictName}</div></div>
           </div>
           <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-4"><div className="text-sm font-black text-slate-500">落點判讀</div><p className="mt-2 text-sm font-bold leading-relaxed text-slate-700">{school.analysisNote || '目前未提供額外判讀。'}</p></div>
-          <div className="grid grid-cols-3 gap-2">
-            <button type="button" onClick={() => onHistorical(school)} className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-amber-50 px-2 py-3 text-xs font-black text-amber-800 transition-all hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none sm:gap-2 sm:px-3 sm:text-sm"><History className="h-4 w-4 shrink-0" />歷年成績</button>
+
+          {/* 歷年成績：與卡片相同的全寬卡片按鈕樣式 */}
+          <button
+            type="button"
+            onClick={() => onHistorical(school)}
+            className={`w-full rounded-2xl border-2 border-slate-900 px-3.5 py-3.5 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none ${historicalScores.length > 0 ? 'bg-amber-50' : 'bg-slate-50'}`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-2">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">
+                  {historicalScores.length > 0 ? (
+                    <History className="h-4 w-4 text-amber-700" />
+                  ) : (
+                    <Database className="h-4 w-4 text-slate-500" />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-black text-slate-900">歷年錄取成績</div>
+                  <div className="truncate text-[11px] font-bold text-slate-600">
+                    {historicalScores.length > 0 ? (
+                      <>
+                        最新 {latestHistoricalScore?.year || '--'} 積分 {latestHistoricalScore?.points ?? '--'}
+                        {` / 積點 ${formatHistoricalCredits(latestHistoricalScore?.credits)}`}
+                      </>
+                    ) : (
+                      historicalScoresPendingText
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                {historicalScores.length > 0 ? (
+                  <span className={`rounded-lg border px-2 py-0.5 text-[10px] font-black ${historicalTrend.tone}`}>
+                    {historicalTrend.label}
+                  </span>
+                ) : (
+                  <span className="rounded-lg border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-500">
+                    資料整理中
+                  </span>
+                )}
+                <span className="text-[10px] font-black text-amber-700">查看詳情</span>
+              </div>
+            </div>
+          </button>
+
+          {/* 學校地圖 + 加入比較並排 */}
+          <div className="grid grid-cols-2 gap-2">
             <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`} target="_blank" rel="noreferrer" className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-emerald-50 px-2 py-3 text-xs font-black text-emerald-800 transition-all hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none sm:gap-2 sm:px-3 sm:text-sm"><MapPin className="h-4 w-4 shrink-0" />學校地圖</a>
             <button
               type="button"
