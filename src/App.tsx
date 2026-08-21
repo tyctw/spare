@@ -935,6 +935,12 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                       case 'kaohsiung':
                          compScore = `${comp}級分 (優先比序)`;
                          break;
+                      case 'chiayi':
+                         if (comp >= 5) compScore = '2分';
+                         else if (comp >= 3) compScore = '1.5分';
+                         else if (comp >= 1) compScore = '1分';
+                         else compScore = '0分';
+                         break;
                       default:
                          compScore = '同分比序用';
                          break;

@@ -29,6 +29,7 @@ const seoRoutes = [
   'scoring-rules/changhua',
   'scoring-rules/tainan',
   'scoring-rules/kaohsiung',
+  'scoring-rules/chiayi',
   'area/keelung-taipei',
   'area/taoyuan',
   'area/hsinchu-miaoli',

@@ -29,6 +29,11 @@ const SCORING_RULES_META: Record<string, { title: string; description: string; c
     description: '整理 115 學年度彰化區（彰化縣）免試入學超額比序項目與積分換算規則，協助國中生規劃會考升學志願；正式規則以官方簡章為準。',
     cityKeywords: '彰化區, 彰化縣',
   },
+  chiayi: {
+    title: '嘉義區超額比序計分規則｜嘉義市、嘉義縣免試入學',
+    description: '整理 115 學年度嘉義區（嘉義市、嘉義縣）免試入學超額比序項目與會考積分換算，總分 82 分；正式規則以官方簡章為準。',
+    cityKeywords: '嘉義區, 嘉義市, 嘉義縣',
+  },
   tainan: {
     title: '臺南區超額比序計分規則｜臺南市免試入學',
     description: '整理 115 學年度臺南區（臺南市）免試入學超額比序項目與積分換算規則，協助國中生規劃會考升學志願；正式規則以官方簡章為準。',

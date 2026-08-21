@@ -14,7 +14,7 @@ export const ALL_REGIONS = [
   { id: 'tainan', name: '臺南區', desc: '臺南市', icon: Landmark, active: true, tone: 'sky' },
   { id: 'kaohsiung', name: '高雄區', desc: '高雄市', icon: ShipWheel, active: true, tone: 'orange' },
   { id: 'yunlin', name: '雲林區', desc: '雲林縣', icon: Wheat, active: false, tone: 'slate' },
-  { id: 'chiayi', name: '嘉義區', desc: '嘉義縣市', icon: TreePine, active: false, tone: 'slate' },
+  { id: 'chiayi', name: '嘉義區', desc: '嘉義縣市', icon: TreePine, active: true, tone: 'teal' },
   { id: 'pingtung', name: '屏東區', desc: '屏東縣', icon: Sun, active: false, tone: 'slate' },
   { id: 'yilan', name: '宜蘭區', desc: '宜蘭縣', icon: Waves, active: false, tone: 'slate' },
   { id: 'taitung', name: '臺東區', desc: '臺東縣', icon: Sunrise, active: false, tone: 'slate' },
@@ -27,6 +27,7 @@ const toneClasses: Record<string, { icon: string; selected: string; wash: string
   amber: { icon: 'bg-amber-400 text-slate-900', selected: 'border-slate-900 bg-amber-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-amber-300', wash: 'from-amber-100 to-white', dot: 'bg-amber-500' },
   rose: { icon: 'bg-rose-500 text-white', selected: 'border-slate-900 bg-rose-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-rose-300', wash: 'from-rose-100 to-white', dot: 'bg-rose-500' },
   sky: { icon: 'bg-sky-500 text-white', selected: 'border-slate-900 bg-sky-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-sky-300', wash: 'from-sky-100 to-white', dot: 'bg-sky-500' },
+  teal: { icon: 'bg-teal-500 text-white', selected: 'border-slate-900 bg-teal-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-teal-300', wash: 'from-teal-100 to-white', dot: 'bg-teal-500' },
   orange: { icon: 'bg-orange-500 text-white', selected: 'border-slate-900 bg-orange-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-orange-300', wash: 'from-orange-100 to-white', dot: 'bg-orange-500' },
   slate: { icon: 'bg-slate-200 text-slate-400', selected: '', wash: 'from-slate-100 to-white', dot: 'bg-slate-300' },
 };

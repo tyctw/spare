@@ -118,6 +118,7 @@ const PREFERENCE_RULES: Record<string, string> = {
   hsinchu: '第 1–5 志願序位 10 分，之後每 5 個志願序遞減 1 分，至第 21–25 志願序位為 6 分；同校同學群連續選填視為同一志願序。',
   central: '第 1–10 志願序 30 分、第 11–20 志願序 29 分、第 21 志願序以後 28 分；同校類科連續選填視為同一志願序。',
   changhua: '第 1–20 志願序 45 分，第 21 志願序以後 44 分；同校同職群連續選填視為同一志願序。',
+  chiayi: '第 1–6 志願 10 分、第 7–12 志願 9 分、第 13–18 志願 8 分、第 19–24 志願 7 分、第 25–30 志願 6 分；最多可填 30 個志願。',
   tainan: '第 1–3 志願 10 分，之後每 3 個志願遞減 1 分；第 16–30 志願為 5 分。',
   kaohsiung: '每 10 所學校為一個志願學校群：第 1 群 30 分、第 2 群 29 分、第 3 群 28 分；同校不同科連續選填以同一所學校計算。',
 };
@@ -128,6 +129,7 @@ const getPreferenceScore = (region: string, rank: number): number | null => {
   if (region === 'hsinchu') return rank <= 5 ? 10 : rank <= 10 ? 9 : rank <= 15 ? 8 : rank <= 20 ? 7 : rank <= 25 ? 6 : null;
   if (region === 'central') return rank <= 10 ? 30 : rank <= 20 ? 29 : rank <= 30 ? 28 : null;
   if (region === 'changhua') return rank <= 20 ? 45 : rank <= 30 ? 44 : null;
+  if (region === 'chiayi') return rank <= 6 ? 10 : rank <= 12 ? 9 : rank <= 18 ? 8 : rank <= 24 ? 7 : rank <= 30 ? 6 : null;
   if (region === 'tainan') return rank <= 3 ? 10 : rank <= 6 ? 9 : rank <= 9 ? 8 : rank <= 12 ? 7 : rank <= 15 ? 6 : rank <= 30 ? 5 : null;
   if (region === 'kaohsiung') return rank <= 10 ? 30 : rank <= 20 ? 29 : rank <= 30 ? 28 : null;
   return null;
