@@ -2,7 +2,7 @@ create extension if not exists pgcrypto;
 
 create table if not exists public.schools (
   id uuid primary key default gen_random_uuid(),
-  region text not null check (region in ('taoyuan', 'kaohsiung', 'central', 'changhua', 'taipei', 'tainan', 'hsinchu')),
+  region text not null check (region in ('taoyuan', 'kaohsiung', 'central', 'changhua', 'taipei', 'tainan', 'hsinchu', 'chiayi')),
   name text not null,
   points numeric not null,
   credits numeric,
