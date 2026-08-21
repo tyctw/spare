@@ -2053,6 +2053,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         isOpen={activeModal === 'validationFailed'} 
         onClose={() => setActiveModal(null)}
         bare
+        topMost
         title="資料不齊全"
         icon={<AlertCircle className="w-8 h-8 text-rose-500" />}
       >
