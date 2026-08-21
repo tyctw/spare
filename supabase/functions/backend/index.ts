@@ -783,6 +783,19 @@ function calculateScores(region: string, scores: Scores): ScoreResult {
     };
   }
 
+  if (region === 'chiayi') {
+    const points = { 'A++': 5, 'A+': 5, A: 5, 'B++': 3, 'B+': 3, B: 3, C: 1 };
+    const credits = { 'A++': 9, 'A+': 8, A: 7, 'B++': 5, 'B+': 4, B: 3, C: 1 };
+    const compositionPoints = scores.composition >= 5 ? 2 : scores.composition >= 3 ? 1.5 : scores.composition >= 1 ? 1 : 0;
+
+    return {
+      totalPoints: roundScore(sumSubjects(scores, points) + compositionPoints),
+      totalCredits: sumSubjects(scores, credits),
+      breakdown: buildBreakdown(scores, points, credits, compositionPoints),
+      scoringMethod: '五科以精熟=5、基礎=3、待加強=1計積分；寫作6、5級分2分，4、3級分1.5分，2、1級分1分，會考項目最高27分。五科積點依 A++=9、A+=8、A=7、B++=5、B+=4、B=3、C=1 換算，供同分比較使用。',
+    };
+  }
+
   throw new Error(`無效的地區指定: ${region}`);
 }
 
@@ -796,7 +809,7 @@ function filterSchools(
 ) {
   let margin = 2;
   if (region === 'central' || region === 'changhua') margin = 3;
-  if (region === 'taipei' || region === 'tainan' || region === 'hsinchu') margin = 1.5;
+  if (region === 'taipei' || region === 'tainan' || region === 'hsinchu' || region === 'chiayi') margin = 1.5;
 
   const scoreValues: Record<string, number> = {
     'A++': 9,
@@ -1434,6 +1447,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         'taipei',
         'tainan',
         'hsinchu',
+        'chiayi',
       ]);
 
       const region = String(school.region || '');
