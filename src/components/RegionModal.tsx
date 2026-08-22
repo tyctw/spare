@@ -100,10 +100,9 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
               <section aria-labelledby="available-regions-heading">
                 <div className="mb-3 flex items-center justify-between px-1">
                   <div className="min-w-0">
-                    <h3 id="available-regions-heading" className="text-base font-black text-slate-900 sm:text-lg">選擇可分析的就學區</h3>
+                    <h3 id="available-regions-heading" className="text-base font-black text-slate-900 sm:text-lg">目前有 {availableRegions.length} 個可選區域</h3>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1.5">
-                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black text-emerald-700">{availableRegions.length} 個已開放</span>
                     <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black text-emerald-700">目前選擇：{selectedRegionName || '未選擇'}</span>
                   </div>
                 </div>
