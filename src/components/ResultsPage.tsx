@@ -974,7 +974,8 @@ export default function ResultsPage() {
                         aria-label={`查看 ${school.name} 的完整落點判讀`}
                       >
                         <div>
-                          <p className="text-[15px] font-black leading-7 text-slate-900">
+                          <div className="mb-2 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
+                          <p className="text-sm font-black leading-6 text-slate-900">
                             {school.analysisNote || '目前未提供落點判讀。'}
                           </p>
                           <div className="mt-3 flex items-center justify-end border-t border-slate-100 pt-3">
