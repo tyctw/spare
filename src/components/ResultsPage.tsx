@@ -351,8 +351,8 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
       <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉完整落點判讀" onClick={handleClose} />
-      <section role="dialog" aria-modal="true" aria-labelledby="admission-analysis-title" className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
-        <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-700 p-5 sm:p-6">
+      <section role="dialog" aria-modal="true" aria-labelledby="admission-analysis-title" className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
+        <header className="flex shrink-0 items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-700 p-5 sm:p-6">
           <div className="flex min-w-0 items-start gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-indigo-200/70 bg-white/10 text-white">
               <Sparkles className="h-5 w-5" strokeWidth={3} />
@@ -365,7 +365,7 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
           <button type="button" onClick={handleClose} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-4 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]" aria-label="關閉"><X className="h-5 w-5" /></button>
         </header>
 
-        <div className="space-y-5 p-5 sm:p-6">
+        <div className="flex-1 space-y-5 overflow-y-auto p-5 sm:p-6">
           <section className={`rounded-2xl border-2 p-4 ${zone.tone}`}>
             <div className="flex items-center gap-2"><ZoneIcon className="h-5 w-5" strokeWidth={3} /><span className="text-sm font-black">{zone.label}</span></div>
             <p className="mt-2 text-base font-black leading-7 text-slate-900">{school.analysisNote || '目前未提供額外判讀。'}</p>
@@ -465,14 +465,14 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnaly
               </tbody>
             </table>
           </div>
-          <div className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-4">
-            <div className="flex items-center gap-1.5 text-sm font-black text-indigo-800">
+          <div className="rounded-2xl border-2 border-indigo-200 bg-indigo-50 px-4 py-4 sm:px-5">
+            <div className="text-base font-black text-indigo-800">
               落點判讀
             </div>
-            <p className="mt-2 text-sm font-bold leading-relaxed text-indigo-950">
+            <p className="mt-3 text-base font-black leading-7 text-indigo-950">
               {school.analysisNote || '目前未提供額外判讀。'}
             </p>
-            <button type="button" onClick={() => onAnalysis(school)} className="mt-3 ml-auto flex items-center text-xs font-black text-indigo-800 underline decoration-indigo-300 underline-offset-4 transition-colors hover:text-indigo-950 hover:decoration-indigo-700">查看完整落點判讀 <span className="ml-1.5 text-base leading-none">→</span></button>
+            <button type="button" onClick={() => onAnalysis(school)} className="mt-4 ml-auto flex items-center text-sm font-black text-indigo-800 underline decoration-indigo-300 decoration-2 underline-offset-4 transition-colors hover:text-indigo-950 hover:decoration-indigo-700">查看完整落點判讀 <span className="ml-2 text-lg leading-none">→</span></button>
           </div>
 
           {/* 歷年成績：與卡片相同的全寬卡片按鈕樣式 */}
