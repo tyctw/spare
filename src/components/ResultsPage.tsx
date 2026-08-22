@@ -512,15 +512,15 @@ export default function ResultsPage() {
                       <button
                         type="button"
                         onClick={() => setAnalysisSchool(school)}
-                        className={`group w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-3.5 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 ${analysisAccent.split(' ')[0]}`}
+                        className={`group w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-3.5 py-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 ${analysisAccent.split(' ')[0]}`}
                         aria-label={`查看 ${school.name} 的完整落點判讀`}
                       >
                         <div>
-                          <div className="mb-1 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
+                          <div className="mb-0.5 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
                           <p className="text-sm font-black leading-6 text-slate-900">
                             <EmphasizedAnalysisText text={school.analysisNote || '目前未提供落點判讀。'} tone={analysisAccent.split(' ')[1]} />
                           </p>
-                          <div className="mt-2 flex items-center justify-end border-t border-slate-100 pt-2">
+                          <div className="mt-1.5 flex items-center justify-end border-t border-slate-100 pt-1.5">
                             <span className="text-xs font-black text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-slate-950">查看完整判讀 <span className="ml-1.5 text-base leading-none">→</span></span>
                           </div>
                         </div>
