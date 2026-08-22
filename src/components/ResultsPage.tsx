@@ -276,6 +276,98 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
   );
 }
 
+function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onClose: () => void }) {
+  const isOpen = !!school;
+  const handleClose = useModalHistory('AdmissionAnalysis', isOpen, onClose);
+
+  if (!isOpen) return null;
+
+  const zone = zoneMeta[school.zone] || zoneMeta.target;
+  const ZoneIcon = zone.icon;
+  const scoreDiff = Number(school.scoreDiff ?? school.pointsDiff);
+  const referencePoints = Number(school.points);
+  const studentPoints = Number.isFinite(scoreDiff) && Number.isFinite(referencePoints)
+    ? Math.round((referencePoints + scoreDiff) * 10) / 10
+    : null;
+  const creditDiff = school.creditDiff === null || school.creditDiff === undefined ? null : Number(school.creditDiff);
+  const referenceCredits = school.credits === null || school.credits === undefined ? null : Number(school.credits);
+  const studentCredits = creditDiff !== null && Number.isFinite(creditDiff) && referenceCredits !== null && Number.isFinite(referenceCredits)
+    ? Math.round((referenceCredits + creditDiff) * 10) / 10
+    : null;
+  const unmetSubjects = Array.isArray(school.unmetRequirements) ? school.unmetRequirements : [];
+  const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 5);
+  const latestHistoricalScore = historicalScores[0];
+
+  const scoreComparison = !Number.isFinite(scoreDiff)
+    ? '目前缺少積分差資料。'
+    : scoreDiff > 0
+      ? `高於參考門檻 ${scoreDiff} 分`
+      : scoreDiff < 0
+        ? `低於參考門檻 ${Math.abs(scoreDiff)} 分`
+        : '與參考門檻相同';
+  const creditComparison = creditDiff === null || !Number.isFinite(creditDiff)
+    ? '未提供積點參考資料'
+    : creditDiff > 0
+      ? `高於參考值 ${creditDiff} 點`
+      : creditDiff < 0
+        ? `低於參考值 ${Math.abs(creditDiff)} 點`
+        : '與參考值相同';
+
+  return (
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+      <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉完整落點判讀" onClick={handleClose} />
+      <section role="dialog" aria-modal="true" aria-labelledby="admission-analysis-title" className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
+        <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-100 p-5 sm:p-6">
+          <div className="flex min-w-0 items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+              <Sparkles className="h-5 w-5 text-indigo-700" strokeWidth={3} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-black text-indigo-900">完整落點判讀</div>
+              <h2 id="admission-analysis-title" className="mt-1 break-words text-2xl font-black leading-tight text-slate-900 sm:text-3xl">{school.name}</h2>
+            </div>
+          </div>
+          <button type="button" onClick={handleClose} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-4 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]" aria-label="關閉"><X className="h-5 w-5" /></button>
+        </header>
+
+        <div className="space-y-5 p-5 sm:p-6">
+          <section className={`rounded-2xl border-2 p-4 ${zone.tone}`}>
+            <div className="flex items-center gap-2"><ZoneIcon className="h-5 w-5" strokeWidth={3} /><span className="text-sm font-black">{zone.label}</span></div>
+            <p className="mt-2 text-base font-black leading-7 text-slate-900">{school.analysisNote || '目前未提供額外判讀。'}</p>
+          </section>
+
+          <section className="rounded-2xl border-2 border-slate-200 bg-white p-4">
+            <h3 className="text-base font-black text-slate-900">成績與參考門檻</h3>
+            <div className="mt-3 overflow-hidden rounded-xl border-2 border-slate-200">
+              <table className="w-full table-fixed border-collapse text-center text-sm">
+                <thead className="bg-slate-50 text-xs font-black text-slate-500"><tr><th className="w-1/3 border-r-2 border-slate-200 px-2 py-2.5">項目</th><th className="w-1/3 border-r-2 border-slate-200 px-2 py-2.5">你的成績</th><th className="w-1/3 px-2 py-2.5">與參考值比較</th></tr></thead>
+                <tbody className="font-bold text-slate-800">
+                  <tr className="border-t-2 border-slate-200"><td className="border-r-2 border-slate-200 px-2 py-3 font-black">總積分</td><td className="border-r-2 border-slate-200 px-2 py-3">{studentPoints ?? '--'} <span className="text-xs text-slate-500">（參考 {Number.isFinite(referencePoints) ? referencePoints : '--'}）</span></td><td className="px-2 py-3">{scoreComparison}</td></tr>
+                  <tr className="border-t-2 border-slate-200"><td className="border-r-2 border-slate-200 px-2 py-3 font-black">積點／同分比序</td><td className="border-r-2 border-slate-200 px-2 py-3">{studentCredits ?? '--'} <span className="text-xs text-slate-500">（參考 {referenceCredits ?? '--'}）</span></td><td className="px-2 py-3">{creditComparison}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
+            <h3 className="text-base font-black text-amber-950">科目歷年參考</h3>
+            {unmetSubjects.length > 0 ? <p className="mt-2 text-sm font-bold leading-7 text-amber-950">{unmetSubjects.join('、')}低於本校系的歷年錄取參考。這不是填寫資格限制，但代表同分競爭時的風險較高，已納入夢幻區判讀。</p> : <p className="mt-2 text-sm font-bold leading-7 text-amber-950">目前各科表現未低於系統設定的歷年錄取參考；實際結果仍會受超額比序與志願分布影響。</p>}
+          </section>
+
+          <section className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-base font-black text-slate-900">歷年資料與判讀提醒</h3>
+            <ul className="mt-2 space-y-2 text-sm font-bold leading-6 text-slate-700">
+              <li>• 可供參考 {historicalScores.length} 年歷年資料{latestHistoricalScore ? `；最新為 ${latestHistoricalScore.year} 年，積分 ${latestHistoricalScore.points}${latestHistoricalScore.credits !== null && latestHistoricalScore.credits !== undefined ? `／積點 ${latestHistoricalScore.credits}` : ''}。` : '，目前尚無可顯示的歷年成績。'}</li>
+              <li>• {creditDiff === 0 && scoreDiff === 0 ? '總積分與積點皆相同時，仍須依當年度超額比序、作文與志願分布判斷。' : '本結果為歷年資料的落點推估；招生名額、志願分布與當年度規則都可能使結果變動。'}</li>
+              <li>• 正式選填前，請以當年度招生簡章與個別序位區間為準。</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompared, onToggleComparison }: {
   school: any | null;
   regionName: string;
@@ -438,6 +530,7 @@ export default function ResultsPage() {
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
+  const [analysisSchool, setAnalysisSchool] = useState<any | null>(null);
   const [detailSchool, setDetailSchool] = useState<any | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -834,6 +927,11 @@ export default function ResultsPage() {
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
                   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === (school.region || scores?.region))?.name || school.region || regionName;
                   const groupLabel = school.group || school.type || '普通科';
+                  const analysisTone = school.zone === 'reach'
+                    ? 'from-rose-50 via-white to-rose-100/70 border-rose-200 text-rose-700 group-hover:border-rose-400'
+                    : school.zone === 'safe'
+                      ? 'from-emerald-50 via-white to-emerald-100/70 border-emerald-200 text-emerald-700 group-hover:border-emerald-400'
+                      : 'from-sky-50 via-white to-indigo-100/70 border-sky-200 text-sky-700 group-hover:border-sky-400';
 
                   return (
                     <article key={`${school.name}-${index}`} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
@@ -876,14 +974,21 @@ export default function ResultsPage() {
 
                       <button
                         type="button"
-                        onClick={() => setDetailSchool(school)}
-                        className="w-full rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3.5 text-left transition-colors hover:border-indigo-400 hover:bg-indigo-100 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        onClick={() => setAnalysisSchool(school)}
+                        className={`group relative w-full overflow-hidden rounded-2xl border-2 bg-gradient-to-br p-1 text-left shadow-[0_2px_0_rgba(15,23,42,0.06)] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_18px_rgba(15,23,42,0.12)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${analysisTone}`}
                         aria-label={`查看 ${school.name} 的完整落點判讀`}
                       >
-                        <p className="text-sm font-bold leading-relaxed text-indigo-950">
-                          {school.analysisNote || '目前未提供落點判讀。'}
-                        </p>
-                        <span className="mt-2 block text-xs font-black text-indigo-800">查看完整判讀 →</span>
+                        <div className="relative flex items-center gap-3 rounded-[0.85rem] bg-white/70 px-3.5 py-3.5 backdrop-blur-sm">
+                          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-current bg-white shadow-[2px_2px_0_rgba(15,23,42,0.12)] ${analysisTone.split(' ').slice(-2, -1).join(' ')}`}>
+                            <Sparkles className="h-4.5 w-4.5" strokeWidth={3} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-black leading-relaxed text-slate-900">
+                              {school.analysisNote || '目前未提供落點判讀。'}
+                            </p>
+                            <span className="mt-2 inline-flex items-center rounded-lg bg-slate-900 px-2.5 py-1 text-[11px] font-black tracking-wide text-white transition-transform group-hover:translate-x-0.5">查看完整判讀 <span className="ml-1.5 text-sm leading-none">→</span></span>
+                          </div>
+                        </div>
                       </button>
 
                       <button
@@ -1031,6 +1136,7 @@ export default function ResultsPage() {
       )}
 
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} onExport={handleExport} />
+      <AdmissionAnalysisDialog school={analysisSchool} onClose={() => setAnalysisSchool(null)} />
       <SchoolDetailDialog
         school={detailSchool}
         regionName={regionName}
