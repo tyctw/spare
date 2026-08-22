@@ -33,6 +33,7 @@ import { ALL_REGIONS } from './RegionModal';
 import { exportExcel, exportJson, exportTxt, printResults } from '../lib/exportUtils';
 import { withBasePath } from '../lib/routes';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
+import { getCreditsGap, getPointsGap } from '../lib/admissionComparison';
 import {
   AdmissionAnalysisDialog,
   AutoFitSingleLine,
@@ -50,9 +51,6 @@ import {
 } from './ResultsDialogs';
 
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
-
-const getPointsGap = (school: any) => Math.abs(school.scoreDiff ?? school.pointsDiff ?? school.distanceScore ?? 0);
-const getCreditsGap = (school: any) => Math.abs(school.creditDiff ?? school.creditsDiff ?? 0);
 
 export default function ResultsPage() {
   const stored = useMemo(() => {

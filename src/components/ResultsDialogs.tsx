@@ -3,6 +3,7 @@ import { Award, Building2, Check, Database, Flame, History, List, MapPin, Shield
 import { ALL_REGIONS } from './RegionModal';
 import { formatSchoolOwnership } from '../lib/schoolDisplay';
 import { useModalHistory } from '../hooks/useModalHistory';
+import { getAdmissionComparison } from '../lib/admissionComparison';
 
 export const normalizeHistoricalScores = (scores: any[] = []) =>
   scores
@@ -306,14 +307,10 @@ const GRADE_VALUES: Record<string, number> = { 'A++': 9, 'A+': 8, A: 7, 'B++': 6
 const GRADE_LABELS: Record<number, string> = { 9: 'A++', 8: 'A+', 7: 'A', 6: 'B++', 5: 'B+', 4: 'B', 3: 'C' };
 
 function SubjectReferenceTable({ school, grades }: { school: any; grades?: Record<string, any> }) {
-  const scoreDiff = Number(school.scoreDiff ?? school.pointsDiff);
-  const creditDiff = school.creditDiff === null || school.creditDiff === undefined ? null : Number(school.creditDiff);
-  const shouldCompareSubjects =
-    Number.isFinite(scoreDiff) && Math.abs(scoreDiff) < 0.001 &&
-    (creditDiff === null || (Number.isFinite(creditDiff) && Math.abs(creditDiff) < 0.001));
+  const { creditsDifference, shouldCompareSubjects } = getAdmissionComparison(school);
 
   if (!shouldCompareSubjects) {
-    return <p className="mt-2 text-sm font-bold leading-7 text-amber-950">總積分{creditDiff !== null ? '與積點' : ''}尚未相同，不須比較單科成績。</p>;
+    return <p className="mt-2 text-sm font-bold leading-7 text-amber-950">總積分{creditsDifference !== null ? '與積點' : ''}尚未相同，不須比較單科成績。</p>;
   }
 
   const rows = SUBJECT_REFERENCE_ITEMS.map((item) => {
@@ -376,39 +373,35 @@ export function AdmissionAnalysisDialog({ school, region, grades, onClose }: { s
 
   const zone = zoneMeta[school.zone] || zoneMeta.target;
   const ZoneIcon = zone.icon;
-  const scoreDiff = Number(school.scoreDiff ?? school.pointsDiff);
+  const { pointsDifference: scoreDiff, creditsDifference: creditDiff, shouldCompareSubjects } = getAdmissionComparison(school);
   const referencePoints = Number(school.points);
-  const studentPoints = Number.isFinite(scoreDiff) && Number.isFinite(referencePoints)
+  const studentPoints = scoreDiff !== null && Number.isFinite(referencePoints)
     ? Math.round((referencePoints + scoreDiff) * 10) / 10
     : null;
-  const creditDiff = school.creditDiff === null || school.creditDiff === undefined ? null : Number(school.creditDiff);
   const referenceCredits = school.credits === null || school.credits === undefined ? null : Number(school.credits);
-  const studentCredits = creditDiff !== null && Number.isFinite(creditDiff) && referenceCredits !== null && Number.isFinite(referenceCredits)
+  const studentCredits = creditDiff !== null && referenceCredits !== null && Number.isFinite(referenceCredits)
     ? Math.round((referenceCredits + creditDiff) * 10) / 10
     : null;
   const unmetSubjects = Array.isArray(school.unmetRequirements) ? school.unmetRequirements : [];
   const pointsRange = getOfficialScoreRange(region || school.region, 'points');
   const creditsRange = getOfficialScoreRange(region || school.region, 'credits');
 
-  const scoreComparison = !Number.isFinite(scoreDiff)
+  const scoreComparison = scoreDiff === null
     ? '目前缺少積分差資料。'
     : scoreDiff > 0
       ? `高於參考門檻 ${scoreDiff} 分`
       : scoreDiff < 0
         ? `低於參考門檻 ${Math.abs(scoreDiff)} 分`
         : '與參考門檻相同';
-  const creditComparison = creditDiff === null || !Number.isFinite(creditDiff)
+  const creditComparison = creditDiff === null
     ? '未提供積點參考資料'
     : creditDiff > 0
       ? `高於參考值 ${creditDiff} 點`
       : creditDiff < 0
       ? `低於參考值 ${Math.abs(creditDiff)} 點`
         : '與參考值相同';
-  const shouldCompareSubjects =
-    Number.isFinite(scoreDiff) && Math.abs(scoreDiff) < 0.001 &&
-    (creditDiff === null || (Number.isFinite(creditDiff) && Math.abs(creditDiff) < 0.001));
-  const scoreGapLabel = !Number.isFinite(scoreDiff) ? '—' : scoreDiff === 0 ? '相同' : `${scoreDiff > 0 ? '+' : ''}${scoreDiff} 分`;
-  const creditGapLabel = creditDiff === null || !Number.isFinite(creditDiff) ? '不適用' : creditDiff === 0 ? '相同' : `${creditDiff > 0 ? '+' : ''}${creditDiff} 點`;
+  const scoreGapLabel = scoreDiff === null ? '—' : scoreDiff === 0 ? '相同' : `${scoreDiff > 0 ? '+' : ''}${scoreDiff} 分`;
+  const creditGapLabel = creditDiff === null ? '不適用' : creditDiff === 0 ? '相同' : `${creditDiff > 0 ? '+' : ''}${creditDiff} 點`;
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
