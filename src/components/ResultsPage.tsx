@@ -488,6 +488,13 @@ function AdmissionAnalysisDialog({ school, region, grades, onClose }: { school: 
   );
 }
 
+function EmphasizedAnalysisText({ text, tone }: { text: string; tone: string }) {
+  return <>{text.split(/(\d+(?:\.\d+)?\s*[分點])/g).map((part, index) => /\d+(?:\.\d+)?\s*[分點]/.test(part) ? <span key={index} className={`mx-0.5 text-lg font-black ${tone}`}>{part}</span> : part)}</>;
+}
+
+const getAnalysisAccent = (zone: string | undefined) =>
+  zone === 'reach' ? 'border-l-rose-500 text-rose-700' : zone === 'safe' ? 'border-l-emerald-500 text-emerald-700' : 'border-l-sky-500 text-sky-700';
+
 function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnalysis, isCompared, onToggleComparison }: {
   school: any | null;
   regionName: string;
@@ -506,6 +513,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnaly
   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === school.region)?.name || school.region || regionName;
   const zoneLabel = school.zone === 'reach' ? '夢幻區' : school.zone === 'safe' ? '保守區' : '實際區';
   const zoneTone = school.zone === 'reach' ? 'border-rose-300 bg-rose-100 text-rose-800' : school.zone === 'safe' ? 'border-emerald-300 bg-emerald-100 text-emerald-800' : 'border-sky-300 bg-sky-100 text-sky-800';
+  const analysisAccent = getAnalysisAccent(school.zone);
   const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 4);
   const latestHistoricalScore = historicalScores[0];
   const historicalTrend = getHistoricalTrend(historicalScores);
@@ -555,12 +563,12 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnaly
               </tbody>
             </table>
           </div>
-          <div className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 sm:px-5">
+          <div className={`rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-4 py-3 sm:px-5 ${analysisAccent.split(' ')[0]}`}>
             <div className="text-sm font-black text-slate-500">
               落點判讀
             </div>
             <p className="mt-2 text-base font-black leading-6 text-slate-950">
-              {school.analysisNote || '目前未提供額外判讀。'}
+              <EmphasizedAnalysisText text={school.analysisNote || '目前未提供額外判讀。'} tone={analysisAccent.split(' ')[1]} />
             </p>
             <div className="mt-2 border-t border-slate-100 pt-1.5">
               <button type="button" onClick={() => onAnalysis(school)} className="ml-auto flex items-center text-sm font-black text-slate-600 transition-colors hover:text-slate-950">查看完整判讀 <span className="ml-2 text-lg leading-none">→</span></button>
@@ -1051,6 +1059,7 @@ export default function ResultsPage() {
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
                   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === (school.region || scores?.region))?.name || school.region || regionName;
                   const groupLabel = school.group || school.type || '普通科';
+                  const analysisAccent = getAnalysisAccent(school.zone);
 
                   return (
                     <article key={`${school.name}-${index}`} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
@@ -1094,13 +1103,13 @@ export default function ResultsPage() {
                       <button
                         type="button"
                         onClick={() => setAnalysisSchool(school)}
-                        className="group w-full rounded-2xl border-2 border-slate-200 bg-white px-3.5 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0"
+                        className={`group w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-3.5 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 ${analysisAccent.split(' ')[0]}`}
                         aria-label={`查看 ${school.name} 的完整落點判讀`}
                       >
                         <div>
                           <div className="mb-1 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
                           <p className="text-sm font-black leading-6 text-slate-900">
-                            {school.analysisNote || '目前未提供落點判讀。'}
+                            <EmphasizedAnalysisText text={school.analysisNote || '目前未提供落點判讀。'} tone={analysisAccent.split(' ')[1]} />
                           </p>
                           <div className="mt-2 flex items-center justify-end border-t border-slate-100 pt-2">
                             <span className="text-xs font-black text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-slate-950">查看完整判讀 <span className="ml-1.5 text-base leading-none">→</span></span>
