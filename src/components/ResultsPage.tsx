@@ -129,12 +129,17 @@ function AutoFitSingleLine({ text }: { text: string }) {
     if (!element || !container) return;
 
     const fitText = () => {
-      element.style.fontSize = '14px';
+      // 群別最長會到六個中文字；先按字數給出易讀的基準字級，
+      // 再針對較窄的卡片欄位微調，確保內容不會換行或被裁切。
+      const characterCount = Array.from(text).length;
+      const baseSize = characterCount >= 6 ? 11 : characterCount === 5 ? 12 : 14;
+      const minSize = characterCount >= 6 ? 9.5 : 10;
+      element.style.fontSize = `${baseSize}px`;
       const availableWidth = container.clientWidth;
       const requiredWidth = element.scrollWidth;
       const size = requiredWidth > availableWidth
-        ? Math.max(5, Math.floor((14 * availableWidth / requiredWidth) * 10) / 10)
-        : 14;
+        ? Math.max(minSize, Math.floor((baseSize * availableWidth / requiredWidth) * 10) / 10)
+        : baseSize;
       element.style.fontSize = `${size}px`;
     };
 
