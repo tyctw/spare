@@ -157,7 +157,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
               </section>
             </div>
 
-            <footer id="region-modal-description" className="flex shrink-0 items-center gap-2 border-t-4 border-slate-900 bg-sky-50 px-5 py-4 text-xs font-bold text-slate-500 sm:px-8"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-emerald-500" />選定區域後，系統會自動套用該區的計分方式與比序規則。</footer>
+            <footer id="region-modal-description" className="flex shrink-0 items-center gap-2 border-t-4 border-slate-900 bg-sky-50 px-5 py-4 text-xs font-bold text-slate-500 sm:px-8"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-emerald-500" />系統會自動套用該區的計分方式與比序規則。</footer>
           </motion.div>
         </div>
       )}
