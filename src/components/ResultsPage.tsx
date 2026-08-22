@@ -355,7 +355,7 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
         <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-700 p-5 sm:p-6">
           <div className="flex min-w-0 items-start gap-3">
             <div className="min-w-0">
-              <div className="text-xs font-black tracking-[0.12em] text-indigo-100">學校完整資訊</div>
+              <div className="text-xs font-black tracking-[0.12em] text-indigo-100">完整落點判讀</div>
               <h2 id="admission-analysis-title" className="mt-1 break-words text-2xl font-black leading-tight text-white sm:text-3xl">{school.name}</h2>
             </div>
           </div>
