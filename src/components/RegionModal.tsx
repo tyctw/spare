@@ -125,7 +125,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                       <div className={`absolute inset-x-0 top-0 h-28 bg-gradient-to-br ${tone.wash} sm:h-32`} aria-hidden="true" />
                       <div className="relative flex h-28 items-center justify-center px-4 sm:h-32">
                         <RegionIcon aria-hidden="true" className="absolute top-4 h-5 w-5 text-slate-700/75 sm:h-6 sm:w-6" strokeWidth={2.8} />
-                        <h3 className="relative mt-7 whitespace-nowrap text-3xl font-black tracking-tight text-slate-900 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h3>
+                        <h3 className="relative mt-7 whitespace-nowrap text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">{region.name}</h3>
                         {isSelected && <span aria-label="已選取" className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-white shadow-sm"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
                       </div>
                       <div className="bg-white px-4 pb-3 pt-3 sm:pb-4 sm:pt-4">
@@ -148,7 +148,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                       <div className="absolute inset-x-0 top-0 h-28 bg-slate-200 sm:h-32" aria-hidden="true" />
                       <div className="relative flex h-28 items-center justify-center px-4 sm:h-32">
                         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-25 [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_10px,#94a3b8_10px,#94a3b8_12px)]" />
-                        <h4 className="relative whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
+                        <h4 className="relative whitespace-nowrap text-3xl font-semibold tracking-tight text-slate-500 sm:text-4xl">{region.name}</h4>
                         <span className="absolute right-3 top-3 rounded-full bg-white/85 px-2.5 py-1 text-[9px] font-black tracking-wider text-slate-500">籌備中</span>
                       </div>
                       <p className="px-4 pb-3 pt-3 text-[11px] font-bold leading-4 text-slate-400 sm:pb-4 sm:pt-4 sm:text-xs">{region.desc}</p>
