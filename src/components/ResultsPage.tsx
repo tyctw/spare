@@ -390,7 +390,7 @@ function SubjectReferenceTable({ school, grades }: { school: any; grades?: Recor
                 </div>
                 <div className="mt-1 flex justify-between text-[10px] font-bold text-slate-500"><span>C</span><span>參考 {GRADE_LABELS[row.reference] || row.reference}</span><span>A++</span></div>
               </td>
-              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '未達' : row.isMet ? '達標' : '—'}</td>
+              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '未達標' : row.isMet ? '達標' : '—'}</td>
             </tr>
           ))}
         </tbody>
@@ -522,7 +522,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnaly
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
       <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉完整落點判讀" onClick={handleClose} />
       <section role="dialog" aria-modal="true" aria-labelledby="school-detail-title" className="relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
-        <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-100 p-5 sm:p-6">
+        <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-100 p-5 shadow-[0_3px_0_rgba(15,23,42,0.14)] sm:p-6">
           <div className="flex min-w-0 items-start gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
               <Building2 className="h-5 w-5 text-indigo-700" strokeWidth={3} />
