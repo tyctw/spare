@@ -117,9 +117,9 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
   }, [globalSearchTerm]);
 
   return (
-    <div className={`fixed top-0 left-0 right-0 z-[90] pointer-events-none transition-all duration-300 ${isScrolled ? 'p-2' : 'p-2 sm:p-4'}`}>
+    <div className={`fixed top-0 left-0 right-0 z-[90] pointer-events-none transition-all duration-300 ${isScrolled ? 'p-2' : 'p-0'}`}>
       <div className="mx-auto w-full max-w-none pointer-events-auto">
-        <header onMouseEnter={keepMenuOpen} onMouseLeave={closeMenuWithDelay} className={`relative bg-white/95 backdrop-blur-md rounded-[1.65rem] flex items-center justify-between gap-2 transition-all duration-300 ${isScrolled ? 'border-2 border-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] p-2' : 'border-4 border-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] p-2 sm:p-3 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]'}`}>
+        <header onMouseEnter={keepMenuOpen} onMouseLeave={closeMenuWithDelay} className={`relative bg-white/95 backdrop-blur-md flex items-center justify-between gap-2 transition-all duration-300 ${isScrolled ? 'rounded-[1.65rem] border-2 border-slate-900 p-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'rounded-none border-x-0 border-t-0 border-b-2 border-slate-900 p-2 sm:p-3 shadow-[0_2px_0px_0px_rgba(15,23,42,1)]'}`}>
           <a href={withBasePath('/')} aria-label="回到會考落點分析首頁" className="flex shrink-0 items-center gap-2 sm:gap-3">
             <div className={`bg-indigo-600 border-slate-900 flex items-center justify-center text-white font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all ${isScrolled ? 'w-10 h-10 rounded-xl border-2 text-xl' : 'w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border-2 sm:border-3 text-xl sm:text-2xl'}`}>
               會
@@ -246,7 +246,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
           </div>
 
           {isGlobalSearchOpen && createPortal(
-            <div onClick={closeGlobalSearch} onKeyDown={handleGlobalSearchKeyDown} className="fixed inset-0 z-[150] bg-slate-900/80 p-2 sm:p-4" role="dialog" aria-modal="true" aria-label="搜尋全站功能" aria-describedby="global-search-help" ref={globalSearchDialogRef}>
+            <div onClick={closeGlobalSearch} onKeyDown={handleGlobalSearchKeyDown} className="fixed inset-0 z-[150] bg-slate-950/65 p-2 backdrop-blur-md sm:p-4" role="dialog" aria-modal="true" aria-label="搜尋全站功能" aria-describedby="global-search-help" ref={globalSearchDialogRef}>
               <div onClick={(event) => event.stopPropagation()} className="mx-auto w-full max-w-none rounded-[1.65rem] bg-white p-2 sm:p-3">
                 <p id="global-search-help" className="sr-only">輸入關鍵字搜尋全站功能。按 Escape 可關閉搜尋視窗。</p>
                 <div className="flex items-center gap-3 lg:gap-6">
