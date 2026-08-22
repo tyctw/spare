@@ -465,14 +465,16 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnaly
               </tbody>
             </table>
           </div>
-          <div className="rounded-2xl border-2 border-indigo-200 bg-indigo-50 px-4 py-4 sm:px-5">
-            <div className="text-base font-black text-indigo-800">
+          <div className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-4 sm:px-5">
+            <div className="text-sm font-black text-slate-500">
               落點判讀
             </div>
-            <p className="mt-3 text-base font-black leading-7 text-indigo-950">
+            <p className="mt-3 text-base font-black leading-7 text-slate-950">
               {school.analysisNote || '目前未提供額外判讀。'}
             </p>
-            <button type="button" onClick={() => onAnalysis(school)} className="mt-4 ml-auto flex items-center text-sm font-black text-indigo-800 underline decoration-indigo-300 decoration-2 underline-offset-4 transition-colors hover:text-indigo-950 hover:decoration-indigo-700">查看完整落點判讀 <span className="ml-2 text-lg leading-none">→</span></button>
+            <div className="mt-3 border-t border-slate-100 pt-2">
+              <button type="button" onClick={() => onAnalysis(school)} className="ml-auto flex items-center text-sm font-black text-slate-600 transition-colors hover:text-slate-950">查看完整判讀 <span className="ml-2 text-lg leading-none">→</span></button>
+            </div>
           </div>
 
           {/* 歷年成績：與卡片相同的全寬卡片按鈕樣式 */}
