@@ -144,14 +144,12 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {upcomingRegions.map((region) => {
-                  const RegionIcon = region.icon;
                   return (
                     <div key={region.id} aria-label={`${region.name}，尚未開放`} aria-disabled="true" className="relative overflow-hidden rounded-[1.85rem] border-2 border-slate-400 bg-white opacity-70 shadow-[0_4px_16px_rgba(15,23,42,0.08)]">
                       <div className="absolute inset-x-0 top-0 h-28 bg-slate-200 sm:h-32" aria-hidden="true" />
                       <div className="relative flex h-28 items-center justify-center px-4 sm:h-32">
                         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-25 [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_10px,#94a3b8_10px,#94a3b8_12px)]" />
-                        <RegionIcon aria-hidden="true" className="absolute top-4 h-5 w-5 text-slate-500 sm:h-6 sm:w-6" strokeWidth={2.8} />
-                        <h4 className="relative mt-7 whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
+                        <h4 className="relative whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
                         <span className="absolute right-3 top-3 rounded-full bg-white/85 px-2.5 py-1 text-[9px] font-black tracking-wider text-slate-500">籌備中</span>
                       </div>
                       <p className="px-4 pb-3 pt-3 text-[11px] font-bold leading-4 text-slate-400 sm:pb-4 sm:pt-4 sm:text-xs">{region.desc}</p>
