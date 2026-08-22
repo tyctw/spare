@@ -6,30 +6,25 @@ import {
 } from 'lucide-react';
 
 export const ALL_REGIONS = [
-  { id: 'taipei', name: '基北區', desc: '臺北市、新北市、基隆市', icon: Building2, active: true, tone: 'indigo' },
-  { id: 'taoyuan', name: '桃連區', desc: '桃園市、連江縣', icon: MapPinned, active: true, tone: 'emerald' },
-  { id: 'hsinchu', name: '竹苗區', desc: '新竹縣市、苗栗縣', icon: Cpu, active: true, tone: 'fuchsia' },
-  { id: 'central', name: '中投區', desc: '臺中市、南投縣', icon: Mountain, active: true, tone: 'amber' },
-  { id: 'changhua', name: '彰化區', desc: '彰化縣', icon: Wheat, active: true, tone: 'rose' },
-  { id: 'tainan', name: '臺南區', desc: '臺南市', icon: Landmark, active: true, tone: 'sky' },
-  { id: 'kaohsiung', name: '高雄區', desc: '高雄市', icon: ShipWheel, active: true, tone: 'orange' },
-  { id: 'yunlin', name: '雲林區', desc: '雲林縣', icon: Wheat, active: false, tone: 'slate' },
-  { id: 'chiayi', name: '嘉義區', desc: '嘉義縣市', icon: TreePine, active: true, tone: 'teal' },
-  { id: 'pingtung', name: '屏東區', desc: '屏東縣', icon: Sun, active: false, tone: 'slate' },
-  { id: 'yilan', name: '宜蘭區', desc: '宜蘭縣', icon: Waves, active: false, tone: 'slate' },
-  { id: 'taitung', name: '臺東區', desc: '臺東縣', icon: Sunrise, active: false, tone: 'slate' },
+  { id: 'taipei', name: '基北區', desc: '臺北市、新北市、基隆市', icon: Building2, active: true, tone: 'north' },
+  { id: 'taoyuan', name: '桃連區', desc: '桃園市、連江縣', icon: MapPinned, active: true, tone: 'north' },
+  { id: 'hsinchu', name: '竹苗區', desc: '新竹縣市、苗栗縣', icon: Cpu, active: true, tone: 'north' },
+  { id: 'central', name: '中投區', desc: '臺中市、南投縣', icon: Mountain, active: true, tone: 'central' },
+  { id: 'changhua', name: '彰化區', desc: '彰化縣', icon: Wheat, active: true, tone: 'central' },
+  { id: 'tainan', name: '臺南區', desc: '臺南市', icon: Landmark, active: true, tone: 'south' },
+  { id: 'kaohsiung', name: '高雄區', desc: '高雄市', icon: ShipWheel, active: true, tone: 'south' },
+  { id: 'yunlin', name: '雲林區', desc: '雲林縣', icon: Wheat, active: false, tone: 'central' },
+  { id: 'chiayi', name: '嘉義區', desc: '嘉義縣市', icon: TreePine, active: true, tone: 'south' },
+  { id: 'pingtung', name: '屏東區', desc: '屏東縣', icon: Sun, active: false, tone: 'south' },
+  { id: 'yilan', name: '宜蘭區', desc: '宜蘭縣', icon: Waves, active: false, tone: 'east' },
+  { id: 'taitung', name: '臺東區', desc: '臺東縣', icon: Sunrise, active: false, tone: 'east' },
 ];
 
 const toneClasses: Record<string, { icon: string; selected: string; wash: string; dot: string }> = {
-  indigo: { icon: 'bg-indigo-500 text-white', selected: 'border-slate-900 bg-indigo-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-indigo-300', wash: 'from-indigo-100 to-white', dot: 'bg-indigo-500' },
-  emerald: { icon: 'bg-emerald-500 text-white', selected: 'border-slate-900 bg-emerald-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-emerald-300', wash: 'from-emerald-100 to-white', dot: 'bg-emerald-500' },
-  fuchsia: { icon: 'bg-fuchsia-500 text-white', selected: 'border-slate-900 bg-fuchsia-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-fuchsia-300', wash: 'from-fuchsia-100 to-white', dot: 'bg-fuchsia-500' },
-  amber: { icon: 'bg-amber-400 text-slate-900', selected: 'border-slate-900 bg-amber-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-amber-300', wash: 'from-amber-100 to-white', dot: 'bg-amber-500' },
-  rose: { icon: 'bg-rose-500 text-white', selected: 'border-slate-900 bg-rose-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-rose-300', wash: 'from-rose-100 to-white', dot: 'bg-rose-500' },
-  sky: { icon: 'bg-sky-500 text-white', selected: 'border-slate-900 bg-sky-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-sky-300', wash: 'from-sky-100 to-white', dot: 'bg-sky-500' },
-  teal: { icon: 'bg-teal-500 text-white', selected: 'border-slate-900 bg-teal-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-teal-300', wash: 'from-teal-100 to-white', dot: 'bg-teal-500' },
-  orange: { icon: 'bg-orange-500 text-white', selected: 'border-slate-900 bg-orange-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-orange-300', wash: 'from-orange-100 to-white', dot: 'bg-orange-500' },
-  slate: { icon: 'bg-slate-200 text-slate-400', selected: '', wash: 'from-slate-100 to-white', dot: 'bg-slate-300' },
+  north: { icon: 'bg-sky-500 text-white', selected: 'border-slate-900 bg-sky-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-sky-300', wash: 'from-sky-200 to-blue-50', dot: 'bg-sky-500' },
+  central: { icon: 'bg-amber-400 text-slate-900', selected: 'border-slate-900 bg-amber-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-amber-300', wash: 'from-amber-200 to-yellow-50', dot: 'bg-amber-500' },
+  south: { icon: 'bg-rose-500 text-white', selected: 'border-slate-900 bg-rose-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-rose-300', wash: 'from-rose-200 to-orange-50', dot: 'bg-rose-500' },
+  east: { icon: 'bg-teal-500 text-white', selected: 'border-slate-900 bg-teal-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-teal-300', wash: 'from-teal-200 to-cyan-50', dot: 'bg-teal-500' },
 };
 
 interface Props {
@@ -104,20 +99,16 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                       onClick={() => { onSelect(region.id); onClose(); }}
                       aria-pressed={isSelected}
                       aria-label={`${region.name}，${region.desc}${region.active ? isSelected ? '，目前已選取' : '，可選擇' : '，尚未開放'}`}
-                      className={`group relative min-h-[166px] overflow-hidden rounded-2xl border-[3px] p-4 text-left transition-all ${
-                        isSelected ? tone.selected : region.active ? 'border-slate-900 bg-white shadow-[3px_3px_0_#0f172a] hover:-translate-y-1 hover:shadow-[5px_5px_0_#0f172a] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600' : 'cursor-not-allowed border-slate-300 bg-slate-50 opacity-65'
+                      className={`group relative overflow-hidden rounded-[1.85rem] border-2 bg-white text-center transition-all focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
+                        isSelected ? 'border-slate-900 ring-[3px] ring-sky-600 shadow-[0_8px_22px_rgba(15,23,42,0.18)]' : region.active ? 'border-slate-200 shadow-[0_4px_16px_rgba(15,23,42,0.10)] hover:-translate-y-1 hover:border-slate-400 hover:shadow-[0_10px_24px_rgba(15,23,42,0.16)]' : 'border-slate-300 cursor-not-allowed opacity-65'
                       }`}
                     >
-                      {!region.active && <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_9px,#94a3b8_9px,#94a3b8_11px)]" />}
-                      <div className={`absolute inset-x-0 top-0 h-16 bg-gradient-to-b ${tone.wash}`} />
-                      <div className="relative flex items-start justify-between">
-                        <div aria-hidden="true" className={`grid h-12 w-12 place-items-center rounded-2xl border-2 border-white shadow-[0_3px_10px_rgba(15,23,42,0.14)] ${tone.icon}`}><RegionIcon className="h-6 w-6" strokeWidth={2.5} /></div>
-                        {isSelected && <span aria-label="已選取" className="grid h-6 w-6 place-items-center rounded-full bg-sky-600 text-white"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
+                      <div className={`relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-gradient-to-br px-4 ${tone.wash} sm:h-32`}>
+                        <h3 className="relative whitespace-nowrap text-3xl font-black tracking-tight text-slate-900 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h3>
+                        {isSelected && <span aria-label="已選取" className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-white shadow-sm"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
                       </div>
-                      <div className="relative mt-5">
-                        <h3 className="text-base font-black text-slate-900">{region.name}</h3>
-                        <p className="mt-1 text-[11px] font-bold leading-4 text-slate-500">{region.desc}</p>
-                        {!region.active && <span className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-slate-200 px-2 py-1 text-[9px] font-black tracking-wider text-slate-500"><span className={`h-1.5 w-1.5 rounded-full ${tone.dot}`} />籌備中</span>}
+                      <div className="px-4 pb-3 pt-3 sm:pb-4 sm:pt-4">
+                        <p className="text-[11px] font-bold leading-4 text-slate-500 sm:text-xs">{region.desc}</p>
                       </div>
                     </button>
                   );
@@ -131,12 +122,14 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {upcomingRegions.map((region) => {
-                  const RegionIcon = region.icon;
                   return (
-                    <div key={region.id} aria-label={`${region.name}，尚未開放`} className="relative min-h-[126px] overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 opacity-75">
-                      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_9px,#94a3b8_9px,#94a3b8_11px)]" />
-                      <div className="relative flex items-start justify-between"><div className="grid h-10 w-10 place-items-center rounded-xl border-2 border-slate-200 bg-white text-slate-400"><RegionIcon className="h-5 w-5" /></div><span className="rounded-md bg-slate-200 px-2 py-1 text-[9px] font-black tracking-wider text-slate-500">籌備中</span></div>
-                      <div className="relative mt-4"><h4 className="text-sm font-black text-slate-500">{region.name}</h4><p className="mt-1 text-[11px] font-bold text-slate-400">{region.desc}</p></div>
+                    <div key={region.id} aria-label={`${region.name}，尚未開放`} className="relative overflow-hidden rounded-[1.85rem] border-2 border-slate-300 bg-white opacity-70 shadow-[0_4px_16px_rgba(15,23,42,0.08)]">
+                      <div className="relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-slate-200 px-4 sm:h-32">
+                        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-25 [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_10px,#94a3b8_10px,#94a3b8_12px)]" />
+                        <h4 className="relative whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
+                        <span className="absolute right-3 top-3 rounded-full bg-white/85 px-2.5 py-1 text-[9px] font-black tracking-wider text-slate-500">籌備中</span>
+                      </div>
+                      <p className="px-4 pb-3 pt-3 text-[11px] font-bold leading-4 text-slate-400 sm:pb-4 sm:pt-4 sm:text-xs">{region.desc}</p>
                     </div>
                   );
                 })}
