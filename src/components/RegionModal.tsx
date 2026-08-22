@@ -90,7 +90,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
               <MapPin aria-hidden="true" className="absolute -right-7 -top-8 h-40 w-40 text-sky-300/35" strokeWidth={1.5} />
               <div className="relative flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <h2 id="region-modal-title" className="flex items-center gap-2.5 text-2xl font-black tracking-tight sm:text-4xl"><MapPin aria-hidden="true" className="h-7 w-7 text-sky-600 sm:h-9 sm:w-9" />選擇分析區域</h2>
+                  <h2 id="region-modal-title" className="flex items-center gap-2.5 text-[1.65rem] font-black tracking-tight sm:text-[2.7rem]"><MapPin aria-hidden="true" className="h-7 w-7 text-sky-600 sm:h-9 sm:w-9" />選擇分析區域</h2>
                 </div>
                 <button ref={closeButtonRef} onClick={onClose} aria-label="關閉選擇就學區視窗" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-slate-600 shadow-[2px_2px_0_#0f172a] transition hover:bg-sky-100 hover:text-sky-800 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600"><X aria-hidden="true" className="h-5 w-5" /></button>
               </div>
@@ -100,7 +100,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
               <section aria-labelledby="available-regions-heading">
                 <div className="mb-3 flex items-center justify-between px-1">
                   <div className="min-w-0">
-                    <h3 id="available-regions-heading" className="text-sm font-black text-slate-900">選擇可分析的就學區</h3>
+                    <h3 id="available-regions-heading" className="text-base font-black text-slate-900 sm:text-lg">選擇可分析的就學區</h3>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1.5">
                     <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black text-emerald-700">{availableRegions.length} 個已開放</span>
@@ -124,7 +124,8 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                       }`}
                     >
                       <div className={`relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-gradient-to-br px-4 ${tone.wash} sm:h-32`}>
-                        <h3 className="relative whitespace-nowrap text-3xl font-black tracking-tight text-slate-900 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h3>
+                        <RegionIcon aria-hidden="true" className="absolute top-4 h-5 w-5 text-slate-700/75 sm:h-6 sm:w-6" strokeWidth={2.8} />
+                        <h3 className="relative mt-7 whitespace-nowrap text-3xl font-black tracking-tight text-slate-900 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h3>
                         {isSelected && <span aria-label="已選取" className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-white shadow-sm"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
                       </div>
                       <div className="px-4 pb-3 pt-3 sm:pb-4 sm:pt-4">
@@ -142,11 +143,13 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {upcomingRegions.map((region) => {
+                  const RegionIcon = region.icon;
                   return (
                     <div key={region.id} aria-label={`${region.name}，尚未開放`} aria-disabled="true" className="relative overflow-hidden rounded-[1.85rem] border-2 border-slate-400 bg-white opacity-70 shadow-[0_4px_16px_rgba(15,23,42,0.08)]">
                       <div className="relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-slate-200 px-4 sm:h-32">
                         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-25 [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_10px,#94a3b8_10px,#94a3b8_12px)]" />
-                        <h4 className="relative whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
+                        <RegionIcon aria-hidden="true" className="absolute top-4 h-5 w-5 text-slate-500 sm:h-6 sm:w-6" strokeWidth={2.8} />
+                        <h4 className="relative mt-7 whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
                         <span className="absolute right-3 top-3 rounded-full bg-white/85 px-2.5 py-1 text-[9px] font-black tracking-wider text-slate-500">籌備中</span>
                       </div>
                       <p className="px-4 pb-3 pt-3 text-[11px] font-bold leading-4 text-slate-400 sm:pb-4 sm:pt-4 sm:text-xs">{region.desc}</p>
