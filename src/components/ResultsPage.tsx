@@ -390,7 +390,7 @@ function SubjectReferenceTable({ school, grades }: { school: any; grades?: Recor
                 </div>
                 <div className="mt-1 flex justify-between text-[10px] font-bold text-slate-500"><span>C</span><span>參考 {GRADE_LABELS[row.reference] || row.reference}</span><span>A++</span></div>
               </td>
-              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '未達' : row.isMet ? '達標' : '—'}</td>
+              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '未達標' : row.isMet ? '達標' : '—'}</td>
             </tr>
           ))}
         </tbody>
@@ -563,17 +563,22 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnaly
               </tbody>
             </table>
           </div>
-          <div className={`rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-4 py-3 sm:px-5 ${analysisAccent.split(' ')[0]}`}>
+          <button
+            type="button"
+            onClick={() => onAnalysis(school)}
+            aria-label={`查看 ${school.name} 的完整落點判讀`}
+            className={`group w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-4 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 sm:px-5 ${analysisAccent.split(' ')[0]}`}
+          >
             <div className="text-sm font-black text-slate-500">
               落點判讀
             </div>
             <p className="mt-2 text-base font-black leading-6 text-slate-950">
               <EmphasizedAnalysisText text={school.analysisNote || '目前未提供額外判讀。'} tone={analysisAccent.split(' ')[1]} />
             </p>
-            <div className="mt-2 border-t border-slate-100 pt-1.5">
-              <button type="button" onClick={() => onAnalysis(school)} className="ml-auto flex items-center text-sm font-black text-slate-600 transition-colors hover:text-slate-950">查看完整判讀 <span className="ml-2 text-lg leading-none">→</span></button>
+            <div className="mt-2 flex justify-end border-t border-slate-100 pt-1.5">
+              <span className="flex items-center text-sm font-black text-slate-600 transition-colors group-hover:text-slate-950">查看完整判讀 <span className="ml-2 text-lg leading-none">→</span></span>
             </div>
-          </div>
+          </button>
 
           {/* 歷年成績：與卡片相同的全寬卡片按鈕樣式 */}
           <button
