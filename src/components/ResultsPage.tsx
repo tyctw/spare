@@ -370,18 +370,18 @@ function SubjectReferenceTable({ school, grades }: { school: any; grades?: Recor
       <table className="w-full table-fixed text-left text-xs sm:text-sm">
         <thead className="bg-amber-100 text-amber-950">
           <tr>
-            <th className="w-[16%] px-2 py-2.5 font-black sm:px-3">科目</th>
-            <th className="w-[18%] px-2 py-2.5 font-black sm:px-3">你的成績</th>
-            <th className="w-[46%] px-2 py-2.5 font-black sm:px-3">歷年參考對照</th>
+            <th className="w-[16%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">科目</th>
+            <th className="w-[18%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">你的成績</th>
+            <th className="w-[46%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">歷年參考對照</th>
             <th className="w-[20%] px-2 py-2.5 text-right font-black sm:px-3">判讀</th>
           </tr>
         </thead>
         <tbody>
           {availableRows.map((row) => (
-            <tr key={row.key} className="border-t border-amber-100">
-              <td className="px-2 py-3 font-black text-slate-800 sm:px-3">{row.label}</td>
-              <td className="px-2 py-3 font-black text-slate-800 sm:px-3">{row.studentGrade || '—'}</td>
-              <td className="px-2 py-3 sm:px-3">
+            <tr key={row.key} className="border-t-2 border-amber-200">
+              <td className="border-r-2 border-amber-200 px-2 py-3 font-black text-slate-800 sm:px-3">{row.label}</td>
+              <td className="border-r-2 border-amber-200 px-2 py-3 font-black text-slate-800 sm:px-3">{row.studentGrade || '—'}</td>
+              <td className="border-r-2 border-amber-200 px-2 py-3 sm:px-3">
                 <div className="relative h-4">
                   <div className="absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-slate-100" />
                   <div className="absolute left-[6%] right-[6%] top-1/2 h-2 -translate-y-1/2 rounded-full bg-violet-200" />
