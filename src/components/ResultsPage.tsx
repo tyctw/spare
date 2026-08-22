@@ -358,7 +358,7 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
               <Sparkles className="h-5 w-5" strokeWidth={3} />
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-black tracking-[0.12em] text-teal-100">學校完整資訊</div>
+              <div className="text-xs font-black tracking-[0.12em] text-teal-100">完整落點判讀</div>
               <h2 id="admission-analysis-title" className="mt-1 break-words text-2xl font-black leading-tight text-white sm:text-3xl">{school.name}</h2>
             </div>
           </div>
