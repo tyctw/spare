@@ -129,16 +129,20 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                         {isSelected && <span aria-label="已選取" className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-white shadow-sm"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
                       </div>
                       <div className="bg-white px-4 pb-3 pt-3 sm:pb-4 sm:pt-4">
-                        <p className="text-[11px] font-bold leading-4 text-slate-500 sm:text-xs">{region.desc}</p>
+                        <p className="text-center text-[11px] font-bold leading-4 text-slate-500 sm:text-xs">{region.desc}</p>
                       </div>
                     </button>
                   );
                 })}
                 </div>
               </section>
-              <section aria-labelledby="upcoming-regions-heading" className="mt-7 border-t-2 border-dashed border-slate-300 pt-5">
-                <div className="mb-3 flex items-center justify-between px-1">
-                  <h3 id="upcoming-regions-heading" className="text-sm font-black text-slate-500">尚未開放的區域</h3>
+              <section aria-labelledby="upcoming-regions-heading" className="mt-7 pt-2">
+                <div className="mb-3 flex flex-col items-center gap-1.5 px-1">
+                  <div className="flex w-full items-center gap-3">
+                    <span aria-hidden="true" className="flex-1 border-t-2 border-dashed border-slate-300" />
+                    <h3 id="upcoming-regions-heading" className="shrink-0 text-sm font-black text-slate-500">尚未開放的區域</h3>
+                    <span aria-hidden="true" className="flex-1 border-t-2 border-dashed border-slate-300" />
+                  </div>
                   <span className="text-[10px] font-bold text-slate-400">目前無法選擇</span>
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -151,7 +155,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                         <h4 className="relative whitespace-nowrap text-3xl font-semibold tracking-tight text-slate-500 sm:text-4xl">{region.name}</h4>
                         <span className="absolute right-3 top-3 rounded-full bg-white/85 px-2.5 py-1 text-[9px] font-black tracking-wider text-slate-500">籌備中</span>
                       </div>
-                      <p className="px-4 pb-3 pt-3 text-[11px] font-bold leading-4 text-slate-400 sm:pb-4 sm:pt-4 sm:text-xs">{region.desc}</p>
+                      <p className="px-4 pb-3 pt-3 text-center text-[11px] font-bold leading-4 text-slate-400 sm:pb-4 sm:pt-4 sm:text-xs">{region.desc}</p>
                     </div>
                   );
                 })}
