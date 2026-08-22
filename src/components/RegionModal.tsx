@@ -128,8 +128,8 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                         <h3 className="relative mt-7 whitespace-nowrap text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">{region.name}</h3>
                         {isSelected && <span aria-label="已選取" className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-white shadow-sm"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
                       </div>
-                      <div className="bg-white px-4 pb-3 pt-3 sm:pb-4 sm:pt-4">
-                        <p className="text-center text-[11px] font-bold leading-4 text-slate-500 sm:text-xs">{region.desc}</p>
+                      <div className="bg-white px-4 pb-2 pt-2 sm:pb-3 sm:pt-3">
+                        <p className="flex min-h-8 items-center justify-center text-center text-[11px] font-bold leading-4 text-slate-500 sm:text-xs">{region.desc}</p>
                       </div>
                     </button>
                   );
@@ -155,7 +155,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                         <h4 className="relative whitespace-nowrap text-3xl font-semibold tracking-tight text-slate-500 sm:text-4xl">{region.name}</h4>
                         <span className="absolute right-3 top-3 rounded-full bg-white/85 px-2.5 py-1 text-[9px] font-black tracking-wider text-slate-500">籌備中</span>
                       </div>
-                      <p className="px-4 pb-3 pt-3 text-center text-[11px] font-bold leading-4 text-slate-400 sm:pb-4 sm:pt-4 sm:text-xs">{region.desc}</p>
+                      <p className="flex min-h-8 items-center justify-center px-4 pb-2 pt-2 text-center text-[11px] font-bold leading-4 text-slate-400 sm:pb-3 sm:pt-3 sm:text-xs">{region.desc}</p>
                     </div>
                   );
                 })}
