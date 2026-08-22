@@ -390,7 +390,7 @@ function SubjectReferenceTable({ school, grades }: { school: any; grades?: Recor
                 </div>
                 <div className="mt-1 flex justify-between text-[10px] font-bold text-slate-500"><span>C</span><span>參考 {GRADE_LABELS[row.reference] || row.reference}</span><span>A++</span></div>
               </td>
-              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '未達標' : row.isMet ? '達標' : '—'}</td>
+              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '達標' : row.isMet ? '達標' : '—'}</td>
             </tr>
           ))}
         </tbody>
