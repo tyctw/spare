@@ -444,8 +444,13 @@ function AdmissionAnalysisDialog({ school, region, grades, onClose }: { school: 
     : creditDiff > 0
       ? `高於參考值 ${creditDiff} 點`
       : creditDiff < 0
-        ? `低於參考值 ${Math.abs(creditDiff)} 點`
+      ? `低於參考值 ${Math.abs(creditDiff)} 點`
         : '與參考值相同';
+  const shouldCompareSubjects =
+    Number.isFinite(scoreDiff) && Math.abs(scoreDiff) < 0.001 &&
+    (creditDiff === null || (Number.isFinite(creditDiff) && Math.abs(creditDiff) < 0.001));
+  const scoreGapLabel = !Number.isFinite(scoreDiff) ? '—' : scoreDiff === 0 ? '相同' : `${scoreDiff > 0 ? '+' : ''}${scoreDiff} 分`;
+  const creditGapLabel = creditDiff === null || !Number.isFinite(creditDiff) ? '不適用' : creditDiff === 0 ? '相同' : `${creditDiff > 0 ? '+' : ''}${creditDiff} 點`;
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
@@ -468,6 +473,24 @@ function AdmissionAnalysisDialog({ school, region, grades, onClose }: { school: 
           <section className={`rounded-2xl border-2 p-4 ${zone.tone}`}>
             <div className="flex items-center gap-2"><ZoneIcon className="h-5 w-5" strokeWidth={3} /><span className="text-sm font-black">{zone.label}</span></div>
             <p className="mt-2 text-base font-black leading-7 text-slate-900">{school.analysisNote || '目前未提供額外判讀。'}</p>
+          </section>
+
+          <section className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-base font-black text-slate-900">差距摘要</h3>
+            <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="rounded-xl border-2 border-indigo-200 bg-white px-2.5 py-3 sm:px-3">
+                <div className="text-[10px] font-black text-slate-500">積分差</div>
+                <div className={`mt-1 text-sm font-black sm:text-base ${scoreDiff < 0 ? 'text-rose-600' : scoreDiff > 0 ? 'text-emerald-700' : 'text-slate-800'}`}>{scoreGapLabel}</div>
+              </div>
+              <div className="rounded-xl border-2 border-emerald-200 bg-white px-2.5 py-3 sm:px-3">
+                <div className="text-[10px] font-black text-slate-500">積點差</div>
+                <div className={`mt-1 text-sm font-black sm:text-base ${creditDiff !== null && creditDiff < 0 ? 'text-rose-600' : creditDiff !== null && creditDiff > 0 ? 'text-emerald-700' : 'text-slate-800'}`}>{creditGapLabel}</div>
+              </div>
+              <div className="rounded-xl border-2 border-amber-200 bg-white px-2.5 py-3 sm:px-3">
+                <div className="text-[10px] font-black text-slate-500">單科比較</div>
+                <div className={`mt-1 text-sm font-black sm:text-base ${shouldCompareSubjects ? 'text-amber-700' : 'text-slate-700'}`}>{shouldCompareSubjects ? '需要比較' : '不須比較'}</div>
+              </div>
+            </div>
           </section>
 
           <section className="rounded-2xl border-2 border-slate-200 bg-white p-4">
