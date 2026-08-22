@@ -355,8 +355,6 @@ function AdmissionAnalysisDialog({ school, region, onClose }: { school: any | nu
     ? Math.round((referenceCredits + creditDiff) * 10) / 10
     : null;
   const unmetSubjects = Array.isArray(school.unmetRequirements) ? school.unmetRequirements : [];
-  const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 5);
-  const latestHistoricalScore = historicalScores[0];
   const pointsRange = getOfficialScoreRange(region || school.region, 'points');
   const creditsRange = getOfficialScoreRange(region || school.region, 'credits');
 
@@ -412,13 +410,13 @@ function AdmissionAnalysisDialog({ school, region, onClose }: { school: any | nu
           </section>
 
           <section className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-4">
-            <h3 className="text-base font-black text-slate-900">歷年資料與判讀提醒</h3>
+            <h3 className="text-base font-black text-slate-900">判讀提醒</h3>
             <ul className="mt-2 space-y-2 text-sm font-bold leading-6 text-slate-700">
-              <li>• 可供參考 {historicalScores.length} 年歷年資料{latestHistoricalScore ? `；最新為 ${latestHistoricalScore.year} 年，積分 ${latestHistoricalScore.points}${latestHistoricalScore.credits !== null && latestHistoricalScore.credits !== undefined ? `／積點 ${latestHistoricalScore.credits}` : ''}。` : '，目前尚無可顯示的歷年成績。'}</li>
-              <li>• {creditDiff === 0 && scoreDiff === 0 ? '總積分與積點皆相同時，仍須依當年度超額比序、作文與志願分布判斷。' : '本結果為歷年資料的落點推估；招生名額、志願分布與當年度規則都可能使結果變動。'}</li>
+              <li>• {creditDiff === 0 && scoreDiff === 0 ? '總積分與積點皆相同時，仍須依當年度超額比序、作文與志願分布判斷。' : '本結果為落點推估；招生名額、志願分布與當年度規則都可能使結果變動。'}</li>
               <li>• 正式選填前，請以當年度招生簡章與個別序位區間為準。</li>
             </ul>
           </section>
+
         </div>
       </section>
     </div>
