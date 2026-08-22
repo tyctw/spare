@@ -465,14 +465,14 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnaly
               </tbody>
             </table>
           </div>
-          <div className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-4 sm:px-5">
+          <div className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 sm:px-5">
             <div className="text-sm font-black text-slate-500">
               落點判讀
             </div>
-            <p className="mt-3 text-base font-black leading-7 text-slate-950">
+            <p className="mt-2 text-base font-black leading-6 text-slate-950">
               {school.analysisNote || '目前未提供額外判讀。'}
             </p>
-            <div className="mt-3 border-t border-slate-100 pt-2">
+            <div className="mt-2 border-t border-slate-100 pt-1.5">
               <button type="button" onClick={() => onAnalysis(school)} className="ml-auto flex items-center text-sm font-black text-slate-600 transition-colors hover:text-slate-950">查看完整判讀 <span className="ml-2 text-lg leading-none">→</span></button>
             </div>
           </div>
