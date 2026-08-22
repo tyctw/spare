@@ -970,14 +970,16 @@ export default function ResultsPage() {
                       <button
                         type="button"
                         onClick={() => setAnalysisSchool(school)}
-                        className="group w-full rounded-2xl border-2 border-slate-900 bg-indigo-50 px-3.5 py-3.5 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-indigo-100 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 active:shadow-none"
+                        className="group w-full rounded-2xl border-2 border-slate-200 bg-white px-4 py-4 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0"
                         aria-label={`查看 ${school.name} 的完整落點判讀`}
                       >
                         <div>
-                          <p className="text-sm font-bold leading-relaxed text-slate-900">
+                          <p className="text-[15px] font-black leading-7 text-slate-900">
                             {school.analysisNote || '目前未提供落點判讀。'}
                           </p>
-                          <span className="mt-3 flex items-center justify-end text-xs font-black text-indigo-800 underline decoration-indigo-300 underline-offset-4 transition-all group-hover:translate-x-0.5 group-hover:text-indigo-950 group-hover:decoration-indigo-700">查看完整判讀 <span className="ml-1.5 text-base leading-none">→</span></span>
+                          <div className="mt-3 flex items-center justify-end border-t border-slate-100 pt-3">
+                            <span className="text-xs font-black text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-slate-950">查看完整判讀 <span className="ml-1.5 text-base leading-none">→</span></span>
+                          </div>
                         </div>
                       </button>
 
