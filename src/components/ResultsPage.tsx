@@ -301,9 +301,9 @@ function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit 
             <div className="absolute inset-x-0 top-1/2 h-6 -translate-y-1/2 rounded-full bg-[#e9e3e5]" />
             <div className="absolute left-0 top-1/2 h-6 -translate-y-1/2 rounded-full bg-[#bea3e8]" style={{ width: position(studentValue) }} />
             <span className="absolute top-1/2 h-7 -translate-x-1/2 -translate-y-1/2 border-l-[3px] border-dashed border-[#d94708]" style={{ left: position(referenceValue) }} aria-label="參考門檻" />
-            <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-[#172d81] shadow-[0_1px_3px_rgba(23,45,129,0.35)]" style={{ left: position(studentValue) }} aria-label="你的成績" />
+            <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-[#172d81] shadow-[0_1px_3px_rgba(23,45,129,0.35)]" style={{ left: position(studentValue) }} aria-label={overlap ? '成績與參考門檻相同' : '你的成績'} />
           </div>
-          <div className="mt-3 flex items-center justify-between gap-3 text-sm font-bold text-slate-600"><span>{overlap ? '你的成績與參考值' : '參考門檻'} <strong className="text-slate-900">{referenceValue}{unit}</strong></span><span className="text-[#172d81]">你的成績 <strong>{studentValue}{unit}</strong></span></div>
+          <div className={`mt-3 flex items-center gap-3 text-sm font-bold text-slate-600 ${overlap ? 'justify-center' : 'justify-between'}`}><span>參考門檻 <strong className="text-slate-900">{referenceValue}{unit}</strong></span>{!overlap && <span className="text-[#172d81]">你的成績 <strong>{studentValue}{unit}</strong></span>}</div>
           <p className="mt-2 text-xs font-bold text-slate-600">{comparison}</p>
         </>
       ) : <p className="mt-3 text-sm font-bold text-slate-500">尚無足夠資料繪製比較圖。</p>}
@@ -354,8 +354,11 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
       <section role="dialog" aria-modal="true" aria-labelledby="admission-analysis-title" className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
         <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-700 p-5 sm:p-6">
           <div className="flex min-w-0 items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-indigo-200/70 bg-white/10 text-white">
+              <Sparkles className="h-5 w-5" strokeWidth={3} />
+            </div>
             <div className="min-w-0">
-              <div className="text-xs font-black tracking-[0.12em] text-indigo-100">完整落點判讀</div>
+              <div className="text-xs font-black tracking-[0.12em] text-indigo-100">學校完整資訊</div>
               <h2 id="admission-analysis-title" className="mt-1 break-words text-2xl font-black leading-tight text-white sm:text-3xl">{school.name}</h2>
             </div>
           </div>
@@ -997,15 +1000,15 @@ export default function ResultsPage() {
                       <button
                         type="button"
                         onClick={() => setAnalysisSchool(school)}
-                        className="group w-full rounded-2xl border-2 border-slate-200 bg-white px-4 py-4 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0"
+                        className="group w-full rounded-2xl border-2 border-slate-200 bg-white px-3.5 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0"
                         aria-label={`查看 ${school.name} 的完整落點判讀`}
                       >
                         <div>
-                          <div className="mb-2 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
+                          <div className="mb-1 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
                           <p className="text-sm font-black leading-6 text-slate-900">
                             {school.analysisNote || '目前未提供落點判讀。'}
                           </p>
-                          <div className="mt-3 flex items-center justify-end border-t border-slate-100 pt-3">
+                          <div className="mt-2 flex items-center justify-end border-t border-slate-100 pt-2">
                             <span className="text-xs font-black text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-slate-950">查看完整判讀 <span className="ml-1.5 text-base leading-none">→</span></span>
                           </div>
                         </div>
