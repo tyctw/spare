@@ -303,7 +303,7 @@ function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit 
             <span className="absolute top-1/2 h-7 -translate-x-1/2 -translate-y-1/2 border-l-[3px] border-dashed border-[#d94708]" style={{ left: position(referenceValue) }} aria-label="參考門檻" />
             <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-[#172d81] shadow-[0_1px_3px_rgba(23,45,129,0.35)]" style={{ left: position(studentValue) }} aria-label={overlap ? '成績與參考門檻相同' : '你的成績'} />
           </div>
-          <div className={`mt-3 flex items-center gap-3 text-sm font-bold text-slate-600 ${overlap ? 'justify-center' : 'justify-between'}`}><span>參考門檻 <strong className="text-slate-900">{referenceValue}{unit}</strong></span>{!overlap && <span className="text-[#172d81]">你的成績 <strong>{studentValue}{unit}</strong></span>}</div>
+          <div className={`mt-3 flex items-center gap-3 text-sm font-bold text-slate-600 ${overlap ? 'justify-start' : 'justify-between'}`}><span>參考門檻 <strong className="text-slate-900">{referenceValue}{unit}</strong></span>{!overlap && <span className="text-[#172d81]">你的成績 <strong>{studentValue}{unit}</strong></span>}</div>
           <p className="mt-2 text-xs font-bold text-slate-600">{comparison}</p>
         </>
       ) : <p className="mt-3 text-sm font-bold text-slate-500">尚無足夠資料繪製比較圖。</p>}
@@ -398,11 +398,12 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
   );
 }
 
-function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompared, onToggleComparison }: {
+function SchoolDetailDialog({ school, regionName, onClose, onHistorical, onAnalysis, isCompared, onToggleComparison }: {
   school: any | null;
   regionName: string;
   onClose: () => void;
   onHistorical: (school: any) => void;
+  onAnalysis: (school: any) => void;
   isCompared: boolean;
   onToggleComparison: (school: any) => void;
 }) {
@@ -471,6 +472,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
             <p className="mt-2 text-sm font-bold leading-relaxed text-indigo-950">
               {school.analysisNote || '目前未提供額外判讀。'}
             </p>
+            <button type="button" onClick={() => onAnalysis(school)} className="mt-3 ml-auto flex items-center text-xs font-black text-indigo-800 underline decoration-indigo-300 underline-offset-4 transition-colors hover:text-indigo-950 hover:decoration-indigo-700">查看完整落點判讀 <span className="ml-1.5 text-base leading-none">→</span></button>
           </div>
 
           {/* 歷年成績：與卡片相同的全寬卡片按鈕樣式 */}
@@ -1102,6 +1104,7 @@ export default function ResultsPage() {
                       <th className="w-12 px-2 py-3 text-center sm:w-16 sm:px-3">排序</th>
                       <th className="px-2 py-3 sm:px-3">學校</th>
                       <th className="w-20 px-2 py-3 text-center sm:w-28 sm:px-3">落點<span className="hidden sm:inline">區間</span></th>
+                      <th className="w-20 px-2 py-3 text-center sm:w-28 sm:px-3">判讀</th>
                       <th className="w-24 px-2 py-3 text-right sm:w-32 sm:px-3">比較</th>
                     </tr>
                   </thead>
@@ -1129,6 +1132,7 @@ export default function ResultsPage() {
                             <span className="block h-full w-full break-words px-2 py-3 text-left text-sm font-black leading-snug text-slate-900 underline decoration-slate-300 underline-offset-4 sm:px-3 sm:text-base">{school.name}</span>
                           </td>
                           <td className="px-2 py-3 text-center align-middle sm:px-3"><span className={`inline-flex rounded-lg border px-1.5 py-1 text-[11px] font-black sm:px-2 sm:text-xs ${zoneTone}`}>{zoneLabel}</span></td>
+                          <td className="px-2 py-3 text-center align-middle sm:px-3"><button type="button" onClick={(event) => { event.stopPropagation(); setAnalysisSchool(school); }} aria-label={`查看 ${school.name} 的完整落點判讀`} className="whitespace-nowrap text-[11px] font-black text-indigo-800 underline decoration-indigo-300 underline-offset-4 hover:text-indigo-950 hover:decoration-indigo-700 sm:text-xs">查看<span className="hidden sm:inline">判讀</span> →</button></td>
                           <td className="px-2 py-3 align-middle sm:px-3">
                             <div className="flex justify-end"><button type="button" onClick={(event) => { event.stopPropagation(); toggleComparison(school); }} aria-pressed={isCompared} aria-label={`${isCompared ? '從比較清單移除' : '加入比較清單'}：${school.name}`} className={`whitespace-nowrap rounded-lg border-2 border-slate-900 px-2 py-1.5 text-[11px] font-black sm:px-2.5 sm:text-xs ${isCompared ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 hover:bg-slate-100'}`}>{isCompared ? '已加入比較' : '加入比較'}</button></div>
                           </td>
@@ -1166,6 +1170,9 @@ export default function ResultsPage() {
         onClose={() => setDetailSchool(null)}
         onHistorical={(school) => {
           setHistoricalScoreSchool(school);
+        }}
+        onAnalysis={(school) => {
+          setAnalysisSchool(school);
         }}
         isCompared={comparisonSchools.some((item) => item.name === detailSchool?.name)}
         onToggleComparison={(school) => {
