@@ -293,32 +293,20 @@ function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit 
   const overlap = hasValues && Math.abs(difference) < 0.001;
 
   return (
-    <div className="rounded-xl bg-slate-50 px-3.5 py-3.5">
-      <div className="flex items-baseline justify-between gap-3"><h4 className="text-sm font-black text-slate-900">{label}</h4><span className="text-xs font-bold text-slate-600">{comparison}</span></div>
+    <div className="rounded-2xl bg-[#fbf2ed] px-4 py-4 sm:px-5">
+      <div className="flex items-center justify-between gap-3"><h4 className="text-base font-black text-slate-800">{label}</h4>{hasValues && <span className="shrink-0 rounded-xl bg-[#d94708] px-3 py-1.5 text-xs font-black text-white">參考門檻 {referenceValue}{unit}</span>}</div>
       {hasValues ? (
         <>
-          <div className="relative mt-7 h-14">
-            <div className="absolute left-0 right-0 top-5 h-1 rounded-full bg-slate-200" />
-            {overlap ? (
-              <div className="absolute top-0 -translate-x-1/2 text-center" style={{ left: position(studentValue) }}>
-                <span className="block whitespace-nowrap text-[11px] font-black text-indigo-700">你的成績／參考值</span>
-                <span className="mx-auto mt-1 block h-4 w-4 rounded-full border-[3px] border-white bg-indigo-600 shadow-sm" />
-              </div>
-            ) : (
-              <>
-                <div className="absolute top-0 -translate-x-1/2 text-center" style={{ left: position(studentValue) }}>
-                  <span className="block whitespace-nowrap text-[11px] font-black text-indigo-700">你的成績</span>
-                  <span className="mx-auto mt-1 block h-4 w-4 rounded-full border-[3px] border-white bg-indigo-600 shadow-sm" />
-                </div>
-                <div className="absolute top-4 h-5 -translate-x-1/2 border-l-[3px] border-slate-700" style={{ left: position(referenceValue) }} aria-label="參考門檻">
-                  <span className="absolute left-1/2 top-6 -translate-x-1/2 whitespace-nowrap text-[11px] font-black text-slate-600">參考值</span>
-                </div>
-              </>
-            )}
+          <div className="relative mt-4 h-7">
+            <div className="absolute inset-x-0 top-1/2 h-6 -translate-y-1/2 rounded-full bg-[#e9e3e5]" />
+            <div className="absolute left-0 top-1/2 h-6 -translate-y-1/2 rounded-full bg-[#bea3e8]" style={{ width: position(studentValue) }} />
+            <span className="absolute top-1/2 h-7 -translate-x-1/2 -translate-y-1/2 border-l-[3px] border-dashed border-[#d94708]" style={{ left: position(referenceValue) }} aria-label="參考門檻" />
+            <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-[#172d81] shadow-[0_1px_3px_rgba(23,45,129,0.35)]" style={{ left: position(studentValue) }} aria-label="你的成績" />
           </div>
-          <div className="mt-3 flex items-center justify-between text-xs font-bold text-slate-600"><span>你的成績 <strong className="text-slate-900">{studentValue}{unit}</strong></span><span>參考值 <strong className="text-slate-900">{referenceValue}{unit}</strong></span></div>
+          <div className="mt-3 flex items-center justify-between gap-3 text-sm font-bold text-slate-600"><span>{overlap ? '你的成績與參考值' : '參考門檻'} <strong className="text-slate-900">{referenceValue}{unit}</strong></span><span className="text-[#172d81]">你的成績 <strong>{studentValue}{unit}</strong></span></div>
+          <p className="mt-2 text-xs font-bold text-slate-600">{comparison}</p>
         </>
-      ) : <p className="mt-2 text-sm font-bold text-slate-500">尚無足夠資料繪製比較圖。</p>}
+      ) : <p className="mt-3 text-sm font-bold text-slate-500">尚無足夠資料繪製比較圖。</p>}
     </div>
   );
 }
