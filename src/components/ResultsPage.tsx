@@ -299,7 +299,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
 
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
-      <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉學校完整資訊" onClick={handleClose} />
+      <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉完整落點判讀" onClick={handleClose} />
       <section role="dialog" aria-modal="true" aria-labelledby="school-detail-title" className="relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
         <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-indigo-100 p-5 sm:p-6">
           <div className="flex min-w-0 items-start gap-3">
@@ -307,7 +307,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
               <Building2 className="h-5 w-5 text-indigo-700" strokeWidth={3} />
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-black text-indigo-900">學校完整資訊</div>
+              <div className="text-xs font-black text-indigo-900">完整落點判讀</div>
               <h2 id="school-detail-title" className="mt-1 break-words text-2xl font-black leading-tight text-slate-900 sm:text-3xl">{school.name}</h2>
             </div>
           </div>
@@ -874,21 +874,17 @@ export default function ResultsPage() {
                       </div>
 
 
-                      {school.analysisNote && (
-                        <div className="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3.5">
-                          <div className="flex items-center gap-1.5 text-xs font-black text-indigo-800">
-                            落點判讀
-                          </div>
-                          <p className="mt-1 text-sm font-bold leading-relaxed text-indigo-950">
-                            {school.analysisNote}
-                          </p>
-                          {school.creditDiff !== null && school.creditDiff !== undefined && school.scoreDiff === 0 && (
-                            <p className="mt-1 text-xs font-black text-indigo-700">
-                              同分積點差 {school.creditDiff > 0 ? '+' : ''}{school.creditDiff}
-                            </p>
-                          )}
-                        </div>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => setDetailSchool(school)}
+                        className="w-full rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3.5 text-left transition-colors hover:border-indigo-400 hover:bg-indigo-100 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        aria-label={`查看 ${school.name} 的完整落點判讀`}
+                      >
+                        <p className="text-sm font-bold leading-relaxed text-indigo-950">
+                          {school.analysisNote || '目前未提供落點判讀。'}
+                        </p>
+                        <span className="mt-2 block text-xs font-black text-indigo-800">查看完整判讀 →</span>
+                      </button>
 
                       <button
                         type="button"
