@@ -323,7 +323,7 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
               <Sparkles className="h-5 w-5 text-indigo-700" strokeWidth={3} />
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-black text-indigo-900">完整落點判讀</div>
+              <div className="text-xs font-black text-indigo-900">學校完整資訊</div>
               <h2 id="admission-analysis-title" className="mt-1 break-words text-2xl font-black leading-tight text-slate-900 sm:text-3xl">{school.name}</h2>
             </div>
           </div>
@@ -399,7 +399,7 @@ function SchoolDetailDialog({ school, regionName, onClose, onHistorical, isCompa
               <Building2 className="h-5 w-5 text-indigo-700" strokeWidth={3} />
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-black text-indigo-900">完整落點判讀</div>
+              <div className="text-xs font-black text-indigo-900">學校完整資訊</div>
               <h2 id="school-detail-title" className="mt-1 break-words text-2xl font-black leading-tight text-slate-900 sm:text-3xl">{school.name}</h2>
             </div>
           </div>
@@ -927,11 +927,6 @@ export default function ResultsPage() {
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
                   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === (school.region || scores?.region))?.name || school.region || regionName;
                   const groupLabel = school.group || school.type || '普通科';
-                  const analysisTone = school.zone === 'reach'
-                    ? 'from-rose-50 via-white to-rose-100/70 border-rose-200 text-rose-700 group-hover:border-rose-400'
-                    : school.zone === 'safe'
-                      ? 'from-emerald-50 via-white to-emerald-100/70 border-emerald-200 text-emerald-700 group-hover:border-emerald-400'
-                      : 'from-sky-50 via-white to-indigo-100/70 border-sky-200 text-sky-700 group-hover:border-sky-400';
 
                   return (
                     <article key={`${school.name}-${index}`} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
@@ -975,19 +970,14 @@ export default function ResultsPage() {
                       <button
                         type="button"
                         onClick={() => setAnalysisSchool(school)}
-                        className={`group relative w-full overflow-hidden rounded-2xl border-2 bg-gradient-to-br p-1 text-left shadow-[0_2px_0_rgba(15,23,42,0.06)] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_18px_rgba(15,23,42,0.12)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${analysisTone}`}
+                        className="group w-full rounded-2xl border-2 border-slate-900 bg-indigo-50 px-3.5 py-3.5 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-indigo-100 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 active:shadow-none"
                         aria-label={`查看 ${school.name} 的完整落點判讀`}
                       >
-                        <div className="relative flex items-center gap-3 rounded-[0.85rem] bg-white/70 px-3.5 py-3.5 backdrop-blur-sm">
-                          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-current bg-white shadow-[2px_2px_0_rgba(15,23,42,0.12)] ${analysisTone.split(' ').slice(-2, -1).join(' ')}`}>
-                            <Sparkles className="h-4.5 w-4.5" strokeWidth={3} />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-black leading-relaxed text-slate-900">
-                              {school.analysisNote || '目前未提供落點判讀。'}
-                            </p>
-                            <span className="mt-2 inline-flex items-center rounded-lg bg-slate-900 px-2.5 py-1 text-[11px] font-black tracking-wide text-white transition-transform group-hover:translate-x-0.5">查看完整判讀 <span className="ml-1.5 text-sm leading-none">→</span></span>
-                          </div>
+                        <div>
+                          <p className="text-sm font-bold leading-relaxed text-slate-900">
+                            {school.analysisNote || '目前未提供落點判讀。'}
+                          </p>
+                          <span className="mt-3 flex items-center justify-end text-xs font-black text-indigo-800 underline decoration-indigo-300 underline-offset-4 transition-all group-hover:translate-x-0.5 group-hover:text-indigo-950 group-hover:decoration-indigo-700">查看完整判讀 <span className="ml-1.5 text-base leading-none">→</span></span>
                         </div>
                       </button>
 
