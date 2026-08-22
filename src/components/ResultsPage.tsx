@@ -100,6 +100,26 @@ const scoreItems = [
 const getPointsGap = (school: any) => Math.abs(school.scoreDiff ?? school.pointsDiff ?? school.distanceScore ?? 0);
 const getCreditsGap = (school: any) => Math.abs(school.creditDiff ?? school.creditsDiff ?? 0);
 
+type ScoreRange = { min: number; max: number };
+
+// These ranges mirror the scoring maps used by the analysis backend.  They are
+// deliberately fixed per admission region, so a small difference between a
+// student and a school reference cannot make the ruler look disproportionately
+// large.
+const OFFICIAL_SCORE_RANGES: Record<string, { points: ScoreRange; credits?: ScoreRange }> = {
+  taoyuan: { points: { min: 10, max: 33 }, credits: { min: 5, max: 35 } },
+  taipei: { points: { min: 5, max: 36 } },
+  central: { points: { min: 10, max: 30 }, credits: { min: 15, max: 111 } },
+  changhua: { points: { min: 15, max: 45 } },
+  tainan: { points: { min: 5, max: 36 } },
+  kaohsiung: { points: { min: 10, max: 30 }, credits: { min: 5, max: 35 } },
+  hsinchu: { points: { min: 10, max: 30 }, credits: { min: 5, max: 35 } },
+  chiayi: { points: { min: 5, max: 27 }, credits: { min: 5, max: 45 } },
+};
+
+const getOfficialScoreRange = (region: string | undefined, kind: 'points' | 'credits'): ScoreRange | null =>
+  OFFICIAL_SCORE_RANGES[region || '']?.[kind] || null;
+
 function AutoFitSingleLine({ text }: { text: string }) {
   const textRef = React.useRef<HTMLSpanElement>(null);
 
@@ -276,20 +296,20 @@ function HistoricalScoresDialog({ school, onClose }: { school: any | null; onClo
   );
 }
 
-function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit }: {
+function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit, range }: {
   label: string;
   studentValue: number | null;
   referenceValue: number | null;
   comparison: string;
   unit: string;
+  range: ScoreRange | null;
 }) {
   const hasValues = studentValue !== null && referenceValue !== null && Number.isFinite(studentValue) && Number.isFinite(referenceValue);
   const difference = hasValues ? studentValue - referenceValue : 0;
-  const padding = unit === '點' ? Math.max(2, Math.abs(difference) * 0.8) : Math.max(0.8, Math.abs(difference) * 0.8);
-  const lower = hasValues ? Math.min(studentValue, referenceValue) - padding : 0;
-  const upper = hasValues ? Math.max(studentValue, referenceValue) + padding : 1;
+  const lower = range?.min ?? 0;
+  const upper = range?.max ?? 1;
   const span = upper - lower || 1;
-  const position = (value: number) => `${Math.min(92, Math.max(8, ((value - lower) / span) * 100))}%`;
+  const position = (value: number) => `${Math.min(100, Math.max(0, ((value - lower) / span) * 100))}%`;
   const overlap = hasValues && Math.abs(difference) < 0.001;
 
   return (
@@ -303,7 +323,8 @@ function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit 
             <span className="absolute top-1/2 h-7 -translate-x-1/2 -translate-y-1/2 border-l-[3px] border-dashed border-[#d94708]" style={{ left: position(referenceValue) }} aria-label="參考門檻" />
             <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-[#172d81] shadow-[0_1px_3px_rgba(23,45,129,0.35)]" style={{ left: position(studentValue) }} aria-label={overlap ? '成績與參考門檻相同' : '你的成績'} />
           </div>
-          <div className={`mt-3 flex items-center gap-3 text-sm font-bold text-slate-600 ${overlap ? 'justify-start' : 'justify-between'}`}><span>參考門檻 <strong className="text-slate-900">{referenceValue}{unit}</strong></span>{!overlap && <span className="text-[#172d81]">你的成績 <strong>{studentValue}{unit}</strong></span>}</div>
+          <div className="mt-2 flex justify-between text-[11px] font-black text-slate-500"><span>正式最低 {lower}{unit}</span><span>正式最高 {upper}{unit}</span></div>
+          <div className={`mt-2 flex items-center gap-3 text-sm font-bold text-slate-600 ${overlap ? 'justify-start' : 'justify-between'}`}><span>參考門檻 <strong className="text-slate-900">{referenceValue}{unit}</strong></span>{!overlap && <span className="text-[#172d81]">你的成績 <strong>{studentValue}{unit}</strong></span>}</div>
           <p className="mt-2 text-xs font-bold text-slate-600">{comparison}</p>
         </>
       ) : <p className="mt-3 text-sm font-bold text-slate-500">尚無足夠資料繪製比較圖。</p>}
@@ -311,7 +332,7 @@ function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit 
   );
 }
 
-function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onClose: () => void }) {
+function AdmissionAnalysisDialog({ school, region, onClose }: { school: any | null; region?: string; onClose: () => void }) {
   const isOpen = !!school;
   const handleClose = useModalHistory('AdmissionAnalysis', isOpen, onClose);
 
@@ -332,6 +353,8 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
   const unmetSubjects = Array.isArray(school.unmetRequirements) ? school.unmetRequirements : [];
   const historicalScores = normalizeHistoricalScores(school.historicalScores || []).slice(0, 5);
   const latestHistoricalScore = historicalScores[0];
+  const pointsRange = getOfficialScoreRange(region || school.region, 'points');
+  const creditsRange = getOfficialScoreRange(region || school.region, 'credits');
 
   const scoreComparison = !Number.isFinite(scoreDiff)
     ? '目前缺少積分差資料。'
@@ -374,8 +397,8 @@ function AdmissionAnalysisDialog({ school, onClose }: { school: any | null; onCl
           <section className="rounded-2xl border-2 border-slate-200 bg-white p-4">
             <h3 className="text-base font-black text-slate-900">成績與參考門檻</h3>
             <div className="mt-3 space-y-3">
-              <ThresholdRuler label="總積分" studentValue={studentPoints} referenceValue={Number.isFinite(referencePoints) ? referencePoints : null} comparison={scoreComparison} unit="分" />
-              <ThresholdRuler label="積點／同分比序" studentValue={studentCredits} referenceValue={referenceCredits} comparison={creditComparison} unit="點" />
+              <ThresholdRuler label="總積分" studentValue={studentPoints} referenceValue={Number.isFinite(referencePoints) ? referencePoints : null} comparison={scoreComparison} unit="分" range={pointsRange} />
+              <ThresholdRuler label="積點／同分比序" studentValue={studentCredits} referenceValue={referenceCredits} comparison={creditComparison} unit="點" range={creditsRange} />
             </div>
           </section>
 
@@ -1163,7 +1186,7 @@ export default function ResultsPage() {
       )}
 
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} onExport={handleExport} />
-      <AdmissionAnalysisDialog school={analysisSchool} onClose={() => setAnalysisSchool(null)} />
+      <AdmissionAnalysisDialog school={analysisSchool} region={scores?.region} onClose={() => setAnalysisSchool(null)} />
       <SchoolDetailDialog
         school={detailSchool}
         regionName={regionName}
