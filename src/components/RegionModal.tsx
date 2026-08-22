@@ -65,7 +65,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
             <header className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-white via-sky-50 to-amber-50 px-5 py-5 text-slate-900 sm:px-8 sm:py-7">
               <MapPin aria-hidden="true" className="absolute -right-7 -top-8 h-40 w-40 text-sky-300/35" strokeWidth={1.5} />
               <div className="relative flex items-start justify-between gap-4">
-                <div>
+                <div className="min-w-0">
                   <h2 id="region-modal-title" className="flex items-center gap-2.5 text-2xl font-black tracking-tight sm:text-4xl"><MapPin aria-hidden="true" className="h-7 w-7 text-sky-600 sm:h-9 sm:w-9" />選擇分析區域</h2>
                 </div>
                 <button ref={closeButtonRef} onClick={onClose} aria-label="關閉選擇就學區視窗" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-slate-600 shadow-[2px_2px_0_#0f172a] transition hover:bg-sky-100 hover:text-sky-800 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600"><X aria-hidden="true" className="h-5 w-5" /></button>
@@ -73,19 +73,15 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
             </header>
 
             <div className="flex-1 overflow-y-auto bg-white/65 p-4 sm:p-6 custom-scrollbar">
-              <div className="mb-5 rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0_#0f172a]">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-[10px] font-black tracking-[0.14em] text-slate-500">目前分析區域</p>
-                    <p className="mt-1 text-lg font-black text-slate-900">{selectedRegionName || '請選擇下方區域'}</p>
-                  </div>
-                  <div className="grid h-11 w-11 place-items-center rounded-xl border-2 border-slate-900 bg-amber-300"><MapPinned aria-hidden="true" className="h-5 w-5" strokeWidth={2.8} /></div>
-                </div>
-              </div>
               <section aria-labelledby="available-regions-heading">
                 <div className="mb-3 flex items-center justify-between px-1">
-                  <h3 id="available-regions-heading" className="text-sm font-black text-slate-900">選擇可分析的就學區</h3>
-                  <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black text-emerald-700">{availableRegions.length} 個已開放</span>
+                  <div className="min-w-0">
+                    <h3 id="available-regions-heading" className="text-sm font-black text-slate-900">選擇可分析的就學區</h3>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-1.5">
+                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black text-emerald-700">{availableRegions.length} 個已開放</span>
+                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black text-emerald-700">目前選擇：{selectedRegionName || '未選擇'}</span>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {availableRegions.map((region) => {
@@ -137,7 +133,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
               </section>
             </div>
 
-            <footer className="flex shrink-0 items-center gap-2 border-t-4 border-slate-900 bg-sky-50 px-5 py-4 text-xs font-bold text-slate-500 sm:px-8"><span className="h-2 w-2 rounded-full bg-emerald-500" />已選擇的區域會套用相對應的計分與比序規則。</footer>
+            <footer className="flex shrink-0 items-center gap-2 border-t-4 border-slate-900 bg-sky-50 px-5 py-4 text-xs font-bold text-slate-500 sm:px-8"><span className="h-2 w-2 rounded-full bg-emerald-500" />選定區域後，系統會自動套用該區的計分方式與比序規則。</footer>
           </motion.div>
         </div>
       )}
