@@ -21,6 +21,7 @@ import Footer from './components/layout/Footer';
 import HeroBanner from './components/layout/HeroBanner';
 import MembershipPromo from './components/MembershipPromo';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
+import { getCreditsGap, getPointsGap } from './lib/admissionComparison';
 import { withBasePath } from './lib/routes';
 
 // Keep the analysis form and navigation in the first bundle. These dialogs are
@@ -1318,8 +1319,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 
                 {(() => {
                   const zoneOrder: Record<string, number> = { reach: 0, target: 1, safe: 2 };
-                  const getPointsGap = (school: any) => Math.abs(school.scoreDiff ?? school.pointsDiff ?? school.distanceScore ?? 0);
-                  const getCreditsGap = (school: any) => Math.abs(school.creditDiff ?? school.creditsDiff ?? 0);
                   const filteredSchools = (results.eligibleSchools || []).filter((school: any) => {
                     const matchText = !resultFilterText || 
                       school.name?.includes(resultFilterText) || 
