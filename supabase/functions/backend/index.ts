@@ -1761,6 +1761,12 @@ Deno.serve(async (request) => {
     return new Response('ok', { headers: corsHeaders(request) });
   }
   if (request.method !== 'POST') return json(request, { error: 'Method not allowed' }, 405);
+  // CORS preflight is a browser safeguard, not an authorization check. Reject
+  // cross-site POSTs here as well so credentialed requests cannot rely on a
+  // preflight response being enforced by the caller.
+  if (request.headers.get('origin') && !isAllowedOrigin(request)) {
+    return json(request, { error: 'Origin not allowed' }, 403);
+  }
 
   const start = Date.now();
   const path = new URL(request.url).pathname;
