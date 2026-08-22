@@ -348,6 +348,16 @@ const GRADE_VALUES: Record<string, number> = { 'A++': 9, 'A+': 8, A: 7, 'B++': 6
 const GRADE_LABELS: Record<number, string> = { 9: 'A++', 8: 'A+', 7: 'A', 6: 'B++', 5: 'B+', 4: 'B', 3: 'C' };
 
 function SubjectReferenceTable({ school, grades }: { school: any; grades?: Record<string, any> }) {
+  const scoreDiff = Number(school.scoreDiff ?? school.pointsDiff);
+  const creditDiff = school.creditDiff === null || school.creditDiff === undefined ? null : Number(school.creditDiff);
+  const shouldCompareSubjects =
+    Number.isFinite(scoreDiff) && Math.abs(scoreDiff) < 0.001 &&
+    (creditDiff === null || (Number.isFinite(creditDiff) && Math.abs(creditDiff) < 0.001));
+
+  if (!shouldCompareSubjects) {
+    return <p className="mt-2 text-sm font-bold leading-7 text-amber-950">總積分{creditDiff !== null ? '與積點' : ''}尚未相同，不須比較單科成績。</p>;
+  }
+
   const rows = SUBJECT_REFERENCE_ITEMS.map((item) => {
     const reference = Number(school.minRequirements?.[item.key]);
     const studentGrade = String(grades?.[item.key] || '');
@@ -390,7 +400,7 @@ function SubjectReferenceTable({ school, grades }: { school: any; grades?: Recor
                 </div>
                 <div className="mt-1 flex justify-between text-[10px] font-bold text-slate-500"><span>C</span><span>參考 {GRADE_LABELS[row.reference] || row.reference}</span><span>A++</span></div>
               </td>
-              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '未達' : row.isMet ? '達標' : '—'}</td>
+              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '未達標' : row.isMet ? '達標' : '—'}</td>
             </tr>
           ))}
         </tbody>
