@@ -371,9 +371,9 @@ function SubjectReferenceTable({ school, grades }: { school: any; grades?: Recor
         <thead className="bg-amber-100 text-amber-950">
           <tr>
             <th className="w-[16%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">科目</th>
-            <th className="w-[18%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">你的成績</th>
-            <th className="w-[46%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">歷年參考對照</th>
-            <th className="w-[20%] px-2 py-2.5 text-right font-black sm:px-3">判讀</th>
+            <th className="w-[20%] whitespace-nowrap border-r-2 border-amber-200 px-1 py-2.5 text-[11px] font-black sm:px-3 sm:text-sm">你的成績</th>
+            <th className="w-[48%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">歷年參考對照</th>
+            <th className="w-[16%] px-1 py-2.5 text-right text-[10px] font-black sm:px-3 sm:text-xs">判讀</th>
           </tr>
         </thead>
         <tbody>
