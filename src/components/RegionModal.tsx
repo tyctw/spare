@@ -96,7 +96,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                       aria-pressed={isSelected}
                       aria-label={`${region.name}，${region.desc}${region.active ? isSelected ? '，目前已選取' : '，可選擇' : '，尚未開放'}`}
                       className={`group relative overflow-hidden rounded-[1.85rem] border-2 bg-white text-center transition-all focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-sky-600 ${
-                        isSelected ? 'border-slate-900 ring-[3px] ring-sky-600 shadow-[0_8px_22px_rgba(15,23,42,0.18)]' : region.active ? 'border-slate-200 shadow-[0_4px_16px_rgba(15,23,42,0.10)] hover:-translate-y-1 hover:border-slate-400 hover:shadow-[0_10px_24px_rgba(15,23,42,0.16)]' : 'border-slate-300 cursor-not-allowed opacity-65'
+                        isSelected ? 'border-slate-900 ring-[3px] ring-sky-600 shadow-[0_8px_22px_rgba(15,23,42,0.18)]' : region.active ? 'border-slate-400 shadow-[0_4px_16px_rgba(15,23,42,0.10)] hover:-translate-y-1 hover:border-slate-600 hover:shadow-[0_10px_24px_rgba(15,23,42,0.16)]' : 'border-slate-400 cursor-not-allowed opacity-65'
                       }`}
                     >
                       <div className={`relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-gradient-to-br px-4 ${tone.wash} sm:h-32`}>
@@ -119,7 +119,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {upcomingRegions.map((region) => {
                   return (
-                    <div key={region.id} aria-label={`${region.name}，尚未開放`} className="relative overflow-hidden rounded-[1.85rem] border-2 border-slate-300 bg-white opacity-70 shadow-[0_4px_16px_rgba(15,23,42,0.08)]">
+                    <div key={region.id} aria-label={`${region.name}，尚未開放`} className="relative overflow-hidden rounded-[1.85rem] border-2 border-slate-400 bg-white opacity-70 shadow-[0_4px_16px_rgba(15,23,42,0.08)]">
                       <div className="relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-slate-200 px-4 sm:h-32">
                         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-25 [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_10px,#94a3b8_10px,#94a3b8_12px)]" />
                         <h4 className="relative whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
