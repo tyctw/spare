@@ -36,18 +36,40 @@ interface Props {
 
 export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect }: Props) {
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+  const dialogRef = React.useRef<HTMLDivElement>(null);
+  const previousFocusRef = React.useRef<HTMLElement | null>(null);
   const availableRegions = ALL_REGIONS.filter((region) => region.active);
   const upcomingRegions = ALL_REGIONS.filter((region) => !region.active);
   const selectedRegionName = ALL_REGIONS.find((region) => region.id === selectedRegion)?.name;
 
   React.useEffect(() => {
     if (!isOpen) return undefined;
+    previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeButtonRef.current?.focus();
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+
+      const focusable = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )).filter((element) => !element.hasAttribute('disabled') && element.getClientRects().length > 0);
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      previousFocusRef.current?.focus();
+    };
   }, [isOpen, onClose]);
 
   return (
@@ -61,6 +83,8 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
             role="dialog"
             aria-modal="true"
             aria-labelledby="region-modal-title"
+            aria-describedby="region-modal-description"
+            ref={dialogRef}
           >
             <header className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-white via-sky-50 to-amber-50 px-5 py-5 text-slate-900 sm:px-8 sm:py-7">
               <MapPin aria-hidden="true" className="absolute -right-7 -top-8 h-40 w-40 text-sky-300/35" strokeWidth={1.5} />
@@ -119,7 +143,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {upcomingRegions.map((region) => {
                   return (
-                    <div key={region.id} aria-label={`${region.name}，尚未開放`} className="relative overflow-hidden rounded-[1.85rem] border-2 border-slate-400 bg-white opacity-70 shadow-[0_4px_16px_rgba(15,23,42,0.08)]">
+                    <div key={region.id} aria-label={`${region.name}，尚未開放`} aria-disabled="true" className="relative overflow-hidden rounded-[1.85rem] border-2 border-slate-400 bg-white opacity-70 shadow-[0_4px_16px_rgba(15,23,42,0.08)]">
                       <div className="relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-slate-200 px-4 sm:h-32">
                         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-25 [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_10px,#94a3b8_10px,#94a3b8_12px)]" />
                         <h4 className="relative whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
@@ -133,7 +157,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
               </section>
             </div>
 
-            <footer className="flex shrink-0 items-center gap-2 border-t-4 border-slate-900 bg-sky-50 px-5 py-4 text-xs font-bold text-slate-500 sm:px-8"><span className="h-2 w-2 rounded-full bg-emerald-500" />選定區域後，系統會自動套用該區的計分方式與比序規則。</footer>
+            <footer id="region-modal-description" className="flex shrink-0 items-center gap-2 border-t-4 border-slate-900 bg-sky-50 px-5 py-4 text-xs font-bold text-slate-500 sm:px-8"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-emerald-500" />選定區域後，系統會自動套用該區的計分方式與比序規則。</footer>
           </motion.div>
         </div>
       )}
