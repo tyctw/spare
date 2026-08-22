@@ -21,10 +21,10 @@ export const ALL_REGIONS = [
 ];
 
 const toneClasses: Record<string, { icon: string; selected: string; wash: string; dot: string }> = {
-  north: { icon: 'bg-sky-500 text-white', selected: 'border-slate-900 bg-sky-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-sky-300', wash: 'from-sky-200 to-blue-50', dot: 'bg-sky-500' },
-  central: { icon: 'bg-amber-400 text-slate-900', selected: 'border-slate-900 bg-amber-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-amber-300', wash: 'from-amber-200 to-yellow-50', dot: 'bg-amber-500' },
-  south: { icon: 'bg-rose-500 text-white', selected: 'border-slate-900 bg-rose-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-rose-300', wash: 'from-rose-200 to-orange-50', dot: 'bg-rose-500' },
-  east: { icon: 'bg-teal-500 text-white', selected: 'border-slate-900 bg-teal-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-teal-300', wash: 'from-teal-200 to-cyan-50', dot: 'bg-teal-500' },
+  north: { icon: 'bg-sky-500 text-white', selected: 'border-slate-900 bg-sky-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-sky-300', wash: 'from-sky-200 to-sky-100', dot: 'bg-sky-500' },
+  central: { icon: 'bg-amber-400 text-slate-900', selected: 'border-slate-900 bg-amber-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-amber-300', wash: 'from-amber-200 to-amber-100', dot: 'bg-amber-500' },
+  south: { icon: 'bg-rose-500 text-white', selected: 'border-slate-900 bg-rose-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-rose-300', wash: 'from-rose-200 to-rose-100', dot: 'bg-rose-500' },
+  east: { icon: 'bg-teal-500 text-white', selected: 'border-slate-900 bg-teal-50 shadow-[5px_5px_0_#0f172a] ring-2 ring-teal-300', wash: 'from-teal-200 to-teal-100', dot: 'bg-teal-500' },
 };
 
 interface Props {
@@ -123,7 +123,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                         isSelected ? 'border-slate-900 ring-[3px] ring-sky-600 shadow-[0_8px_22px_rgba(15,23,42,0.18)]' : region.active ? 'border-slate-400 shadow-[0_4px_16px_rgba(15,23,42,0.10)] hover:-translate-y-1 hover:border-slate-600 hover:shadow-[0_10px_24px_rgba(15,23,42,0.16)]' : 'border-slate-400 cursor-not-allowed opacity-65'
                       }`}
                     >
-                      <div className={`relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-gradient-to-br px-4 ${tone.wash} sm:h-32`}>
+                      <div className={`relative -mt-px flex h-28 w-[calc(100%+2px)] -ml-px items-center justify-center overflow-hidden bg-gradient-to-br px-4 ${tone.wash} sm:h-32`}>
                         <RegionIcon aria-hidden="true" className="absolute top-4 h-5 w-5 text-slate-700/75 sm:h-6 sm:w-6" strokeWidth={2.8} />
                         <h3 className="relative mt-7 whitespace-nowrap text-3xl font-black tracking-tight text-slate-900 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h3>
                         {isSelected && <span aria-label="已選取" className="absolute right-3 top-3 grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-white shadow-sm"><Check aria-hidden="true" className="h-4 w-4" strokeWidth={3} /></span>}
@@ -146,7 +146,7 @@ export default function RegionModal({ isOpen, onClose, selectedRegion, onSelect 
                   const RegionIcon = region.icon;
                   return (
                     <div key={region.id} aria-label={`${region.name}，尚未開放`} aria-disabled="true" className="relative overflow-hidden rounded-[1.85rem] border-2 border-slate-400 bg-white opacity-70 shadow-[0_4px_16px_rgba(15,23,42,0.08)]">
-                      <div className="relative flex h-28 items-center justify-center overflow-hidden rounded-b-[1.45rem] bg-slate-200 px-4 sm:h-32">
+                      <div className="relative -mt-px flex h-28 w-[calc(100%+2px)] -ml-px items-center justify-center overflow-hidden bg-slate-200 px-4 sm:h-32">
                         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-25 [background-image:repeating-linear-gradient(135deg,transparent_0,transparent_10px,#94a3b8_10px,#94a3b8_12px)]" />
                         <RegionIcon aria-hidden="true" className="absolute top-4 h-5 w-5 text-slate-500 sm:h-6 sm:w-6" strokeWidth={2.8} />
                         <h4 className="relative mt-7 whitespace-nowrap text-3xl font-black tracking-tight text-slate-500 [-webkit-text-stroke:0.35px_currentColor] sm:text-4xl">{region.name}</h4>
