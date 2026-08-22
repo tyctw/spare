@@ -328,7 +328,6 @@ function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit,
             <span className="absolute top-1/2 h-7 -translate-x-1/2 -translate-y-1/2 border-l-[3px] border-dashed border-[#d94708]" style={{ left: position(referenceValue) }} aria-label="參考門檻" />
             <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-[#172d81] shadow-[0_1px_3px_rgba(23,45,129,0.35)]" style={{ left: position(studentValue) }} aria-label={overlap ? '成績與參考門檻相同' : '你的成績'} />
           </div>
-          <div className="mt-2 flex justify-between text-[11px] font-black text-slate-500"><span>正式最低 {lower}{unit}</span><span>正式最高 {upper}{unit}</span></div>
           <div className={`mt-2 flex items-center gap-3 text-sm font-bold text-slate-600 ${overlap ? 'justify-start' : 'justify-between'}`}><span>參考門檻 <strong className="text-slate-900">{referenceValue}{unit}</strong></span>{!overlap && <span className="text-[#172d81]">你的成績 <strong>{studentValue}{unit}</strong></span>}</div>
           <p className="mt-2 text-xs font-bold text-slate-600">{comparison}</p>
         </>
