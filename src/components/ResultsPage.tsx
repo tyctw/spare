@@ -336,7 +336,71 @@ function ThresholdRuler({ label, studentValue, referenceValue, comparison, unit,
   );
 }
 
-function AdmissionAnalysisDialog({ school, region, onClose }: { school: any | null; region?: string; onClose: () => void }) {
+const SUBJECT_REFERENCE_ITEMS = [
+  { key: 'chinese', label: '國文' },
+  { key: 'english', label: '英文' },
+  { key: 'math', label: '數學' },
+  { key: 'science', label: '自然' },
+  { key: 'social', label: '社會' },
+];
+
+const GRADE_VALUES: Record<string, number> = { 'A++': 9, 'A+': 8, A: 7, 'B++': 6, 'B+': 5, B: 4, C: 3 };
+const GRADE_LABELS: Record<number, string> = { 9: 'A++', 8: 'A+', 7: 'A', 6: 'B++', 5: 'B+', 4: 'B', 3: 'C' };
+
+function SubjectReferenceTable({ school, grades }: { school: any; grades?: Record<string, any> }) {
+  const rows = SUBJECT_REFERENCE_ITEMS.map((item) => {
+    const reference = Number(school.minRequirements?.[item.key]);
+    const studentGrade = String(grades?.[item.key] || '');
+    const student = GRADE_VALUES[studentGrade];
+    const hasReference = Number.isFinite(reference) && reference > 0;
+    const hasStudent = Number.isFinite(student);
+    const isMet = hasReference && hasStudent ? student >= reference : null;
+    const position = (value: number) => `${Math.min(94, Math.max(6, ((value - 3) / 6) * 88 + 6))}%`;
+
+    return { ...item, reference, studentGrade, student, hasReference, hasStudent, isMet, position };
+  });
+  const availableRows = rows.filter((row) => row.hasReference);
+
+  if (availableRows.length === 0) {
+    return <p className="mt-2 text-sm font-bold leading-7 text-amber-950">此校系目前未提供各科歷年參考資料。</p>;
+  }
+
+  return (
+    <div className="mt-3 overflow-hidden rounded-xl border-2 border-amber-200 bg-white">
+      <table className="w-full table-fixed text-left text-xs sm:text-sm">
+        <thead className="bg-amber-100 text-amber-950">
+          <tr>
+            <th className="w-[16%] px-2 py-2.5 font-black sm:px-3">科目</th>
+            <th className="w-[18%] px-2 py-2.5 font-black sm:px-3">你的成績</th>
+            <th className="w-[46%] px-2 py-2.5 font-black sm:px-3">歷年參考對照</th>
+            <th className="w-[20%] px-2 py-2.5 text-right font-black sm:px-3">判讀</th>
+          </tr>
+        </thead>
+        <tbody>
+          {availableRows.map((row) => (
+            <tr key={row.key} className="border-t border-amber-100">
+              <td className="px-2 py-3 font-black text-slate-800 sm:px-3">{row.label}</td>
+              <td className="px-2 py-3 font-black text-slate-800 sm:px-3">{row.studentGrade || '—'}</td>
+              <td className="px-2 py-3 sm:px-3">
+                <div className="relative h-4">
+                  <div className="absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-slate-100" />
+                  <div className="absolute left-[6%] right-[6%] top-1/2 h-2 -translate-y-1/2 rounded-full bg-violet-200" />
+                  <span className="absolute top-1/2 h-5 -translate-x-1/2 -translate-y-1/2 border-l-[3px] border-violet-600" style={{ left: row.position(row.reference) }} aria-label={`歷年參考 ${GRADE_LABELS[row.reference] || row.reference}`} />
+                  {row.hasStudent && <span className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-indigo-800 shadow-[0_1px_3px_rgba(30,27,75,0.45)]" style={{ left: row.position(row.student) }} aria-label={`你的成績 ${row.studentGrade}`} />}
+                </div>
+                <div className="mt-1 flex justify-between text-[10px] font-bold text-slate-500"><span>C</span><span>參考 {GRADE_LABELS[row.reference] || row.reference}</span><span>A++</span></div>
+              </td>
+              <td className={`px-2 py-3 text-right font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '低於參考' : row.isMet ? '符合' : '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 border-t border-amber-100 px-3 py-2 text-[10px] font-bold text-slate-500"><span><i className="mr-1 inline-block h-3 border-l-[3px] border-violet-600 align-middle" />歷年參考</span><span><i className="mr-1 inline-block h-3 w-3 rounded-full border-2 border-white bg-indigo-800 align-middle" />你的成績</span></div>
+    </div>
+  );
+}
+
+function AdmissionAnalysisDialog({ school, region, grades, onClose }: { school: any | null; region?: string; grades?: Record<string, any>; onClose: () => void }) {
   const isOpen = !!school;
   const handleClose = useModalHistory('AdmissionAnalysis', isOpen, onClose);
 
@@ -406,7 +470,8 @@ function AdmissionAnalysisDialog({ school, region, onClose }: { school: any | nu
 
           <section className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
             <h3 className="text-base font-black text-amber-950">科目歷年參考</h3>
-            {unmetSubjects.length > 0 ? <p className="mt-2 text-sm font-bold leading-7 text-amber-950">{unmetSubjects.join('、')}低於本校系的歷年錄取參考。這不是填寫資格限制，但代表同分競爭時的風險較高，已納入夢幻區判讀。</p> : <p className="mt-2 text-sm font-bold leading-7 text-amber-950">目前各科表現未低於系統設定的歷年錄取參考；實際結果仍會受超額比序與志願分布影響。</p>}
+            <SubjectReferenceTable school={school} grades={grades} />
+            {unmetSubjects.length > 0 && <p className="mt-3 text-xs font-bold leading-6 text-amber-950">{unmetSubjects.join('、')}低於本校系的歷年錄取參考；這不是填寫資格限制，但同分競爭時的風險較高。</p>}
           </section>
 
           <section className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-4">
@@ -1188,7 +1253,7 @@ export default function ResultsPage() {
       )}
 
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} onExport={handleExport} />
-      <AdmissionAnalysisDialog school={analysisSchool} region={scores?.region} onClose={() => setAnalysisSchool(null)} />
+      <AdmissionAnalysisDialog school={analysisSchool} region={scores?.region} grades={scores} onClose={() => setAnalysisSchool(null)} />
       <SchoolDetailDialog
         school={detailSchool}
         regionName={regionName}
