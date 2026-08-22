@@ -373,7 +373,7 @@ function SubjectReferenceTable({ school, grades }: { school: any; grades?: Recor
             <th className="w-[16%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">科目</th>
             <th className="w-[20%] whitespace-nowrap border-r-2 border-amber-200 px-1 py-2.5 text-[11px] font-black sm:px-3 sm:text-sm">你的成績</th>
             <th className="w-[48%] border-r-2 border-amber-200 px-2 py-2.5 font-black sm:px-3">歷年參考對照</th>
-            <th className="w-[16%] px-1 py-2.5 text-right text-[10px] font-black sm:px-3 sm:text-xs">判讀</th>
+            <th className="w-[16%] px-1 py-2.5 text-left text-[10px] font-black sm:px-3 sm:text-xs">判讀</th>
           </tr>
         </thead>
         <tbody>
@@ -390,7 +390,7 @@ function SubjectReferenceTable({ school, grades }: { school: any; grades?: Recor
                 </div>
                 <div className="mt-1 flex justify-between text-[10px] font-bold text-slate-500"><span>C</span><span>參考 {GRADE_LABELS[row.reference] || row.reference}</span><span>A++</span></div>
               </td>
-              <td className={`px-2 py-3 text-right font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '低於參考' : row.isMet ? '符合' : '—'}</td>
+              <td className={`px-2 py-3 text-left font-black sm:px-3 ${row.isMet === false ? 'text-rose-600' : 'text-emerald-700'}`}>{row.isMet === false ? '未達標' : row.isMet ? '達標' : '—'}</td>
             </tr>
           ))}
         </tbody>
