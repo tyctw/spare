@@ -586,7 +586,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               )}
 
               <div className="grid grid-cols-2 gap-3">
-                <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.5rem] bg-slate-100 outline-none transition hover:bg-slate-200">
+                <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.8rem] bg-slate-100 outline-none transition hover:bg-slate-200">
                   <div className="flex w-14 shrink-0 items-center justify-center bg-pink-100 text-pink-600 transition-colors group-hover:brightness-95">
                     <Instagram className="h-5 w-5 transition-transform group-hover:scale-110" />
                   </div>
@@ -594,7 +594,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                     <span className="text-[15px] font-black text-slate-700">Instagram</span>
                   </div>
                 </a>
-                <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.5rem] bg-slate-100 outline-none transition hover:bg-slate-200">
+                <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.8rem] bg-slate-100 outline-none transition hover:bg-slate-200">
                   <div className="flex w-14 shrink-0 items-center justify-center bg-slate-200 text-slate-700 transition-colors group-hover:brightness-95">
                     <ThreadsIcon className="h-5 w-5 transition-transform group-hover:scale-110" />
                   </div>
