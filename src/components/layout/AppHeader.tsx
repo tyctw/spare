@@ -160,7 +160,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
               <div className="grid grid-cols-[2fr_0.9fr] gap-5">
                 <div className="order-2 rounded-[2rem] bg-slate-100 p-4">
                   <p className="px-2 text-sm font-black text-slate-700">猜你可能在找</p>
-                  <div className="mt-3 divide-y-2 divide-slate-100 overflow-hidden rounded-[1.7rem] bg-white/75">
+                  <div className="mt-3 divide-y-4 divide-slate-100 overflow-hidden rounded-[1.7rem] bg-white/75">
                     {shortcutItems.map((item) => {
                       const ItemIcon = item.icon;
                       return (
@@ -179,14 +179,11 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                       <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 px-3 py-3 text-xs font-black text-slate-600 transition hover:bg-white hover:text-pink-600" aria-label="前往 Instagram，新分頁開啟"><Instagram className="h-4 w-4" />Instagram</a>
                       <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 px-3 py-3 text-xs font-black text-slate-600 transition hover:bg-white hover:text-slate-900" aria-label="前往 Threads，新分頁開啟"><ThreadsIcon className="h-4 w-4" />Threads</a>
                     </div>
+                    <a href={withBasePath('/support')} className="group flex items-center justify-between bg-rose-200 px-4 py-4 text-left text-slate-900 transition hover:bg-rose-300">
+                      <span className="min-w-0"><span className="block text-sm font-black">小額支持，升學資訊持續免費</span><span className="mt-0.5 block text-[11px] font-bold text-rose-950/70">陪更多學生安心找到方向</span></span>
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span>
+                    </a>
                   </div>
-                  <a href={withBasePath('/support')} className="group mt-3 flex items-center justify-between rounded-xl border-2 border-rose-200 bg-rose-400 px-3 py-3 text-left text-slate-900 transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                    <span>
-                      <span className="block text-sm font-black">支持免費升學工具</span>
-                      <span className="mt-0.5 block text-[11px] font-bold text-rose-950/70">讓免費升學工具持續陪你前進</span>
-                    </span>
-                    <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
-                  </a>
                 </div>
                 <div className="order-1">
                   <p className="mb-3 px-1 text-sm font-black text-slate-500">探索更多</p>
