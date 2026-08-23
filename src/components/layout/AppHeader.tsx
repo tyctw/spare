@@ -175,10 +175,10 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                         </button>
                       );
                     })}
-                  </div>
-                  <div className="mt-3 grid w-full grid-cols-2 gap-2">
-                    <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1.5 rounded-lg bg-white/70 px-2 py-2 text-xs font-black text-slate-600 transition hover:bg-white hover:text-pink-600" aria-label="前往 Instagram，新分頁開啟"><Instagram className="h-4 w-4" />Instagram</a>
-                    <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1.5 rounded-lg bg-white/70 px-2 py-2 text-xs font-black text-slate-600 transition hover:bg-white hover:text-slate-900" aria-label="前往 Threads，新分頁開啟"><ThreadsIcon className="h-4 w-4" />Threads</a>
+                    <div className="grid grid-cols-2 divide-x-2 divide-slate-100 bg-slate-50/70">
+                      <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 px-3 py-3 text-xs font-black text-slate-600 transition hover:bg-white hover:text-pink-600" aria-label="前往 Instagram，新分頁開啟"><Instagram className="h-4 w-4" />Instagram</a>
+                      <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 px-3 py-3 text-xs font-black text-slate-600 transition hover:bg-white hover:text-slate-900" aria-label="前往 Threads，新分頁開啟"><ThreadsIcon className="h-4 w-4" />Threads</a>
+                    </div>
                   </div>
                   <a href={withBasePath('/support')} className="group mt-3 flex items-center justify-between rounded-xl border-2 border-rose-200 bg-rose-400 px-3 py-3 text-left text-slate-900 transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                     <span>

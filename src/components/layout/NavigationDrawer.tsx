@@ -343,20 +343,6 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
       .filter((category) => category.items.length > 0);
   }, [normalizedSearch]);
 
-  const currentMonth = new Date().getMonth() + 1;
-  const quickItemIds = currentMonth <= 3
-    ? ['home', 'search', 'importantDates']
-    : currentMonth <= 5
-      ? ['importantDates', 'instructions', 'holland']
-      : currentMonth <= 7
-        ? ['scoreInquiry', 'home', 'mockVolunteer']
-        : currentMonth <= 8
-          ? ['importantDates', 'schoolTypes', 'vocational']
-          : ['holland', 'vocational', 'schoolTypes'];
-  const quickItems = quickItemIds
-    .map((id) => menuCategories.flatMap((category) => category.items).find((item) => item.id === id))
-    .filter(Boolean) as MenuItem[];
-
   const runAction = (action: MenuAction) => {
     if (action.type === 'route') {
       window.location.href = withBasePath(action.href);
@@ -597,26 +583,6 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                     </div>
                   );
                 })
-              )}
-
-              {!mobileCategory && !normalizedSearch && filteredCategories.length > 0 && (
-                <section aria-labelledby="quick-links-heading" className="overflow-hidden rounded-[1.8rem] bg-slate-100 p-3">
-                  <h3 id="quick-links-heading" className="px-2 pb-2 text-base font-black text-slate-900">猜你可能在找</h3>
-                  <div className="divide-y-2 divide-slate-100 overflow-hidden rounded-[1.35rem] bg-white">
-                    {quickItems.map((item) => {
-                      const ItemIcon = item.icon;
-                      return (
-                        <button key={item.id} type="button" onClick={() => runAction(item.action)} className="group flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-slate-50">
-                          <span className="flex min-w-0 items-center gap-3">
-                            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg} ${item.color}`}><ItemIcon className="h-5 w-5" /></span>
-                            <span className="truncate text-base font-black text-slate-900">{item.label}</span>
-                          </span>
-                          <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 transition-transform group-hover:translate-x-1" />
-                        </button>
-                      );
-                    })}
-                  </div>
-                </section>
               )}
 
               <div className="grid grid-cols-2 gap-3">
