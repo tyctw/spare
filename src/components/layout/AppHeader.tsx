@@ -13,11 +13,13 @@ function ThreadsIcon({ className }: { className?: string }) {
   );
 }
 
+type HeaderModalId = 'rating' | 'scoreInquiry';
+
 interface AppHeaderProps {
   isScrolled: boolean;
   onShareClick: () => void;
   onMenuClick: () => void;
-  setActiveModal: (modal: string) => void;
+  setActiveModal: (modal: HeaderModalId) => void;
 }
 
 export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setActiveModal }: AppHeaderProps) {
@@ -107,7 +109,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
   const runAction = (item: MenuItem) => {
     if (item.action.type === 'route') window.location.href = withBasePath(item.action.href);
     else if (item.action.type === 'external') window.open(item.action.href, '_blank', 'noreferrer');
-    else setActiveModal(item.action.id);
+    else setActiveModal(item.action.id as HeaderModalId);
   };
   const globalSearchResults = useMemo(() => {
     const keyword = globalSearchTerm.trim().toLowerCase();
