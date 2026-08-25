@@ -271,7 +271,7 @@ const getComparisonFieldValue = (school: any, field: string): string | number =>
 
 const getComparisonColumns = (visibleFields: string[]) => [
   { id: 'name', label: '學校（科系）' },
-  ...visibleFields.filter((field) => comparisonFieldLabels[field]).map((field) => ({ id: field, label: comparisonFieldLabels[field] })),
+  ...visibleFields.filter((field) => field !== 'map' && comparisonFieldLabels[field]).map((field) => ({ id: field, label: comparisonFieldLabels[field] })),
 ];
 
 export const exportComparisonExcel = async ({ schools, visibleFields }: ComparisonExportOptions) => {
@@ -311,13 +311,25 @@ export const exportComparisonExcel = async ({ schools, visibleFields }: Comparis
     });
   });
   worksheet.views = [{ state: 'frozen', ySplit: 3, showGridLines: false }];
-  worksheet.autoFilter = { from: 'A3', to: `${lastColumn}${worksheet.rowCount}` };
+  const tableEndRow = worksheet.rowCount;
+  worksheet.autoFilter = { from: 'A3', to: `${lastColumn}${tableEndRow}` };
   worksheet.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
   worksheet.pageSetup.margins = { left: 0.25, right: 0.25, top: 0.45, bottom: 0.45, header: 0.2, footer: 0.2 };
   worksheet.headerFooter.oddFooter = '第 &P 頁，共 &N 頁';
   columns.forEach((column, index) => {
     worksheet.getColumn(index + 1).width = column.id === 'name' ? 28 : column.id === 'historicalScores' ? 36 : column.id === 'map' ? 54 : 18;
   });
+  worksheet.addRow([]);
+  const websiteRow = worksheet.addRow([`網站網址：${window.location.href}`]);
+  worksheet.mergeCells(`A${websiteRow.number}:${lastColumn}${websiteRow.number}`);
+  websiteRow.getCell(1).font = { bold: true, color: { argb: 'FF475569' } };
+  websiteRow.getCell(1).alignment = { vertical: 'middle', wrapText: true };
+  const disclaimerRow = worksheet.addRow(['免責聲明：本系統分析結果僅供參考，不代表實際錄取結果；請以各校最新官方招生簡章與公告為準。']);
+  worksheet.mergeCells(`A${disclaimerRow.number}:${lastColumn}${disclaimerRow.number}`);
+  disclaimerRow.getCell(1).font = { bold: true, color: { argb: 'FF92400E' } };
+  disclaimerRow.getCell(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF7ED' } };
+  disclaimerRow.getCell(1).alignment = { vertical: 'middle', wrapText: true };
+  disclaimerRow.height = 32;
 
   const content = await workbook.xlsx.writeBuffer();
   saveAs(new Blob([content], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `會考落點分析_學校比較_${new Date().toISOString().slice(0, 10)}.xlsx`);
@@ -336,7 +348,7 @@ export const printComparison = ({ schools, visibleFields }: ComparisonExportOpti
     return `<td>${escapeHtml(value).replace(/\n/g, '<br>')}</td>`;
   }).join('')}</tr>`).join('');
 
-  printWindow.document.write(`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>會考落點分析｜學校比較表</title><style>body{font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;color:#0f172a;margin:28px}h1{margin:0;font-size:24px}p{color:#475569;font-size:12px}table{width:100%;border-collapse:collapse;margin-top:20px;font-size:12px}th{background:#1e293b;color:#fff;text-align:left;padding:10px;border:1px solid #0f172a}td{vertical-align:top;padding:9px;border:1px solid #cbd5e1;line-height:1.55}tr:nth-child(even){background:#f8fafc}@page{size:landscape;margin:12mm}@media print{body{margin:0}thead{display:table-header-group}tr{break-inside:avoid}}</style></head><body><h1>會考落點分析｜學校比較表</h1><p>列印時間：${escapeHtml(new Date().toLocaleString('zh-TW'))}　・　共 ${schools.length} 所學校</p><table><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`);
+  printWindow.document.write(`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>會考落點分析｜學校比較表</title><style>body{font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;color:#0f172a;margin:28px}h1{margin:0;font-size:24px}p{color:#475569;font-size:12px}table{width:100%;border-collapse:collapse;margin-top:20px;font-size:12px}th{background:#1e293b;color:#fff;text-align:left;padding:10px;border:1px solid #0f172a}td{vertical-align:top;padding:9px;border:1px solid #cbd5e1;line-height:1.55}tr:nth-child(even){background:#f8fafc}.print-footer{margin-top:18px;border-top:2px solid #cbd5e1;padding-top:10px;font-size:11px;line-height:1.65;color:#475569}.print-footer strong{color:#92400e}@page{size:landscape;margin:12mm}@media print{body{margin:0}thead{display:table-header-group}tr{break-inside:avoid}}</style></head><body><h1>會考落點分析｜學校比較表</h1><p>列印時間：${escapeHtml(new Date().toLocaleString('zh-TW'))}　・　共 ${schools.length} 所學校</p><table><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table><footer class="print-footer"><div>網站網址：${escapeHtml(window.location.href)}</div><div><strong>免責聲明：</strong>本系統分析結果僅供參考，不代表實際錄取結果；請以各校最新官方招生簡章與公告為準。</div></footer></body></html>`);
   printWindow.document.close();
   printWindow.focus();
   window.setTimeout(() => printWindow.print(), 250);
