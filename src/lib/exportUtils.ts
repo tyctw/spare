@@ -145,7 +145,7 @@ export const exportExcel = async (data: any, regionName: string) => {
   summaryWs.mergeCells('A1:B1');
   summaryWs.views = [{ showGridLines: false }];
   summaryWs.pageSetup = { orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
-  summaryWs.pageMargins = { left: 0.3, right: 0.3, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 };
+  summaryWs.pageSetup.margins = { left: 0.3, right: 0.3, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 };
   summaryWs.headerFooter.oddFooter = '第 &P 頁，共 &N 頁';
   summaryWs.getColumn(1).width = 28;
   summaryWs.getColumn(2).width = 48;
@@ -189,7 +189,7 @@ export const exportExcel = async (data: any, regionName: string) => {
     schoolsWs.addRows(schoolsData);
     schoolsWs.views = [{ state: 'frozen', ySplit: 1, showGridLines: false }];
     schoolsWs.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
-    schoolsWs.pageMargins = { left: 0.25, right: 0.25, top: 0.45, bottom: 0.45, header: 0.2, footer: 0.2 };
+    schoolsWs.pageSetup.margins = { left: 0.25, right: 0.25, top: 0.45, bottom: 0.45, header: 0.2, footer: 0.2 };
     schoolsWs.headerFooter.oddFooter = '第 &P 頁，共 &N 頁';
     schoolsWs.autoFilter = { from: 'A1', to: `G${schoolsWs.rowCount}` };
     [10, 28, 22, 18, 12, 14, 18].forEach((width, index) => {
