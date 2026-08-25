@@ -27,11 +27,11 @@ import {
   X,
 } from 'lucide-react';
 import ExportModal from './ExportModal';
-import ComparisonModal from './ComparisonModal';
 import Footer from './layout/Footer';
 import { ALL_REGIONS } from './RegionModal';
 import { exportExcel, exportJson, exportTxt, printResults } from '../lib/exportUtils';
 import { withBasePath } from '../lib/routes';
+import { getComparisonSchools, saveComparisonSchools } from '../lib/comparisonStorage';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
 import { getCreditsGap, getPointsGap } from '../lib/admissionComparison';
 import {
@@ -67,8 +67,7 @@ export default function ResultsPage() {
   const [filterOwnership, setFilterOwnership] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [schoolView, setSchoolView] = useState<'cards' | 'table'>('cards');
-  const [comparisonSchools, setComparisonSchools] = useState<any[]>([]);
-  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
+  const [comparisonSchools, setComparisonSchools] = useState<any[]>(getComparisonSchools);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
   const [analysisSchool, setAnalysisSchool] = useState<any | null>(null);
@@ -164,12 +163,18 @@ export default function ResultsPage() {
   const toggleComparison = (school: any) => {
     setComparisonSchools((prev) => {
       const exists = prev.find((item) => item.name === school.name);
-      if (exists) return prev.filter((item) => item.name !== school.name);
+      if (exists) {
+        const next = prev.filter((item) => item.name !== school.name);
+        saveComparisonSchools(next);
+        return next;
+      }
       if (prev.length >= 4) {
         alert('最多只能比較 4 所學校');
         return prev;
       }
-      return [...prev, { ...school, region: regionName }];
+      const next = [...prev, { ...school, region: regionName }];
+      saveComparisonSchools(next);
+      return next;
     });
   };
 
@@ -200,14 +205,13 @@ export default function ResultsPage() {
             回到落點分析
           </a>
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-            <button
-              type="button"
-              onClick={() => setIsComparisonOpen(true)}
+            <a
+              href={withBasePath('/compare')}
               className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
             >
               <List className="h-4 w-4" />
               比較清單 ({comparisonSchools.length})
-            </button>
+            </a>
             <button
               type="button"
               onClick={() => setIsExportOpen(true)}
@@ -688,13 +692,6 @@ export default function ResultsPage() {
         }}
       />
       <HistoricalScoresDialog school={historicalScoreSchool} onClose={() => setHistoricalScoreSchool(null)} />
-      <ComparisonModal
-        schools={comparisonSchools}
-        isOpen={isComparisonOpen}
-        onClose={() => setIsComparisonOpen(false)}
-        onRemove={(name) => setComparisonSchools((prev) => prev.filter((school) => school.name !== name))}
-        onClear={() => setComparisonSchools([])}
-      />
     </div>
   );
 }
