@@ -28,6 +28,7 @@ const NewsArticlePage = lazy(() => import('./components/NewsArticlePage.tsx'));
 const MockVolunteerPage = lazy(() => import('./components/MockVolunteerPage.tsx'));
 const SearchPage = lazy(() => import('./components/SearchPage.tsx'));
 const ResultsPage = lazy(() => import('./components/ResultsPage.tsx'));
+const ComparisonPage = lazy(() => import('./components/ComparisonPage.tsx'));
 const ReportErrorPage = lazy(() => import('./components/ReportErrorPage.tsx'));
 const SharedReportPage = lazy(() => import('./components/SharedReportPage.tsx'));
 const SiteMapPage = lazy(() => import('./components/SiteMapPage.tsx'));
@@ -99,6 +100,7 @@ const page =
   path === '/mock-volunteer' ? <MockVolunteerPage /> :
   path === '/search' ? <SearchPage /> :
   path === '/results' ? <ResultsPage /> :
+  path === '/compare' ? <ComparisonPage /> :
   path === '/report-error' ? <ReportErrorPage /> :
   sharedReportToken ? <SharedReportPage token={sharedReportToken} /> :
   path === '/site-map' ? <SiteMapPage /> :

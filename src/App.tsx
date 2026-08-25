@@ -23,13 +23,13 @@ import MembershipPromo from './components/MembershipPromo';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDisplay';
 import { getCreditsGap, getPointsGap } from './lib/admissionComparison';
 import { withBasePath } from './lib/routes';
+import { getComparisonSchools, saveComparisonSchools } from './lib/comparisonStorage';
 
 // Keep the analysis form and navigation in the first bundle. These dialogs are
 // fetched only when requested, so they do not delay the first meaningful paint.
 const QRCodeModal = React.lazy(() => import('./components/QRCodeModal'));
 const VocationalModal = React.lazy(() => import('./components/VocationalModal'));
 const HollandTestModal = React.lazy(() => import('./components/HollandTestModal'));
-const ComparisonModal = React.lazy(() => import('./components/ComparisonModal'));
 const ExportModal = React.lazy(() => import('./components/ExportModal'));
 const HistoricalStatsModal = React.lazy(() => import('./components/HistoricalStatsModal'));
 const ScoreInquiryModal = React.lazy(() => import('./components/ScoreInquiryModal'));
@@ -222,8 +222,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
   
   // Comparison
-  const [comparisonSchools, setComparisonSchools] = useState<any[]>([]);
-  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
+  const [comparisonSchools, setComparisonSchools] = useState<any[]>(getComparisonSchools);
   // Read the restored scroll position on the first render. This prevents the
   // fixed header from resizing just after the page has painted.
   const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 50);
@@ -457,13 +456,19 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   const toggleComparison = (school: any) => {
     setComparisonSchools(prev => {
       const exists = prev.find(s => s.name === school.name);
-      if (exists) return prev.filter(s => s.name !== school.name);
+      if (exists) {
+        const next = prev.filter(s => s.name !== school.name);
+        saveComparisonSchools(next);
+        return next;
+      }
       if (prev.length >= 4) {
         alert('最多只能比較 4 所學校');
         return prev;
       }
       const regionName = ALL_REGIONS.find(r => r.id === formData.region)?.name || '未知';
-      return [...prev, { ...school, region: regionName }];
+      const next = [...prev, { ...school, region: regionName }];
+      saveComparisonSchools(next);
+      return next;
     });
   };
 
@@ -1249,9 +1254,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     <button onClick={() => { window.location.href = withBasePath('/mock-volunteer'); }} className="px-3 py-1.5 bg-sky-50 text-sky-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
                       <Target className="w-4 h-4" /> 模擬選填
                     </button>
-                    <button onClick={() => setIsComparisonOpen(true)} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
+                    <a href={withBasePath('/compare')} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none">
                       <List className="w-4 h-4" /> 比較清單 ({comparisonSchools.length})
-                    </button>
+                    </a>
                     <button onClick={() => {
                       // Begin preparing the export library while the format picker is open.
                       void import('./lib/exportUtils');
@@ -1580,16 +1585,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         onSelect={(region) => updateForm('region', region)} 
       />
       
-      {isComparisonOpen && (
-        <ComparisonModal
-          isOpen
-          onClose={() => setIsComparisonOpen(false)}
-          schools={comparisonSchools}
-          onRemove={name => setComparisonSchools(prev => prev.filter(s => s.name !== name))}
-          onClear={() => setComparisonSchools([])}
-        />
-      )}
-
       <HistoricalScoresModal
         school={historicalScoreSchool}
         onClose={() => setHistoricalScoreSchool(null)}
