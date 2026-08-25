@@ -233,6 +233,115 @@ export const exportExcel = async (data: any, regionName: string) => {
   );
 };
 
+type ComparisonExportOptions = {
+  schools: any[];
+  visibleFields: string[];
+};
+
+const comparisonFieldLabels: Record<string, string> = {
+  region: '就學區',
+  type: '學校類型',
+  ownership: '公立／私立',
+  group: '特色及群別',
+  historicalScores: '歷年成績',
+  admissionQuota: '招生名額（一般生）',
+  map: '學校地圖',
+};
+
+const formatComparisonHistoricalScores = (school: any) => {
+  const scores = Array.isArray(school.historicalScores) ? school.historicalScores : [];
+  const values = scores
+    .filter((item) => item && item.points !== null && item.points !== undefined)
+    .sort((left, right) => Number(right.year) - Number(left.year))
+    .slice(0, 4)
+    .map((item) => `${item.year || '歷年'}：${item.points} 分／${item.credits ?? '無'} 點`);
+  return values.length ? values.join('\n') : '資料建置中';
+};
+
+const getComparisonFieldValue = (school: any, field: string): string | number => {
+  if (field === 'region') return school.region || '未提供';
+  if (field === 'type') return school.type || '未提供';
+  if (field === 'ownership') return formatSchoolOwnership(school.ownership);
+  if (field === 'group') return school.group || '—';
+  if (field === 'historicalScores') return formatComparisonHistoricalScores(school);
+  if (field === 'admissionQuota') return school.admissionQuota === null || school.admissionQuota === undefined ? '尚未公告' : Number(school.admissionQuota);
+  if (field === 'map') return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name || '')}`;
+  return '—';
+};
+
+const getComparisonColumns = (visibleFields: string[]) => [
+  { id: 'name', label: '學校（科系）' },
+  ...visibleFields.filter((field) => comparisonFieldLabels[field]).map((field) => ({ id: field, label: comparisonFieldLabels[field] })),
+];
+
+export const exportComparisonExcel = async ({ schools, visibleFields }: ComparisonExportOptions) => {
+  const columns = getComparisonColumns(visibleFields);
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = 'TW 全國會考落點分析';
+  workbook.created = new Date();
+  const worksheet = workbook.addWorksheet('比較表');
+  const lastColumn = String.fromCharCode(64 + columns.length);
+
+  worksheet.mergeCells(`A1:${lastColumn}1`);
+  worksheet.getCell('A1').value = '會考落點分析｜學校比較表';
+  worksheet.getCell('A1').font = { bold: true, size: 16, color: { argb: 'FFFFFFFF' } };
+  worksheet.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
+  worksheet.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
+  worksheet.getRow(1).height = 30;
+  worksheet.mergeCells(`A2:${lastColumn}2`);
+  worksheet.getCell('A2').value = `匯出時間：${new Date().toLocaleString('zh-TW')}｜共 ${schools.length} 所學校`;
+  worksheet.getCell('A2').font = { bold: true, color: { argb: 'FF475569' } };
+  worksheet.getCell('A2').alignment = { horizontal: 'left', vertical: 'middle' };
+  worksheet.getRow(2).height = 22;
+  worksheet.addRow(columns.map((column) => column.label));
+  const headerRow = worksheet.getRow(3);
+  headerRow.height = 26;
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E293B' } };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+  });
+
+  schools.forEach((school) => {
+    const row = worksheet.addRow(columns.map((column) => column.id === 'name' ? school.name || '未命名學校' : getComparisonFieldValue(school, column.id)));
+    row.height = visibleFields.includes('historicalScores') ? 56 : 24;
+    row.eachCell((cell) => {
+      cell.alignment = { vertical: 'middle', wrapText: true };
+      cell.border = { bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } } };
+    });
+  });
+  worksheet.views = [{ state: 'frozen', ySplit: 3, showGridLines: false }];
+  worksheet.autoFilter = { from: 'A3', to: `${lastColumn}${worksheet.rowCount}` };
+  worksheet.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
+  worksheet.pageSetup.margins = { left: 0.25, right: 0.25, top: 0.45, bottom: 0.45, header: 0.2, footer: 0.2 };
+  worksheet.headerFooter.oddFooter = '第 &P 頁，共 &N 頁';
+  columns.forEach((column, index) => {
+    worksheet.getColumn(index + 1).width = column.id === 'name' ? 28 : column.id === 'historicalScores' ? 36 : column.id === 'map' ? 54 : 18;
+  });
+
+  const content = await workbook.xlsx.writeBuffer();
+  saveAs(new Blob([content], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `會考落點分析_學校比較_${new Date().toISOString().slice(0, 10)}.xlsx`);
+};
+
+export const printComparison = ({ schools, visibleFields }: ComparisonExportOptions, existingWindow?: Window) => {
+  const printWindow = existingWindow || window.open('', '_blank');
+  if (!printWindow) {
+    alert('無法開啟列印視窗，請檢查是否被瀏覽器阻擋。');
+    return;
+  }
+  const columns = getComparisonColumns(visibleFields);
+  const headerHtml = columns.map((column) => `<th>${escapeHtml(column.label)}</th>`).join('');
+  const rowsHtml = schools.map((school) => `<tr>${columns.map((column) => {
+    const value = column.id === 'name' ? school.name || '未命名學校' : getComparisonFieldValue(school, column.id);
+    return `<td>${escapeHtml(value).replace(/\n/g, '<br>')}</td>`;
+  }).join('')}</tr>`).join('');
+
+  printWindow.document.write(`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>會考落點分析｜學校比較表</title><style>body{font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;color:#0f172a;margin:28px}h1{margin:0;font-size:24px}p{color:#475569;font-size:12px}table{width:100%;border-collapse:collapse;margin-top:20px;font-size:12px}th{background:#1e293b;color:#fff;text-align:left;padding:10px;border:1px solid #0f172a}td{vertical-align:top;padding:9px;border:1px solid #cbd5e1;line-height:1.55}tr:nth-child(even){background:#f8fafc}@page{size:landscape;margin:12mm}@media print{body{margin:0}thead{display:table-header-group}tr{break-inside:avoid}}</style></head><body><h1>會考落點分析｜學校比較表</h1><p>列印時間：${escapeHtml(new Date().toLocaleString('zh-TW'))}　・　共 ${schools.length} 所學校</p><table><thead><tr>${headerHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></body></html>`);
+  printWindow.document.close();
+  printWindow.focus();
+  window.setTimeout(() => printWindow.print(), 250);
+};
+
 export const printResults = (data: any, regionName: string, existingWindow?: Window) => {
   // `data` may contain values from shared reports and database records. Escape
   // every string before it is interpolated into the popup HTML below.
