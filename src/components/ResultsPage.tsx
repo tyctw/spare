@@ -168,10 +168,6 @@ export default function ResultsPage() {
         saveComparisonSchools(next);
         return next;
       }
-      if (prev.length >= 4) {
-        alert('最多只能比較 4 所學校');
-        return prev;
-      }
       const next = [...prev, { ...school, region: regionName }];
       saveComparisonSchools(next);
       return next;
