@@ -49,6 +49,9 @@ const seoRoutes = [
   'support',
   'support/failed',
   'support/success',
+  // The analysis page restores its data from sessionStorage, but it still
+  // needs a physical entry point on GitHub Pages to avoid a route-level 404.
+  'results',
   'membership',
   'membership/success',
   'after-sales-service',
