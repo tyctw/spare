@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpDown, Download, ExternalLink, List, MapPin, Plus, Printer, RotateCcw, Search, SlidersHorizontal, Trash2, X } from 'lucide-react';
+import { ArrowLeft, ArrowUpDown, BarChart3, Download, ExternalLink, Layers3, List, MapPin, Plus, Printer, RotateCcw, Search, SlidersHorizontal, Sparkles, Trash2, X } from 'lucide-react';
 import Footer from './layout/Footer';
 import { withBasePath } from '../lib/routes';
 import { formatSchoolOwnership } from '../lib/schoolDisplay';
@@ -133,11 +133,35 @@ export default function ComparisonPage() {
 
   return <div className="min-h-screen bg-slate-50 text-slate-900">
     <main className="mx-auto max-w-[90rem] px-4 py-6 sm:px-6 lg:px-8 xl:px-10">
-      <a href={withBasePath('/results')} className="inline-flex items-center gap-2 text-sm font-black text-slate-600 transition hover:text-slate-900"><ArrowLeft className="h-4 w-4" />回到分析結果</a>
-      <section className="relative mt-5 overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[8px_8px_0_#0f172a] sm:p-9 xl:p-10">
-        <div className="pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full border-[18px] border-indigo-400" />
-        <div className="pointer-events-none absolute bottom-0 right-24 h-28 w-28 rounded-full bg-amber-300/50 blur-2xl" />
-        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"><div><div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-black tracking-[0.18em]"><List className="h-3.5 w-3.5 text-amber-300" />SCHOOL COMPARISON</div><h1 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl xl:text-6xl">分析結果比較</h1><p className="mt-3 max-w-3xl text-sm font-bold leading-6 text-indigo-100 sm:text-base">把候選學校放在同一個畫面，依入學條件、群別、歷年成績與招生名額，找出最適合下一步研究的選項。</p></div><div className="rounded-2xl border-2 border-slate-900 bg-amber-300 px-5 py-4 text-center text-slate-900 shadow-[3px_3px_0_#0f172a]"><p className="text-[10px] font-black tracking-widest">已選學校</p><p className="text-3xl font-black">{schools.length} <span className="text-sm">所</span></p></div></div>
+      <a href={withBasePath('/results')} className="mb-4 inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-xs font-black text-indigo-700 shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-indigo-100">
+        <ArrowLeft className="h-4 w-4" />回到分析結果
+      </a>
+      <section className="relative isolate overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-gradient-to-br from-white via-indigo-50 to-amber-50 text-slate-900 shadow-[9px_9px_0_#0f172a]">
+        <div aria-hidden="true" className="absolute inset-0 opacity-50 [background-image:linear-gradient(rgba(79,70,229,.10)_1px,transparent_1px),linear-gradient(90deg,rgba(79,70,229,.10)_1px,transparent_1px)] [background-size:30px_30px]" />
+        <div aria-hidden="true" className="absolute -right-16 -top-20 h-64 w-64 rounded-full border-[22px] border-indigo-200/80" />
+        <div aria-hidden="true" className="absolute -bottom-20 right-[22%] h-52 w-52 rounded-full bg-amber-200/60 blur-3xl" />
+        <div aria-hidden="true" className="absolute left-[38%] top-0 h-full w-px bg-indigo-200/60" />
+        <div className="relative p-5 sm:p-8 xl:p-10">
+          <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-100 px-3 py-1.5 text-[10px] font-black tracking-[0.2em] text-amber-800">
+                <Sparkles className="h-3.5 w-3.5" />DECISION DESK
+              </div>
+              <h1 className="mt-4 max-w-3xl text-4xl font-black leading-[.98] tracking-tight sm:text-6xl xl:text-7xl">分析結果<span className="ml-2 text-indigo-600">比較</span></h1>
+              <p className="mt-5 max-w-2xl text-sm font-bold leading-7 text-slate-600 sm:text-base">將候選學校並列檢視，從入學條件、群別到名額變化，為下一步研究留下更清楚的依據。</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:w-[20rem]">
+              <div className="rounded-2xl border-2 border-indigo-200 bg-white/85 p-4 shadow-[3px_3px_0_#c7d2fe] backdrop-blur">
+                <div className="flex items-center justify-between text-indigo-700"><span className="text-[10px] font-black tracking-[.16em]">已選學校</span><Layers3 className="h-4 w-4 text-indigo-600" /></div>
+                <p className="mt-3 text-4xl font-black leading-none">{schools.length}<span className="ml-1 text-sm text-slate-500">所</span></p>
+              </div>
+              <div className="rounded-2xl border-2 border-slate-900 bg-amber-300 p-4 text-slate-900 shadow-[3px_3px_0_#0f172a]">
+                <div className="flex items-center justify-between"><span className="text-[10px] font-black tracking-[.16em]">比較欄位</span><BarChart3 className="h-4 w-4" /></div>
+                <p className="mt-3 text-4xl font-black leading-none">{visibleFields.length}<span className="ml-1 text-sm">項</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
       {schools.length ? <>
         <div className="mt-6 flex flex-col gap-3 rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0_#0f172a] lg:flex-row lg:items-center lg:justify-between"><p className="text-sm font-bold text-slate-600">可回到結果頁，將需要研究的校科持續加入清單。</p><div className="relative grid w-full grid-cols-2 gap-2 lg:w-auto lg:flex"><button type="button" onClick={() => setIsFieldSettingsOpen((open) => !open)} aria-expanded={isFieldSettingsOpen} className="col-span-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-100 px-4 py-2.5 text-sm font-black text-amber-800 lg:w-auto"><SlidersHorizontal className="h-4 w-4" />顯示欄位（{visibleFields.length}）</button><a href={withBasePath('/results')} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-100 px-3 py-2.5 text-sm font-black text-sky-800 lg:w-auto lg:px-4"><Plus className="h-4 w-4" />新增學校</a><button onClick={clearSchools} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-100 px-3 py-2.5 text-sm font-black text-rose-700 lg:w-auto lg:px-4"><Trash2 className="h-4 w-4" />清空</button>{isFieldSettingsOpen && <div className="absolute left-0 right-0 top-full z-30 mt-2 rounded-2xl border-2 border-slate-900 bg-slate-50 p-3 shadow-[4px_4px_0_#0f172a] lg:left-auto lg:w-[26rem]"><div className="mb-3 flex items-center justify-between gap-3"><p className="text-xs font-black text-slate-600">至少保留一個欄位</p><button type="button" onClick={() => updateVisibleFields(defaultVisibleFields)} className="inline-flex items-center gap-1 text-xs font-black text-indigo-700 underline underline-offset-4"><RotateCcw className="h-3.5 w-3.5" />全部顯示</button></div><div className="grid grid-cols-2 gap-2">{comparisonFields.map((field) => <label key={field.id} className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-black text-slate-700"><input type="checkbox" checked={visibleFields.includes(field.id)} onChange={() => toggleVisibleField(field.id)} className="h-4 w-4 accent-indigo-600" />{field.label}</label>)}</div></div>}</div></div>
