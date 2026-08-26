@@ -54,6 +54,7 @@ type PageMeta = {
   title: string;
   description: string;
   noindex?: boolean;
+  nofollow?: boolean;
 };
 
 const pageMetadata: Record<string, PageMeta> = {
@@ -147,6 +148,20 @@ const pageMetadata: Record<string, PageMeta> = {
     description: '感謝支持全國會考落點分析。',
     noindex: true,
   },
+  '/membership': {
+    title: '會員方案｜免廣告與升學工具｜全國會考落點分析',
+    description: '以 LINE 登入確認會員資格，選擇免廣告方案並持續使用會考落點分析與升學規劃工具。',
+  },
+  '/membership/account': {
+    title: '我的會員帳號｜全國會考落點分析',
+    description: '查看目前會員資格與到期時間。',
+    noindex: true,
+  },
+  '/membership/success': {
+    title: '會員付款完成｜全國會考落點分析',
+    description: '會員付款完成後的資格確認頁面。',
+    noindex: true,
+  },
   '/after-sales-service': {
     title: '售後服務｜升學選校工具',
     description: '小額支持的售後服務、交易聯絡與付款爭議處理說明。',
@@ -179,9 +194,26 @@ const pageMetadata: Record<string, PageMeta> = {
     title: '服務條款｜全國會考落點分析',
     description: '全國會考落點分析的服務條款與使用注意事項。',
   },
+  '/disclaimer': {
+    title: '免責聲明｜全國會考落點分析',
+    description: '說明會考落點分析結果的資料來源、使用範圍與正式招生資訊的確認方式。',
+  },
+  '/changelog': {
+    title: '更新紀錄｜全國會考落點分析',
+    description: '查看全國會考落點分析的功能更新、資料調整與服務改善紀錄。',
+  },
+  '/report-error': {
+    title: '資料問題回報｜全國會考落點分析',
+    description: '回報學校資料、功能操作或升學資訊問題，協助我們持續改善服務品質。',
+  },
   '/results': {
     title: '落點分析結果｜全國會考落點分析',
     description: defaultDescription,
+    noindex: true,
+  },
+  '/compare': {
+    title: '分析結果比較｜全國會考落點分析',
+    description: '比較個人暫存的候選學校資料。',
     noindex: true,
   },
 };
@@ -198,7 +230,10 @@ export const applyPageSeo = (path: string) => {
   const scoringRulesMeta = scoringRulesRegionId ? SCORING_RULES_META[scoringRulesRegionId] : null;
   const areaSlug = path.match(/^\/area\/([a-z-]+)$/)?.[1];
   const areaData = areaSlug ? getAreaBySlug(areaSlug) : null;
-  const metadata = newsArticle
+  const isSharedReport = /^\/shared\/[0-9a-f-]+$/i.test(path);
+  const metadata = isSharedReport
+    ? { title: '已分享的志願規劃｜全國會考落點分析', description: '此連結包含使用者分享的個人規劃資料。', noindex: true, nofollow: true }
+    : newsArticle
     ? { title: `${newsArticle.title}｜全國會考落點分析`, description: newsArticle.summary }
     : scoringRulesMeta
     ? { title: scoringRulesMeta.title, description: scoringRulesMeta.description }
@@ -220,8 +255,11 @@ export const applyPageSeo = (path: string) => {
   } else if (scoringRulesMeta && scoringRulesRegionId) {
     setMetaContent('meta[name="keywords"]', `超額比序, 免試入學, 會考, ${scoringRulesMeta.cityKeywords}, 志願選填, 計分規則`);
   }
-  setMetaContent('meta[name="robots"]', metadata.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
-  setMetaContent('meta[name="googlebot"]', metadata.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large');
+  const robots = metadata.noindex
+    ? `noindex, ${metadata.nofollow ? 'nofollow' : 'follow'}`
+    : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+  setMetaContent('meta[name="robots"]', robots);
+  setMetaContent('meta[name="googlebot"]', metadata.noindex ? robots : 'index, follow, max-image-preview:large');
   setMetaContent('meta[property="og:title"]', metadata.title);
   setMetaContent('meta[property="og:description"]', metadata.description);
   setMetaContent('meta[property="og:url"]', pageUrl);
