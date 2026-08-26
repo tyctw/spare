@@ -39,6 +39,13 @@ const AuthFailModal = React.lazy(() => import('./components/AuthFailModal'));
 
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
+const INVITATION_CODE_QUERY_PARAMS = ['code', 'invitationCode', 'invite'];
+
+function withoutInvitationCodeQuery(url = window.location.href) {
+  const sanitized = new URL(url);
+  INVITATION_CODE_QUERY_PARAMS.forEach((name) => sanitized.searchParams.delete(name));
+  return sanitized.toString();
+}
 
 /** SHA-256 雜湊邀請碼，回傳 hex 字串。localStorage 只存雜湊值，不留明文。 */
 async function hashInvitationCode(code: string): Promise<string> {
@@ -245,6 +252,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     const code = params.get('code') || params.get('invitationCode') || params.get('invite');
     if (code) {
       setFormData(prev => ({ ...prev, invitationCode: code }));
+      // Invite codes are credentials, not navigation state. Remove them before
+      // they reach browser history, copied links, or later telemetry.
+      window.history.replaceState(window.history.state, '', withoutInvitationCodeQuery());
     }
 
     const hollandGroupsParam = params.get('hollandGroups') || params.get('vocationalGroups');
@@ -417,15 +427,16 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
           language: navigator.language,
           screenResolution: `${window.screen.width}x${window.screen.height}`,
           viewport: `${window.innerWidth}x${window.innerHeight}`,
-          url: window.location.href
+          url: withoutInvitationCodeQuery(),
         }
       };
 
       const data = await callBackend<any>(payload);
+      const { invitationCode: _invitationCode, ...storedScores } = formData;
       sessionStorage.setItem(
         RESULTS_STORAGE_KEY,
         JSON.stringify({
-          scores: formData,
+          scores: storedScores,
           results: data,
           identity: formData.identity,
           vocationalGroups,
