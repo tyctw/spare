@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Share2, Copy, Check, Facebook, MessageCircle, X, Link2 } from 'lucide-react';
+import { Share2, Copy, Check, Facebook, X, Link2 } from 'lucide-react';
 
 interface SharePlatformModalProps {
   isOpen: boolean;
@@ -14,6 +14,13 @@ function ThreadsIcon({ className }: { className?: string }) {
       <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z" />
     </svg>
   );
+}
+
+function LineIcon({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+    <path fill="currentColor" d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.34 8.02.33.07.78.22.9.51.11.27.07.7.03.97l-.14.92c-.04.27-.2 1.06.89.58 1.09-.46 5.88-3.47 8.02-5.94C21.56 13.5 22 11.87 22 10.13 22 5.64 17.52 2 12 2Z" />
+    <text x="12" y="12.9" textAnchor="middle" fill="#06C755" fontSize="5.2" fontWeight="900" fontFamily="Arial, sans-serif">LINE</text>
+  </svg>;
 }
 
 export default function SharePlatformModal({ isOpen, onClose }: SharePlatformModalProps) {
@@ -34,7 +41,7 @@ export default function SharePlatformModal({ isOpen, onClose }: SharePlatformMod
     {
       id: 'line',
       name: 'LINE',
-      icon: MessageCircle,
+      icon: LineIcon,
       className: 'bg-[#06C755] text-white hover:bg-[#05b94f]',
       url: `https://line.me/R/msg/text/?${encodeURIComponent(`推薦你使用這個會考落點分析工具：${platformUrl}`)}`,
     },
@@ -85,7 +92,6 @@ export default function SharePlatformModal({ isOpen, onClose }: SharePlatformMod
                   <div>
                     <p className="text-xs font-black tracking-[0.16em] text-emerald-800">SHARE THE TOOL</p>
                     <h2 id="share-platform-title" className="mt-0.5 text-2xl font-black tracking-tight text-slate-900">分享平台</h2>
-                    <p className="mt-1 text-sm font-bold text-slate-700">把落點分析工具分享給需要的朋友</p>
                   </div>
                 </div>
                 <button
