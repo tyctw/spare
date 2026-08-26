@@ -635,24 +635,22 @@ export default function MembershipPage() {
             {notice}
           </p>
         )}
-        <section aria-labelledby="membership-faq-title" className="mt-8 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
-          <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 sm:px-6">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-amber-50 text-amber-600">
-              <HelpCircle className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xs font-black tracking-[.14em] text-amber-600">FAQ</p>
-              <h2 id="membership-faq-title" className="mt-0.5 text-xl font-black">常見問題</h2>
+        <section aria-labelledby="membership-faq-title" className="relative mt-10 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[6px_6px_0_#161b35] sm:p-8">
+          <div aria-hidden="true" className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-amber-100" />
+          <div className="relative border-b-2 border-slate-900 pb-6">
+            <div className="flex items-start gap-4">
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 shadow-[3px_3px_0_#0f172a]"><HelpCircle className="h-6 w-6" /></div>
+              <div><p className="text-[10px] font-black tracking-[.2em] text-amber-700">MEMBERSHIP FAQ</p><h2 id="membership-faq-title" className="mt-1 text-2xl font-black sm:text-3xl">常見問題</h2><p className="mt-2 text-sm font-bold leading-6 text-slate-600">付款、會員資格與使用方式，一次整理給你。</p></div>
             </div>
           </div>
-          <div className="divide-y divide-slate-100 px-5 sm:px-6">
-            {membershipFaqs.map((faq) => (
-              <details key={faq.q} className="group py-1">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 font-black [&::-webkit-details-marker]:hidden">
-                  <span className="text-sm leading-6">{faq.q}</span>
-                  <span className="shrink-0 text-xl leading-none text-slate-400 transition group-open:rotate-45">+</span>
+          <div className="relative mt-5 grid gap-3">
+            {membershipFaqs.map((faq, index) => (
+              <details key={faq.q} className="group rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 transition open:border-indigo-300 open:bg-indigo-50/60 sm:px-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-4 font-black [&::-webkit-details-marker]:hidden">
+                  <span className="flex min-w-0 items-center gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white text-[11px] font-black text-indigo-700 shadow-sm">{String(index + 1).padStart(2, '0')}</span><span className="text-sm leading-6 text-slate-800">{faq.q}</span></span>
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-lg leading-none text-slate-500 transition group-open:rotate-45 group-open:border-indigo-300 group-open:text-indigo-700">+</span>
                 </summary>
-                <div className="pb-4">
+                <div className="border-t border-indigo-100 pb-4 pt-3">
                   <p className="text-sm font-bold leading-7 text-slate-600">{faq.a}</p>
                   {faq.q === '支援哪些付款方式？' && (
                     <div className="mt-4 grid gap-3 rounded-2xl border border-indigo-100 bg-[#f7f9ff] p-3 sm:p-4 md:grid-cols-[1fr_1.25fr]">
