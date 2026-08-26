@@ -4,6 +4,7 @@ import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
 import { applyPageSeo } from './lib/seo.ts';
 import RelatedReading from './components/RelatedReading.tsx';
+import Footer from './components/layout/Footer.tsx';
 import AppErrorBoundary from './components/AppErrorBoundary.tsx';
 import AccessibilityEnhancements from './components/AccessibilityEnhancements.tsx';
 import { initializeAdvertising } from './lib/membership.ts';
@@ -124,9 +125,11 @@ const page =
 
 const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/five-year-college-rules', '/grade-level', '/grade-11-pathways', '/general-comprehensive-high-school', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
 const showRelatedReading = informationalPaths.has(path) || path.startsWith('/scoring-rules/') || path.startsWith('/area/');
+const pagesWithoutSharedFooter = new Set(['/', '/results', '/compare', '/holland', '/support/success', '/support/failed']);
+const showSharedFooter = !pagesWithoutSharedFooter.has(path) && !sharedReportToken;
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><AccessibilityEnhancements /><AppErrorBoundary><Suspense fallback={<PageLoading />}>{page}{showRelatedReading && <RelatedReading path={path} />}</Suspense></AppErrorBoundary></StrictMode>,
+  <StrictMode><AccessibilityEnhancements /><AppErrorBoundary><Suspense fallback={<PageLoading />}>{page}{showRelatedReading && <RelatedReading path={path} />}{showSharedFooter && <Footer />}</Suspense></AppErrorBoundary></StrictMode>,
 );
 
 // The homepage is the heaviest first view, so advertising waits for interaction
