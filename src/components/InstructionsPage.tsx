@@ -244,23 +244,20 @@ export default function InstructionsPage() {
             id="actions"
             className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-7"
           >
-            <div className="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-center">
-              <div>
-                <h2 className="text-2xl font-black sm:text-3xl">正式選填前最後確認</h2>
-                <ul className="mt-3 space-y-2 text-sm font-bold leading-7 text-slate-800">{finalChecks.map((check) => <li key={check} className="flex gap-2"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0" />{check}</li>)}</ul>
-              </div>
-              <a
-                href={withBasePath("/")}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-5 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(255,255,255,0.8)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
-              >
-                開始落點分析 <Target className="h-4 w-4" />
-              </a>
+            <div>
+              <h2 className="text-2xl font-black sm:text-3xl">正式選填前最後確認</h2>
+              <ul className="mt-3 space-y-2 text-sm font-bold leading-7 text-slate-800">{finalChecks.map((check) => <li key={check} className="flex gap-2"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0" />{check}</li>)}</ul>
             </div>
             <div className="mt-5 border-t-2 border-amber-500 pt-4">
               <p className="flex items-start gap-2 text-sm font-bold leading-7 text-slate-800">
                 <Download className="mt-1 h-4 w-4 shrink-0" />
                 若要保留結果，建議匯出後再核對一次輸入的就學區與成績；不要將含邀請碼或其他個人資訊的檔案傳給不信任的對象。
               </p>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <a href={withBasePath("/")} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-5 py-3.5 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(255,255,255,0.8)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none sm:w-auto">
+                開始落點分析 <Target className="h-4 w-4" />
+              </a>
             </div>
           </section>
         </div>
