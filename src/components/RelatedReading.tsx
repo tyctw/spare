@@ -81,8 +81,8 @@ export default function RelatedReading({ path }: { path: string }) {
     { title: '模擬志願序', description: '用清單試排校科與志願順序，再回頭核對你所在考區的規則。', href: '/mock-volunteer', icon: ListChecks, tone: 'bg-amber-100 text-amber-800' },
   ];
   const items = path.startsWith('/scoring-rules/') ? scoringRuleRecommendations : path.startsWith('/area/') ? areaRecommendations : recommendations[path] ?? fallback;
-  return <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8" aria-labelledby="related-reading-title">
-    <div className="rounded-2xl border-4 border-slate-900 bg-slate-900 p-5 text-white shadow-[5px_5px_0px_0px_rgba(14,165,233,1)] sm:p-7">
+  return <section className="mx-auto max-w-[90rem] px-4 pb-12 sm:px-6 lg:px-8 xl:px-10" aria-labelledby="related-reading-title">
+    <div className="rounded-2xl border-4 border-slate-900 bg-slate-900 p-5 text-white shadow-[5px_5px_0px_0px_rgba(14,165,233,1)] sm:p-7 lg:p-9">
       <p className="text-xs font-black tracking-[0.16em] text-sky-200">KEEP EXPLORING</p>
       <h2 id="related-reading-title" className="mt-2 text-2xl font-black sm:text-3xl">別急著離開，這幾頁能幫你更快做決定</h2>
       <p className="mt-2 max-w-3xl text-sm font-bold leading-7 text-slate-200">下一步該選哪種學校、哪個群科，或怎麼排志願？點進最相關的工具，把現在的疑問一步步變成清楚的選擇。</p>
