@@ -4,6 +4,28 @@ import fs from 'node:fs';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
 
+type StaticNewsArticle = {
+  id: string;
+  title: string;
+  summary: string;
+  publishedAt: string;
+};
+
+const extractStaticNewsArticles = (): StaticNewsArticle[] => {
+  const source = fs.readFileSync(path.resolve(__dirname, 'src', 'lib', 'news.ts'), 'utf8');
+  const blocks = source.match(/\{\s*id:\s*'\d+'[\s\S]*?(?=\n\s*\{\s*id:|\n\s*\{\s*\n\s*id:|\n\];)/g) || [];
+
+  return blocks.flatMap((block) => {
+    const id = block.match(/id:\s*'(\d+)'/)?.[1];
+    const title = block.match(/title:\s*'([^']+)'/)?.[1];
+    const summary = block.match(/summary:\s*'([^']+)'/)?.[1];
+    const publishedAt = block.match(/publishedAt:\s*'(\d{4}-\d{2}-\d{2})'/)?.[1];
+    return id && title && summary && publishedAt ? [{ id, title, summary, publishedAt }] : [];
+  });
+};
+
+const staticNewsArticles = extractStaticNewsArticles();
+
 // GitHub Pages serves a 404 response for client-side routes unless each route
 // has an index.html. Publish static entry points for every public SEO page so
 // the URLs listed in sitemap.xml can be fetched and indexed successfully.
@@ -72,9 +94,7 @@ const seoRoutes = [
   'guide/member',
   'guide/help',
   'news',
-  'news/001',
-  'news/002',
-  'news/003',
+  ...staticNewsArticles.map((article) => `news/${article.id}`),
 ];
 
 const staticNoindexRoutes = new Set([
@@ -112,13 +132,18 @@ const escapeHtmlAttribute = (value: string) => value
   .replace(/>/g, '&gt;');
 
 function staticRouteHtml(indexHtml: string, route: string) {
-  const metadata = staticPageMetadata[route];
+  const newsArticle = route.startsWith('news/')
+    ? staticNewsArticles.find((article) => route === `news/${article.id}`)
+    : undefined;
+  const metadata = newsArticle
+    ? { title: `${newsArticle.title}｜全國會考落點分析`, description: newsArticle.summary }
+    : staticPageMetadata[route];
+  const canonical = `https://tyctw.github.io/spare/${route}`;
   let html = indexHtml;
 
   if (metadata) {
     const title = escapeHtmlAttribute(metadata.title);
     const description = escapeHtmlAttribute(metadata.description);
-    const canonical = `https://tyctw.github.io/spare/${route}`;
     html = html
       .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
       .replace(/(<meta name="description" content=")[^"]*("\s*\/?>)/, `$1${description}$2`)
@@ -129,6 +154,29 @@ function staticRouteHtml(indexHtml: string, route: string) {
       .replace(/(<meta name="twitter:description" content=")[^"]*("\s*\/?>)/, `$1${description}$2`)
       .replace(/(<meta name="twitter:url" content=")[^"]*("\s*\/?>)/, `$1${canonical}$2`)
       .replace(/(<link rel="canonical" href=")[^"]*("\s*\/?>)/, `$1${canonical}$2`);
+  }
+
+  // Every physical entry needs its own canonical, including pages whose title
+  // is set by React at runtime. Otherwise crawlers may treat them as copies
+  // of the homepage before executing JavaScript.
+  html = html
+    .replace(/(<meta property="og:url" content=")[^"]*("\s*\/?>)/, `$1${canonical}$2`)
+    .replace(/(<meta name="twitter:url" content=")[^"]*("\s*\/?>)/, `$1${canonical}$2`)
+    .replace(/(<link rel="canonical" href=")[^"]*("\s*\/?>)/, `$1${canonical}$2`);
+
+  if (newsArticle) {
+    const articleStructuredData = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: newsArticle.title,
+      description: newsArticle.summary,
+      datePublished: newsArticle.publishedAt,
+      dateModified: newsArticle.publishedAt,
+      mainEntityOfPage: canonical,
+      inLanguage: 'zh-Hant-TW',
+      publisher: { '@type': 'Organization', name: '全國會考落點分析', url: 'https://tyctw.github.io/spare/' },
+    }).replace(/</g, '\\u003c');
+    html = html.replace('</head>', `<script type="application/ld+json" id="static-news-article-structured-data">${articleStructuredData}</script></head>`);
   }
 
   if (!staticNoindexRoutes.has(route)) return html;
