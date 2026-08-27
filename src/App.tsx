@@ -836,10 +836,17 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   <p className="text-sm font-bold text-slate-600">請設定各科成績等級，系統將即時分析</p>
                 </div>
                 
-                {/* Result quick look or decoration */}
+                {/* Subject completion progress */}
                 <div className="bg-white border-2 border-slate-900 px-4 py-2 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hidden sm:flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-emerald-500 animate-pulse" />
-                  <span className="font-black text-sm text-slate-900">即刻演算</span>
+                  <BookOpen className="w-4 h-4 text-indigo-600" />
+                  <span className="font-black text-sm text-slate-900">科目填寫進度 {[
+                    formData.chinese,
+                    formData.english,
+                    formData.math,
+                    formData.science,
+                    formData.social,
+                    formData.composition
+                  ].filter(Boolean).length}/6</span>
                 </div>
               </div>
 
