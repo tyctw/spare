@@ -25,6 +25,10 @@
   <url><loc>https://tyctw.github.io/spare/historical-stats</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/important-dates</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tyctw.github.io/spare/news</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://tyctw.github.io/spare/news/004</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/news/005</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/news/006</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://tyctw.github.io/spare/news/007</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/news/001</loc><lastmod>2026-07-06</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/news/002</loc><lastmod>2026-07-01</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/news/003</loc><lastmod>2025-11-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -33,29 +37,29 @@
   <url><loc>https://tyctw.github.io/spare/search</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/holland</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://tyctw.github.io/spare/school-types</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/keelung-taipei</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/taoyuan</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/hsinchu-miaoli</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/taichung</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/changhua</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/yunlin</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/chiayi</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/tainan</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/kaohsiung</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/pingtung</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/yilan</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/hualien</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/taitung</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/penghu</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/area/kinmen</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/scoring-rules/taipei</loc><lastmod>2026-08-21</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/scoring-rules/taoyuan</loc><lastmod>2026-08-21</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/scoring-rules/hsinchu</loc><lastmod>2026-08-21</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/scoring-rules/central</loc><lastmod>2026-08-21</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/scoring-rules/changhua</loc><lastmod>2026-08-21</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/scoring-rules/chiayi</loc><lastmod>2026-08-21</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/scoring-rules/tainan</loc><lastmod>2026-08-21</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://tyctw.github.io/spare/scoring-rules/kaohsiung</loc><lastmod>2026-08-21</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/keelung-taipei</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/taoyuan</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/hsinchu-miaoli</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/taichung</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/changhua</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/yunlin</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/chiayi</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/tainan</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/kaohsiung</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/pingtung</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/yilan</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/hualien</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/taitung</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/penghu</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/area/kinmen</loc><lastmod>2026-08-27</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/taipei</loc><lastmod>2026-08-27</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/taoyuan</loc><lastmod>2026-08-27</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/hsinchu</loc><lastmod>2026-08-27</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/central</loc><lastmod>2026-08-27</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/changhua</loc><lastmod>2026-08-27</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/chiayi</loc><lastmod>2026-08-27</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/tainan</loc><lastmod>2026-08-27</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://tyctw.github.io/spare/scoring-rules/kaohsiung</loc><lastmod>2026-08-27</lastmod><changefreq>yearly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tyctw.github.io/spare/strategy</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://tyctw.github.io/spare/vocational-encyclopedia</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://tyctw.github.io/spare/site-map</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
