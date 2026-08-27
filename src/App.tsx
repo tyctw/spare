@@ -557,11 +557,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               animate={{ opacity: 1, x: 0 }}
               className="relative p-6 bg-[#fffbea] border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
             >
-              {/* Decorative elements */}
-              <div className="absolute -right-5 -top-5 text-amber-700/15 pointer-events-none">
-                <ShieldCheck className="h-28 w-28" strokeWidth={2.25} aria-hidden="true" />
-              </div>
-
               <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2 relative z-10">
                 <div className="w-8 h-8 rounded-full bg-amber-100 border-2 border-slate-900 flex items-center justify-center">
                   <KeyRound className="w-4 h-4 text-amber-600" />
