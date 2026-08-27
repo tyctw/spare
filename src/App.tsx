@@ -568,7 +568,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 </div>
                 <span>系統授權碼</span>
               </h2>
-              <p className="text-xs font-bold text-slate-600 mb-4 relative z-10">請輸入由主辦單位提供之專屬邀請碼以解鎖進階分析</p>
+              <p className="text-xs font-bold text-slate-600 mb-4 relative z-10">輸入授權碼後，即可使用完整落點分析與志願建議。</p>
 
               {/* Announcement */}
               <div className={`relative z-10 mb-5 overflow-hidden rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-white to-orange-100 p-4 shadow-[0_8px_24px_rgba(245,158,11,0.16)]${memberAccess ? ' hidden' : ''}`}>
@@ -653,7 +653,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   <span>使用者身份設定</span>
                 </h2>
                 <p className="text-xs font-bold text-slate-500 mb-4">我們將根據您的身分提供合適的落點建議</p>
-
                 <div className="grid grid-cols-3 gap-3">
                   {[
                     { id: 'student', label: '我是學生', icon: GraduationCap },
@@ -779,15 +778,15 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               transition={{ delay: 0.2 }}
               className="p-6 bg-white border-2 border-slate-900 rounded-3xl shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
             >
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
                 <div>
                   <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-1">
-                    <MapPin className="w-6 h-6 text-rose-500" /> 分析區域
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-rose-100"><MapPin className="w-4 h-4 text-rose-500" /></span> 分析區域
                   </h2>
-                  <p className="text-sm font-bold text-slate-500">請選擇您要探索的高中職就學區域</p>
+                  <p className="text-sm font-bold text-slate-500">請選擇您報考的就學區</p>
                 </div>
                 
-                <div className="flex flex-row gap-2 sm:gap-3 w-full">
+                <div className="mt-4 flex w-full flex-row gap-2 sm:gap-3">
                   <button
                     type="button"
                     id="region-select-trigger"
@@ -831,9 +830,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
                   <h2 className="text-xl font-black flex items-center gap-2 text-slate-900 mb-1">
-                    <Calculator className="w-6 h-6 text-indigo-600" /> 會考成績評估
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-indigo-100"><Calculator className="w-4 h-4 text-indigo-600" /></span> 會考成績評估
                   </h2>
-                  <p className="text-sm font-bold text-slate-600">請設定各科成績等級，系統將即時分析</p>
+                  <p className="text-sm font-bold text-slate-600">填入會考各科成績，掌握適合的志願落點。</p>
                 </div>
                 
                 {/* Subject completion progress */}
