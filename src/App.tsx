@@ -645,8 +645,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               transition={{ delay: 0.1 }}
               className="p-6 bg-emerald-50 border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] space-y-6 relative overflow-hidden"
             >
-              <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-emerald-200 rounded-tr-[40px] opacity-40 border-t-4 border-r-4 border-slate-900 pointer-events-none"></div>
-
               <div className="relative z-10">
                 <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 rounded-full bg-emerald-100 border-2 border-slate-900 flex items-center justify-center">
@@ -796,7 +794,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     onClick={() => setIsRegionOpen(true)}
                     aria-haspopup="dialog"
                     aria-expanded={isRegionOpen}
-                    className="flex-1 px-4 sm:px-6 py-4 rounded-2xl border-2 border-slate-900 flex items-center justify-between gap-2 sm:gap-4 font-black transition-all bg-amber-100 text-amber-900 hover:bg-amber-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
+                    className="group flex-1 px-4 sm:px-6 py-4 rounded-2xl border-2 border-slate-900 flex items-center justify-between gap-2 sm:gap-4 font-black transition-all bg-amber-100 text-amber-900 hover:bg-amber-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
                   >
                     <div className="flex items-center gap-3">
                       {formData.region ? (
@@ -807,7 +805,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                         <span className="text-lg sm:text-xl">選擇就學區</span>
                       )}
                     </div>
-                    <ChevronRight className="w-5 h-5 text-slate-900 shrink-0" />
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-amber-700 transition-colors group-hover:bg-slate-900 group-hover:text-white"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span>
                   </button>
                   {formData.region && (
                     <button
