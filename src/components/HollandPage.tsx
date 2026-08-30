@@ -471,13 +471,15 @@ export default function HollandPage() {
               <span>列印內容已排除題目與作答明細，只保留整理後結果。</span>
             </footer>
           </main>
-          <script>
-            window.onload = () => setTimeout(() => { window.print(); window.close(); }, 400);
-          </script>
         </body>
       </html>
     `);
     printWindow.document.close();
+    window.setTimeout(() => {
+      if (printWindow.closed) return;
+      printWindow.focus();
+      printWindow.print();
+    }, 400);
   };
 
   return (
@@ -671,19 +673,24 @@ export default function HollandPage() {
 
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
                   {results.topGroups.map((group, index) => (
-                    <div key={group.id} className="flex items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4">
+                    <a
+                      key={group.id}
+                      href={`${withBasePath('/vocational-encyclopedia')}?group=${encodeURIComponent(group.id)}`}
+                      aria-label={`查看${group.id}的職群科系百科`}
+                      className="group flex items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 transition-all hover:-translate-y-0.5 hover:border-slate-900 hover:bg-purple-50 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] focus:outline-none focus:ring-4 focus:ring-purple-300"
+                    >
                       <div className="flex items-center gap-3">
                         <div className="text-3xl">{group.icon}</div>
                         <div>
                           <div className="text-lg font-black text-slate-900">{group.id}</div>
-                          <div className="mt-1 text-xs font-bold text-slate-500">關聯類型：{group.codes.join(' / ')}</div>
+                          <div className="mt-1 text-xs font-bold text-slate-500">關聯類型：{group.codes.join(' / ')} · 點擊探索</div>
                         </div>
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-black text-purple-700">{group.matchPercentage}%</div>
                         {index === 0 && <div className="text-[10px] font-black text-emerald-600">最高契合</div>}
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
 
