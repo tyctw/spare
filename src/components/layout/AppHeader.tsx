@@ -15,6 +15,17 @@ function ThreadsIcon({ className }: { className?: string }) {
 
 type HeaderModalId = 'rating' | 'scoreInquiry';
 
+function getAnnouncementMessage(date = new Date()) {
+  const month = date.getMonth() + 1;
+  const memberBenefits = '會員 NT$49／月：免廣告、免授權碼，解鎖完整功能。';
+
+  if (month <= 2) return `公告：會考報名與重要時程陸續更新中，現在開始規劃最安心。${memberBenefits}`;
+  if (month <= 5) return `公告：116會考資訊更新中，掌握考前重要時程與升學方向。${memberBenefits}`;
+  if (month <= 7) return `公告：成績公布與志願選填期間，升學資訊持續更新中。${memberBenefits}`;
+  if (month === 8) return `公告：放榜與報到時程更新中，請留意各校最新通知。${memberBenefits}`;
+  return `公告：116會考資訊更新中，提早探索升學方向、為下一步做好準備。${memberBenefits}`;
+}
+
 interface AppHeaderProps {
   isScrolled: boolean;
   onShareClick: () => void;
@@ -117,6 +128,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
     return menuCategories.flatMap((category) => category.items.map((item) => ({ ...item, categoryLabel: category.label })))
       .filter((item) => `${item.categoryLabel} ${item.label} ${item.description} ${item.keywords}`.toLowerCase().includes(keyword));
   }, [globalSearchTerm]);
+  const announcementMessage = getAnnouncementMessage();
 
   return (
     <div className={`fixed top-0 left-0 right-0 z-[90] pointer-events-none transition-all duration-300 ${isScrolled ? 'p-2' : 'p-0'}`}>
@@ -131,7 +143,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
             className="flex min-h-10 items-center justify-center gap-2 px-4 py-2 text-center text-xs font-black transition hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-inset sm:text-sm"
           >
             <Megaphone className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span>公告：116會考資訊更新中。會員每月 NT$49，不到一杯手搖飲價格，即享免廣告、免輸入系統授權碼與完整升學功能。</span>
+            <span>{announcementMessage}</span>
           </a>
         </div>
         <header onMouseEnter={keepMenuOpen} onMouseLeave={closeMenuWithDelay} className={`relative bg-white/95 backdrop-blur-md flex items-center justify-between gap-2 transition-all duration-300 ${isScrolled ? 'rounded-[1.65rem] border-2 border-slate-900 p-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'rounded-none border-x-0 border-t-0 border-b-2 border-slate-900 p-2 sm:p-3 shadow-[0_2px_0px_0px_rgba(15,23,42,1)]'}`}>
