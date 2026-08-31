@@ -1,5 +1,6 @@
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Lightbulb } from 'lucide-react';
 import './index.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
 import { applyPageSeo } from './lib/seo.ts';
@@ -50,9 +51,9 @@ function PageLoading() {
     <div className="fixed inset-0 z-[100] grid min-h-[100dvh] place-items-center overflow-hidden bg-slate-50 px-5 text-slate-900" role="status" aria-live="polite" aria-label="正在準備頁面">
       <div className="pointer-events-none absolute -left-24 top-16 h-64 w-64 rounded-full bg-amber-300/50 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-sky-300/45 blur-3xl" />
-      <section className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
+      <section className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
         <div className="relative overflow-hidden border-b-4 border-slate-900 bg-indigo-500 px-6 py-6 text-white">
-          <div className="absolute -right-6 -top-8 h-28 w-28 rounded-full border-4 border-slate-900 bg-amber-300" />
+          <div aria-hidden="true" className="absolute -right-6 -top-8 grid h-28 w-28 place-items-center rounded-full border-4 border-slate-900 bg-amber-300 text-slate-900"><Lightbulb className="h-8 w-8" strokeWidth={2.5} /></div>
           <p className="relative text-xs font-black tracking-[0.18em] text-indigo-100">會考落點分析</p>
           <h1 className="relative mt-1 text-xl font-black tracking-tight">正在準備頁面</h1>
         </div>
@@ -62,6 +63,10 @@ function PageLoading() {
             <div className="flex items-end gap-1.5" aria-hidden="true"><span className="h-3 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-amber-300" /><span className="h-5 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-sky-300 [animation-delay:150ms]" /><span className="h-7 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-rose-300 [animation-delay:300ms]" /></div>
           </div>
           <div className="mt-6 h-4 overflow-hidden rounded-full border-2 border-slate-900 bg-slate-100 p-0.5" aria-hidden="true"><div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-indigo-500 via-sky-400 to-amber-300" /></div>
+          <div className="mt-5 flex items-start gap-3 rounded-2xl border-2 border-amber-200 bg-amber-50 px-4 py-3">
+            <span className="text-lg" aria-hidden="true">💡</span>
+            <div><p className="text-[11px] font-black tracking-[0.14em] text-amber-700">選填志願技巧</p><p className="mt-1 text-xs font-bold leading-5 text-amber-950">先把志願分成挑戰、適中與安全三個層級，安排時會更有方向。</p></div>
+          </div>
         </div>
       </section>
     </div>

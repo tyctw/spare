@@ -273,9 +273,10 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const nextIsScrolled = window.scrollY > 50;
+      setIsScrolled((current) => current === nextIsScrolled ? current : nextIsScrolled);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -563,7 +564,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 </div>
                 <span>系統授權碼</span>
               </h2>
-              <p className="text-xs font-bold text-slate-600 mb-4 relative z-10">輸入授權碼後，即可使用完整落點分析與志願建議。</p>
+              <p className="text-xs font-bold text-slate-600 mb-4 relative z-10">輸入授權碼後，即可使用完整落點分析與志願建議；會員可直接略過。</p>
 
               {/* Announcement */}
               <div className={`relative z-10 mb-5 overflow-hidden rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-white to-orange-100 p-4 shadow-[0_8px_24px_rgba(245,158,11,0.16)]${memberAccess ? ' hidden' : ''}`}>
@@ -778,7 +779,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-1">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-rose-100"><MapPin className="w-4 h-4 text-rose-500" /></span> 分析區域
                   </h2>
-                  <p className="text-sm font-bold text-slate-500">請選擇您報考的就學區</p>
+                  <p className="text-sm font-bold text-slate-500">請先確認並選擇您報考的就學區</p>
                 </div>
                 
                 <div className="mt-4 flex w-full flex-row gap-2 sm:gap-3">
@@ -825,9 +826,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
                   <h2 className="text-xl font-black flex items-center gap-2 text-slate-900 mb-1">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-indigo-100"><Calculator className="w-4 h-4 text-indigo-600" /></span> 會考成績評估
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-indigo-100"><Calculator className="w-4 h-4 text-indigo-600" /></span> 會考成績
                   </h2>
-                  <p className="text-sm font-bold text-slate-600">填入會考各科成績，掌握適合的志願落點。</p>
+                  <p className="text-sm font-bold text-slate-600">填入成績，找出適合志願。</p>
                 </div>
                 
                 {/* Subject completion progress */}
@@ -987,6 +988,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
           <div className="relative group">
             <button
               type="button"
+              id="start-analysis"
               onClick={handleAnalyze}
               disabled={status === 'auth' || status === 'quantum'}
               aria-busy={status === 'auth' || status === 'quantum'}
