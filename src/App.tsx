@@ -556,7 +556,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
             <motion.section 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="relative p-6 bg-[#fffbea] border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
+              className="relative p-6 bg-[#fffbea] border-[3px] border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
             >
               <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2 relative z-10">
                 <div className="w-8 h-8 rounded-full bg-amber-100 border-2 border-slate-900 flex items-center justify-center">
@@ -639,7 +639,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="p-6 bg-emerald-50 border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] space-y-6 relative overflow-hidden"
+              className="p-6 bg-emerald-50 border-[3px] border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] space-y-6 relative overflow-hidden"
             >
               <div className="relative z-10">
                 <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2">
@@ -772,7 +772,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="p-6 bg-white border-2 border-slate-900 rounded-3xl shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
+              className="p-6 bg-white border-[1.5px] border-slate-900 rounded-3xl shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
             >
               <div>
                 <div>
@@ -821,7 +821,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="p-6 sm:p-8 bg-sky-100 border-2 border-slate-900 rounded-3xl shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
+              className="p-6 sm:p-8 bg-sky-100 border-[1.5px] border-slate-900 rounded-3xl shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
             >
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
