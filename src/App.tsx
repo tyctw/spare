@@ -24,6 +24,8 @@ import { formatSchoolOwnership, getSchoolOwnershipKey } from './lib/schoolDispla
 import { getCreditsGap, getPointsGap } from './lib/admissionComparison';
 import { withBasePath } from './lib/routes';
 import { getComparisonSchools, saveComparisonSchools } from './lib/comparisonStorage';
+import MemberFavoriteButton from './components/MemberFavoriteButton';
+import { getMemberFavorites, getSchoolFavoriteKey } from './lib/memberFavorites';
 
 // Keep the analysis form and navigation in the first bundle. These dialogs are
 // fetched only when requested, so they do not delay the first meaningful paint.
@@ -230,6 +232,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   
   // Comparison
   const [comparisonSchools, setComparisonSchools] = useState<any[]>(getComparisonSchools);
+  const [favoriteKeys, setFavoriteKeys] = useState<Set<string>>(new Set());
   // Read the restored scroll position on the first render. This prevents the
   // fixed header from resizing just after the page has painted.
   const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 50);
@@ -269,6 +272,14 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
         setVocationalGroups(recommendedGroups);
       }
     }
+  }, []);
+
+  useEffect(() => {
+    let current = true;
+    void getMemberFavorites().then((response) => {
+      if (current && response.active) setFavoriteKeys(new Set(response.favorites.map((item) => item.schoolKey)));
+    }).catch(() => undefined);
+    return () => { current = false; };
   }, []);
 
   useEffect(() => {
@@ -1358,6 +1369,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4">
                       {filteredSchools.map((school: any, i: number) => {
                         const isCompared = !!comparisonSchools.find(s => s.name === school.name);
+                        const isFavorite = favoriteKeys.has(getSchoolFavoriteKey(school));
 
                       
                       const ownership = formatSchoolOwnership(school.ownership || 'public');
@@ -1509,7 +1521,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                           </button>
 
                           {/* Action Buttons */}
-                          <div className="flex gap-2 mt-2">
+                          <div className="flex flex-wrap gap-2 mt-2">
                             <a 
                               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`}
                               target="_blank"
@@ -1533,6 +1545,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                               {isCompared ? <Check className="w-4 h-4" /> : <List className="w-4 h-4" />}
                               {isCompared ? '已加入比較' : '加入比較'}
                             </button>
+                            <MemberFavoriteButton school={school} isFavorite={isFavorite} onChange={(key, favorite) => setFavoriteKeys((current) => { const next = new Set(current); favorite ? next.add(key) : next.delete(key); return next; })} />
                           </div>
                         </div>
                       </div>
