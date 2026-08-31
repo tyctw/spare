@@ -131,11 +131,11 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
   const announcementMessage = getAnnouncementMessage();
 
   return (
-    <div className={`fixed top-0 left-0 right-0 z-[90] pointer-events-none transition-all duration-300 ${isScrolled ? 'p-2' : 'p-0'}`}>
+    <div className={`fixed top-0 left-0 right-0 z-[90] pointer-events-none transition-[padding] duration-150 ease-out ${isScrolled ? 'p-2' : 'p-0'}`}>
       <div className="mx-auto w-full max-w-none pointer-events-auto">
         <div
           aria-hidden={isScrolled}
-          className={`overflow-hidden bg-amber-300 text-slate-900 transition-all duration-300 ${isScrolled ? 'max-h-0 opacity-0' : 'max-h-16 border-b-2 border-slate-900 opacity-100'}`}
+          className={`overflow-hidden bg-amber-300 text-slate-900 transition-[max-height,opacity] duration-150 ease-out ${isScrolled ? 'max-h-0 opacity-0' : 'max-h-16 border-b-2 border-slate-900 opacity-100'}`}
         >
           <a
             href={withBasePath('/membership')}
@@ -146,7 +146,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
             <span>{announcementMessage}</span>
           </a>
         </div>
-        <header onMouseEnter={keepMenuOpen} onMouseLeave={closeMenuWithDelay} className={`relative bg-white/95 backdrop-blur-md flex items-center justify-between gap-2 transition-all duration-300 ${isScrolled ? 'rounded-[1.65rem] border-2 border-slate-900 p-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'rounded-none border-x-0 border-t-0 border-b-2 border-slate-900 p-2 sm:p-3 shadow-[0_2px_0px_0px_rgba(15,23,42,1)]'}`}>
+        <header onMouseEnter={keepMenuOpen} onMouseLeave={closeMenuWithDelay} className={`relative bg-white/95 backdrop-blur-md flex items-center justify-between gap-2 transition-[border-radius,padding,box-shadow] duration-150 ease-out ${isScrolled ? 'rounded-[1.65rem] border-2 border-slate-900 p-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'rounded-none border-x-0 border-t-0 border-b-2 border-slate-900 p-2 sm:p-3 shadow-[0_2px_0px_0px_rgba(15,23,42,1)]'}`}>
           <a href={withBasePath('/')} aria-label="回到會考落點分析首頁" className="flex shrink-0 items-center gap-2 sm:gap-3">
             <div className={`bg-indigo-600 border-slate-900 flex items-center justify-center text-white font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all ${isScrolled ? 'w-10 h-10 rounded-xl border-2 text-xl' : 'w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border-2 sm:border-3 text-xl sm:text-2xl'}`}>
               會
