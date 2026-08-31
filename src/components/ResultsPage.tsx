@@ -34,9 +34,6 @@ import { withBasePath } from '../lib/routes';
 import { getComparisonSchools, saveComparisonSchools } from '../lib/comparisonStorage';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
 import { getCreditsGap, getPointsGap } from '../lib/admissionComparison';
-import MemberFavoriteButton from './MemberFavoriteButton';
-import { getMemberFavorites, getSchoolFavoriteKey } from '../lib/memberFavorites';
-import ScenarioComparison from './ScenarioComparison';
 import {
   AdmissionAnalysisDialog,
   AutoFitSingleLine,
@@ -71,7 +68,6 @@ export default function ResultsPage() {
   const [filterType, setFilterType] = useState('all');
   const [schoolView, setSchoolView] = useState<'cards' | 'table'>('cards');
   const [comparisonSchools, setComparisonSchools] = useState<any[]>(getComparisonSchools);
-  const [favoriteKeys, setFavoriteKeys] = useState<Set<string>>(new Set());
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
   const [analysisSchool, setAnalysisSchool] = useState<any | null>(null);
@@ -95,14 +91,6 @@ export default function ResultsPage() {
     updateScrollTopVisibility();
     window.addEventListener('scroll', updateScrollTopVisibility, { passive: true });
     return () => window.removeEventListener('scroll', updateScrollTopVisibility);
-  }, []);
-
-  React.useEffect(() => {
-    let current = true;
-    void getMemberFavorites().then((response) => {
-      if (current && response.active) setFavoriteKeys(new Set(response.favorites.map((item) => item.schoolKey)));
-    }).catch(() => undefined);
-    return () => { current = false; };
   }, []);
 
   if (!stored?.results) {
@@ -307,13 +295,6 @@ export default function ResultsPage() {
           </div>
         </section>
 
-        <ScenarioComparison
-          scores={scores || {}}
-          results={results}
-          region={scores?.region || ''}
-          filters={{ schoolOwnership: scores?.schoolOwnership, schoolType: scores?.schoolType, vocationalGroups, analysisIdentity: scores?.identity }}
-        />
-
         <section className="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
           <aside className="space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-2 custom-scrollbar">
             <div className="rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
@@ -485,7 +466,6 @@ export default function ResultsPage() {
                   const latestHistoricalScore = historicalScores[0];
                   const historicalTrend = getHistoricalTrend(historicalScores);
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
-                  const isFavorite = favoriteKeys.has(getSchoolFavoriteKey(school));
                   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === (school.region || scores?.region))?.name || school.region || regionName;
                   const groupLabel = school.group || school.type || '普通科';
                   const analysisAccent = getAnalysisAccent(school.zone);
@@ -589,7 +569,7 @@ export default function ResultsPage() {
                         </div>
                       </button>
 
-                      <div className="flex flex-wrap gap-2.5">
+                      <div className="flex gap-2.5">
                         <a
                           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`}
                           target="_blank"
@@ -615,7 +595,6 @@ export default function ResultsPage() {
                           {isCompared ? <Check className="w-4 h-4" /> : <List className="w-4 h-4" />}
                           {isCompared ? '已加入比較' : '加入比較'}
                         </button>
-                        <MemberFavoriteButton school={school} isFavorite={isFavorite} onChange={(key, favorite) => setFavoriteKeys((current) => { const next = new Set(current); favorite ? next.add(key) : next.delete(key); return next; })} />
                       </div>
                     </article>
                   );

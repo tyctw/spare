@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Crown, Loader2, Sparkles, TrendingDown, TrendingUp } from 'lucide-react';
 import { callBackend } from '../lib/api';
+import { getMembershipStatus } from '../lib/membership';
 import { withBasePath } from '../lib/routes';
 
 const subjects = [
@@ -15,7 +16,8 @@ export default function ScenarioComparison({ scores, results, region, filters }:
   const [scenario, setScenario] = useState(() => ({ ...scores, composition: String(scores.composition ?? '') }));
   const [simulated, setSimulated] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [membersOnly, setMembersOnly] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [isMember, setIsMember] = useState<boolean | null>(null);
   const changed = useMemo(() => subjects.some(([key]) => scenario[key] !== scores[key]) || String(scenario.composition) !== String(scores.composition), [scenario, scores]);
   const originalSchools = Array.isArray(results.eligibleSchools) ? results.eligibleSchools : [];
   const scenarioSchools = Array.isArray(simulated?.eligibleSchools) ? simulated.eligibleSchools : [];
@@ -27,23 +29,32 @@ export default function ScenarioComparison({ scores, results, region, filters }:
 
   const run = async () => {
     setLoading(true);
-    setMembersOnly(false);
     try {
       const response = await callBackend<{ active: boolean; results?: any }>({
         action: 'simulateScores', region, filters,
         scores: { ...scenario, composition: Number(scenario.composition) },
       });
-      if (!response.active) { setMembersOnly(true); return; }
+      if (!response.active) { setIsMember(false); return; }
       setSimulated(response.results);
     } catch { window.alert('情境試算暫時無法完成，請稍後再試。'); }
     finally { setLoading(false); }
   };
 
+  const open = async () => {
+    setOpened(true);
+    setIsMember(null);
+    try { setIsMember((await getMembershipStatus()).active); }
+    catch { setIsMember(false); }
+  };
+
+  if (!opened) return <section className="mt-6 overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-violet-50 shadow-[6px_6px_0_#161b35]"><div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"><div className="flex items-start gap-3"><div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-amber-300 text-slate-900"><Sparkles className="h-6 w-6" /></div><div><p className="text-xs font-black tracking-[.14em] text-violet-700">MEMBERSHIP FEATURE</p><h2 className="mt-1 text-2xl font-black">情境式結果比較</h2><p className="mt-1 text-sm font-bold text-slate-600">調整假設成績，查看校科選項與落點區間如何改變。</p></div></div><button type="button" onClick={() => void open()} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-violet-600 px-4 py-2.5 text-sm font-black text-white shadow-[3px_3px_0_#161b35]"><Sparkles className="h-4 w-4" />開啟情境比較</button></div></section>;
+
   return <section className="mt-6 overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-violet-50 shadow-[6px_6px_0_#161b35]">
     <div className="border-b-4 border-slate-900 bg-violet-600 p-5 text-white sm:p-6"><div className="flex items-start gap-3"><div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-amber-300 text-slate-900"><Sparkles className="h-6 w-6" /></div><div><p className="text-xs font-black tracking-[.14em] text-violet-100">MEMBERSHIP FEATURE</p><h2 className="mt-1 text-2xl font-black">情境式結果比較</h2><p className="mt-1 text-sm font-bold text-violet-100">調整假設成績，看看可能多了哪些選項；不會覆蓋原始分析結果。</p></div></div></div>
-    <div className="p-5 sm:p-6"><div className="grid gap-3 sm:grid-cols-3">{subjects.map(([key, label]) => <label key={key} className="rounded-xl border-2 border-violet-200 bg-white p-3"><span className="text-xs font-black text-slate-600">{label}</span><select value={scenario[key] || ''} onChange={(event) => setScenario((current) => ({ ...current, [key]: event.target.value }))} className="mt-1.5 w-full rounded-lg border-2 border-slate-900 bg-white px-2 py-2 text-sm font-black">{grades.map((grade) => <option key={grade} value={grade}>{grade}</option>)}</select></label>)}<label className="rounded-xl border-2 border-violet-200 bg-white p-3"><span className="text-xs font-black text-slate-600">作文</span><select value={scenario.composition} onChange={(event) => setScenario((current) => ({ ...current, composition: event.target.value }))} className="mt-1.5 w-full rounded-lg border-2 border-slate-900 bg-white px-2 py-2 text-sm font-black">{[0, 1, 2, 3, 4, 5, 6].map((score) => <option key={score} value={score}>{score} 級分</option>)}</select></label></div>
-      {membersOnly ? <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-amber-300 bg-amber-50 p-4"><p className="text-sm font-black text-amber-900"><Crown className="mr-1 inline h-4 w-4" />此功能限有效會員使用。</p><a href={withBasePath('/membership')} className="rounded-lg border-2 border-slate-900 bg-violet-600 px-3 py-2 text-xs font-black text-white">查看會員方案</a></div> : <button type="button" disabled={!changed || loading} onClick={() => void run()} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-300 px-4 py-2.5 text-sm font-black text-slate-900 shadow-[3px_3px_0_#161b35] disabled:cursor-not-allowed disabled:opacity-50">{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}{loading ? '正在重新試算…' : changed ? '比較這個情境' : '請先調整成績'}</button>}
+    <div className="relative p-5 sm:p-6"><div className={isMember ? '' : 'pointer-events-none select-none blur-[6px]'}><div className="grid gap-3 sm:grid-cols-3">{subjects.map(([key, label]) => <label key={key} className="rounded-xl border-2 border-violet-200 bg-white p-3"><span className="text-xs font-black text-slate-600">{label}</span><select value={scenario[key] || ''} onChange={(event) => setScenario((current) => ({ ...current, [key]: event.target.value }))} className="mt-1.5 w-full rounded-lg border-2 border-slate-900 bg-white px-2 py-2 text-sm font-black">{grades.map((grade) => <option key={grade} value={grade}>{grade}</option>)}</select></label>)}<label className="rounded-xl border-2 border-violet-200 bg-white p-3"><span className="text-xs font-black text-slate-600">作文</span><select value={scenario.composition} onChange={(event) => setScenario((current) => ({ ...current, composition: event.target.value }))} className="mt-1.5 w-full rounded-lg border-2 border-slate-900 bg-white px-2 py-2 text-sm font-black">{[0, 1, 2, 3, 4, 5, 6].map((score) => <option key={score} value={score}>{score} 級分</option>)}</select></label></div>
+      <button type="button" disabled={!changed || loading} onClick={() => void run()} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-300 px-4 py-2.5 text-sm font-black text-slate-900 shadow-[3px_3px_0_#161b35] disabled:cursor-not-allowed disabled:opacity-50">{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}{loading ? '正在重新試算…' : changed ? '比較這個情境' : '請先調整成績'}</button>
       {simulated && <div className="mt-6 rounded-2xl border-2 border-slate-900 bg-white p-4 sm:p-5"><div className="grid gap-3 sm:grid-cols-3"><Metric label="情境總積分" value={simulated.totalPoints} /><Metric label="推薦校科" value={`${scenarioSchools.length} 所`} /><Metric label="與原結果差異" value={`${Number(simulated.totalPoints) - Number(results.totalPoints || 0) >= 0 ? '+' : ''}${Number(simulated.totalPoints) - Number(results.totalPoints || 0)}`} /></div><div className="mt-5 grid gap-4 lg:grid-cols-3"><ChangeList title="新出現的選項" items={gained} icon={<TrendingUp className="h-4 w-4 text-emerald-700" />} empty="沒有新增選項" /><ChangeList title="不再符合的選項" items={lost} icon={<TrendingDown className="h-4 w-4 text-rose-700" />} empty="沒有移除選項" /><ChangeList title="落點區間變動" items={moved.map((school: any) => ({ ...school, before: originalMap.get(schoolId(school))?.zone }))} icon={<Sparkles className="h-4 w-4 text-violet-700" />} empty="沒有區間變動" /></div></div>}</div>
+      {!isMember && <div className="absolute inset-0 z-10 flex items-center justify-center bg-violet-50/20 p-5"><div className="max-w-sm rounded-2xl border-2 border-slate-900 bg-white p-5 text-center shadow-[4px_4px_0_#161b35]"><Crown className="mx-auto h-7 w-7 text-amber-500" /><p className="mt-2 text-lg font-black">會員專屬試算</p><p className="mt-1 text-sm font-bold text-slate-600">啟用會員後，即可調整成績並查看校科變化。</p><a href={withBasePath('/membership')} className="mt-4 inline-flex rounded-lg border-2 border-slate-900 bg-violet-600 px-4 py-2.5 text-sm font-black text-white">查看會員方案</a></div></div>}</div>
   </section>;
 }
 
