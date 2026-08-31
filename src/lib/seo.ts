@@ -157,11 +157,6 @@ const pageMetadata: Record<string, PageMeta> = {
     description: '查看目前會員資格與到期時間。',
     noindex: true,
   },
-  '/membership/favorites': {
-    title: '我的校科收藏｜全國會考落點分析',
-    description: '會員專屬的跨裝置校科收藏與備註。',
-    noindex: true,
-  },
   '/membership/success': {
     title: '會員付款完成｜全國會考落點分析',
     description: '會員付款完成後的資格確認頁面。',

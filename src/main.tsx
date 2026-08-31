@@ -41,7 +41,6 @@ const SupportPaymentSuccessPage = lazy(() => import('./components/SupportPayment
 const SupportPolicyPage = lazy(() => import('./components/SupportPolicyPage.tsx'));
 const MembershipPage = lazy(() => import('./components/MembershipPage.tsx'));
 const MembershipAccountPage = lazy(() => import('./components/MembershipAccountPage.tsx'));
-const MemberFavoritesPage = lazy(() => import('./components/MemberFavoritesPage.tsx'));
 const VocationalEncyclopediaPage = lazy(() => import('./components/VocationalEncyclopediaPage.tsx'));
 const RegionScoringRulesPage = lazy(() => import('./components/RegionScoringRulesPage.tsx'));
 const AreaPage = lazy(() => import('./components/AreaPage.tsx'));
@@ -116,7 +115,6 @@ const page =
   path === '/support/failed' ? <SupportPaymentFailedPage /> :
   path === '/support/success' ? <SupportPaymentSuccessPage /> :
   path === '/membership/account' ? <MembershipAccountPage /> :
-  path === '/membership/favorites' ? <MemberFavoritesPage /> :
   path === '/membership' || path === '/membership/success' ? <MembershipPage /> :
   path === '/after-sales-service' ? <SupportPolicyPage kind="after-sales" /> :
   path === '/refund-cancellation-policy' ? <SupportPolicyPage kind="refund-cancellation" /> :
