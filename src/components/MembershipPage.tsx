@@ -363,14 +363,6 @@ export default function MembershipPage() {
 
   return (
     <main id="main-content" aria-labelledby="membership-page-title" className="min-h-screen overflow-hidden bg-[#f5f6ff] px-4 py-5 text-slate-900 sm:px-6 sm:py-10">
-      <div
-        aria-hidden="true"
-        className="fixed -left-40 top-24 h-96 w-96 rounded-full bg-sky-200/60 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="fixed -right-36 top-0 h-[32rem] w-[32rem] rounded-full bg-amber-200/60 blur-3xl"
-      />
       <section className="relative mx-auto max-w-6xl">
         <nav aria-label="會員頁面導覽" className="flex items-center justify-between">
           <a
@@ -386,7 +378,7 @@ export default function MembershipPage() {
           </span>
         </nav>
         <div className="mt-6 grid gap-4 lg:grid-cols-[1.12fr_.88fr]">
-          <section className="relative overflow-hidden rounded-[2.5rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[6px_6px_0_#161b35] sm:p-6">
+          <section className="relative overflow-hidden rounded-[2.5rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[4px_4px_0_#161b35] sm:p-6">
             <div
               aria-hidden="true"
               className="absolute -right-12 -top-16 h-48 w-48 rounded-full border-[14px] border-violet-300/70"
@@ -443,7 +435,7 @@ export default function MembershipPage() {
               </ul>
             </div>
           </section>
-          <aside className="relative flex flex-col justify-between overflow-hidden rounded-[2.5rem] border-4 border-slate-900 bg-white p-6 shadow-[8px_8px_0_#161b35] sm:p-8">
+          <aside className="relative flex flex-col justify-between overflow-hidden rounded-[2.5rem] border-2 border-slate-900 bg-white p-6 shadow-[4px_4px_0_#161b35] sm:p-8">
             <div aria-hidden="true" className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald-100/50 blur-2xl pointer-events-none" />
             <div aria-hidden="true" className="absolute -bottom-16 -left-16 h-32 w-32 rounded-full bg-amber-100/50 blur-2xl pointer-events-none" />
             
@@ -555,7 +547,7 @@ export default function MembershipPage() {
                   role="radio"
                   aria-checked={active}
                   aria-label={`${plan.name}，NT$ ${plan.price}，${plan.duration}${active ? '，目前已選擇' : ''}`}
-                  className={`relative overflow-hidden rounded-[2rem] border-2 p-4 text-left transition sm:p-5 ${active ? "border-slate-900 bg-white shadow-[7px_7px_0_#161b35] -translate-y-1 ring-4 ring-amber-200" : "border-slate-300 bg-white/70 hover:border-slate-900 hover:bg-white"}`}
+                  className={`relative overflow-hidden rounded-[2rem] border-2 p-4 text-left transition sm:p-5 ${active ? "border-slate-900 bg-white shadow-[4px_4px_0_#161b35] -translate-y-1 ring-4 ring-amber-200" : "border-slate-300 bg-white/70 hover:border-slate-900 hover:bg-white"}`}
                 >
                   {plan.featured && (
                     <span className="absolute right-5 top-0 rounded-b-xl border-x-2 border-b-2 border-slate-900 bg-amber-300 px-3 py-1.5 text-xs font-black">
@@ -599,7 +591,7 @@ export default function MembershipPage() {
         </section>
         <section
           aria-labelledby="membership-checkout-title"
-          className="mt-8 rounded-[2rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[7px_7px_0_#161b35] sm:flex sm:items-center sm:justify-between sm:p-7"
+          className="mt-8 rounded-[2rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[4px_4px_0_#161b35] sm:flex sm:items-center sm:justify-between sm:p-7"
         >
           <div>
             <p className="text-xs font-black tracking-[.18em] text-violet-700">
@@ -635,7 +627,7 @@ export default function MembershipPage() {
             {notice}
           </p>
         )}
-        <section aria-labelledby="membership-faq-title" className="relative mt-10 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[6px_6px_0_#161b35] sm:p-8">
+        <section aria-labelledby="membership-faq-title" className="relative mt-10 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0_#161b35] sm:p-8">
           <div aria-hidden="true" className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-amber-100" />
           <div className="relative border-b-2 border-slate-900 pb-6">
             <div className="flex items-start gap-4">

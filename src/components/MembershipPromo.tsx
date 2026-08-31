@@ -24,7 +24,7 @@ export default function MembershipPromo() {
 
   if (hasActiveMembership) return null;
 
-  return <section aria-labelledby="membership-promo-title" className="relative overflow-hidden rounded-3xl border-4 border-slate-900 bg-violet-100 p-4 shadow-[5px_5px_0_#0f172a] sm:p-5">
+  return <section aria-labelledby="membership-promo-title" className="relative overflow-hidden rounded-3xl border-[3px] border-slate-900 bg-violet-100 p-4 shadow-[4px_4px_0_#0f172a] sm:p-5">
     <div aria-hidden="true" className="absolute -right-8 -top-10 h-32 w-32 rounded-full border-8 border-violet-300/60" />
     <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-3 border-slate-900 bg-white text-violet-600 shadow-[3px_3px_0_#0f172a]"><Crown className="h-6 w-6 fill-violet-300" /></div>
