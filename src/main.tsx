@@ -63,9 +63,9 @@ function PageLoading() {
             <div className="flex items-end gap-1.5" aria-hidden="true"><span className="h-3 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-amber-300" /><span className="h-5 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-sky-300 [animation-delay:150ms]" /><span className="h-7 w-3 animate-bounce rounded-sm border-2 border-slate-900 bg-rose-300 [animation-delay:300ms]" /></div>
           </div>
           <div className="mt-6 h-4 overflow-hidden rounded-full border-2 border-slate-900 bg-slate-100 p-0.5" aria-hidden="true"><div className="h-full w-2/3 animate-pulse rounded-full bg-gradient-to-r from-indigo-500 via-sky-400 to-amber-300" /></div>
-          <div className="mt-5 flex items-start gap-3 rounded-2xl border-2 border-amber-200 bg-amber-50 px-4 py-3">
-            <span className="text-lg" aria-hidden="true">💡</span>
-            <div><p className="text-[11px] font-black tracking-[0.14em] text-amber-700">選填志願技巧</p><p className="mt-1 text-xs font-bold leading-5 text-amber-950">先把志願分成挑戰、適中與安全三個層級，安排時會更有方向。</p></div>
+          <div className="-mx-6 -mb-6 mt-5 flex items-start gap-2 border-t-2 border-amber-200 bg-amber-50 px-6 py-2.5">
+            <span className="text-base" aria-hidden="true">💡</span>
+            <p className="text-xs font-bold leading-5 text-amber-950"><span className="font-black text-amber-700">選填志願技巧：</span>先把志願分成挑戰、適中與安全三個層級。</p>
           </div>
         </div>
       </section>
