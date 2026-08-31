@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, Crown, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, MapPin, Megaphone, Search, Shield, Sparkles, Target, UserRound } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, Crown, ExternalLink, FileText, GraduationCap, Heart, HeartHandshake, HelpCircle, History, LineChart, Map, MapPin, Megaphone, Search, Shield, Sparkles, Target, UserRound } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import MissingFeatureCard from './MissingFeatureCard';
 
@@ -30,6 +30,7 @@ const categories: Category[] = [
     { title: '最新消息', desc: '查看系統公告、資料更新與重要考試資訊。', href: '/news', icon: Megaphone, tone: 'bg-rose-100 text-rose-700', keywords: '最新 消息 公告 更新 116 考試 日期' },
     { title: '會員免廣告', desc: '使用 LINE 登入確認資格，選擇免廣告方案。', href: '/membership', icon: Crown, tone: 'bg-violet-100 text-violet-700', keywords: '會員 免廣告 LINE 付款 月費 年費 方案' },
     { title: '我的會員帳號', desc: '查看目前方案、到期日與 LINE 登入狀態。', href: '/membership/account', icon: UserRound, tone: 'bg-emerald-100 text-emerald-700', keywords: '會員 帳號 到期 日 LINE 登入 免廣告' },
+    { title: '我的校科收藏', desc: '會員專屬，跨裝置同步收藏校科與備註。', href: '/membership/favorites', icon: Heart, tone: 'bg-rose-100 text-rose-700', keywords: '會員 收藏 校科 跨裝置 同步 備註' },
   ] },
   { title: '各就學區會考落點分析', desc: '查詢全國 15 個免試入學就學區的會考落點分析專頁，包含區域升學資訊、工具連結與常見問答。', items: [
     { title: '基北區', desc: '臺北市、新北市、基隆市的會考落點分析與志願選填。', href: '/area/keelung-taipei', icon: MapPin, tone: 'bg-indigo-100 text-indigo-700', keywords: '基北 台北 新北 基隆 落點 分析 會考' },
@@ -86,6 +87,7 @@ const searchAliases: Record<string, string> = {
   '/news': '最新 消息 公告 資料 更新',
   '/membership': '會員 免廣告 LINE 付款 月費 年費',
   '/membership/account': '會員 帳號 資格 到期 LINE 登入',
+  '/membership/favorites': '會員 收藏 校科 我的最愛 跨裝置 同步',
   '/area/keelung-taipei': '基北 台北 新北 基隆 落點 分析 會考 志願',
   '/area/taoyuan': '桃連 桃園 連江 落點 分析 會考 志願',
   '/area/hsinchu-miaoli': '竹苗 新竹 苗栗 落點 分析 會考 志願',
