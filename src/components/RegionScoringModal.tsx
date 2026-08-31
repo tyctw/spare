@@ -181,7 +181,7 @@ export default function RegionScoringModal({ isOpen, onClose, selectedRegion }: 
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative w-full max-w-2xl bg-slate-50 rounded-[2rem] border-4 border-slate-900 overflow-hidden shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col max-h-[90vh]"
+            className="relative w-full max-w-2xl bg-slate-50 rounded-[2rem] border-4 border-slate-900 overflow-hidden shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] flex flex-col max-h-[90vh]"
           >
             {/* Header */}
             <div className="p-6 sm:p-8 bg-sky-300 border-b-4 border-slate-900 relative overflow-hidden shrink-0">
