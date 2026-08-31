@@ -132,7 +132,7 @@ export function HistoricalScoresDialog({ school, onClose }: { school: any | null
         aria-label="關閉歷年錄取成績"
         onClick={handleClose}
       />
-      <section role="dialog" aria-modal="true" aria-labelledby="historical-scores-title" className="relative flex max-h-[88vh] w-full max-w-xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
+      <section role="dialog" aria-modal="true" aria-labelledby="historical-scores-title" className="relative flex max-h-[88vh] w-full max-w-xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
         <header className="flex items-start justify-between gap-4 border-b-4 border-slate-900 bg-amber-300 p-5 sm:p-6">
           <div className="flex min-w-0 items-start gap-3 sm:gap-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-3 border-slate-900 bg-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:h-12 sm:w-12">
@@ -406,7 +406,7 @@ export function AdmissionAnalysisDialog({ school, region, grades, onClose }: { s
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
       <button type="button" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" aria-label="關閉完整落點判讀" onClick={handleClose} />
-      <section role="dialog" aria-modal="true" aria-labelledby="admission-analysis-title" className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]">
+      <section role="dialog" aria-modal="true" aria-labelledby="admission-analysis-title" className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
         <header className="flex shrink-0 items-start justify-between gap-4 border-b-4 border-slate-900 bg-teal-700 p-5 sm:p-6">
           <div className="flex min-w-0 items-start gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-teal-200/70 bg-white/10 text-white">
