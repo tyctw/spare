@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calculator, Target, Award, BrainCircuit, Activity } from 'lucide-react';
+import { Calculator, Target, Award, BrainCircuit, Activity, Lightbulb } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
 }
 
+const strategyTips = [
+  '志願排序技巧：先列出想讀的校系，再分成挑戰、適中與安全三個層級。',
+  '結果較接近時，不只看積分，也要查看各就學區的超額比序規則。',
+  '篩選學校時，可一起評估科別特色、通勤距離與自己的興趣。',
+  '建議先加入多所學校比較，再決定志願順序，避免只看單一校系。',
+  '最後送出前，記得以招生簡章與學校公告確認最新招生資訊。',
+  '保守志願也要選自己願意就讀的校科，不要只為了提高錄取機會。',
+  '志願序可先依真實意願排，再檢查每一層是否都有合適的選項。',
+  '招生名額與比序規則每年可能調整，歷年資料適合作為參考，不是保證。',
+  '若同時考慮五專與高中職，請分開整理兩條升學管道的時程與規則。',
+  '選校前可先和家人討論交通、住宿與未來學習方向，減少後續調整。',
+];
+
 export default function QuantumLoadingOverlay({ isOpen }: Props) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [currentTip, setCurrentTip] = useState(0);
 
   const steps = [
     { text: "啟動落點分析引擎...", icon: BrainCircuit, color: "bg-amber-400" },
@@ -16,7 +30,6 @@ export default function QuantumLoadingOverlay({ isOpen }: Props) {
     { text: "計算安全與夢幻校系...", icon: Target, color: "bg-rose-400" },
     { text: "生成最終分析報告...", icon: Award, color: "bg-emerald-400" }
   ];
-
   useEffect(() => {
     if (!isOpen) {
       setCurrentStep(0);
@@ -30,6 +43,21 @@ export default function QuantumLoadingOverlay({ isOpen }: Props) {
     return () => {
       clearInterval(stepInterval);
     };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setCurrentTip(Math.floor(Math.random() * strategyTips.length));
+    const tipInterval = window.setInterval(() => {
+      setCurrentTip((current) => {
+        let next = Math.floor(Math.random() * strategyTips.length);
+        if (strategyTips.length > 1 && next === current) next = (next + 1) % strategyTips.length;
+        return next;
+      });
+    }, 2600);
+
+    return () => window.clearInterval(tipInterval);
   }, [isOpen]);
 
   const ActiveIcon = steps[currentStep].icon;
@@ -97,6 +125,11 @@ export default function QuantumLoadingOverlay({ isOpen }: Props) {
                <div className="mt-3 text-center text-xs font-black tracking-widest text-slate-500">
                  系統持續運算中，請稍候
                </div>
+             </div>
+
+             <div className="relative z-10 mb-6 flex w-full items-start gap-3 rounded-2xl border-2 border-amber-200 bg-amber-50 px-4 py-3 text-left">
+               <Lightbulb className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+               <div className="min-w-0"><p className="text-[11px] font-black tracking-[0.14em] text-amber-700">選填志願技巧</p><AnimatePresence mode="wait"><motion.p key={currentTip} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} className="mt-1 text-sm font-bold leading-5 text-amber-950">{strategyTips[currentTip]}</motion.p></AnimatePresence></div>
              </div>
 
              {/* Analysis status */}
