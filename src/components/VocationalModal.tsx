@@ -62,7 +62,7 @@ export default function VocationalModal({ isOpen, onClose, selectedGroups, onCha
           />
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border-4 border-slate-900 bg-white shadow-[12px_12px_0px_0px_rgba(15,23,42,1)]"
+            className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
           >
             <div className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-amber-300 px-5 py-4 sm:px-6 sm:py-5">
               <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 opacity-10">

@@ -13,7 +13,7 @@ const notices = [
 export default function DisclaimerModal({ isOpen, onClose }: Props) {
   return <AnimatePresence>{isOpen && <div className="fixed inset-0 z-[160] flex items-center justify-center p-4 sm:p-6">
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-slate-950/55 backdrop-blur-sm" />
-    <motion.section initial={{ scale: 0.95, opacity: 0, y: 18 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 18 }} transition={{ type: 'spring', damping: 24, stiffness: 280 }} role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title" className="relative flex max-h-[90dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0_#0f172a]">
+    <motion.section initial={{ scale: 0.95, opacity: 0, y: 18 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 18 }} transition={{ type: 'spring', damping: 24, stiffness: 280 }} role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title" className="relative flex max-h-[90dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[4px_4px_0_#0f172a]">
       <header className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-[#eef3ff] px-5 py-5 sm:px-7 sm:py-6">
         <div aria-hidden="true" className="absolute -right-10 -top-10 h-36 w-36 rounded-full border-[18px] border-indigo-200/70" />
         <div aria-hidden="true" className="absolute right-14 top-10 h-4 w-4 rounded-full bg-rose-400" />

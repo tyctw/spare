@@ -79,7 +79,7 @@ export default function SharePlatformModal({ isOpen, onClose }: SharePlatformMod
             role="dialog"
             aria-modal="true"
             aria-labelledby="share-platform-title"
-            className="relative w-full max-w-xl overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[9px_9px_0px_0px_rgba(15,23,42,1)]"
+            className="relative w-full max-w-xl overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
           >
             <div className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-emerald-300 via-cyan-200 to-sky-200 p-5 sm:p-6">
               <div className="pointer-events-none absolute -right-8 -top-10 h-36 w-36 rounded-full border-4 border-white/50 bg-white/30" />

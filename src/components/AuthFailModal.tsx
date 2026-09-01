@@ -23,7 +23,7 @@ export default function AuthFailModal({ isOpen, onClose }: AuthFailModalProps) {
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl border-4 border-slate-900 overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
+            className="relative w-full max-w-md overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
           >
             {/* Header */}
             <div className="p-6 bg-rose-400 border-b-4 border-slate-900 relative overflow-hidden">
@@ -64,7 +64,7 @@ export default function AuthFailModal({ isOpen, onClose }: AuthFailModalProps) {
                   href="https://tyctw.github.io/form/" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="group flex flex-col items-center justify-center gap-2 bg-indigo-400 border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] rounded-2xl p-6 transition-all hover:bg-indigo-300 hover:-translate-y-1 active:translate-y-0 active:shadow-none relative overflow-hidden"
+                  className="group relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border-4 border-slate-900 bg-indigo-400 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-1 hover:bg-indigo-300 active:translate-y-0 active:shadow-none"
                 >
                   <div className="absolute right-0 bottom-0 opacity-10 translate-x-4 translate-y-4 group-hover:scale-110 transition-transform">
                     <ExternalLink className="w-32 h-32 text-slate-900" />

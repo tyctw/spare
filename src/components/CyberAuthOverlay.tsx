@@ -120,7 +120,7 @@ export default function CyberAuthOverlay({ isOpen, code, skipValidation = false,
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.96 }}
             transition={{ type: 'spring', damping: 24, stiffness: 280 }}
-            className="relative w-full max-w-xl overflow-hidden rounded-[30px] border-4 border-slate-900 bg-[#fffdf8] p-5 shadow-[12px_12px_0_#0f172a] sm:p-8"
+            className="relative w-full max-w-xl overflow-hidden rounded-[30px] border-4 border-slate-900 bg-[#fffdf8] p-5 shadow-[4px_4px_0_#0f172a] sm:p-8"
           >
             <div className="pointer-events-none absolute inset-0 opacity-[0.45]" style={{ backgroundImage: 'radial-gradient(#c7d2fe 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
             <div className="relative">
