@@ -290,10 +290,6 @@ function VolunteerReport({
                           {choice.deptName}
                           {choice.shift ? `（${choice.shift}）` : ""}
                         </p>
-                        <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-black text-indigo-700">
-                          <ExternalLink className="h-3.5 w-3.5" />
-                          點擊類型或群科標籤，可查看介紹
-                        </div>
                         <div className="mt-3 flex flex-wrap gap-2 border-t-2 border-dashed border-slate-200 pt-3">
                           <a
                             href={withBasePath("/school-types")}
@@ -329,19 +325,15 @@ function VolunteerReport({
             </ol>
           )}
         </section>
-        <p className="mt-8 text-center text-xs font-bold leading-6 text-slate-500">
-          {createdAt && `建立於 ${createdAt} · `}
-          本頁僅供檢視；實際選填請以官方系統與簡章為準。
-        </p>
-        <DecisionFooter />
+        <DecisionFooter createdAt={createdAt} />
       </div>
     </main>
   );
 }
 
-function DecisionFooter() {
+function DecisionFooter({ createdAt }: { createdAt?: string }) {
   return (
-    <section className="mt-8 overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
+    <footer className="mt-8 overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
       <div className="bg-amber-300 px-5 py-5 sm:px-6">
         <p className="text-xs font-black tracking-[0.16em] text-amber-950">
           TAKE YOUR TIME
@@ -382,7 +374,11 @@ function DecisionFooter() {
           加入小額贊助
         </a>
       </div>
-    </section>
+      <p className="border-t-2 border-slate-200 bg-slate-50 px-5 py-3 text-center text-xs font-bold leading-6 text-slate-500 sm:px-6">
+        {createdAt && `建立於 ${createdAt} · `}
+        本頁僅供檢視；實際選填請以官方系統與簡章為準。
+      </p>
+    </footer>
   );
 }
 function countBy(
