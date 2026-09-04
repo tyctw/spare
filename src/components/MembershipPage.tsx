@@ -171,6 +171,8 @@ export default function MembershipPage() {
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState("");
   const [lineName, setLineName] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const selectedPlan = useMemo(
     () => plans.find((plan) => plan.id === selected)!,
     [selected],
@@ -237,6 +239,12 @@ export default function MembershipPage() {
   };
 
   const checkout = async () => {
+    setEmailError("");
+    const trimmedEmail = email.trim();
+    if (trimmedEmail && !trimmedEmail.includes("@")) {
+      setEmailError("請輸入正確的信箱格式。");
+      return;
+    }
     setSubmitting(true);
     setNotice("");
     try {
@@ -246,6 +254,7 @@ export default function MembershipPage() {
       }>({
         action: "createMembershipPayment",
         plan: selected,
+        email: trimmedEmail || undefined,
       });
       const form = document.createElement("form");
       form.method = "post";
@@ -589,9 +598,44 @@ export default function MembershipPage() {
             })}
           </div>
         </section>
+
+        <section
+          aria-labelledby="membership-email-title"
+          className="mt-6 rounded-[2rem] border-2 border-slate-200 bg-white p-5 sm:p-7"
+        >
+          <div className="flex items-center gap-3">
+            <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-sky-300 text-sm font-black shadow-[2px_2px_0_#161b35]">
+              3
+            </span>
+            <p className="text-xs font-black tracking-[.18em] text-sky-600">
+              聯絡信箱（選填）
+            </p>
+          </div>
+          <h2 id="membership-email-title" className="mt-3 text-xl font-black">留下信箱，方便我們通知你</h2>
+          <p className="mt-1 text-sm font-bold leading-6 text-slate-500">
+            付款確認與到期提醒將寄送至此信箱，不填也可直接購買。
+          </p>
+          <div className="mt-4">
+            <label htmlFor="membership-email" className="sr-only">電子信箱</label>
+            <input
+              id="membership-email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
+              className={`w-full rounded-2xl border-2 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:bg-white ${emailError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
+            />
+            {emailError && (
+              <p role="alert" className="mt-2 text-xs font-bold text-red-600">{emailError}</p>
+            )}
+          </div>
+        </section>
+
         <section
           aria-labelledby="membership-checkout-title"
-          className="mt-8 rounded-[2rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[4px_4px_0_#161b35] sm:flex sm:items-center sm:justify-between sm:p-7"
+          className="mt-6 rounded-[2rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[4px_4px_0_#161b35] sm:flex sm:items-center sm:justify-between sm:p-7"
         >
           <div>
             <p className="text-xs font-black tracking-[.18em] text-violet-700">
