@@ -7,6 +7,7 @@ export type MembershipStatus = {
   active: boolean;
   plan?: 'monthly' | 'yearly';
   expiresAt?: string;
+  contactEmail?: string | null;
 };
 
 export const MEMBERSHIP_STATUS_EVENT = 'membership-status-change';
