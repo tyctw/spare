@@ -95,12 +95,12 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
     return () => window.removeEventListener('resize', updateNavigationMode);
   }, []);
   const findCategory = (id: string) => menuCategories.find((category) => category.id === id)!;
-  const navigationLinks: Array<{ id: keyof typeof categoryOverviewPaths; label: string; icon: typeof Compass; title: string; description: string; categories: MenuCategory[] }> = [
-    { id: 'find', label: '我要查資料', icon: Compass, title: '我要查資料', description: '快速找到適合的學校、科別與升學方向', categories: [findCategory('find')] },
-    { id: 'choose', label: '我要選志願', icon: Target, title: '我要選志願', description: '依據成績與目標，安排你的志願順序', categories: [findCategory('choose')] },
-    { id: 'plan', label: '我要規劃升學', icon: CalendarDays, title: '我要規劃升學', description: '從興趣探索到重要時程，一次準備好', categories: [findCategory('plan')] },
-    { id: 'member', label: '會員與資源', icon: CircleHelp, title: '會員與升學資源', description: '管理會員資格，前往相關的升學工具與平台', categories: [findCategory('membership'), findCategory('external')] },
-    { id: 'help', label: '使用協助', icon: CircleHelp, title: '使用協助與平台資訊', description: '取得操作支援，也能查看平台規範與最新狀態', categories: [findCategory('support'), findCategory('about')] },
+  const navigationLinks: Array<{ id: keyof typeof categoryOverviewPaths; label: string; icon: typeof Compass; iconColor: string; title: string; description: string; categories: MenuCategory[] }> = [
+    { id: 'find', label: '我要查資料', icon: Compass, iconColor: findCategory('find').color, title: '我要查資料', description: '快速找到適合的學校、科別與升學方向', categories: [findCategory('find')] },
+    { id: 'choose', label: '我要選志願', icon: Target, iconColor: findCategory('choose').color, title: '我要選志願', description: '依據成績與目標，安排你的志願順序', categories: [findCategory('choose')] },
+    { id: 'plan', label: '我要規劃升學', icon: CalendarDays, iconColor: findCategory('plan').color, title: '我要規劃升學', description: '從興趣探索到重要時程，一次準備好', categories: [findCategory('plan')] },
+    { id: 'member', label: '會員與資源', icon: CircleHelp, iconColor: findCategory('membership').color, title: '會員與升學資源', description: '管理會員資格，前往相關的升學工具與平台', categories: [findCategory('membership'), findCategory('external')] },
+    { id: 'help', label: '使用協助', icon: CircleHelp, iconColor: findCategory('support').color, title: '使用協助與平台資訊', description: '取得操作支援，也能查看平台規範與最新狀態', categories: [findCategory('support'), findCategory('about')] },
   ];
   const selectedMenu = navigationLinks.find((menu) => menu.id === activeMenu);
   const selectedItems = selectedMenu?.categories.flatMap((category) => category.items.map((item) => ({ ...item, categoryLabel: category.label }))) ?? [];
@@ -158,7 +158,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
           </a>
 
           <nav aria-label="主要導覽" className={`${isCompactNavigation ? 'hidden' : 'flex'} items-center gap-1 rounded-2xl bg-slate-100/80 p-1.5`}>
-            {navigationLinks.map(({ id, label, icon: Icon }) => (
+            {navigationLinks.map(({ id, label, icon: Icon, iconColor }) => (
               <button
                 type="button"
                 key={id}
@@ -170,7 +170,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                 aria-controls="desktop-mega-menu"
                 className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-black text-slate-700 transition hover:bg-white hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 ${activeMenu === id ? 'bg-amber-200/80 text-slate-900 shadow-sm' : ''}`}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className={`h-4 w-4 ${iconColor}`} />
                 {label}
               </button>
             ))}

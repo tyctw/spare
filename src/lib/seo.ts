@@ -98,6 +98,10 @@ const pageMetadata: Record<string, PageMeta> = {
     title: '高二班群怎麼選？｜全國會考落點分析',
     description: '認識高二班群、自然與社會取向、數學 A／B 及 18 學群，規劃自己的高中學習路徑。',
   },
+  '/future-pathways': {
+    title: '高中職三年後的下一步地圖｜全國會考落點分析',
+    description: '互動整理普高、技高、綜高與五專畢業後的常見升學、技優、特殊選才、就業與轉換路徑；正式資格以當年度簡章為準。',
+  },
   '/general-comprehensive-high-school': {
     title: '普通科與綜合高中怎麼選？｜全國會考落點分析',
     description: '比較普通科與綜合高中的課程與探索方向，協助學生選擇適合自己的高中學程。',

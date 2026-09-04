@@ -106,6 +106,7 @@ export const menuCategories: MenuCategory[] = [
       { id: 'schoolTypes', label: '學校類型解析', description: '普通科、技高、綜高、五專差在哪', keywords: '學校 類型 普高 技高 綜高 五專 高中 高職', icon: Building2, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/school-types' } },
       { id: 'generalComprehensive', label: '普通科與綜合高中，怎麼選？', description: '比較普通科與綜高學程，找到適合的探索方向', keywords: '普通科 綜合高中 綜高 學程 高中 選擇', icon: School, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/general-comprehensive-high-school' } },
       { id: 'grade11Pathways', label: '高二班群怎麼選？', description: '了解自然、社會取向與 18 學群的規劃方式', keywords: '高二 班群 自然組 社會組 數學 A B 18 學群', icon: Milestone, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/grade-11-pathways' } },
+      { id: 'futurePathways', label: '高中職三年後的下一步地圖', description: '查看普高、技高、綜高、五專的升學與就業銜接', keywords: '普高 技高 綜高 五專 升學 技優 特殊選才 就業 二技 插班', icon: Network, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/future-pathways' } },
       { id: 'vocational', label: '技職群科百科', description: '看 15 大職群、常見科別與未來進路', keywords: '技職 群科 百科 職群 科別 職涯 高職', icon: Briefcase, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/vocational-encyclopedia' } },
     ],
   },

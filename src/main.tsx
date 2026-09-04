@@ -20,6 +20,7 @@ const FiveYearCollegeRulesPage = lazy(() => import('./components/FiveYearCollege
 const HollandPage = lazy(() => import('./components/HollandPage.tsx'));
 const GradeLevelPage = lazy(() => import('./components/GradeLevelPage.tsx'));
 const Grade11PathwaysPage = lazy(() => import('./components/Grade11PathwaysPage.tsx'));
+const FuturePathwaysPage = lazy(() => import('./components/FuturePathwaysPage.tsx'));
 const GeneralComprehensiveHighSchoolPage = lazy(() => import('./components/GeneralComprehensiveHighSchoolPage.tsx'));
 const HistoricalStatsPage = lazy(() => import('./components/HistoricalStatsPage.tsx'));
 const ImportantDatesPage = lazy(() => import('./components/ImportantDatesPage.tsx'));
@@ -100,6 +101,7 @@ const page =
   path === '/five-year-college-rules' ? <FiveYearCollegeRulesPage /> :
   path === '/grade-level' ? <GradeLevelPage /> :
   path === '/grade-11-pathways' ? <Grade11PathwaysPage /> :
+  path === '/future-pathways' ? <FuturePathwaysPage /> :
   path === '/general-comprehensive-high-school' ? <GeneralComprehensiveHighSchoolPage /> :
   path === '/historical-stats' ? <HistoricalStatsPage /> :
   path === '/important-dates' ? <ImportantDatesPage /> :
@@ -128,7 +130,7 @@ const page =
   areaSlug ? <AreaPage slug={areaSlug} /> :
   <App />;
 
-const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/five-year-college-rules', '/grade-level', '/grade-11-pathways', '/general-comprehensive-high-school', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
+const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/five-year-college-rules', '/grade-level', '/grade-11-pathways', '/future-pathways', '/general-comprehensive-high-school', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
 const showRelatedReading = informationalPaths.has(path) || path.startsWith('/scoring-rules/') || path.startsWith('/area/');
 const pagesWithoutSharedFooter = new Set(['/', '/results', '/compare', '/holland', '/support/success', '/support/failed']);
 const showSharedFooter = !pagesWithoutSharedFooter.has(path) && !sharedReportToken;

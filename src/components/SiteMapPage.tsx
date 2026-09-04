@@ -17,6 +17,7 @@ const categories: Category[] = [
     { title: '學校類型解析', desc: '比較普高、技高、綜高、單科型高中與五專的差異。', href: '/school-types', icon: Building2, tone: 'bg-sky-100 text-sky-700', keywords: '普高 技高 綜高 五專 高中 高職' },
     { title: '普通科與綜合高中，怎麼選？', desc: '了解普通科、綜合高中學程的差異，以及適合的探索方向。', href: '/general-comprehensive-high-school', icon: GraduationCap, tone: 'bg-violet-100 text-violet-700', keywords: '普通科 綜合高中 綜高 學程 高中 選擇' },
     { title: '高二「班群」是什麼？怎麼選？', desc: '認識自然、社會取向、數學 A／B 與 18 學群的規劃方式。', href: '/grade-11-pathways', icon: Compass, tone: 'bg-fuchsia-100 text-fuchsia-700', keywords: '高二 班群 自然組 社會組 數學A 數學B 18學群 分組' },
+    { title: '高中職三年後的下一步地圖', desc: '互動查看普高、技高、綜高與五專的升學、就業與轉換路徑。', href: '/future-pathways', icon: Map, tone: 'bg-orange-100 text-orange-700', keywords: '普高 技高 綜高 五專 升學 技優 特殊選才 就業 二技 插班' },
     { title: '技職群科百科', desc: '認識技職群別、常見科別、學習特質與未來進路。', href: '/vocational-encyclopedia', icon: BookOpen, tone: 'bg-emerald-100 text-emerald-700', keywords: '技職 群科 科別 專業 高職' },
     { title: 'Holland 興趣測驗', desc: '完成簡易興趣測驗，取得 RIASEC 類型與群科探索方向。', href: '/holland', icon: Sparkles, tone: 'bg-purple-100 text-purple-700', keywords: '興趣 測驗 holland RIASEC 性向' },
   ] },
