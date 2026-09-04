@@ -512,7 +512,7 @@ export default function MembershipPage() {
             
             <div className="relative">
               <div className="flex items-center gap-3">
-                <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-emerald-400 text-sm font-black shadow-[2px_2px_0_#161b35]">
+                <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-emerald-400 text-sm font-black">
                   1
                 </span>
                 <p className="text-xs font-black tracking-[.2em] text-emerald-600">
@@ -663,10 +663,10 @@ export default function MembershipPage() {
 
         <section
           aria-labelledby="membership-email-title"
-          className="mt-6 rounded-[2rem] border-2 border-slate-200 bg-white p-5 sm:p-7"
+          className="mt-6 rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0_#161b35] sm:p-7"
         >
           <div className="flex items-center gap-3">
-            <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-sky-300 text-sm font-black shadow-[2px_2px_0_#161b35]">
+            <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-sky-300 text-sm font-black">
               3
             </span>
             <p className="text-xs font-black tracking-[.18em] text-sky-600">
@@ -737,7 +737,7 @@ export default function MembershipPage() {
           <div aria-hidden="true" className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-amber-100" />
           <div className="relative border-b-2 border-slate-900 pb-6">
             <div className="flex items-start gap-4">
-              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 shadow-[3px_3px_0_#0f172a]"><HelpCircle className="h-6 w-6" /></div>
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900"><HelpCircle className="h-6 w-6" /></div>
               <div><p className="text-[10px] font-black tracking-[.2em] text-amber-700">MEMBERSHIP FAQ</p><h2 id="membership-faq-title" className="mt-1 text-2xl font-black sm:text-3xl">常見問題</h2><p className="mt-2 text-sm font-bold leading-6 text-slate-600">付款、會員資格與使用方式，一次整理給你。</p></div>
             </div>
           </div>
