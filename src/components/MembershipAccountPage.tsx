@@ -242,7 +242,7 @@ export default function MembershipAccountPage() {
                   {emailEditMode ? (
                     <div className="mt-3 rounded-2xl border-2 border-sky-200 bg-sky-50 p-4">
                       <p className="text-xs font-black text-sky-700">聯絡信箱</p>
-                      <div className="mt-2 flex gap-2">
+                      <div className="mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3">
                         <label htmlFor="account-email" className="sr-only">電子信箱</label>
                         <input
                           id="account-email"
@@ -252,24 +252,26 @@ export default function MembershipAccountPage() {
                           placeholder="your@email.com"
                           value={emailInput}
                           onChange={(e) => { setEmailInput(e.target.value); setEmailError(''); }}
-                          className={`min-w-0 flex-1 rounded-xl border-2 bg-white px-3 py-2 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-sky-400 ${emailError ? 'border-red-400' : 'border-sky-200'}`}
+                          className={`min-w-0 w-full flex-1 rounded-xl border-2 bg-white px-3 py-2 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-sky-400 ${emailError ? 'border-red-400' : 'border-sky-200'}`}
                         />
-                        <button
-                          type="button"
-                          onClick={() => void saveEmail()}
-                          disabled={emailSaving}
-                          className="shrink-0 rounded-xl border-2 border-slate-900 bg-sky-400 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0_#161b35] transition hover:-translate-y-0.5 disabled:opacity-50"
-                        >
-                          {emailSaving ? '儲存中…' : '儲存'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { setEmailEditMode(false); setEmailInput(''); setEmailError(''); }}
-                          disabled={emailSaving}
-                          className="shrink-0 rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-500 transition hover:border-slate-400"
-                        >
-                          取消
-                        </button>
+                        <div className="flex gap-2 sm:shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => void saveEmail()}
+                            disabled={emailSaving}
+                            className="flex-1 sm:flex-none rounded-xl border-2 border-slate-900 bg-sky-400 px-4 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0_#161b35] transition hover:-translate-y-0.5 disabled:opacity-50"
+                          >
+                            {emailSaving ? '儲存中…' : '儲存'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setEmailEditMode(false); setEmailInput(''); setEmailError(''); }}
+                            disabled={emailSaving}
+                            className="flex-1 sm:flex-none rounded-xl border-2 border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-500 transition hover:border-slate-400"
+                          >
+                            取消
+                          </button>
+                        </div>
                       </div>
                       {emailError && <p role="alert" className="mt-1.5 text-xs font-bold text-red-600">{emailError}</p>}
                     </div>
