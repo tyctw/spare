@@ -112,7 +112,6 @@ function corsHeaders(request: Request) {
 }
 
 const MAX_JSON_BODY_BYTES = 64 * 1024;
-const MAX_FORM_BODY_BYTES = 32 * 1024;
 const DEFAULT_RATE_LIMIT = { windowSeconds: 60, maxRequests: 20 };
 const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: number }> = {
   wakeup: { windowSeconds: 60, maxRequests: 10 },
@@ -216,10 +215,17 @@ const ecpayCheckMacValue = async (params: EcpayPayload, hashKey: string, hashIv:
 };
 
 const ecpayConfig = () => {
+  const mode = Deno.env.get('ECPAY_MODE')?.trim().toLowerCase() || 'production';
+  if (mode !== 'production') {
+    // This shared function is deployed only for live payments. Testing must
+    // use a separate Supabase project/function, so a mistaken environment
+    // variable can never make publicly known ECPay test credentials trusted.
+    throw new Error('ECPAY_MODE must be production.');
+  }
   const merchantId = Deno.env.get('ECPAY_MERCHANT_ID')?.trim();
   const hashKey = Deno.env.get('ECPAY_HASH_KEY')?.trim();
   const hashIv = Deno.env.get('ECPAY_HASH_IV')?.trim();
-  const mode = Deno.env.get('ECPAY_MODE')?.trim().toLowerCase() || 'production';
+
   const returnUrl = Deno.env.get('ECPAY_RETURN_URL')?.trim() || `${supabaseUrl}/functions/v1/ecpay-callback`;
   const clientBackUrl = Deno.env.get('ECPAY_CLIENT_BACK_URL')?.trim() || 'https://tyctw.github.io/spare/support/success';
 
@@ -231,7 +237,7 @@ const ecpayConfig = () => {
     mode,
     returnUrl,
     clientBackUrl,
-    actionUrl: mode === 'stage' ? 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5' : 'https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5',
+    actionUrl: 'https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5',
   };
 };
 
@@ -265,7 +271,7 @@ async function getLineLoginSession(token: unknown) {
 }
 
 const lineSessionCookieName = 'line_membership_session';
-const lineSessionCookie = (token: string, maxAge = 15 * 60) =>
+const lineSessionCookie = (token: string, maxAge = 24 * 60 * 60) =>
   `${lineSessionCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Partitioned; Path=/functions/v1/backend; Max-Age=${maxAge}`;
 const supportPaymentStatusCookieName = 'support_payment_status';
 const supportPaymentStatusCookie = (token: string, maxAge = 24 * 60 * 60) =>
@@ -295,7 +301,7 @@ async function activeMembershipForRequest(request: Request) {
 
   const { data, error } = await supabase
     .from('membership_payments')
-    .select('plan, expires_at')
+    .select('plan, expires_at, contact_email')
     .eq('status', 'paid')
     .gt('expires_at', new Date().toISOString())
     .eq('line_user_id', lineSession.line_user_id)
@@ -574,43 +580,6 @@ async function requireAdmin(request: Request) {
   );
 
   return user;
-}
-
-// Retained temporarily only to keep the historical source diff small. No
-// privileged route calls this function; all routes below use requireAdmin().
-async function validateAdminCode(code: unknown, request: Request) {
-  const adminCode = Deno.env.get('ADMIN_ACCESS_CODE')?.trim();
-  const requestedCode = String(code || '').trim();
-
-  // Admin access must never fall back to an invitation code. Invitation codes
-  // grant end-user access only; using one here would let a public code control
-  // privileged school-management actions when this secret is misconfigured.
-  if (!adminCode) {
-    console.error('ADMIN_ACCESS_CODE is not configured; refusing admin access.');
-    throw new Error('管理功能尚未完成安全設定');
-  }
-
-  const valid = requestedCode.length > 0 && requestedCode === adminCode;
-
-  background(
-    withTimeout(
-      supabase.from('invitation_logs').insert({
-        action: 'admin',
-        invitation_code: requestedCode ? '[admin-code]' : null,
-        success: valid,
-        ip: clientAddress(request),
-        user_agent: request.headers.get('user-agent'),
-      }),
-      2000,
-      'insert admin log',
-    ),
-  );
-
-  return valid;
-}
-
-function assertAdmin(valid: boolean) {
-  if (!valid) throw new Error('管理驗證碼無效或已過期');
 }
 
 function nullableNumber(value: unknown) {
@@ -1190,6 +1159,14 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       const lineSession = await getLineLoginSession(lineSessionTokenFromCookie(request));
       if (!lineSession) throw new Error('LINE login is required before purchasing membership.');
 
+      const contactEmail = String(payload.email || '').trim().toLowerCase();
+      if (!contactEmail) {
+        throw new Error('請填寫聯絡信箱。');
+      }
+      if (contactEmail.length > 254 || !contactEmail.includes('@')) {
+        throw new Error('信箱格式不正確。');
+      }
+
       const config = ecpayConfig();
       const merchantTradeNo = createMembershipTradeNo();
       const now = new Date();
@@ -1214,7 +1191,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       const checkMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
       const { data, error } = await supabase
         .from('membership_payments')
-        .insert({ merchant_trade_no: merchantTradeNo, plan: planId, amount: plan.amount, line_user_id: lineSession.line_user_id })
+        .insert({ merchant_trade_no: merchantTradeNo, plan: planId, amount: plan.amount, line_user_id: lineSession.line_user_id, contact_email: contactEmail })
         .select('id')
         .single();
       if (error || !data?.id) throw error || new Error('Could not create membership payment.');
@@ -1223,7 +1200,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
 
     case 'getMembershipStatus': {
       const data = await activeMembershipForRequest(request);
-      return data ? { active: true, plan: data.plan, expiresAt: data.expires_at } : { active: false };
+      return data ? { active: true, plan: data.plan, expiresAt: data.expires_at, contactEmail: data.contact_email ?? null } : { active: false };
     }
 
     case 'getMembershipPurchaseHistory': {
@@ -1247,6 +1224,36 @@ async function handleAction(payload: Record<string, any>, request: Request) {
           createdAt: payment.created_at,
         })),
       };
+    }
+
+    case 'updateMembershipEmail': {
+      const lineSession = await getLineLoginSession(lineSessionTokenFromCookie(request));
+      if (!lineSession) throw new Error('LINE login is required.');
+      const contactEmail = String(payload.email || '').trim().toLowerCase();
+      if (!contactEmail) {
+        throw new Error('請填寫聯絡信箱。');
+      }
+      if (contactEmail.length > 254 || !contactEmail.includes('@')) {
+        throw new Error('信箱格式不正確。');
+      }
+      // Update the most recent active paid membership for this LINE user.
+      const { data: payment, error: findError } = await supabase
+        .from('membership_payments')
+        .select('id')
+        .eq('line_user_id', lineSession.line_user_id)
+        .eq('status', 'paid')
+        .gt('expires_at', new Date().toISOString())
+        .order('expires_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (findError) throw findError;
+      if (!payment) return { updated: false, reason: 'NO_ACTIVE_MEMBERSHIP' };
+      const { error: updateError } = await supabase
+        .from('membership_payments')
+        .update({ contact_email: contactEmail, updated_at: new Date().toISOString() })
+        .eq('id', payment.id);
+      if (updateError) throw updateError;
+      return { updated: true, contactEmail };
     }
 
     case 'getLineLoginSession': {
@@ -1659,122 +1666,17 @@ async function handleAction(payload: Record<string, any>, request: Request) {
   }
 }
 
-async function handleEcpayCallback(request: Request) {
-  const config = ecpayConfig();
-  const body = await readRequestText(request, MAX_FORM_BODY_BYTES);
-  const fields = Object.fromEntries(new URLSearchParams(body).entries());
-  const receivedCheckMacValue = fields.CheckMacValue;
-  const expectedCheckMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
-
-  if (!receivedCheckMacValue || receivedCheckMacValue !== expectedCheckMacValue) {
-    console.error('Invalid ECPay CheckMacValue', { merchantTradeNo: fields.MerchantTradeNo });
-    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  const merchantTradeNo = fields.MerchantTradeNo || '';
-  const tradeNo = fields.TradeNo || '';
-  const tradeAmount = Number(fields.TradeAmt);
-
-  if (fields.MerchantID !== config.merchantId || !/^[A-Za-z0-9]{8,32}$/.test(merchantTradeNo)) {
-    console.error('Invalid ECPay merchant or order reference', { merchantId: fields.MerchantID, merchantTradeNo });
-    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  if (!Number.isSafeInteger(tradeAmount) || tradeAmount <= 0) {
-    console.error('Invalid ECPay payment amount', { merchantTradeNo, tradeAmount: fields.TradeAmt });
-    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  if (!tradeNo) {
-    console.error('Missing ECPay trade number', { merchantTradeNo });
-    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  const { data: payment, error: paymentError } = await supabase
-    .from('support_payments')
-    .select('amount, status, ecpay_trade_no')
-    .eq('merchant_trade_no', merchantTradeNo)
-    .maybeSingle();
-
-  if (paymentError || !payment) {
-    console.error('Unknown ECPay order', { merchantTradeNo, error: paymentError });
-    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  if (payment.amount !== tradeAmount) {
-    console.error('ECPay payment amount mismatch', { merchantTradeNo, expectedAmount: payment.amount, tradeAmount });
-    return new Response('0|Error', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  const succeeded = fields.RtnCode === '1';
-  const simulated = fields.SimulatePaid === '1';
-  const targetStatus = succeeded ? 'paid' : 'failed';
-
-  // Simulated payments are useful only against ECPay's stage environment. They
-  // must never mark a production donation as settled.
-  if (simulated && config.mode !== 'stage') {
-    console.warn('Ignored simulated ECPay payment outside stage mode', { merchantTradeNo });
-    return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  // A duplicate callback for the same ECPay trade is safe and acknowledged.
-  if (payment.status !== 'pending' && payment.ecpay_trade_no === tradeNo) {
-    return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  if (payment.status !== 'pending') {
-    console.error('Invalid ECPay payment state transition', { merchantTradeNo, status: payment.status, tradeNo });
-    return new Response('0|Error', { status: 409, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  const { data: updatedPayment, error } = await supabase
-    .from('support_payments')
-    .update({
-      status: targetStatus,
-      ecpay_trade_no: tradeNo,
-      payment_type: fields.PaymentType || null,
-      paid_at: succeeded ? new Date().toISOString() : null,
-      callback_payload: fields,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('merchant_trade_no', merchantTradeNo)
-    .eq('status', 'pending')
-    .select('status, ecpay_trade_no')
-    .maybeSingle();
-
-  if (error) {
-    console.error('Could not record ECPay callback', error);
-    return new Response('0|Error', { status: 500, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-  }
-
-  if (!updatedPayment) {
-    // Another delivery may have completed the same pending order first. Only
-    // acknowledge it when it resulted in the exact same ECPay transaction.
-    const { data: currentPayment, error: currentPaymentError } = await supabase
-      .from('support_payments')
-      .select('status, ecpay_trade_no')
-      .eq('merchant_trade_no', merchantTradeNo)
-      .maybeSingle();
-
-    if (currentPaymentError || currentPayment?.status !== targetStatus || currentPayment.ecpay_trade_no !== tradeNo) {
-      console.error('Could not safely reconcile ECPay callback', { merchantTradeNo, tradeNo, currentPaymentError });
-      return new Response('0|Error', { status: 409, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-    }
-  }
-
-  return new Response('1|OK', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-}
-
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
     if (!isAllowedOrigin(request)) return new Response('Origin not allowed', { status: 403, headers: { Vary: 'Origin' } });
     return new Response('ok', { headers: corsHeaders(request) });
   }
   if (request.method !== 'POST') return json(request, { error: 'Method not allowed' }, 405);
-  // CORS preflight is a browser safeguard, not an authorization check. Reject
-  // cross-site POSTs here as well so credentialed requests cannot rely on a
-  // preflight response being enforced by the caller.
-  if (request.headers.get('origin') && !isAllowedOrigin(request)) {
+  // The API is browser-only. Requiring an explicit allowlisted Origin on every
+  // POST prevents cross-site form/navigation requests from using the
+  // SameSite=None session cookies when a caller omits the Origin header.
+  // ECPay server callbacks use their separate ecpay-callback function.
+  if (!isAllowedOrigin(request)) {
     return json(request, { error: 'Origin not allowed' }, 403);
   }
 

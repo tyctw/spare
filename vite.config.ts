@@ -35,6 +35,7 @@ const seoRoutes = [
   'five-year-college-rules',
   'grade-level',
   'grade-11-pathways',
+  'future-pathways',
   'general-comprehensive-high-school',
   'faq-glossary',
   'historical-stats',
@@ -122,6 +123,10 @@ const staticPageMetadata: Record<string, { title: string; description: string }>
   disclaimer: {
     title: '免責聲明｜全國會考落點分析',
     description: '說明會考落點分析結果的資料來源、使用範圍與正式招生資訊的確認方式。',
+  },
+  'future-pathways': {
+    title: '高中職三年後的下一步地圖｜全國會考落點分析',
+    description: '互動整理普高、技高、綜高與五專畢業後的常見升學、技優、特殊選才、就業與轉換路徑；正式資格以當年度簡章為準。',
   },
 };
 

@@ -59,9 +59,9 @@ Deno.serve(async (request) => {
     const profile = await verifyResponse.json() as { sub?: string; name?: string; picture?: string };
     if (!verifyResponse.ok || !profile.sub) return codedError('LINE_LOGIN_FAILED', 401);
 
-    const { data: session, error } = await supabase.from('line_login_sessions').insert({ line_user_id: profile.sub, display_name: profile.name || null, picture_url: profile.picture || null, expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString() }).select('token').single();
+    const { data: session, error } = await supabase.from('line_login_sessions').insert({ line_user_id: profile.sub, display_name: profile.name || null, picture_url: profile.picture || null, expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() }).select('token').single();
     if (error || !session) throw error || new Error('Could not create LINE session.');
-    const { data: exchange, error: exchangeError } = await supabase.from('line_login_exchange_codes').insert({ line_session_token: session.token, expires_at: new Date(Date.now() + 60 * 1000).toISOString() }).select('code').single();
+    const { data: exchange, error: exchangeError } = await supabase.from('line_login_exchange_codes').insert({ line_session_token: session.token, expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString() }).select('code').single();
     if (exchangeError || !exchange) throw exchangeError || new Error('Could not create LINE login exchange code.');
 
     const destination = new URL(`${baseUrl}${safeReturnPath(returnPath)}`);

@@ -4,6 +4,7 @@ create table if not exists public.support_payments (
   amount integer not null check (amount > 0),
   status text not null default 'pending' check (status in ('pending', 'paid', 'failed', 'refunded')),
   payment_method text,
+  status_lookup_token uuid not null unique default gen_random_uuid(),
   payment_type text,
   ecpay_trade_no text,
   paid_at timestamptz,
