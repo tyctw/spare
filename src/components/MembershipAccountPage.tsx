@@ -55,12 +55,23 @@ export default function MembershipAccountPage() {
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [accountNotice, setAccountNotice] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [emailInput, setEmailInput] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [emailSaving, setEmailSaving] = useState(false);
+  const [emailEditMode, setEmailEditMode] = useState(false);
 
   const refresh = async () => {
+    setErrorMessage('');
+    // Run all three requests in parallel; each has its own fallback so a
+    // single slow or failed call cannot prevent the whole page from rendering.
     const [line, status, history] = await Promise.all([
-      callBackend<{ loggedIn: boolean; name?: string }>({ action: 'getLineLoginSession' }),
-      getMembershipStatus(),
-      callBackend<{ purchases: MembershipPurchase[] }>({ action: 'getMembershipPurchaseHistory' }),
+      callBackend<{ loggedIn: boolean; name?: string }>({ action: 'getLineLoginSession' })
+        .catch(() => ({ loggedIn: false as const })),
+      getMembershipStatus()
+        .catch(() => ({ active: false as const })),
+      callBackend<{ purchases: MembershipPurchase[] }>({ action: 'getMembershipPurchaseHistory' })
+        .catch(() => ({ purchases: [] as MembershipPurchase[] })),
     ]);
     setLineName(line.loggedIn ? line.name || 'LINE 會員' : '');
     setMembership(status);
@@ -73,11 +84,38 @@ export default function MembershipAccountPage() {
       try {
         await consumeLineLoginCodeFromFragment();
         await refresh();
-      } catch {
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : '';
+        setErrorMessage(msg || '');
         setState('error');
       }
     })();
   }, []);
+
+  const saveEmail = async () => {
+    const trimmed = emailInput.trim();
+    if (trimmed && !trimmed.includes('@')) {
+      setEmailError('請輸入正確的信箱格式。');
+      return;
+    }
+    setEmailSaving(true);
+    setEmailError('');
+    try {
+      const result = await callBackend<{ updated: boolean; contactEmail?: string | null }>({
+        action: 'updateMembershipEmail',
+        email: trimmed || null,
+      });
+      if (result.updated) {
+        setMembership((prev) => ({ ...prev, contactEmail: result.contactEmail ?? null }));
+        setEmailEditMode(false);
+        setEmailInput('');
+      }
+    } catch (err) {
+      setEmailError(err instanceof Error ? err.message : '儲存失敗，請稍後再試。');
+    } finally {
+      setEmailSaving(false);
+    }
+  };
 
   const loginWithLine = () => {
     const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
@@ -153,7 +191,14 @@ export default function MembershipAccountPage() {
         ) : state === 'error' ? (
           <div role="alert" className="mt-5 rounded-2xl border-2 border-rose-700 bg-rose-50 p-6 text-center shadow-[5px_5px_0_#161b35]">
             <p className="font-black text-rose-800">暫時無法確認帳號狀態</p>
-            <button type="button" onClick={() => { setState('loading'); void refresh().catch(() => setState('error')); }} className="mt-4 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black">重新整理</button>
+            {errorMessage && <p className="mt-1 text-xs font-bold text-rose-600">{errorMessage}</p>}
+            <button
+              type="button"
+              onClick={() => { setState('loading'); void refresh().catch((err) => { setErrorMessage(err instanceof Error ? err.message : ''); setState('error'); }); }}
+              className="mt-4 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black"
+            >
+              重新整理
+            </button>
           </div>
         ) : (
           <>
@@ -189,11 +234,65 @@ export default function MembershipAccountPage() {
                       <p className="mt-0.5 break-words text-[10px] font-bold text-emerald-700 sm:text-xs">至 {formatDate(membership.expiresAt)}</p>
                     </div>
                   </div>
-                  {membership.contactEmail && (
-                    <div className="mt-2 rounded-2xl border-2 border-sky-100 bg-sky-50/50 p-3 sm:px-4 sm:py-3">
-                      <p className="text-[10px] font-black text-sky-800 sm:text-xs">聯絡信箱</p>
-                      <p className="mt-1 break-all text-sm font-black text-sky-950">{membership.contactEmail}</p>
+                  {/* Email display / edit section */}
+                  {emailEditMode ? (
+                    <div className="mt-3 rounded-2xl border-2 border-sky-200 bg-sky-50 p-4">
+                      <p className="text-xs font-black text-sky-700">聯絡信箱</p>
+                      <div className="mt-2 flex gap-2">
+                        <label htmlFor="account-email" className="sr-only">電子信箱</label>
+                        <input
+                          id="account-email"
+                          type="email"
+                          inputMode="email"
+                          autoComplete="email"
+                          placeholder="your@email.com"
+                          value={emailInput}
+                          onChange={(e) => { setEmailInput(e.target.value); setEmailError(''); }}
+                          className={`min-w-0 flex-1 rounded-xl border-2 bg-white px-3 py-2 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-sky-400 ${emailError ? 'border-red-400' : 'border-sky-200'}`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => void saveEmail()}
+                          disabled={emailSaving}
+                          className="shrink-0 rounded-xl border-2 border-slate-900 bg-sky-400 px-3 py-2 text-sm font-black text-slate-900 shadow-[2px_2px_0_#161b35] transition hover:-translate-y-0.5 disabled:opacity-50"
+                        >
+                          {emailSaving ? '儲存中…' : '儲存'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setEmailEditMode(false); setEmailInput(''); setEmailError(''); }}
+                          disabled={emailSaving}
+                          className="shrink-0 rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-500 transition hover:border-slate-400"
+                        >
+                          取消
+                        </button>
+                      </div>
+                      {emailError && <p role="alert" className="mt-1.5 text-xs font-bold text-red-600">{emailError}</p>}
+                      <p className="mt-2 text-[10px] font-bold text-sky-600">留空並儲存可清除信箱。</p>
                     </div>
+                  ) : membership.contactEmail ? (
+                    <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border-2 border-sky-100 bg-sky-50/50 px-4 py-3">
+                      <div className="min-w-0">
+                        <p className="text-[10px] font-black text-sky-800">聯絡信箱</p>
+                        <p className="mt-0.5 break-all text-sm font-black text-sky-950">{membership.contactEmail}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setEmailEditMode(true); setEmailInput(membership.contactEmail ?? ''); }}
+                        className="shrink-0 rounded-lg border border-sky-200 bg-white px-2.5 py-1 text-xs font-black text-sky-700 transition hover:border-sky-400"
+                      >
+                        編輯
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => { setEmailEditMode(true); setEmailInput(''); }}
+                      className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-sky-200 bg-sky-50/30 px-4 py-3 text-sm font-black text-sky-700 transition hover:border-sky-400 hover:bg-sky-50"
+                    >
+                      <Mail className="h-4 w-4" />
+                      新增聯絡信箱
+                    </button>
                   )}
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
                     <a href={withBasePath('/')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-indigo-700"><Home className="h-4 w-4" />回到落點分析</a>
@@ -322,7 +421,7 @@ export default function MembershipAccountPage() {
                 </div>
 
                 <p className="rounded-xl bg-indigo-50/50 px-4 py-3 text-xs font-bold leading-relaxed text-indigo-800">
-                  LINE 僅用於確認與恢復會員資格。登入狀態有效 15 分鐘；登出後，此裝置會立刻恢復一般使用者顯示。
+                  LINE 僅用於確認與恢復會員資格。登入狀態有效 24 小時；登出後，此裝置會立刻恢復一般使用者顯示。
                 </p>
 
                 {lineName ? (
