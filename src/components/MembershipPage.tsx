@@ -205,6 +205,37 @@ export default function MembershipPage() {
     };
   }, []);
 
+  // When the user returns from the ECPay payment page to /membership/success,
+  // the server-to-server callback and the browser redirect race each other.
+  // Poll until the membership turns active (or we exhaust retries) so the
+  // user sees a "confirming payment…" state instead of a stale inactive view.
+  const isSuccessPage = window.location.pathname.endsWith('/membership/success');
+  useEffect(() => {
+    if (!isSuccessPage) return;
+    if (membership === null) return; // still loading initial check
+    if (membership.active) return;  // already confirmed, no polling needed
+
+    let attempts = 0;
+    const MAX_ATTEMPTS = 8;
+    const INTERVAL_MS = 2500;
+
+    const id = setInterval(async () => {
+      attempts += 1;
+      try {
+        const status = await getMembershipStatus();
+        if (status.active) {
+          setMembership(status);
+          clearInterval(id);
+        }
+      } catch {
+        // network hiccup — keep polling until exhausted
+      }
+      if (attempts >= MAX_ATTEMPTS) clearInterval(id);
+    }, INTERVAL_MS);
+
+    return () => clearInterval(id);
+  }, [isSuccessPage, membership === null, membership?.active]);
+
   useEffect(() => {
     const handlePageShow = (event: PageTransitionEvent) => {
       if (event.persisted) {
@@ -297,6 +328,33 @@ export default function MembershipPage() {
               <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-black text-white">1</span><div className="min-w-0 flex-1"><p className="text-sm font-black">確認 LINE 安全工作階段</p><p className="text-xs font-bold text-emerald-700">已啟動安全驗證</p></div><Check className="h-5 w-5 text-emerald-600" /></div>
               <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3"><span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-indigo-600 text-xs font-black text-white">2</span><div className="min-w-0 flex-1"><p className="text-sm font-black">查詢免廣告資格</p><p className="text-xs font-bold text-indigo-700">正在確認方案與有效期限</p></div><span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-600" /></div>
               <p className="px-1 pt-1 text-center text-xs font-bold leading-5 text-slate-500">登入憑證不會儲存在網址或瀏覽器儲存空間。</p>
+            </div>
+          </article>
+        </section>
+      </main>
+    );
+
+  if (isSuccessPage && membership !== null && !membership.active)
+    return (
+      <main id="main-content" aria-busy="true" aria-labelledby="payment-confirming-title" className="min-h-screen overflow-hidden bg-[#f5f6ff] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
+        <div aria-hidden="true" className="fixed -left-24 top-20 h-64 w-64 rounded-full bg-emerald-200/60 blur-3xl" />
+        <div aria-hidden="true" className="fixed -right-20 bottom-0 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
+        <section className="relative mx-auto max-w-lg">
+          <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
+          <article className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[7px_7px_0_#161b35]">
+            <div aria-hidden="true" className="absolute -right-10 -top-12 h-36 w-36 rounded-full border-[15px] border-emerald-100" />
+            <div className="relative border-b-2 border-slate-900 bg-emerald-100 px-6 py-5 sm:px-8">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-black tracking-[.14em] text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />PAYMENT CONFIRMING</span>
+              <div className="mt-4 flex items-center gap-4">
+                <div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-emerald-700 shadow-[2px_2px_0_#161b35]"><Crown className="h-6 w-6 fill-amber-300" /></div>
+                <div><h1 id="payment-confirming-title" className="text-2xl font-black tracking-tight sm:text-3xl">付款確認中</h1><p className="mt-1 text-sm font-bold text-slate-600">正在等待付款系統回傳結果，請稍候⋯</p></div>
+              </div>
+            </div>
+            <div role="status" aria-live="polite" className="relative space-y-3 p-5 sm:p-6">
+              <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-black text-white">1</span><div className="min-w-0 flex-1"><p className="text-sm font-black">付款已送出</p><p className="text-xs font-bold text-emerald-700">我們已收到付款指示</p></div><Check className="h-5 w-5 text-emerald-600" /></div>
+              <div className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3"><span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-xs font-black text-white">2</span><div className="min-w-0 flex-1"><p className="text-sm font-black">等待付款機構確認</p><p className="text-xs font-bold text-amber-700">正在與綠界確認交易結果</p></div><span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border-2 border-amber-200 border-t-amber-500" /></div>
+              <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 opacity-50"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-300 text-xs font-black text-white">3</span><div className="min-w-0 flex-1"><p className="text-sm font-black">啟用免廣告會員資格</p><p className="text-xs font-bold text-slate-500">確認後立即生效</p></div></div>
+              <p className="px-1 pt-1 text-center text-xs font-bold leading-5 text-slate-500">若付款已完成但此頁超過 30 秒仍未更新，請重新整理或來信客服確認。</p>
             </div>
           </article>
         </section>
