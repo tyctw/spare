@@ -853,10 +853,10 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                   { id: 'science', label: '自然', icon: Activity, color: 'text-emerald-600', bgBorder: 'bg-emerald-50 border-emerald-300 focus:ring-emerald-400 focus:border-emerald-400 hover:border-emerald-400', theme: 'bg-white' },
                   { id: 'social', label: '社會', icon: Map, color: 'text-purple-600', bgBorder: 'bg-purple-50 border-purple-300 focus:ring-purple-400 focus:border-purple-400 hover:border-purple-400', theme: 'bg-white' }
                 ].map(subject => (
-                  <div key={subject.id} className={`relative group ${subject.theme} border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3`}>
+                  <div key={subject.id} className={`relative group ${subject.theme} border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3`}>
                     <div className="flex items-center justify-between gap-2 sm:gap-4">
                       <label htmlFor={`score-${subject.id}`} className="text-base sm:text-lg font-black text-slate-700 flex items-center gap-3 shrink-0">
-                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] bg-slate-50`}>
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center shrink-0 bg-slate-50`}>
                           <subject.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${subject.color}`} />
                         </div>
                         {subject.label}
@@ -905,10 +905,10 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                 ))}
 
                 {/* Composition */}
-                <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3">
+                <div className="relative group bg-slate-900 border-2 border-slate-900 rounded-2xl p-3 sm:p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all flex flex-col gap-3">
                   <div className="flex items-center justify-between gap-2 sm:gap-4">
                     <label htmlFor="score-composition" className="text-base sm:text-lg font-black text-slate-100 flex items-center gap-3 shrink-0">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-[2px_2px_0px_0px_rgba(251,191,36,0.2)] bg-slate-800">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl border-2 border-amber-400/50 flex items-center justify-center shrink-0 bg-slate-800">
                         <PenTool className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
                       </div>
                       寫作
