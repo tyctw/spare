@@ -272,7 +272,11 @@ export default function MembershipPage() {
   const checkout = async () => {
     setEmailError("");
     const trimmedEmail = email.trim();
-    if (trimmedEmail && !trimmedEmail.includes("@")) {
+    if (!trimmedEmail) {
+      setEmailError("請填寫聯絡信箱。");
+      return;
+    }
+    if (!trimmedEmail.includes("@")) {
       setEmailError("請輸入正確的信箱格式。");
       return;
     }
@@ -666,12 +670,12 @@ export default function MembershipPage() {
               3
             </span>
             <p className="text-xs font-black tracking-[.18em] text-sky-600">
-              聯絡信箱（選填）
+              聯絡信箱（必填）
             </p>
           </div>
           <h2 id="membership-email-title" className="mt-3 text-xl font-black">留下信箱，方便我們通知你</h2>
           <p className="mt-1 text-sm font-bold leading-6 text-slate-500">
-            付款確認與到期提醒將寄送至此信箱，不填也可直接購買。
+            付款確認與到期提醒將寄送至此信箱，請務必填寫。
           </p>
           <div className="mt-4">
             <label htmlFor="membership-email" className="sr-only">電子信箱</label>

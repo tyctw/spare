@@ -94,7 +94,11 @@ export default function MembershipAccountPage() {
 
   const saveEmail = async () => {
     const trimmed = emailInput.trim();
-    if (trimmed && !trimmed.includes('@')) {
+    if (!trimmed) {
+      setEmailError('請填寫聯絡信箱。');
+      return;
+    }
+    if (!trimmed.includes('@')) {
       setEmailError('請輸入正確的信箱格式。');
       return;
     }
@@ -268,7 +272,6 @@ export default function MembershipAccountPage() {
                         </button>
                       </div>
                       {emailError && <p role="alert" className="mt-1.5 text-xs font-bold text-red-600">{emailError}</p>}
-                      <p className="mt-2 text-[10px] font-bold text-sky-600">留空並儲存可清除信箱。</p>
                     </div>
                   ) : membership.contactEmail ? (
                     <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border-2 border-sky-100 bg-sky-50/50 px-4 py-3">
