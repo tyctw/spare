@@ -61,6 +61,11 @@ const recommendations: Record<string, Recommendation[]> = {
     { title: '學校類型解析', description: '先找到適合自己的學習方向，再開始比較校科。', href: '/school-types', icon: GraduationCap, tone: 'bg-sky-100 text-sky-800' },
     { title: '網站地圖', description: '探索更多選校、成績與志願工具。', href: '/site-map', icon: Map, tone: 'bg-amber-100 text-amber-800' },
   ],
+  '/news': [
+    { title: '模擬志願序', description: '讀完資訊後，立刻把心儀校科排進清單，看看你的志願是否需要補強。', href: '/mock-volunteer', icon: ListChecks, tone: 'bg-orange-100 text-orange-800' },
+    { title: '學校類型解析', description: '還在猶豫普高、技高、綜高或五專？用學習方式找出適合自己的方向。', href: '/school-types', icon: GraduationCap, tone: 'bg-sky-100 text-sky-800' },
+    { title: '重要日期', description: '把選填、報名與放榜日期先掌握住，重要時刻就不會手忙腳亂。', href: '/important-dates', icon: CalendarDays, tone: 'bg-purple-100 text-purple-800' },
+  ],
 };
 
 const fallback: Recommendation[] = [
@@ -80,13 +85,13 @@ export default function RelatedReading({ path }: { path: string }) {
     { title: '填志願策略', description: '把區域規則轉成實際志願排序，避開不必要的志願序扣分。', href: '/strategy', icon: Target, tone: 'bg-orange-100 text-orange-800' },
     { title: '模擬志願序', description: '用清單試排校科與志願順序，再回頭核對你所在考區的規則。', href: '/mock-volunteer', icon: ListChecks, tone: 'bg-amber-100 text-amber-800' },
   ];
-  const items = path.startsWith('/scoring-rules/') ? scoringRuleRecommendations : path.startsWith('/area/') ? areaRecommendations : recommendations[path] ?? fallback;
+  const items = path.startsWith('/scoring-rules/') ? scoringRuleRecommendations : path.startsWith('/area/') ? areaRecommendations : path.startsWith('/news/') ? recommendations['/news'] : recommendations[path] ?? fallback;
   return <section className="mx-auto max-w-[90rem] px-4 pb-12 sm:px-6 lg:px-8 xl:px-10" aria-labelledby="related-reading-title">
     <div className="relative overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-[linear-gradient(135deg,#f8fbff_0%,#eef2ff_52%,#fdfcff_100%)] p-5 text-slate-900 shadow-[6px_6px_0_#0f172a] sm:p-7 lg:p-9">
       <div aria-hidden="true" className="absolute -right-20 -top-24 h-72 w-72 rounded-full border border-indigo-200 bg-indigo-100/60" />
       <div aria-hidden="true" className="absolute right-20 top-10 h-24 w-24 rounded-full bg-amber-200/60 blur-2xl" />
       <div className="relative">
-        <div><p className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-3 py-1.5 text-[11px] font-black tracking-[0.16em] text-indigo-700"><Compass className="h-3.5 w-3.5" />NEXT STEPS</p><h2 id="related-reading-title" className="mt-4 max-w-3xl text-3xl font-black tracking-tight sm:text-4xl">別急著離開，這幾頁能幫你更快做決定</h2><p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-slate-600 sm:text-base">還卡在「我適合哪一種學校？」「志願該怎麼排？」嗎？先從下方三個重點頁面開始，把模糊的想法變成今天就能完成的下一步。</p></div>
+        <div><p className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-amber-300 px-3 py-1.5 text-[11px] font-black tracking-[0.16em] text-slate-900"><Compass className="h-3.5 w-3.5" />別錯過這三個實用工具</p><h2 id="related-reading-title" className="mt-4 max-w-3xl text-3xl font-black tracking-tight sm:text-4xl">別急著離開，這幾頁能幫你更快做決定</h2><p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-slate-600 sm:text-base">還卡在「我適合哪一種學校？」「志願該怎麼排？」嗎？先從下方三個重點頁面開始，把模糊的想法變成今天就能完成的下一步。</p></div>
         <div className="mt-7 grid gap-4 md:grid-cols-3">{items.map((item) => { const Icon = item.icon; return <a key={item.href} href={withBasePath(item.href)} className="group relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-white p-5 text-slate-900 shadow-[3px_3px_0_#0f172a] transition duration-200 hover:-translate-y-1 hover:bg-indigo-50 hover:shadow-[5px_5px_0_#0f172a]"><div className="relative flex items-center gap-3"><div className={`inline-flex shrink-0 rounded-xl border-2 border-slate-900 p-2.5 ${item.tone}`}><Icon className="h-5 w-5" /></div><h3 className="text-lg font-black leading-snug">{item.title}</h3></div><p className="relative mt-4 text-sm font-bold leading-6 text-slate-600">{item.description}</p><span className="relative mt-5 flex items-center justify-end gap-1.5 text-sm font-black text-indigo-700">繼續閱讀 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span></a>; })}</div>
       </div>
     </div>
