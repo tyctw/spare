@@ -171,6 +171,8 @@ export default function MembershipPage() {
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState("");
   const [lineName, setLineName] = useState("");
+  const [payerName, setPayerName] = useState("");
+  const [payerNameError, setPayerNameError] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const selectedPlan = useMemo(
@@ -270,8 +272,14 @@ export default function MembershipPage() {
   };
 
   const checkout = async () => {
+    setPayerNameError("");
     setEmailError("");
+    const trimmedPayerName = payerName.trim().replace(/\s+/g, " ");
     const trimmedEmail = email.trim();
+    if (!trimmedPayerName) {
+      setPayerNameError("請填寫付款人姓名。");
+      return;
+    }
     if (!trimmedEmail) {
       setEmailError("請填寫聯絡信箱。");
       return;
@@ -289,6 +297,7 @@ export default function MembershipPage() {
       }>({
         action: "createMembershipPayment",
         plan: selected,
+        payerName: trimmedPayerName,
         email: trimmedEmail || undefined,
       });
       const form = document.createElement("form");
@@ -670,15 +679,31 @@ export default function MembershipPage() {
               3
             </span>
             <p className="text-xs font-black tracking-[.18em] text-sky-600">
-              聯絡信箱（必填）
+              付款人資料（必填）
             </p>
           </div>
-          <h2 id="membership-email-title" className="mt-3 text-xl font-black">留下信箱，方便我們通知你</h2>
+          <h2 id="membership-email-title" className="mt-3 text-xl font-black">留下付款資料，方便我們確認與通知</h2>
           <p className="mt-1 text-sm font-bold leading-6 text-slate-500">
-            付款確認與到期提醒將寄送至此信箱，請務必填寫。
+            付款人姓名用於訂單核對；付款確認與到期提醒將寄送至此信箱。
           </p>
-          <div className="mt-4">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label htmlFor="membership-payer-name" className="text-sm font-black text-slate-700">付款人姓名</label>
+              <input
+                id="membership-payer-name"
+                type="text"
+                autoComplete="name"
+                maxLength={80}
+                placeholder="請輸入真實姓名"
+                value={payerName}
+                onChange={(e) => { setPayerName(e.target.value); setPayerNameError(""); }}
+                className={`mt-1 w-full rounded-2xl border-2 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:bg-white ${payerNameError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
+              />
+              {payerNameError && <p role="alert" className="mt-2 text-xs font-bold text-red-600">{payerNameError}</p>}
+            </div>
+            <div>
             <label htmlFor="membership-email" className="sr-only">電子信箱</label>
+            <p className="text-sm font-black text-slate-700">付款人電子信箱</p>
             <input
               id="membership-email"
               type="email"
@@ -687,11 +712,12 @@ export default function MembershipPage() {
               placeholder="your@email.com"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
-              className={`w-full rounded-2xl border-2 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:bg-white ${emailError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
+              className={`mt-1 w-full rounded-2xl border-2 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:bg-white ${emailError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
             />
             {emailError && (
               <p role="alert" className="mt-2 text-xs font-bold text-red-600">{emailError}</p>
             )}
+            </div>
           </div>
         </section>
 
