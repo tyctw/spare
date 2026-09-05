@@ -1160,6 +1160,10 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       if (!lineSession) throw new Error('LINE login is required before purchasing membership.');
 
       const contactEmail = String(payload.email || '').trim().toLowerCase();
+      const payerName = String(payload.payerName || '').trim().replace(/\s+/g, ' ');
+      if (!payerName || payerName.length > 80) {
+        throw new Error('請填寫付款人姓名（最多 80 個字）。');
+      }
       if (!contactEmail) {
         throw new Error('請填寫聯絡信箱。');
       }
@@ -1191,7 +1195,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       const checkMacValue = await ecpayCheckMacValue(fields, config.hashKey, config.hashIv);
       const { data, error } = await supabase
         .from('membership_payments')
-        .insert({ merchant_trade_no: merchantTradeNo, plan: planId, amount: plan.amount, line_user_id: lineSession.line_user_id, contact_email: contactEmail })
+        .insert({ merchant_trade_no: merchantTradeNo, plan: planId, amount: plan.amount, line_user_id: lineSession.line_user_id, payer_name: payerName, contact_email: contactEmail })
         .select('id')
         .single();
       if (error || !data?.id) throw error || new Error('Could not create membership payment.');
