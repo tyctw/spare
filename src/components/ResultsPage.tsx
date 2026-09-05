@@ -34,7 +34,6 @@ import { withBasePath } from '../lib/routes';
 import { getComparisonSchools, saveComparisonSchools } from '../lib/comparisonStorage';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
 import { getCreditsGap, getPointsGap } from '../lib/admissionComparison';
-import ScoreChangeInsight from './ScoreChangeInsight';
 import {
   AdmissionAnalysisDialog,
   AutoFitSingleLine,
@@ -296,7 +295,10 @@ export default function ResultsPage() {
           </div>
         </section>
 
-        <ScoreChangeInsight scores={scores || {}} region={String(scores?.region || '')} vocationalGroups={vocationalGroups} />
+        <section className="mt-6 flex flex-col gap-4 rounded-2xl border-2 border-slate-900 bg-violet-50 p-5 shadow-[4px_4px_0_#0f172a] sm:flex-row sm:items-center sm:justify-between">
+          <div><p className="text-xs font-black tracking-[.14em] text-violet-700">MEMBER DECISION TOOL</p><h2 className="mt-1 text-xl font-black">一分改變分析</h2><p className="mt-1 text-sm font-bold text-slate-600">用本次成績模擬六科提高或降低一級後，校科選擇會怎麼變。</p></div>
+          <a href={withBasePath('/score-change')} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[2px_2px_0_#0f172a] transition hover:bg-violet-100"><Sparkles className="h-4 w-4 text-violet-700" />開啟分析</a>
+        </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
           <aside className="space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-2 custom-scrollbar">

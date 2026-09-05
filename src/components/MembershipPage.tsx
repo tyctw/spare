@@ -499,7 +499,7 @@ export default function MembershipPage() {
                   </span>
                   <div>
                     <p className="text-sm font-black">一分改變分析</p>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">試算英文或作文提高一級後，可能新增的校科選擇。</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">任選六科提高或降低一級，查看可能增減的校科選擇。</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
