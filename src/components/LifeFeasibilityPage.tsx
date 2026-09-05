@@ -56,7 +56,7 @@ export default function LifeFeasibilityPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-100 text-slate-900 print:bg-white">
+    <main className="life-print-sheet min-h-screen bg-slate-100 text-slate-900 print:bg-white">
       <style>{`
         @page { size: A4; margin: 11mm; }
         .print-only { display: none; }
@@ -67,6 +67,18 @@ export default function LifeFeasibilityPage() {
           input, select, textarea { border-color: #0f172a !important; background: #fff !important; color: #0f172a !important; }
           .print-card { box-shadow: none !important; break-inside: avoid; }
           .print-header { border-width: 2px !important; }
+          .life-print-sheet { background: #fff !important; }
+          .life-print-header { padding: 5mm 6mm !important; }
+          .life-print-header h1 { font-size: 24px !important; line-height: 1.1 !important; }
+          .life-print-header p { line-height: 1.45 !important; }
+          .life-print-basics, .life-print-candidate, .life-print-decision { padding: 4mm !important; }
+          .life-print-comparison { margin-top: 5mm !important; }
+          .life-print-candidates { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 4mm !important; }
+          .life-print-candidate textarea { min-height: 14mm !important; }
+          .life-print-decision { break-before: page; margin-top: 0 !important; }
+          .life-print-note { margin-top: 5mm !important; padding: 3mm 4mm !important; }
+          .life-print-sheet input, .life-print-sheet select, .life-print-sheet textarea { font-size: 11px !important; padding: 2mm !important; }
+          .life-print-sheet label { font-size: 11px !important; }
         }
       `}</style>
 
@@ -81,7 +93,7 @@ export default function LifeFeasibilityPage() {
 
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
         <section className="print-card overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#0f172a]">
-          <header className="print-header border-b-2 border-slate-900 bg-indigo-50 px-5 py-6 sm:px-8 sm:py-8">
+          <header className="print-header life-print-header border-b-2 border-slate-900 bg-indigo-50 px-5 py-6 sm:px-8 sm:py-8">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-xs font-black tracking-[.16em] text-indigo-700">STUDENT DECISION WORKSHEET</p>
@@ -102,7 +114,7 @@ export default function LifeFeasibilityPage() {
               <Step number="3" title="一起討論" description="決定下一步要查什麼" tone="emerald" />
             </ol>
 
-            <section className="mt-6 rounded-2xl border-2 border-slate-900 bg-slate-50 p-4 sm:p-5">
+            <section className="life-print-basics mt-6 rounded-2xl border-2 border-slate-900 bg-slate-50 p-4 sm:p-5">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                 <div><h2 className="text-lg font-black">先填基本資料</h2><p className="mt-1 text-sm font-bold text-slate-600">資料只留在這台裝置；不想填姓名也可以直接開始。</p></div>
                 <p className="text-sm font-black text-indigo-700">預算會用來提醒費用是否超標</p>
@@ -115,17 +127,17 @@ export default function LifeFeasibilityPage() {
               </div>
             </section>
 
-            <section className="mt-6" aria-labelledby="candidate-comparison-title">
+            <section className="life-print-comparison mt-6" aria-labelledby="candidate-comparison-title">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                 <div><p className="text-xs font-black tracking-[.16em] text-indigo-700">STEP 1 · STEP 2</p><h2 id="candidate-comparison-title" className="mt-1 text-2xl font-black">把兩個選項放在一起看</h2></div>
                 <p className="text-sm font-bold text-slate-600">不用急著選；先把生活條件填完整。</p>
               </div>
-              <div className="mt-4 grid gap-5 lg:grid-cols-2">
+              <div className="life-print-candidates mt-4 grid gap-5 lg:grid-cols-2">
                 {candidates.map((candidate, index) => <CandidateCard key={index} index={index} candidate={candidate} result={results[index]} onChange={(patch) => update(index, patch)} />)}
               </div>
             </section>
 
-            <section className="print-card mt-6 rounded-2xl border-2 border-slate-900 bg-emerald-50 p-4 sm:p-5" aria-labelledby="life-decision-title">
+            <section className="print-card life-print-decision mt-6 rounded-2xl border-2 border-slate-900 bg-emerald-50 p-4 sm:p-5" aria-labelledby="life-decision-title">
               <p className="text-xs font-black tracking-[.16em] text-emerald-800">STEP 3 · DISCUSS</p>
               <h2 id="life-decision-title" className="mt-1 text-2xl font-black">討論後，先保留哪個選項？</h2>
               <p className="mt-1 text-sm font-bold text-slate-600">這不是最後志願序，只是幫你決定下一步優先查什麼。</p>
@@ -137,7 +149,7 @@ export default function LifeFeasibilityPage() {
               <label className="mt-4 block text-sm font-black text-slate-700">和家人／老師討論後，我的結論<textarea value={discussion} onChange={(event) => setDiscussion(event.target.value)} className="mt-2 min-h-28 w-full rounded-xl border-2 border-slate-900 bg-white p-3 text-sm font-bold leading-6" placeholder="例如：先確認末班車與宿舍名額，再決定是否保留。" /></label>
             </section>
 
-            <p className="mt-5 rounded-xl bg-slate-100 px-4 py-3 text-xs font-bold leading-6 text-slate-600">判斷參考：單程超過 60 分鐘、轉乘超過 2 次、費用超出預算，或住宿／晚歸尚未有家人支持，都會列為需要處理的條件。本表協助討論，不是即時交通資訊或錄取建議。</p>
+            <p className="life-print-note mt-5 rounded-xl bg-slate-100 px-4 py-3 text-xs font-bold leading-6 text-slate-600">判斷參考：單程超過 60 分鐘、轉乘超過 2 次、費用超出預算，或住宿／晚歸尚未有家人支持，都會列為需要處理的條件。本表協助討論，不是即時交通資訊或錄取建議。</p>
           </div>
         </section>
       </div>
@@ -155,7 +167,7 @@ function CandidateCard({ index, candidate, result, onChange }: { index: number; 
   const color = isFirst ? 'bg-sky-50' : 'bg-amber-50';
   const label = isFirst ? '選項 A' : '選項 B';
 
-  return <article className={`print-card rounded-2xl border-2 border-slate-900 p-4 sm:p-5 ${color}`}>
+  return <article className={`print-card life-print-candidate rounded-2xl border-2 border-slate-900 p-4 sm:p-5 ${color}`}>
     <div className="flex items-center justify-between gap-3"><span className="rounded-full border-2 border-slate-900 bg-white px-3 py-1 text-xs font-black">{label}</span><span className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-black ${result.tone}`}>{result.label}</span></div>
     <div className="mt-3"><TextField label={`候選學校／科別 ${index + 1}`} value={candidate.name} onChange={(value) => onChange({ name: value })} placeholder="例如：○○高中普通科" /></div>
     <div className="mt-5 grid gap-3 sm:grid-cols-3"><NumberField label="單程約幾分鐘" value={candidate.commute} onChange={(value) => onChange({ commute: value })} /><NumberField label="轉乘幾次" value={candidate.transfers} onChange={(value) => onChange({ transfers: value })} /><NumberField label="每月約花多少元" value={candidate.cost} onChange={(value) => onChange({ cost: value })} /></div>
