@@ -126,7 +126,7 @@ export default function ShareReportDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="share-report-title"
-      className="relative w-full max-w-2xl overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[10px_10px_0px_0px_rgba(15,23,42,1)]"
+      className="relative w-full max-w-2xl overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
       >
         <header className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-600 px-5 pb-6 pt-5 text-white sm:px-7">
           <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full border-4 border-white/20 bg-white/10" />
