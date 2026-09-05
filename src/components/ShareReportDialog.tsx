@@ -27,6 +27,7 @@ const text = {
   close: "\u95dc\u9589\u5206\u4eab\u8996\u7a97",
   title: "\u5206\u4eab\u7d66\u5bb6\u9577",
   expiry: "\u552f\u8b80\u9023\u7d50\u6709\u6548\u671f\u70ba 5 \u5929\u3002",
+  memberExpiry: "會員專屬連結不會失效；分享內容維持建立當下的快照。",
   snapshot:
     "\u6703\u5efa\u7acb\u73fe\u5728\u5831\u544a\u7684\u5feb\u7167\uff0c\u5f8c\u7e8c\u4fee\u6539\u4e0d\u6703\u5f71\u97ff\u5df2\u5206\u4eab\u7684\u5167\u5bb9\u3002",
   create: "\u5efa\u7acb\u552f\u8b80\u9023\u7d50",
@@ -50,6 +51,8 @@ export default function ShareReportDialog({
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [isMemberShare, setIsMemberShare] = useState(false);
+  const [isCheckingMembership, setIsCheckingMembership] = useState(false);
 
   // Keep a previously created link for the same list. A list change means a
   // new snapshot must be created, so the old link is intentionally discarded.
@@ -58,6 +61,28 @@ export default function ShareReportDialog({
     setError("");
     setCopied(false);
   }, [snapshotKey]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!isOpen || kind !== "volunteer") {
+      setIsMemberShare(false);
+      setIsCheckingMembership(false);
+      return () => { cancelled = true; };
+    }
+
+    setIsCheckingMembership(true);
+    callBackend<{ active?: boolean }>({ action: "getMembershipStatus" })
+      .then((status) => {
+        if (!cancelled) setIsMemberShare(status.active === true);
+      })
+      .catch(() => {
+        if (!cancelled) setIsMemberShare(false);
+      })
+      .finally(() => {
+        if (!cancelled) setIsCheckingMembership(false);
+      });
+    return () => { cancelled = true; };
+  }, [isOpen, kind]);
 
   const createLink = async () => {
     if (!payload) return;
@@ -68,6 +93,7 @@ export default function ShareReportDialog({
         action: "createSharedReport",
         kind,
         payload,
+        persistent: isMemberShare,
       });
       setUrl(
         `${window.location.origin}${withBasePath(`/shared/${response.token}`)}`,
@@ -88,6 +114,7 @@ export default function ShareReportDialog({
     }
   };
   if (!isOpen) return null;
+  const durationText = isMemberShare ? text.memberExpiry : text.expiry;
   return (
     <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 sm:p-6">
       <button
@@ -139,11 +166,11 @@ export default function ShareReportDialog({
               </div>
               <div className="mt-5 flex items-center gap-2 rounded-xl border-2 border-amber-300 bg-amber-50 px-3 py-2.5 text-xs font-black text-amber-950">
                 <Clock3 className="h-4 w-4 shrink-0" />
-                {text.expiry}
+                {durationText}
               </div>
               <button
                 onClick={createLink}
-                disabled={!payload || isCreating}
+                disabled={!payload || isCreating || isCheckingMembership}
                 className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-300 px-4 py-3.5 font-black text-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isCreating ? (
@@ -151,7 +178,7 @@ export default function ShareReportDialog({
                 ) : (
                   <Share2 className="h-5 w-5" />
                 )}
-                {isCreating ? "正在建立連結…" : text.create}
+                {isCreating ? "正在建立連結…" : isCheckingMembership ? "正在確認會員資格…" : text.create}
               </button>
             </>
           ) : (
@@ -187,7 +214,7 @@ export default function ShareReportDialog({
                   </button>
                   <p className="mt-4 flex items-center gap-1.5 border-t-2 border-dashed border-slate-200 pt-3 text-xs font-black text-amber-800">
                     <Clock3 className="h-3.5 w-3.5" />
-                    {text.expiry}
+                    {durationText}
                   </p>
                 </div>
               </div>

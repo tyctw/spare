@@ -21,7 +21,7 @@ import RelatedReading from "./RelatedReading";
 type SharedReport = {
   kind: "analysis" | "volunteer";
   payload: any;
-  expiresAt: string;
+  expiresAt: string | null;
 };
 const copyStorageKey = "mock-volunteer-import";
 
@@ -119,7 +119,7 @@ function VolunteerReport({
   region: string;
   regionName: string;
   createdAt: string;
-  expiresAt: string;
+  expiresAt: string | null;
 }) {
   const summaryChoices = choices.slice(0, 10);
   const groupCounts = countBy(
@@ -184,8 +184,8 @@ function VolunteerReport({
           />
           <StatCard
             icon={<CalendarDays className="h-5 w-5" />}
-            label="連結有效至"
-            value={new Date(expiresAt).toLocaleDateString("zh-TW")}
+            label={expiresAt ? "連結有效至" : "分享狀態"}
+            value={expiresAt ? new Date(expiresAt).toLocaleDateString("zh-TW") : "會員專屬長期連結"}
             tone="bg-violet-100 text-violet-800"
           />
         </section>
@@ -492,7 +492,7 @@ function Layout({
 }: {
   title: string;
   createdAt: string;
-  expiresAt: string;
+  expiresAt: string | null;
   children: ReactNode;
 }) {
   return (
@@ -512,8 +512,7 @@ function Layout({
           </div>
           <h1 className="mt-2 text-3xl font-black">{title}</h1>
           <p className="mt-3 text-sm font-bold text-indigo-100">
-            {createdAt && `建立於 ${createdAt} · `}有效至{" "}
-            {new Date(expiresAt).toLocaleDateString("zh-TW")}
+            {createdAt && `建立於 ${createdAt} · `}{expiresAt ? `有效至 ${new Date(expiresAt).toLocaleDateString("zh-TW")}` : "會員專屬長期連結"}
           </p>
         </header>
         <div className="mt-6">{children}</div>
