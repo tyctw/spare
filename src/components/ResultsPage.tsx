@@ -189,14 +189,14 @@ export default function ResultsPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="mb-6 flex items-start justify-between gap-2">
           <div className="flex flex-wrap items-center gap-3">
             <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-700 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-slate-50 hover:text-slate-950 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none">
               <ArrowLeft className="h-4 w-4" />
               回到落點分析
             </a>
           </div>
-          <button type="button" onClick={() => setIsExportOpen(true)} className="inline-flex w-fit self-end items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-100 px-4 py-2.5 text-sm font-black text-emerald-800 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-emerald-200 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none sm:self-auto"><Download className="h-4 w-4" />匯出結果</button>
+          <button type="button" onClick={() => setIsExportOpen(true)} className="inline-flex w-fit shrink-0 items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-100 px-4 py-2.5 text-sm font-black text-emerald-800 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-emerald-200 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none"><Download className="h-4 w-4" />匯出結果</button>
           <div className="fixed bottom-5 right-5 z-40">
             <button type="button" onClick={() => setIsToolsOpen((open) => !open)} aria-expanded={isToolsOpen} aria-controls="results-tools-menu" aria-label={comparisonSchools.length ? `開啟更多工具，目前有 ${comparisonSchools.length} 所加入比較清單` : '開啟更多工具'} title="更多工具" className="relative grid h-12 w-12 place-items-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 transition hover:-translate-y-0.5 hover:bg-amber-200 active:translate-y-0"><Layers className="h-5 w-5" />{comparisonSchools.length > 0 && <span className="absolute -right-2 -top-2 grid min-h-5 min-w-5 place-items-center rounded-full border-2 border-slate-900 bg-rose-500 px-1 text-[10px] font-black text-white">{comparisonSchools.length > 99 ? '99+' : comparisonSchools.length}</span>}</button>
             {isToolsOpen && <div id="results-tools-menu" className="absolute bottom-full right-0 mb-3 w-60 rounded-2xl border-2 border-slate-900 bg-white p-2.5"><div className="grid grid-cols-3 gap-2">
