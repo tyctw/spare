@@ -12,7 +12,6 @@ import {
   LockKeyhole,
   LogIn,
   Mail,
-  MonitorSmartphone,
   ReceiptText,
   Sparkles,
   X,
@@ -496,11 +495,11 @@ export default function MembershipPage() {
                 </li>
                 <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
                   <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
-                    <MonitorSmartphone className="h-4 w-4" />
+                    <Sparkles className="h-4 w-4" />
                   </span>
                   <div>
-                    <p className="text-sm font-black">跨裝置找回資格</p>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">資格綁定 LINE，手機、電腦、平板都能直接確認。</p>
+                    <p className="text-sm font-black">一分改變分析</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">試算英文或作文提高一級後，可能新增的校科選擇。</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">

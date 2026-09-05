@@ -34,6 +34,7 @@ import { withBasePath } from '../lib/routes';
 import { getComparisonSchools, saveComparisonSchools } from '../lib/comparisonStorage';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
 import { getCreditsGap, getPointsGap } from '../lib/admissionComparison';
+import ScoreChangeInsight from './ScoreChangeInsight';
 import {
   AdmissionAnalysisDialog,
   AutoFitSingleLine,
@@ -294,6 +295,8 @@ export default function ResultsPage() {
             </div>
           </div>
         </section>
+
+        <ScoreChangeInsight scores={scores || {}} region={String(scores?.region || '')} vocationalGroups={vocationalGroups} />
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
           <aside className="space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-2 custom-scrollbar">
