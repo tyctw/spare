@@ -10,6 +10,12 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
 
 const MAX_FORM_BODY_BYTES = 32 * 1024;
 const textHeaders = { 'Content-Type': 'text/plain; charset=utf-8' };
+const escapeHtml = (value: unknown) => String(value ?? '')
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
 
 const ecpayUrlEncode = (value: string) => encodeURIComponent(value)
   .replace(/%20/g, '+')
@@ -111,7 +117,7 @@ Deno.serve(async (request) => {
 
     const { data: membershipPayment, error: membershipError } = await supabase
       .from('membership_payments')
-      .select('amount, plan, status, ecpay_trade_no, contact_email')
+      .select('amount, plan, status, ecpay_trade_no, contact_email, payer_name')
       .eq('merchant_trade_no', merchantTradeNo)
       .maybeSingle();
     if (membershipError) throw membershipError;
@@ -175,6 +181,7 @@ Deno.serve(async (request) => {
         if (resendApiKey) {
           const planName = membershipPayment.plan === 'yearly' ? '年費免廣告會員' : '月費免廣告會員';
           const expireDateStr = new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long' }).format(expiresAt || paidAt);
+          const payerName = escapeHtml(membershipPayment.payer_name?.trim() || '使用者');
           
           const emailHtml = `
             <!DOCTYPE html>
@@ -216,13 +223,17 @@ Deno.serve(async (request) => {
                       <!-- Content -->
                       <tr>
                         <td class="content" style="padding: 32px 32px;">
-                          <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 20px; font-weight: 900;">親愛的使用者，您好：</h2>
+                          <h2 style="margin: 0 0 16px 0; color: #0f172a; font-size: 20px; font-weight: 900;">親愛的 ${payerName}，您好：</h2>
                           <p style="margin: 0 0 24px 0; color: #334155; font-size: 16px; line-height: 1.6; font-weight: 700;">感謝您購買我們的免廣告會員方案！您的會員資格已經生效，接下來您可以享受純淨、無打擾的落點分析體驗。</p>
                           
                           <!-- Order Details -->
                           <div class="order-card" style="background-color: #f1f5f9; border: 2px solid #0f172a; border-radius: 16px; padding: 24px; margin-bottom: 32px; box-shadow: 3px 3px 0px #0f172a;">
                             <h3 style="margin: 0 0 16px 0; color: #0f172a; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; font-weight: 900;">訂單資訊</h3>
                             <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout: fixed;">
+                              <tr>
+                                <td class="table-text" style="padding: 10px 0; color: #475569; font-size: 15px; font-weight: 700; border-bottom: 2px dashed #cbd5e1; width: 35%;">付款人姓名</td>
+                                <td class="table-text" style="padding: 10px 0; color: #0f172a; font-size: 16px; font-weight: 900; border-bottom: 2px dashed #cbd5e1; word-wrap: break-word;">${payerName}</td>
+                              </tr>
                               <tr>
                                 <td class="table-text" style="padding: 10px 0; color: #475569; font-size: 15px; font-weight: 700; border-bottom: 2px dashed #cbd5e1; width: 35%;">購買方案</td>
                                 <td class="table-text" style="padding: 10px 0; color: #0f172a; font-size: 16px; font-weight: 900; border-bottom: 2px dashed #cbd5e1; word-wrap: break-word;">${planName}</td>
@@ -292,16 +303,20 @@ Deno.serve(async (request) => {
               })
             });
             if (!emailRes.ok) {
-              const errBody = await emailRes.text();
-              console.error('Resend API Error:', errBody);
+              // Do not write a provider response body to logs: it can echo
+              // recipient or other personally identifiable information.
+              console.error('Payment confirmation email request failed', {
+                merchantTradeNo,
+                status: emailRes.status,
+              });
             } else {
-              console.log('Successfully sent email to:', membershipPayment.contact_email);
+              console.log('Payment confirmation email sent', { merchantTradeNo });
             }
-          } catch (err) {
-            console.error('Failed to send email:', err);
+          } catch {
+            console.error('Payment confirmation email request errored', { merchantTradeNo });
           }
         } else {
-          console.warn('RESEND_API_KEY is not set. Skipped sending email to:', membershipPayment.contact_email);
+          console.warn('Payment confirmation email skipped: Resend is not configured', { merchantTradeNo });
         }
       }
 
