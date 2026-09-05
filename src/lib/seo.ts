@@ -138,6 +138,11 @@ const pageMetadata: Record<string, PageMeta> = {
     title: '高中職、五專學校與科別搜尋｜全國會考落點分析',
     description: '搜尋各就學區高中職、五專與科別資訊，作為會考落點分析及志願選填的參考。',
   },
+  '/score-change': {
+    title: '一分改變分析｜會員升學決策工具｜全國會考落點分析',
+    description: '以本次會考成績與篩選條件，模擬六科提高或降低一級後可能增減的校科選擇；僅供升學規劃參考。',
+    noindex: true,
+  },
   '/site-map': {
     title: '網站地圖｜全國會考落點分析',
     description: '瀏覽全國會考落點分析的所有功能與升學資訊頁面，快速找到需要的工具與說明。',
