@@ -5,6 +5,7 @@ import {
   Award,
   Building2,
   Calculator,
+  ChevronDown,
   Check,
   Database,
   Download,
@@ -69,10 +70,10 @@ export default function ResultsPage() {
   const [schoolView, setSchoolView] = useState<'cards' | 'table'>('cards');
   const [comparisonSchools, setComparisonSchools] = useState<any[]>(getComparisonSchools);
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
   const [analysisSchool, setAnalysisSchool] = useState<any | null>(null);
   const [detailSchool, setDetailSchool] = useState<any | null>(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
 
   React.useEffect(() => {
     if (!stored?.results) return;
@@ -85,13 +86,6 @@ export default function ResultsPage() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [stored]);
-
-  React.useEffect(() => {
-    const updateScrollTopVisibility = () => setShowScrollTop(window.scrollY > 320);
-    updateScrollTopVisibility();
-    window.addEventListener('scroll', updateScrollTopVisibility, { passive: true });
-    return () => window.removeEventListener('scroll', updateScrollTopVisibility);
-  }, []);
 
   if (!stored?.results) {
     return (
@@ -200,36 +194,15 @@ export default function ResultsPage() {
             <ArrowLeft className="h-4 w-4" />
             回到落點分析
           </a>
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-            <a
-              href={withBasePath('/compare')}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-center text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
-            >
-              <List className="h-4 w-4" />
-              比較清單 ({comparisonSchools.length})
-            </a>
-            <button
-              type="button"
-              onClick={() => setIsExportOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-100 px-3 py-2 text-center text-sm font-black text-emerald-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
-            >
-              <Download className="h-4 w-4" />
-              匯出結果
-            </button>
-            <a
-              href={withBasePath('/strategy')}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-100 px-3 py-2 text-center text-sm font-black text-amber-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
-            >
-              <Target className="h-4 w-4" />
-              志願選填攻略
-            </a>
-            <a
-              href={withBasePath('/school-types')}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-100 px-3 py-2 text-center text-sm font-black text-sky-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
-            >
-              <Building2 className="h-4 w-4" />
-              學校類型解析
-            </a>
+          <div className="relative self-end sm:self-auto">
+            <button type="button" onClick={() => setIsToolsOpen((open) => !open)} aria-expanded={isToolsOpen} aria-controls="results-tools-menu" className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none"><Layers className="h-4 w-4 text-indigo-700" />更多工具<ChevronDown className={`h-4 w-4 transition-transform ${isToolsOpen ? 'rotate-180' : ''}`} /></button>
+            {isToolsOpen && <div id="results-tools-menu" className="absolute right-0 z-40 mt-3 w-72 overflow-hidden rounded-2xl border-2 border-slate-900 bg-white p-2 shadow-[5px_5px_0_#0f172a]">
+              <a href={withBasePath('/compare')} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-black transition hover:bg-violet-50"><span className="grid h-9 w-9 place-items-center rounded-lg bg-violet-100 text-violet-700"><List className="h-4 w-4" /></span><span className="flex-1">比較清單</span><span className="rounded-full bg-slate-100 px-2 py-1 text-xs">{comparisonSchools.length}</span></a>
+              <button type="button" onClick={() => { setIsToolsOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-amber-50"><span className="grid h-9 w-9 place-items-center rounded-lg bg-amber-100 text-amber-700"><ArrowUp className="h-4 w-4" /></span>一鍵回到上方</button>
+              <button type="button" onClick={() => { setIsToolsOpen(false); setIsExportOpen(true); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-black transition hover:bg-emerald-50"><span className="grid h-9 w-9 place-items-center rounded-lg bg-emerald-100 text-emerald-700"><Download className="h-4 w-4" /></span>匯出結果</button>
+              <a href={withBasePath('/strategy')} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-black transition hover:bg-amber-50"><span className="grid h-9 w-9 place-items-center rounded-lg bg-amber-100 text-amber-700"><Target className="h-4 w-4" /></span>志願選填攻略</a>
+              <a href={withBasePath('/school-types')} className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-black transition hover:bg-sky-50"><span className="grid h-9 w-9 place-items-center rounded-lg bg-sky-100 text-sky-700"><Building2 className="h-4 w-4" /></span>學校類型解析</a>
+            </div>}
           </div>
         </div>
 
@@ -662,18 +635,6 @@ export default function ResultsPage() {
       </main>
 
       <Footer />
-
-      {showScrollTop && (
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-amber-200 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
-          aria-label="回到頁面最上方"
-          title="回到頁面最上方"
-        >
-          <ArrowUp className="h-6 w-6" />
-        </button>
-      )}
 
       <ExportModal isOpen={isExportOpen} onClose={() => setIsExportOpen(false)} onExport={handleExport} />
       <AdmissionAnalysisDialog school={analysisSchool} region={scores?.region} grades={scores} onClose={() => setAnalysisSchool(null)} />
