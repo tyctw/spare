@@ -19,6 +19,8 @@ const escapeHtml = (value: unknown) => String(value ?? '')
 
 const ecpayUrlEncode = (value: string) => encodeURIComponent(value)
   .replace(/%20/g, '+')
+  .replace(/~/g, '%7e')
+  .replace(/'/g, '%27')
   .replace(/%2D/g, '-')
   .replace(/%5F/g, '_')
   .replace(/%2E/g, '.')
@@ -47,6 +49,14 @@ function secureEqual(left: string, right: string) {
   let difference = 0;
   for (let index = 0; index < left.length; index += 1) difference |= left.charCodeAt(index) ^ right.charCodeAt(index);
   return difference === 0;
+}
+
+function runInBackground(task: Promise<unknown>) {
+  const guardedTask = task.catch((error) => console.error('Background payment task failed', error));
+  const runtime = globalThis as typeof globalThis & {
+    EdgeRuntime?: { waitUntil?: (promise: Promise<unknown>) => void };
+  };
+  if (runtime.EdgeRuntime?.waitUntil) runtime.EdgeRuntime.waitUntil(guardedTask);
 }
 
 async function readRequestText(request: Request, maxBytes: number) {
@@ -287,34 +297,35 @@ Deno.serve(async (request) => {
             </html>
           `;
 
-          // 在 Serverless 環境中必須 await，否則函式提早結束會導致請求被切斷
-          try {
-            const emailRes = await fetch('https://api.resend.com/emails', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${resendApiKey}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                from: resendFrom,
-                to: membershipPayment.contact_email,
-                subject: '【會考落點分析】付款成功與會員啟用通知',
-                html: emailHtml
-              })
-            });
-            if (!emailRes.ok) {
-              // Do not write a provider response body to logs: it can echo
-              // recipient or other personally identifiable information.
-              console.error('Payment confirmation email request failed', {
-                merchantTradeNo,
-                status: emailRes.status,
+          runInBackground((async () => {
+            try {
+              const emailRes = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${resendApiKey}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  from: resendFrom,
+                  to: membershipPayment.contact_email,
+                  subject: '【會考落點分析】付款成功與會員啟用通知',
+                  html: emailHtml
+                })
               });
-            } else {
-              console.log('Payment confirmation email sent', { merchantTradeNo });
+              if (!emailRes.ok) {
+                // Do not write a provider response body to logs: it can echo
+                // recipient or other personally identifiable information.
+                console.error('Payment confirmation email request failed', {
+                  merchantTradeNo,
+                  status: emailRes.status,
+                });
+              } else {
+                console.log('Payment confirmation email sent', { merchantTradeNo });
+              }
+            } catch {
+              console.error('Payment confirmation email request errored', { merchantTradeNo });
             }
-          } catch {
-            console.error('Payment confirmation email request errored', { merchantTradeNo });
-          }
+          })());
         } else {
           console.warn('Payment confirmation email skipped: Resend is not configured', { merchantTradeNo });
         }
