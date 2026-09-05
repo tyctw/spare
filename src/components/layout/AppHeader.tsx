@@ -247,15 +247,15 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
               onClick={() => setIsGlobalSearchOpen(true)}
               aria-label="搜尋全站功能"
               aria-expanded={isGlobalSearchOpen}
-              className={`flex items-center justify-center gap-2 bg-amber-400 text-slate-900 border-slate-900 font-black transition hover:bg-amber-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-10 h-10 sm:w-auto sm:h-12 sm:px-4 rounded-xl sm:rounded-2xl border-2 sm:border-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]'}`}
+    className={`flex items-center justify-center bg-amber-400 text-slate-900 border-slate-900 font-black transition hover:bg-amber-300 active:translate-y-1 ${isScrolled ? 'w-10 h-10 rounded-xl border-2' : 'w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border-2 sm:border-3'}`}
             >
-              <Search className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-5 h-5 sm:w-6 sm:h-6'}`} />
+    <Search className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
             </button>
             <button
               type="button"
               onClick={onShareClick}
               aria-label="開啟分享選單"
-              className={`bg-emerald-200 flex items-center justify-center border-slate-900 transition hover:bg-emerald-300 active:translate-y-1 active:shadow-none ${isScrolled ? 'w-10 h-10 rounded-xl border-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border-2 sm:border-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]'}`}
+    className={`bg-emerald-200 flex items-center justify-center border-slate-900 transition hover:bg-emerald-300 active:translate-y-1 ${isScrolled ? 'w-10 h-10 rounded-xl border-2' : 'w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border-2 sm:border-3'}`}
             >
               <Share2 className={`text-slate-900 ${isScrolled ? 'w-5 h-5' : 'w-6 h-6 sm:w-7 sm:h-7'}`} />
             </button>
