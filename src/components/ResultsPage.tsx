@@ -6,6 +6,7 @@ import {
   Building2,
   Calculator,
   Check,
+  ClipboardList,
   Database,
   Download,
   ExternalLink,
@@ -204,6 +205,7 @@ export default function ResultsPage() {
               <button type="button" onClick={() => { setIsToolsOpen(false); setIsExportOpen(true); }} className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border border-emerald-200 bg-emerald-50 p-2 text-center text-[11px] font-black leading-4 text-emerald-900 transition hover:-translate-y-0.5 hover:bg-emerald-100"><Download className="h-5 w-5 text-emerald-700" />匯出結果</button>
               <a href={withBasePath('/strategy')} className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border border-orange-200 bg-orange-50 p-2 text-center text-[11px] font-black leading-4 text-orange-900 transition hover:-translate-y-0.5 hover:bg-orange-100"><Target className="h-5 w-5 text-orange-700" />選填攻略</a>
               <a href={withBasePath('/school-types')} className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border border-sky-200 bg-sky-50 p-2 text-center text-[11px] font-black leading-4 text-sky-900 transition hover:-translate-y-0.5 hover:bg-sky-100"><Building2 className="h-5 w-5 text-sky-700" />學校類型</a>
+              <a href={withBasePath('/mock-volunteer')} className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border border-rose-200 bg-rose-50 p-2 text-center text-[11px] font-black leading-4 text-rose-900 transition hover:-translate-y-0.5 hover:bg-rose-100"><ClipboardList className="h-5 w-5 text-rose-700" />模擬選填</a>
             </div></div>}
           </div>
         </div>
