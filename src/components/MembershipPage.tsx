@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   CalendarDays,
+  ChevronDown,
+  ChevronUp,
   Check,
   CreditCard,
   Crown,
@@ -12,6 +14,7 @@ import {
   LockKeyhole,
   LogIn,
   Mail,
+  MessageCircle,
   ReceiptText,
   Sparkles,
   X,
@@ -73,6 +76,10 @@ const membershipFaqs = [
   {
     q: '會員期間可以跳過什麼步驟？',
     a: '有效會員以 LINE 登入確認資格後，回到首頁填妥成績即可直接開始落點分析，無需另行輸入系統授權碼。廣告也會在會員有效期間全程關閉。',
+  },
+  {
+    q: '家長協作功能包含什麼？',
+    a: '會員可在模擬志願序建立可協作連結，邀請家長留言、共同新增校科、調整志願順序、移除選項，並保留每次調整與確認版本的紀錄。一般分享連結仍是唯讀，不會讓他人改動你的清單。',
   },
   {
     q: '支援哪些付款方式？',
@@ -174,6 +181,7 @@ export default function MembershipPage() {
   const [payerNameError, setPayerNameError] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [showAllMembershipBenefits, setShowAllMembershipBenefits] = useState(false);
   const selectedPlan = useMemo(
     () => plans.find((plan) => plan.id === selected)!,
     [selected],
@@ -503,6 +511,15 @@ export default function MembershipPage() {
                   </div>
                 </li>
                 <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                    <MessageCircle className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-black">家長協作志願表</p>
+                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">留言、共同新增校科與調整排序，每次變更都保留版本紀錄。</p>
+                  </div>
+                </li>
+                {showAllMembershipBenefits && <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
                   <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
                     <LockKeyhole className="h-4 w-4" />
                   </span>
@@ -510,8 +527,12 @@ export default function MembershipPage() {
                     <p className="text-sm font-black">一次付款不自動續扣</p>
                     <p className="mt-1 text-xs font-bold leading-5 text-slate-600">NT$49 起，方案到期後不扣款，無需手動取消。</p>
                   </div>
-                </li>
+                </li>}
               </ul>
+              <button type="button" onClick={() => setShowAllMembershipBenefits((value) => !value)} className="mt-4 flex w-full items-center justify-between gap-3 rounded-2xl border-2 border-dashed border-violet-300 bg-white/70 px-4 py-3 text-left text-slate-900 transition hover:border-slate-900 hover:bg-white">
+                <span><span className="block text-sm font-black">{showAllMembershipBenefits ? '已顯示全部會員權益' : '還有 1 項安心使用保障'}</span><span className="mt-0.5 block text-xs font-bold text-slate-500">{showAllMembershipBenefits ? '點擊可收起額外內容' : '點擊查看付款與使用保障'}</span></span>
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-xl border-2 border-slate-900 bg-violet-100 px-2.5 py-1.5 text-xs font-black text-violet-900">{showAllMembershipBenefits ? '收起' : '展開'}{showAllMembershipBenefits ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</span>
+              </button>
             </div>
           </section>
           <aside className="relative flex flex-col justify-between overflow-hidden rounded-[2.5rem] border-2 border-slate-900 bg-white p-6 shadow-[4px_4px_0_#161b35] sm:p-8">
