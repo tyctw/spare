@@ -726,7 +726,7 @@ export default function MockVolunteerPage() {
               <div className="relative mt-4 rounded-2xl border-2 border-indigo-300 bg-indigo-50 p-4 text-left shadow-[3px_3px_0px_0px_rgba(67,56,202,0.18)]">
                 <div className="flex items-center gap-2 text-[11px] font-black tracking-wider text-indigo-700"><Share2 className="h-4 w-4" />一起討論志願</div>
                 <div className="mt-1 text-base font-black text-indigo-950">分享志願清單</div>
-                <p className="mt-1 text-xs font-bold leading-5 text-slate-600">建立唯讀連結給家長、老師查看；對方可複製到自己的模擬頁修改，原始清單不會變更。</p>
+                <p className="mt-1 text-xs font-bold leading-5 text-slate-600">可建立唯讀連結；會員也能開啟協作，讓家長留言、共同調整順序並確認版本。</p>
               </div>
               <div className="relative mt-3 grid grid-cols-2 gap-2">
                 <button

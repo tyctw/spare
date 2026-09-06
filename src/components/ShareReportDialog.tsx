@@ -7,6 +7,7 @@ import {
   Link,
   Loader2,
   LockKeyhole,
+  MessageSquare,
   Share2,
   Users,
   X,
@@ -53,6 +54,7 @@ export default function ShareReportDialog({
   const [copied, setCopied] = useState(false);
   const [isMemberShare, setIsMemberShare] = useState(false);
   const [isCheckingMembership, setIsCheckingMembership] = useState(false);
+  const [collaborationEnabled, setCollaborationEnabled] = useState(false);
 
   // Keep a previously created link for the same list. A list change means a
   // new snapshot must be created, so the old link is intentionally discarded.
@@ -66,6 +68,7 @@ export default function ShareReportDialog({
     let cancelled = false;
     if (!isOpen || kind !== "volunteer") {
       setIsMemberShare(false);
+      setCollaborationEnabled(false);
       setIsCheckingMembership(false);
       return () => { cancelled = true; };
     }
@@ -73,10 +76,16 @@ export default function ShareReportDialog({
     setIsCheckingMembership(true);
     callBackend<{ active?: boolean }>({ action: "getMembershipStatus" })
       .then((status) => {
-        if (!cancelled) setIsMemberShare(status.active === true);
+        if (!cancelled) {
+          setIsMemberShare(status.active === true);
+          setCollaborationEnabled(status.active === true);
+        }
       })
       .catch(() => {
-        if (!cancelled) setIsMemberShare(false);
+        if (!cancelled) {
+          setIsMemberShare(false);
+          setCollaborationEnabled(false);
+        }
       })
       .finally(() => {
         if (!cancelled) setIsCheckingMembership(false);
@@ -89,14 +98,15 @@ export default function ShareReportDialog({
     setIsCreating(true);
     setError("");
     try {
-      const response = await callBackend<{ token: string }>({
+      const response = await callBackend<{ token: string; collaborationKey?: string | null }>({
         action: "createSharedReport",
         kind,
         payload,
         persistent: isMemberShare,
+        collaboration: collaborationEnabled,
       });
       setUrl(
-        `${window.location.origin}${withBasePath(`/shared/${response.token}`)}`,
+        `${window.location.origin}${withBasePath(`/shared/${response.token}`)}${response.collaborationKey ? `?collab=${encodeURIComponent(response.collaborationKey)}` : ''}`,
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : text.createError);
@@ -161,13 +171,17 @@ export default function ShareReportDialog({
             <>
               <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 sm:p-3"><Share2 className="h-4 w-4 text-indigo-700 sm:h-5 sm:w-5" /><h3 className="mt-1.5 text-xs font-black text-slate-900 sm:mt-2 sm:text-sm">建立連結</h3><p className="mt-1 text-[10px] font-bold leading-4 text-slate-500 sm:text-xs sm:leading-5">一鍵產生可轉傳網址</p></div>
-                <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 sm:p-3"><LockKeyhole className="h-4 w-4 text-indigo-700 sm:h-5 sm:w-5" /><h3 className="mt-1.5 text-xs font-black text-slate-900 sm:mt-2 sm:text-sm">安心查看</h3><p className="mt-1 text-[10px] font-bold leading-4 text-slate-500 sm:text-xs sm:leading-5">家長只能閱讀內容</p></div>
+                <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 sm:p-3"><LockKeyhole className="h-4 w-4 text-indigo-700 sm:h-5 sm:w-5" /><h3 className="mt-1.5 text-xs font-black text-slate-900 sm:mt-2 sm:text-sm">安心查看</h3><p className="mt-1 text-[10px] font-bold leading-4 text-slate-500 sm:text-xs sm:leading-5">唯讀連結不會改動原清單</p></div>
                 <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-2.5 sm:p-3"><CopyPlus className="h-4 w-4 text-indigo-700 sm:h-5 sm:w-5" /><h3 className="mt-1.5 text-xs font-black text-slate-900 sm:mt-2 sm:text-sm">另存副本</h3><p className="mt-1 text-[10px] font-bold leading-4 text-slate-500 sm:text-xs sm:leading-5">對方可自行修改副本</p></div>
               </div>
               <div className="mt-5 flex items-center gap-2 rounded-xl border-2 border-amber-300 bg-amber-50 px-3 py-2.5 text-xs font-black text-amber-950">
                 <Clock3 className="h-4 w-4 shrink-0" />
                 {durationText}
               </div>
+              {isMemberShare && <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3 text-left">
+                <input type="checkbox" checked={collaborationEnabled} onChange={(event) => setCollaborationEnabled(event.target.checked)} className="mt-0.5 h-4 w-4 accent-indigo-600" />
+                <span><span className="flex items-center gap-1.5 text-sm font-black text-indigo-950"><MessageSquare className="h-4 w-4" />開啟家長協作</span><span className="mt-1 block text-xs font-bold leading-5 text-slate-600">持有這個連結的人可留言、調整順序、移除志願並確認版本；所有變更都會留下紀錄。</span></span>
+              </label>}
               <button
                 onClick={createLink}
                 disabled={!payload || isCreating || isCheckingMembership}
