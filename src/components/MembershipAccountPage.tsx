@@ -21,6 +21,7 @@ import {
   Trash2,
   Clock,
   RotateCcw,
+  History,
 } from 'lucide-react';
 import { callBackend } from '../lib/api';
 import {
@@ -428,6 +429,22 @@ export default function MembershipAccountPage() {
                 <p className="rounded-xl bg-indigo-50/50 px-4 py-3 text-xs font-bold leading-relaxed text-indigo-800">
                   LINE 僅用於確認與恢復會員資格。登入狀態有效 24 小時；登出後，此裝置會立刻恢復一般使用者顯示。
                 </p>
+
+                <a
+                  href={withBasePath('/score-records')}
+                  className="group flex items-center justify-between gap-3 rounded-2xl border-2 border-amber-300 bg-amber-50 px-4 py-3.5 text-amber-950 transition hover:border-slate-900 hover:bg-amber-100 hover:shadow-[3px_3px_0_#0f172a]"
+                >
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-amber-500 bg-amber-200 text-amber-950">
+                      <History className="h-4 w-4" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-black">我的成績紀錄</span>
+                      <span className="mt-0.5 block text-xs font-bold text-amber-800">查看、儲存模擬考與會考成績</span>
+                    </span>
+                  </span>
+                  <ArrowRight className="h-5 w-5 shrink-0 transition group-hover:translate-x-1" />
+                </a>
 
                 {lineName ? (
                   <button type="button" onClick={() => void logout()} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-700 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]">
