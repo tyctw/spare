@@ -40,6 +40,14 @@ const AuthFailModal = React.lazy(() => import('./components/AuthFailModal'));
 const DISCLAIMER_SEEN_KEY = 'tw-admission-disclaimer-seen';
 const RESULTS_STORAGE_KEY = 'tw-admission-analysis-results';
 const INVITATION_CODE_QUERY_PARAMS = ['code', 'invitationCode', 'invite'];
+type SavedScoreRecord = {
+  id: string;
+  record_type: 'mock' | 'official';
+  title: string;
+  exam_date: string | null;
+  region: string | null;
+  scores: { chinese: string; english: string; math: string; science: string; social: string; composition: number };
+};
 
 function withoutInvitationCodeQuery(url = window.location.href) {
   const sanitized = new URL(url);
@@ -218,7 +226,7 @@ export default function App() {
   const [memberAccess, setMemberAccess] = useState(false);
   
   // Modals state
-const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'strategy' | 'historicalStats' | 'scoreInquiry' | null>(null);
+const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' | 'qrcode' | 'rating' | 'authFail' | 'validationFailed' | 'export' | 'scoringMethod' | 'sharePlatform' | 'strategy' | 'historicalStats' | 'scoreInquiry' | 'savedScoreImport' | null>(null);
   const [isVocationalOpen, setIsVocationalOpen] = useState(false);
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
@@ -227,6 +235,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const [expandedNavCategory, setExpandedNavCategory] = useState<string | null>('schoolDetails');
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
+  const [savedScoreRecords, setSavedScoreRecords] = useState<SavedScoreRecord[]>([]);
+  const [scoreImportNotice, setScoreImportNotice] = useState('');
+  const [shouldOfferSavedScoreImport, setShouldOfferSavedScoreImport] = useState(false);
   
   // Comparison
   const [comparisonSchools, setComparisonSchools] = useState<any[]>(getComparisonSchools);
@@ -281,6 +292,30 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    const checkSavedScores = async () => {
+      try {
+        const result = await callBackend<{ loggedIn: boolean; records: SavedScoreRecord[] }>({ action: 'getMemberScoreRecords' });
+        if (!cancelled && result.loggedIn) {
+          const records = result.records || [];
+          setSavedScoreRecords(records);
+          setShouldOfferSavedScoreImport(records.length > 0);
+        }
+      } catch {
+        // The homepage stays usable when the optional account service is unavailable.
+      }
+    };
+    const timer = window.setTimeout(() => { void checkSavedScores(); }, 1_500);
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldOfferSavedScoreImport || activeModal !== null) return;
+    setShouldOfferSavedScoreImport(false);
+    setActiveModal('savedScoreImport');
+  }, [activeModal, shouldOfferSavedScoreImport]);
+
+  useEffect(() => {
     let isCurrent = true;
     const applyMembershipStatus = (membership: MembershipStatus) => {
       if (isCurrent) setMemberAccess(membership.active);
@@ -310,6 +345,22 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
 
   const updateForm = (key: string, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
+  };
+
+  const importSavedScore = (record: SavedScoreRecord) => {
+    const matchedRegion = ALL_REGIONS.find((item) => item.name === record.region || item.id === record.region);
+    setFormData((current) => ({
+      ...current,
+      chinese: record.scores.chinese,
+      english: record.scores.english,
+      math: record.scores.math,
+      science: record.scores.science,
+      social: record.scores.social,
+      composition: String(record.scores.composition),
+      ...(matchedRegion ? { region: matchedRegion.id } : {}),
+    }));
+    setScoreImportNotice(`已帶入「${record.title}」的成績。`);
+    setActiveModal(null);
   };
 
   const focusMissingField = (field: string) => {
@@ -829,6 +880,16 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-indigo-100"><Calculator className="w-4 h-4 text-indigo-600" /></span> 會考成績
                   </h2>
                   <p className="text-sm font-bold text-slate-600">填入成績，找出適合志願。</p>
+                  {savedScoreRecords.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveModal('savedScoreImport')}
+                      className="mt-3 inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-xs font-black text-indigo-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-indigo-50 active:translate-y-0 active:shadow-none"
+                    >
+                      <History className="h-4 w-4" />帶入已儲存成績
+                    </button>
+                  )}
+                  {scoreImportNotice && <p role="status" className="mt-2 text-xs font-black text-emerald-700">{scoreImportNotice}</p>}
                 </div>
                 
                 {/* Subject completion progress */}
@@ -1735,6 +1796,40 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       {activeModal === 'scoreInquiry' && (
         <ScoreInquiryModal isOpen onClose={() => setActiveModal(null)} />
       )}
+
+      <InfoModal
+        isOpen={activeModal === 'savedScoreImport'}
+        onClose={() => setActiveModal(null)}
+        bare
+        topMost
+        title="帶入已儲存的成績"
+        icon={<History className="h-7 w-7 text-indigo-700" />}
+      >
+        <div className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white text-left shadow-[7px_7px_0_#0f172a]">
+          <header className="border-b-2 border-slate-900 bg-indigo-100 px-5 py-5 sm:px-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-black tracking-[.15em] text-indigo-700">SAVED SCORE RECORDS</p>
+                <h2 className="mt-1 text-2xl font-black text-slate-900">{savedScoreRecords.length === 1 ? '要直接帶入這筆成績嗎？' : '選擇要帶入的成績'}</h2>
+                <p className="mt-2 text-sm font-bold leading-6 text-slate-600">帶入後仍可在下方自行修改，不會覆寫你的已儲存紀錄。</p>
+              </div>
+              <button type="button" onClick={() => setActiveModal(null)} aria-label="關閉帶入成績視窗" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0_#0f172a] hover:bg-slate-100"><X className="h-5 w-5" /></button>
+            </div>
+          </header>
+          <div className="max-h-[55vh] space-y-3 overflow-y-auto bg-slate-50 p-5 sm:p-6">
+            {savedScoreRecords.map((record) => (
+              <button key={record.id} type="button" onClick={() => importSavedScore(record)} className="group w-full rounded-2xl border-2 border-slate-900 bg-white p-4 text-left shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-indigo-50 hover:shadow-[3px_3px_0_#0f172a] active:translate-y-0 active:shadow-none">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0"><span className={`rounded-full px-2 py-1 text-xs font-black ${record.record_type === 'official' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>{record.record_type === 'official' ? '正式會考' : '模擬考'}</span><h3 className="mt-2 truncate text-base font-black text-slate-900">{record.title}</h3><p className="mt-1 text-xs font-bold text-slate-500">{record.exam_date || '未填日期'}{record.region ? ` · ${record.region}` : ''}</p></div>
+                  <span className="shrink-0 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-black text-white">帶入</span>
+                </div>
+                <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-black leading-6 text-slate-700">國 {record.scores.chinese}　英 {record.scores.english}　數 {record.scores.math}　自 {record.scores.science}　社 {record.scores.social}　寫作 {record.scores.composition}</p>
+              </button>
+            ))}
+          </div>
+          <footer className="border-t-2 border-slate-900 bg-white p-4"><button type="button" onClick={() => setActiveModal(null)} className="w-full rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black hover:bg-slate-100">這次先自行填寫</button></footer>
+        </div>
+      </InfoModal>
 
       {activeModal === 'sharePlatform' && (
         <SharePlatformModal isOpen onClose={() => setActiveModal(null)} />
