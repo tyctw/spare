@@ -9,7 +9,7 @@ const baseUrl = Deno.env.get('SITE_URL')?.replace(/\/$/, '') || 'https://tyctw.g
 const callbackUrl = Deno.env.get('LINE_LOGIN_CALLBACK_URL')?.trim() || `${Deno.env.get('SUPABASE_URL')}/functions/v1/line-login`;
 const randomToken = () => crypto.randomUUID();
 
-function safeReturnPath(value: string | null) { return value === '/membership' || value === '/membership/account' ? value : '/membership'; }
+function safeReturnPath(value: string | null) { return value === '/' || value === '/membership' || value === '/membership/account' || value === '/score-records' ? value : '/membership'; }
 function redirect(url: string, headers: HeadersInit = {}) { return new Response(null, { status: 302, headers: { Location: url, ...headers } }); }
 async function sha256(value: string) {
   const digest = await crypto.subtle.digest('SHA-256', encoder.encode(value));
