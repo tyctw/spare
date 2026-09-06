@@ -85,7 +85,16 @@ const scoringRulesRegionId = path.match(/^\/scoring-rules\/([a-z-]+)$/)?.[1];
 const areaSlug = path.match(/^\/area\/([a-z-]+)$/)?.[1];
 const newsArticleId = path.match(/^\/news\/(\d+)$/)?.[1];
 const redirectedRoute = new URLSearchParams(window.location.search).get('route');
-if (redirectedRoute) window.history.replaceState(null, '', withBasePath(path));
+if (redirectedRoute) {
+  // GitHub Pages redirects deep links through ?route=… . Keep any other
+  // query values (notably the collaboration key on shared volunteer lists)
+  // when restoring the clean route, otherwise an editable share degrades to
+  // read-only immediately after the page loads.
+  const query = new URLSearchParams(window.location.search);
+  query.delete('route');
+  const remainingQuery = query.toString();
+  window.history.replaceState(null, '', `${withBasePath(path)}${remainingQuery ? `?${remainingQuery}` : ''}${window.location.hash}`);
+}
 applyPageSeo(path);
 
 const page =
