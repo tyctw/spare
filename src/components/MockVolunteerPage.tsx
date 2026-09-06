@@ -366,14 +366,15 @@ export default function MockVolunteerPage() {
   }, [schools, filterCounty, activeRegionCounties, filterType, filterGroup, filterDepartment, searchQuery]);
 
   const addChoice = (school: SchoolItem) => {
-    if (selectedChoices.length >= 30) {
-      setNotice('最多可加入 30 個志願。');
+    const existingChoice = selectedChoices.find((choice) => isSameVolunteerOption(choice, school));
+    if (existingChoice) {
+      setSelectedChoices((choices) => choices.filter((choice) => choice.id !== existingChoice.id));
+      setNotice(`已從志願清單移除「${school.name} ${school.deptName}」。`);
       return;
     }
 
-    const exists = selectedChoices.some((choice) => isSameVolunteerOption(choice, school));
-    if (exists) {
-      setNotice('這個校科已經在志願清單中。');
+    if (selectedChoices.length >= 30) {
+      setNotice('最多可加入 30 個志願。');
       return;
     }
 
@@ -688,15 +689,14 @@ export default function MockVolunteerPage() {
                           </div>
                           <button
                             onClick={() => addChoice(school)}
-                            disabled={isSelected}
                             className={`flex h-10 shrink-0 items-center justify-center gap-1 rounded-xl border-2 border-slate-900 px-2 text-xs font-black transition-all ${
                               isSelected
-                                ? 'bg-emerald-100 text-emerald-700'
+                                ? 'bg-emerald-100 text-emerald-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:bg-rose-100 hover:text-rose-800 active:translate-y-0 active:shadow-none'
                                 : 'bg-white text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:bg-sky-300 active:translate-y-0 active:shadow-none'
                             }`}
-                            aria-label={isSelected ? '已加入' : '加入志願'}
+                            aria-label={isSelected ? `從志願清單移除：${school.name} ${school.deptName}` : `加入志願：${school.name} ${school.deptName}`}
                           >
-                            {isSelected ? <><CheckCircle2 className="h-4 w-4" />已加入</> : <><Plus className="h-4 w-4" />加入</>}
+                            {isSelected ? <><Trash2 className="h-4 w-4" />移除</> : <><Plus className="h-4 w-4" />加入</>}
                           </button>
                         </div>
                       </article>
