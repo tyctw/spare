@@ -125,6 +125,8 @@ const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: num
   addVolunteerShareComment: { windowSeconds: 60, maxRequests: 12 },
   updateVolunteerShareChoices: { windowSeconds: 60, maxRequests: 12 },
   confirmVolunteerShareVersion: { windowSeconds: 60, maxRequests: 12 },
+  revokeVolunteerShare: { windowSeconds: 60, maxRequests: 6 },
+  rotateVolunteerShareEditorKey: { windowSeconds: 60, maxRequests: 6 },
   createEcpaySupportPayment: { windowSeconds: 60, maxRequests: 5 },
   getEcpaySupportPaymentStatus: { windowSeconds: 60, maxRequests: 20 },
   createMembershipPayment: { windowSeconds: 60, maxRequests: 5 },
@@ -429,17 +431,29 @@ async function collaborationReportForKey(tokenValue: unknown, editorKeyValue: un
   if (!uuidPattern.test(token) || !uuidPattern.test(editorKey)) throw new Error('Invalid collaboration link.');
   const { data, error } = await withTimeout(
     supabase.from('shared_reports')
-      .select('token, kind, payload, expires_at, collaboration_key, collaboration_version, collaboration_confirmed_at, collaboration_confirmed_by')
+      .select('token, kind, payload, expires_at, revoked_at, collaboration_key, collaboration_version, collaboration_confirmed_at, collaboration_confirmed_by')
       .eq('token', token)
       .maybeSingle(),
     5000,
     'load volunteer collaboration',
   );
   if (error) throw error;
-  if (!data || data.kind !== 'volunteer' || !data.collaboration_key || !secureEqual(String(data.collaboration_key), editorKey)) {
+  if (!data || data.revoked_at || data.kind !== 'volunteer' || !data.collaboration_key || !secureEqual(String(data.collaboration_key), editorKey)) {
     throw new Error('This collaboration link is unavailable.');
   }
   if (data.expires_at && new Date(data.expires_at).getTime() <= Date.now()) throw new Error('This collaboration link has expired.');
+  return data;
+}
+
+async function ownedVolunteerShareForRequest(tokenValue: unknown, request: Request) {
+  const token = String(tokenValue || '').trim();
+  const session = await getLineLoginSession(lineSessionTokenFromCookie(request));
+  if (!session || !uuidPattern.test(token)) throw new Error('無法管理這個分享連結。');
+  const { data, error } = await supabase.from('shared_reports')
+    .select('token, kind, owner_line_user_id, revoked_at, collaboration_key')
+    .eq('token', token).eq('owner_line_user_id', session.line_user_id).maybeSingle();
+  if (error) throw error;
+  if (!data || data.kind !== 'volunteer') throw new Error('只有建立者可以管理這個分享連結。');
   return data;
 }
 
@@ -1575,6 +1589,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       const report = payload.payload;
       const requestedPermanentLink = kind === 'volunteer' && payload.persistent === true;
       const requestedCollaboration = kind === 'volunteer' && payload.collaboration === true;
+      const requestedExpiryDays = Number(payload.expiresInDays || 5);
       if (kind !== 'analysis' && kind !== 'volunteer') throw new Error('Invalid shared report type.');
       if (!report || typeof report !== 'object' || Array.isArray(report)) throw new Error('Invalid shared report content.');
       if (kind === 'analysis' && (!report.results || typeof report.results !== 'object')) {
@@ -1592,13 +1607,19 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       // Only an active member may create a no-expiry volunteer-list link.
       // Do not trust the client flag: membership is checked again here, where
       // the HttpOnly LINE session cookie is available.
+      if (!Number.isInteger(requestedExpiryDays) || ![5, 7, 30, 90].includes(requestedExpiryDays)) throw new Error('分享期限設定不正確。');
+      const sharingSession = await getLineLoginSession(lineSessionTokenFromCookie(request));
       if ((requestedPermanentLink || requestedCollaboration) && !await activeMembershipForRequest(request)) {
         throw new Error('An active membership is required for collaboration and permanent sharing links.');
       }
+      if (requestedCollaboration && !sharingSession) throw new Error('請先登入建立協作分享。');
 
-      const sharedReport = requestedPermanentLink
-        ? { kind, payload: report, expires_at: null, ...(requestedCollaboration ? { collaboration_key: crypto.randomUUID() } : {}) }
-        : { kind, payload: report, ...(requestedCollaboration ? { collaboration_key: crypto.randomUUID() } : {}) };
+      const expiresAt = new Date(Date.now() + requestedExpiryDays * 24 * 60 * 60 * 1000).toISOString();
+      const sharedReport = {
+        kind, payload: report, expires_at: expiresAt,
+        ...(sharingSession ? { owner_line_user_id: sharingSession.line_user_id } : {}),
+        ...(requestedCollaboration ? { collaboration_key: crypto.randomUUID() } : {}),
+      };
 
       const { data, error } = await withTimeout(
         supabase
@@ -1621,14 +1642,14 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       const { data, error } = await withTimeout(
         supabase
           .from('shared_reports')
-          .select('kind, payload, expires_at, collaboration_key, collaboration_version, collaboration_confirmed_at, collaboration_confirmed_by')
+        .select('kind, payload, expires_at, revoked_at, collaboration_key, collaboration_version, collaboration_confirmed_at, collaboration_confirmed_by')
           .eq('token', token)
           .maybeSingle(),
         5000,
         'load shared report',
       );
       if (error) throw error;
-      if (!data || (data.expires_at && new Date(data.expires_at).getTime() <= Date.now())) {
+      if (!data || data.revoked_at || (data.expires_at && new Date(data.expires_at).getTime() <= Date.now())) {
         throw new Error('This shared report has expired or is unavailable.');
       }
       return {
@@ -1640,6 +1661,23 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         collaborationConfirmedAt: data.collaboration_confirmed_at || null,
         collaborationConfirmedBy: data.collaboration_confirmed_by || null,
       };
+    }
+
+    case 'revokeVolunteerShare': {
+      const report = await ownedVolunteerShareForRequest(payload.token, request);
+      if (report.revoked_at) return { revoked: true };
+      const { error } = await supabase.from('shared_reports').update({ revoked_at: new Date().toISOString() }).eq('token', report.token);
+      if (error) throw error;
+      return { revoked: true };
+    }
+
+    case 'rotateVolunteerShareEditorKey': {
+      const report = await ownedVolunteerShareForRequest(payload.token, request);
+      if (report.revoked_at || !report.collaboration_key) throw new Error('這個協作連結已無法使用。');
+      const nextKey = crypto.randomUUID();
+      const { error } = await supabase.from('shared_reports').update({ collaboration_key: nextKey }).eq('token', report.token);
+      if (error) throw error;
+      return { collaborationKey: nextKey };
     }
 
     case 'getVolunteerShareCollaboration': {
