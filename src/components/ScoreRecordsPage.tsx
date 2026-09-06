@@ -51,6 +51,7 @@ const gradeOrder = ["C", "B", "B+", "B++", "A", "A+", "A++"];
 const gradePosition = (grade: string) => gradeOrder.indexOf(grade);
 
 export default function ScoreRecordsPage() {
+  const [isLoadingAccount, setIsLoadingAccount] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [name, setName] = useState("");
   const [records, setRecords] = useState<RecordItem[]>([]);
@@ -78,6 +79,8 @@ export default function ScoreRecordsPage() {
         await load();
       } catch {
         setNotice("無法讀取帳號資料，請稍後再試。");
+      } finally {
+        setIsLoadingAccount(false);
       }
     })();
   }, []);
@@ -165,7 +168,15 @@ export default function ScoreRecordsPage() {
             </div>
           </div>
         </header>
-        {!loggedIn ? (
+        {isLoadingAccount ? (
+          <section
+            role="status"
+            aria-live="polite"
+            className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-6 text-center text-sm font-black text-slate-600 shadow-[4px_4px_0_#161b35]"
+          >
+            正在確認登入狀態…
+          </section>
+        ) : !loggedIn ? (
           <section className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-6 text-center shadow-[4px_4px_0_#161b35]">
             <Crown className="mx-auto h-8 w-8 text-amber-600" />
             <h2 className="mt-3 text-xl font-black">登入帳號，保存你的成績</h2>
