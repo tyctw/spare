@@ -333,37 +333,36 @@ function VolunteerReport({
 
 function DecisionFooter({ createdAt }: { createdAt?: string }) {
   return (
-    <footer className="mt-8 overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-      <div className="bg-amber-300 px-5 py-5 sm:px-6">
-        <p className="text-xs font-black tracking-[0.16em] text-amber-950">
-          TAKE YOUR TIME
+    <footer className="relative mt-8 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white">
+      <div aria-hidden="true" className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-amber-200/70 blur-2xl" />
+      <div className="relative bg-gradient-to-br from-amber-100 via-white to-sky-50 px-5 py-6 sm:px-7 sm:py-8">
+        <p className="inline-flex rounded-full bg-slate-900 px-3 py-1 text-[11px] font-black tracking-[0.16em] text-amber-200">
+          NEXT STEPS
         </p>
-        <h2 className="mt-1 text-2xl font-black text-slate-950 sm:text-3xl">
+        <h2 className="mt-4 max-w-2xl text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
           別急著離開，這幾頁能幫你更快做決定
         </h2>
-        <p className="mt-2 text-sm font-bold leading-6 text-slate-700">
+        <p className="mt-2 max-w-xl text-sm font-bold leading-6 text-slate-600">
           多看一點學制、職群與選填策略，再和家人一起確認方向。
         </p>
       </div>
-      <div className="p-5 sm:p-6">
+      <div className="relative p-5 sm:p-6">
         <div className="grid gap-3 sm:grid-cols-2">
           <a
             href={withBasePath("/strategy")}
-            className="rounded-xl border-2 border-slate-900 bg-sky-50 p-4 font-black text-sky-950 transition hover:-translate-y-0.5"
+            className="group rounded-2xl border-2 border-sky-200 bg-sky-50 p-5 text-sky-950 transition hover:-translate-y-0.5 hover:border-sky-500 hover:bg-sky-100"
           >
-            志願選填策略{" "}
-            <span className="block mt-1 text-xs font-bold text-slate-600">
-              掌握排序與風險配置
-            </span>
+            <span className="text-xs font-black tracking-[0.14em] text-sky-700">01 · 排好志願</span>
+            <span className="mt-2 block text-lg font-black">志願選填策略</span>
+            <span className="mt-1 block text-sm font-bold leading-6 text-slate-600">掌握排序與風險配置</span>
           </a>
           <a
             href={withBasePath("/vocational-encyclopedia")}
-            className="rounded-xl border-2 border-slate-900 bg-emerald-50 p-4 font-black text-emerald-950 transition hover:-translate-y-0.5"
+            className="group rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-5 text-emerald-950 transition hover:-translate-y-0.5 hover:border-emerald-500 hover:bg-emerald-100"
           >
-            職群介紹百科{" "}
-            <span className="block mt-1 text-xs font-bold text-slate-600">
-              認識學習內容與發展方向
-            </span>
+            <span className="text-xs font-black tracking-[0.14em] text-emerald-700">02 · 找到方向</span>
+            <span className="mt-2 block text-lg font-black">職群介紹百科</span>
+            <span className="mt-1 block text-sm font-bold leading-6 text-slate-600">認識學習內容與發展方向</span>
           </a>
         </div>
         <a
