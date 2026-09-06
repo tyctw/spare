@@ -539,7 +539,7 @@ export default function MockVolunteerPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-gradient-to-br from-sky-100 via-white to-indigo-100">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[96rem] px-4 py-6 sm:px-6 lg:px-8">
           <a
             href={withBasePath('/')}
             onClick={requestLeavePage}
@@ -579,7 +579,7 @@ export default function MockVolunteerPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[96rem] px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-5 grid gap-3 sm:grid-cols-3">
           <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
             <div className="text-xs font-black text-slate-500">目前區域</div>
