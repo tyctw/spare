@@ -234,6 +234,12 @@ export default function MockVolunteerPage() {
   const allowPageExitRef = useRef(false);
 
   useEffect(() => {
+    if (!notice.startsWith('已從志願清單移除')) return;
+    const timer = window.setTimeout(() => setNotice(''), 3_000);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
+
+  useEffect(() => {
     if (new URLSearchParams(window.location.search).get('import') !== 'shared') return;
     const raw = window.localStorage.getItem(SHARED_COPY_STORAGE_KEY);
     if (!raw) return;
@@ -988,11 +994,11 @@ export default function MockVolunteerPage() {
       )}
 
       {notice && (
-        <div className={`fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-between gap-3 rounded-xl border-4 p-4 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] ${notice === '最多可加入 30 個志願。' ? 'border-amber-500 bg-amber-50' : 'border-slate-900 bg-white'}`}>
+        <div className={`fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-between gap-3 rounded-xl border-4 p-4 ${notice.startsWith('已從志願清單移除') ? '' : 'shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'} ${notice === '最多可加入 30 個志願。' ? 'border-amber-500 bg-amber-50' : 'border-slate-900 bg-white'}`}>
           <div className="text-sm font-black text-slate-800">{notice}</div>
-          <button onClick={() => setNotice('')} className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-black text-white">
+          {!notice.startsWith('已從志願清單移除') && <button onClick={() => setNotice('')} className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-black text-white">
             知道了
-          </button>
+          </button>}
         </div>
       )}
       <ShareReportDialog

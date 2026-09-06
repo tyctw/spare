@@ -51,6 +51,7 @@ export default function ShareReportDialog({
   const [url, setUrl] = useState("");
   const [editorUrl, setEditorUrl] = useState("");
   const [shareToken, setShareToken] = useState("");
+  const [showEditorSettings, setShowEditorSettings] = useState(false);
   const [expiresInDays, setExpiresInDays] = useState(30);
   const [isManaging, setIsManaging] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -66,6 +67,7 @@ export default function ShareReportDialog({
     setUrl("");
     setEditorUrl("");
     setShareToken("");
+    setShowEditorSettings(false);
     setError("");
     setCopied(false);
   }, [snapshotKey]);
@@ -127,6 +129,7 @@ export default function ShareReportDialog({
           : "",
       );
       setShareToken(response.token);
+      setShowEditorSettings(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : text.createError);
     } finally {
@@ -164,6 +167,7 @@ export default function ShareReportDialog({
       setUrl("");
       setEditorUrl("");
       setShareToken("");
+      setShowEditorSettings(false);
       setError("此分享連結已停止，原網址無法再開啟。");
     } catch (err) {
       setError(err instanceof Error ? err.message : "無法停止分享。");
@@ -388,7 +392,17 @@ export default function ShareReportDialog({
                   </p>
                 </div>
               </div>
-              {editorUrl && (
+              {editorUrl && !showEditorSettings && (
+                <button
+                  type="button"
+                  onClick={() => setShowEditorSettings(true)}
+                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-50 px-4 py-3 text-sm font-black text-indigo-900 transition hover:bg-indigo-100"
+                >
+                  <LockKeyhole className="h-4 w-4" />
+                  開啟協作編輯設定
+                </button>
+              )}
+              {editorUrl && showEditorSettings && (
                 <section className="mt-5 rounded-2xl border-2 border-indigo-300 bg-indigo-50 p-4 sm:p-5">
                   <div className="flex items-start gap-2">
                     <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0 text-indigo-700" />
