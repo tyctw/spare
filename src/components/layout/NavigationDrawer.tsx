@@ -120,6 +120,7 @@ export const menuCategories: MenuCategory[] = [
     accent: 'border-amber-500',
     items: [
       { id: 'home', label: '落點分析', description: '輸入成績與條件，產生推薦清單', keywords: '首頁 落點 分析 會考 分數', icon: Calculator, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/' } },
+      { id: 'scoreRecords', label: '我的成績紀錄', description: '登入後保存模擬考與正式會考成績', keywords: '登入 帳號 成績 紀錄 模擬考 會考 保存', icon: History, color: 'text-sky-600', bg: 'bg-sky-100', action: { type: 'route', href: '/score-records' } },
       { id: 'mockVolunteer', label: '模擬志願序', description: '把校科加入清單，練習排序', keywords: '志願序 模擬 排序 選填', icon: ListOrdered, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/mock-volunteer' } },
       { id: 'strategy', label: '志願選填攻略', description: '看夢幻、落點、安全區如何搭配', keywords: '志願 選填 策略 建議 攻略', icon: Lightbulb, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/strategy' } },
       { id: 'historicalStats', label: '歷年錄取統計', description: '參考各校歷年分數與趨勢', keywords: '歷年 錄取 分數 統計', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-100', action: { type: 'route', href: '/historical-stats' } },
