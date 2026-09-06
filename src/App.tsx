@@ -45,7 +45,7 @@ type SavedScoreRecord = {
   record_type: 'mock' | 'official';
   title: string;
   exam_date: string | null;
-  region: string | null;
+  note: string | null;
   scores: { chinese: string; english: string; math: string; science: string; social: string; composition: number };
 };
 
@@ -236,8 +236,8 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   const [expandedNavCategory, setExpandedNavCategory] = useState<string | null>('schoolDetails');
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<any | null>(null);
   const [savedScoreRecords, setSavedScoreRecords] = useState<SavedScoreRecord[]>([]);
+  const [isScoreAccountLoggedIn, setIsScoreAccountLoggedIn] = useState<boolean | null>(null);
   const [scoreImportNotice, setScoreImportNotice] = useState('');
-  const [shouldOfferSavedScoreImport, setShouldOfferSavedScoreImport] = useState(false);
   
   // Comparison
   const [comparisonSchools, setComparisonSchools] = useState<any[]>(getComparisonSchools);
@@ -296,10 +296,9 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     const checkSavedScores = async () => {
       try {
         const result = await callBackend<{ loggedIn: boolean; records: SavedScoreRecord[] }>({ action: 'getMemberScoreRecords' });
-        if (!cancelled && result.loggedIn) {
-          const records = result.records || [];
-          setSavedScoreRecords(records);
-          setShouldOfferSavedScoreImport(records.length > 0);
+        if (!cancelled) {
+          setIsScoreAccountLoggedIn(result.loggedIn);
+          if (result.loggedIn) setSavedScoreRecords(result.records || []);
         }
       } catch {
         // The homepage stays usable when the optional account service is unavailable.
@@ -308,12 +307,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
     const timer = window.setTimeout(() => { void checkSavedScores(); }, 1_500);
     return () => { cancelled = true; window.clearTimeout(timer); };
   }, []);
-
-  useEffect(() => {
-    if (!shouldOfferSavedScoreImport || activeModal !== null) return;
-    setShouldOfferSavedScoreImport(false);
-    setActiveModal('savedScoreImport');
-  }, [activeModal, shouldOfferSavedScoreImport]);
 
   useEffect(() => {
     let isCurrent = true;
@@ -348,7 +341,6 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
   };
 
   const importSavedScore = (record: SavedScoreRecord) => {
-    const matchedRegion = ALL_REGIONS.find((item) => item.name === record.region || item.id === record.region);
     setFormData((current) => ({
       ...current,
       chinese: record.scores.chinese,
@@ -357,10 +349,18 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
       science: record.scores.science,
       social: record.scores.social,
       composition: String(record.scores.composition),
-      ...(matchedRegion ? { region: matchedRegion.id } : {}),
     }));
     setScoreImportNotice(`已帶入「${record.title}」的成績。`);
     setActiveModal(null);
+  };
+
+  const loginForSavedScores = () => {
+    const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
+    if (!supabaseUrl) {
+      setScoreImportNotice('登入服務尚未設定，請稍後再試。');
+      return;
+    }
+    window.location.assign(`${supabaseUrl}/functions/v1/line-login?returnTo=/`);
   };
 
   const focusMissingField = (field: string) => {
@@ -880,29 +880,37 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
                     <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-indigo-100"><Calculator className="w-4 h-4 text-indigo-600" /></span> 會考成績
                   </h2>
                   <p className="text-sm font-bold text-slate-600">填入成績，找出適合志願。</p>
+                  {scoreImportNotice && <p role="status" className="mt-2 text-xs font-black text-emerald-700">{scoreImportNotice}</p>}
+                </div>
+                
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
                   {savedScoreRecords.length > 0 && (
                     <button
                       type="button"
                       onClick={() => setActiveModal('savedScoreImport')}
-                      className="mt-3 inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-xs font-black text-indigo-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-indigo-50 active:translate-y-0 active:shadow-none"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-indigo-500 active:translate-y-0 active:shadow-none sm:w-auto"
                     >
                       <History className="h-4 w-4" />帶入已儲存成績
                     </button>
                   )}
-                  {scoreImportNotice && <p role="status" className="mt-2 text-xs font-black text-emerald-700">{scoreImportNotice}</p>}
-                </div>
-                
-                {/* Subject completion progress */}
-                <div className="bg-white border-2 border-slate-900 px-4 py-2 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hidden sm:flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-indigo-600" />
-                  <span className="font-black text-sm text-slate-900">科目填寫進度 {[
-                    formData.chinese,
-                    formData.english,
-                    formData.math,
-                    formData.science,
-                    formData.social,
-                    formData.composition
-                  ].filter(Boolean).length}/6</span>
+                  {savedScoreRecords.length === 0 && isScoreAccountLoggedIn !== true && (
+                    <button
+                      type="button"
+                      onClick={loginForSavedScores}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-indigo-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-indigo-50 active:translate-y-0 active:shadow-none sm:w-auto"
+                    >
+                      <User className="h-4 w-4" />登入後儲存、帶入成績
+                    </button>
+                  )}
+                  {savedScoreRecords.length === 0 && isScoreAccountLoggedIn === true && (
+                    <button
+                      type="button"
+                      onClick={() => { window.location.assign(withBasePath('/score-records')); }}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-indigo-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-indigo-50 active:translate-y-0 active:shadow-none sm:w-auto"
+                    >
+                      <History className="h-4 w-4" />前往儲存成績
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -1820,7 +1828,7 @@ const [activeModal, setActiveModal] = useState<'disclaimer' | 'importantDates' |
             {savedScoreRecords.map((record) => (
               <button key={record.id} type="button" onClick={() => importSavedScore(record)} className="group w-full rounded-2xl border-2 border-slate-900 bg-white p-4 text-left shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-indigo-50 hover:shadow-[3px_3px_0_#0f172a] active:translate-y-0 active:shadow-none">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0"><span className={`rounded-full px-2 py-1 text-xs font-black ${record.record_type === 'official' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>{record.record_type === 'official' ? '正式會考' : '模擬考'}</span><h3 className="mt-2 truncate text-base font-black text-slate-900">{record.title}</h3><p className="mt-1 text-xs font-bold text-slate-500">{record.exam_date || '未填日期'}{record.region ? ` · ${record.region}` : ''}</p></div>
+                  <div className="min-w-0"><span className={`rounded-full px-2 py-1 text-xs font-black ${record.record_type === 'official' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>{record.record_type === 'official' ? '正式會考' : '模擬考'}</span><h3 className="mt-2 truncate text-base font-black text-slate-900">{record.title}</h3><p className="mt-1 text-xs font-bold text-slate-500">{record.exam_date || '未填日期'}{record.note ? ` · 備註：${record.note}` : ''}</p></div>
                   <span className="shrink-0 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-black text-white">帶入</span>
                 </div>
                 <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-black leading-6 text-slate-700">國 {record.scores.chinese}　英 {record.scores.english}　數 {record.scores.math}　自 {record.scores.science}　社 {record.scores.social}　寫作 {record.scores.composition}</p>
