@@ -821,7 +821,7 @@ export default function App() {
       {scoreImportNotice && (
         <div
           role="status"
-          className="fixed left-1/2 top-5 z-[200] flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-400 px-4 py-3 text-sm font-black text-slate-950 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
+          className="fixed bottom-5 left-1/2 z-[200] flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-400 px-4 py-3 text-sm font-black text-slate-950"
         >
           <Check className="h-5 w-5 shrink-0" />
           {scoreImportNotice}
