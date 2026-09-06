@@ -218,6 +218,7 @@ export default function ScoreRecordsPage() {
                 <label className="text-sm font-black">
                   這筆成績的名稱
                   <input
+                    list="score-record-title-options"
                     value={title}
                     onChange={(event) =>
                       setTitle(event.target.value.slice(0, 60))
@@ -225,6 +226,11 @@ export default function ScoreRecordsPage() {
                     placeholder="例如：第一次模擬考"
                     className="mt-2 w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-3 py-2.5 font-bold"
                   />
+                  <datalist id="score-record-title-options">
+                    {Array.from({ length: 6 }, (_, index) => (
+                      <option key={index} value={`第${index + 1}次模擬考`} />
+                    ))}
+                  </datalist>
                 </label>
                 <label className="text-sm font-black">
                   考試日期（選填）
@@ -417,6 +423,11 @@ function ScoreInsights({ records }: { records: RecordItem[] }) {
         }))
         .filter((item) => item.direction !== 0)
     : [];
+  const improvements = changes.filter((item) => item.direction > 0);
+  const adjustments = changes.filter((item) => item.direction < 0);
+  const writingChange = previous
+    ? Number(latest.scores.composition) - Number(previous.scores.composition)
+    : 0;
   const strengths = subjects
     .filter(([key]) => latest.scores[key].startsWith("A"))
     .map(([, label]) => label);
@@ -555,22 +566,47 @@ function ScoreInsights({ records }: { records: RecordItem[] }) {
         </div>
       </div>
       {previous && (
-        <div className="mt-4 rounded-2xl border-2 border-slate-900 bg-sky-50 p-4">
-          <h3 className="font-black">與前一次紀錄相比</h3>
-          {changes.length ? (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {changes.map((change) => (
-                <span
-                  key={change.label}
-                  className={`rounded-lg px-3 py-2 text-sm font-black ${change.direction > 0 ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}
-                >
-                  {change.label}：{change.before} → {change.after}
-                </span>
-              ))}
-            </div>
+        <div className="mt-4 rounded-2xl border-2 border-slate-900 bg-emerald-50 p-4">
+          <h3 className="font-black">這次進步的地方</h3>
+          {improvements.length || writingChange > 0 ? (
+            <>
+              <p className="mt-2 text-sm font-bold leading-6 text-emerald-950">
+                做得很好，你已經在以下科目留下可看見的進步；把這次有效的讀法保留下來，下一次會更有底氣。
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {improvements.map((change) => (
+                  <span
+                    key={change.label}
+                    className="rounded-lg bg-emerald-200 px-3 py-2 text-sm font-black text-emerald-900"
+                  >
+                    {change.label}：{change.before} → {change.after}
+                  </span>
+                ))}
+                {writingChange > 0 && (
+                  <span className="rounded-lg bg-emerald-200 px-3 py-2 text-sm font-black text-emerald-900">
+                    寫作：{previous.scores.composition} 級 →{" "}
+                    {latest.scores.composition} 級
+                  </span>
+                )}
+              </div>
+            </>
           ) : (
-            <p className="mt-2 text-sm font-bold text-slate-600">
-              五科等級與前一次相同；可改看錯題類型、時間分配與寫作練習。
+            <p className="mt-2 text-sm font-bold leading-6 text-emerald-950">
+              這次沒有反映在等級上的上升，也不代表努力白費。等級相同仍可能是答題更穩、錯題變少；持續整理錯題與熟練度，下次就更有機會跨過門檻。
+            </p>
+          )}
+          {adjustments.length > 0 && (
+            <p className="mt-4 rounded-xl border border-amber-200 bg-white/70 p-3 text-sm font-bold leading-6 text-slate-700">
+              下一步可以多照顧：
+              {adjustments.map((item) => item.label).join("、")}
+              。一次考試的起伏很常見，先找出一個最常錯的單元或題型，做小而持續的調整就很好。
+            </p>
+          )}
+          {writingChange < 0 && (
+            <p className="mt-3 text-sm font-bold leading-6 text-slate-700">
+              寫作這次是 {previous.scores.composition} 級到{" "}
+              {latest.scores.composition}{" "}
+              級；可回看題意、結構與例子是否完整，下一次先設定一個可做到的改善目標。
             </p>
           )}
           <p className="mt-3 text-xs font-bold text-slate-500">
