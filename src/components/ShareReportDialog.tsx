@@ -4,6 +4,7 @@ import {
   Clock3,
   Copy,
   CopyPlus,
+  Crown,
   Link,
   Loader2,
   LockKeyhole,
@@ -182,6 +183,10 @@ export default function ShareReportDialog({
                 <input type="checkbox" checked={collaborationEnabled} onChange={(event) => setCollaborationEnabled(event.target.checked)} className="mt-0.5 h-4 w-4 accent-indigo-600" />
                 <span><span className="flex items-center gap-1.5 text-sm font-black text-indigo-950"><MessageSquare className="h-4 w-4" />開啟家長協作</span><span className="mt-1 block text-xs font-bold leading-5 text-slate-600">持有這個連結的人可留言、調整順序、移除志願並確認版本；所有變更都會留下紀錄。</span></span>
               </label>}
+              {!isCheckingMembership && !isMemberShare && kind === "volunteer" && <div className="mt-3 overflow-hidden rounded-2xl border-2 border-slate-900 bg-slate-900 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
+                <div className="bg-gradient-to-r from-amber-300 to-yellow-200 px-3 py-2 text-slate-950"><p className="flex items-center gap-1.5 text-xs font-black tracking-wide"><Crown className="h-4 w-4" />會員專屬：把「分享」變成一起完成的志願表</p></div>
+                <div className="p-3"><p className="text-sm font-black">家長可直接留言、調整志願順序，並一起確認最後版本。</p><p className="mt-1 text-xs font-bold leading-5 text-slate-300">不用來回傳截圖；每次調整都有紀錄，重要決定不再靠記憶。</p><a href={withBasePath('/membership')} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-amber-300 bg-white px-3 py-2.5 text-sm font-black text-slate-950 transition hover:bg-amber-100"><Crown className="h-4 w-4 text-amber-600" />解鎖家長協作</a></div>
+              </div>}
               <button
                 onClick={createLink}
                 disabled={!payload || isCreating || isCheckingMembership}
