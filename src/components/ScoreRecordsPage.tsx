@@ -373,7 +373,7 @@ function ScoreHistory({
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
-              <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-white text-sm font-black text-slate-700 sm:grid-cols-6">
+              <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border-2 border-slate-900 bg-white text-sm font-black text-slate-700 sm:grid-cols-6">
                 {[
                   ["國", record.scores.chinese],
                   ["英", record.scores.english],
@@ -384,7 +384,7 @@ function ScoreHistory({
                 ].map(([label, score], index) => (
                   <span
                     key={String(label)}
-                    className={`px-2 py-2 text-center ${index % 3 !== 0 ? "border-l border-slate-200" : ""} ${index >= 3 ? "border-t border-slate-200 sm:border-t-0" : ""} ${index > 0 ? "sm:border-l sm:border-slate-200" : ""}`}
+                    className={`px-2 py-2 text-center ${index % 3 !== 0 ? "border-l-2 border-slate-400" : ""} ${index >= 3 ? "border-t-2 border-slate-400 sm:border-t-0" : ""} ${index > 0 ? "sm:border-l-2 sm:border-slate-400" : ""}`}
                   >
                     {label} {score}
                   </span>
