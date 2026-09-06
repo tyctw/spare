@@ -10,7 +10,6 @@ import {
   LockKeyhole,
   MessageSquare,
   Share2,
-  Users,
   X,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -144,19 +143,7 @@ export default function ShareReportDialog({
           <div className="pointer-events-none absolute right-16 top-10 h-12 w-12 rounded-full border-4 border-amber-200/50" />
           <div className="relative flex items-start justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3 py-1 text-[11px] font-black tracking-[0.14em] text-indigo-50">
-                <Users className="h-3.5 w-3.5" />
-                FAMILY VIEW
-              </div>
-              <h2
-                id="share-report-title"
-                className="mt-3 text-2xl font-black tracking-tight sm:text-3xl"
-              >
-                {text.title}
-              </h2>
-              <p className="mt-2 max-w-sm text-sm font-bold leading-6 text-indigo-100">
-                把目前志願整理成一份容易討論的唯讀清單。
-              </p>
+              <div className="flex items-center gap-3"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-white/70 bg-white/15"><Share2 className="h-5 w-5" /></span><div><h2 id="share-report-title" className="text-2xl font-black tracking-tight sm:text-3xl">{text.title}</h2><p className="mt-1 max-w-sm text-sm font-bold leading-6 text-indigo-100">把目前志願整理成一份容易討論的唯讀清單。</p></div></div>
             </div>
             <button
               onClick={onClose}
@@ -183,9 +170,9 @@ export default function ShareReportDialog({
                 <input type="checkbox" checked={collaborationEnabled} onChange={(event) => setCollaborationEnabled(event.target.checked)} className="mt-0.5 h-4 w-4 accent-indigo-600" />
                 <span><span className="flex items-center gap-1.5 text-sm font-black text-indigo-950"><MessageSquare className="h-4 w-4" />開啟家長協作</span><span className="mt-1 block text-xs font-bold leading-5 text-slate-600">持有這個連結的人可留言、調整順序、移除志願並確認版本；所有變更都會留下紀錄。</span></span>
               </label>}
-              {!isCheckingMembership && !isMemberShare && kind === "volunteer" && <div className="mt-3 overflow-hidden rounded-2xl border-2 border-slate-900 bg-slate-900 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                <div className="bg-gradient-to-r from-amber-300 to-yellow-200 px-3 py-2 text-slate-950"><p className="flex items-center gap-1.5 text-xs font-black tracking-wide"><Crown className="h-4 w-4" />會員專屬：把「分享」變成一起完成的志願表</p></div>
-                <div className="p-3"><p className="text-sm font-black">家長可直接留言、調整志願順序，並一起確認最後版本。</p><p className="mt-1 text-xs font-bold leading-5 text-slate-300">不用來回傳截圖；每次調整都有紀錄，重要決定不再靠記憶。</p><a href={withBasePath('/membership')} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-amber-300 bg-white px-3 py-2.5 text-sm font-black text-slate-950 transition hover:bg-amber-100"><Crown className="h-4 w-4 text-amber-600" />解鎖家長協作</a></div>
+              {!isCheckingMembership && !isMemberShare && kind === "volunteer" && <div className="mt-3 flex items-start gap-2.5 rounded-xl bg-indigo-50 px-3 py-2.5 text-slate-800">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-amber-200 text-amber-800"><Crown className="h-3.5 w-3.5" /></span>
+                <div className="min-w-0 flex-1"><p className="text-xs font-black text-indigo-900">會員專屬：把分享變成一起完成的志願表</p><p className="mt-0.5 text-[11px] font-bold leading-4 text-slate-600">家長可留言、調整順序與確認版本；每次調整都會留下紀錄。</p><div className="mt-1 flex justify-end"><a href={withBasePath('/membership')} className="inline-flex items-center gap-1 text-xs font-black text-indigo-700 underline decoration-indigo-300 underline-offset-2 transition hover:text-indigo-950">解鎖家長協作 <span aria-hidden="true">→</span></a></div></div>
               </div>}
               <button
                 onClick={createLink}
