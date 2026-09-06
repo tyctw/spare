@@ -211,19 +211,19 @@ export default function ShareReportDialog({
           <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full border-4 border-white/20 bg-white/10" />
           <div className="pointer-events-none absolute right-16 top-10 h-12 w-12 rounded-full border-4 border-amber-200/50" />
           <div className="relative flex items-start justify-between gap-4">
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-white/70 bg-white/15">
                   <Share2 className="h-5 w-5" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <h2
                     id="share-report-title"
                     className="text-2xl font-black tracking-tight sm:text-3xl"
                   >
                     {text.title}
                   </h2>
-                  <p className="mt-1 max-w-sm text-sm font-bold leading-6 text-indigo-100">
+                  <p className="mt-1 max-w-none break-words text-sm font-bold leading-6 text-indigo-100">
                     把目前志願整理成一份容易討論的唯讀清單。
                   </p>
                 </div>
