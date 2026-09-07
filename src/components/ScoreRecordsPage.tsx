@@ -329,12 +329,21 @@ export default function ScoreRecordsPage() {
           </>
         )}
         {notice && (
-          <p
-            role="status"
-            className="mt-4 rounded-xl border-2 border-slate-900 bg-amber-50 p-3 text-sm font-bold text-slate-800"
+          <div
+            className="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-md items-center gap-3 rounded-xl border-2 border-slate-900 bg-amber-50 p-4 text-sm font-bold text-slate-800 shadow-[4px_4px_0_#161b35]"
           >
-            {notice}
-          </p>
+            <p role="status" aria-live="polite" className="min-w-0 flex-1 break-words">
+              {notice}
+            </p>
+            <button
+              type="button"
+              onClick={() => setNotice("")}
+              aria-label="關閉提醒"
+              className="shrink-0 rounded-lg bg-slate-900 px-3 py-2 text-xs font-black text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+            >
+              關閉
+            </button>
+          </div>
         )}
       </div>
     </main>
