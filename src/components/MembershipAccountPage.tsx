@@ -400,6 +400,19 @@ export default function MembershipAccountPage() {
             </div>
             
             <div className="flex flex-col gap-6">
+              <a
+                href={withBasePath('/score-records')}
+                className="group flex items-center justify-between gap-4 rounded-[2rem] border-2 border-slate-900 bg-[#f1f4df] p-6 text-slate-900 transition hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800 sm:p-7"
+              >
+                <span className="flex min-w-0 items-center gap-4">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-emerald-900"><History aria-hidden="true" className="h-5 w-5" /></span>
+                  <span className="min-w-0">
+                    <span className="block text-lg font-black">我的成績紀錄</span>
+                    <span className="mt-1 block text-sm font-medium leading-6 text-slate-600">查看、儲存模擬考與會考成績</span>
+                  </span>
+                </span>
+                <ArrowRight aria-hidden="true" className="h-5 w-5 shrink-0 transition-transform motion-safe:group-hover:translate-x-1" />
+              </a>
               <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[4px_4px_0_#161b35]">
             <div className="border-b-2 border-slate-900 bg-[#faf9f3] p-6 sm:p-7">
               <div className="flex items-center gap-3">
@@ -429,21 +442,7 @@ export default function MembershipAccountPage() {
                   LINE 僅用於確認與恢復會員資格。登入狀態有效 24 小時；登出後，此裝置會立刻恢復一般使用者顯示。
                 </p>
 
-                <a
-                  href={withBasePath('/score-records')}
-                  className="group flex items-center justify-between gap-3 rounded-2xl border-2 border-slate-900 bg-[#f1f4df] px-4 py-3.5 text-amber-950 transition hover:border-slate-900 hover:bg-amber-100 hover:shadow-[3px_3px_0_#0f172a]"
-                >
-                  <span className="flex min-w-0 items-center gap-3">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-amber-950">
-                      <History className="h-4 w-4" />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-sm font-black">我的成績紀錄</span>
-                      <span className="mt-0.5 block text-xs font-bold text-amber-800">查看、儲存模擬考與會考成績</span>
-                    </span>
-                  </span>
-                  <ArrowRight className="h-5 w-5 shrink-0 transition group-hover:translate-x-1" />
-                </a>
+
 
                 {lineName ? (
                   <button type="button" onClick={() => void logout()} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3.5 text-sm font-black text-slate-700 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]">
