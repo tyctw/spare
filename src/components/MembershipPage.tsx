@@ -419,26 +419,31 @@ export default function MembershipPage() {
               </div>
             </header>
             <div className="p-6 sm:p-10">
-              <div className="grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
-                <div className="rounded-2xl border-2 border-slate-900 p-5 sm:p-6">
-                  <h2 className="text-xs font-bold tracking-widest text-slate-500">你的會員資訊</h2>
-                  <dl className="mt-4 divide-y divide-slate-100">
-                    <div className="flex items-start justify-between gap-4 py-4">
-                      <dt className="shrink-0 text-sm text-slate-500">LINE 會員帳號</dt>
-                      <dd className="min-w-0 break-words text-right text-base font-bold">{lineName || '已完成 LINE 驗證'}</dd>
+              <section aria-labelledby="member-details-title" className="overflow-hidden rounded-2xl border-2 border-slate-900 bg-white shadow-[4px_4px_0_#161b35]">
+                <div className="flex items-center gap-3 border-b-2 border-slate-900 bg-[#faf9f3] px-5 py-4 sm:px-6">
+                  <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><BadgeCheck className="h-5 w-5 text-emerald-800" /></span>
+                  <h2 id="member-details-title" className="text-base font-black text-slate-900">你的會員資訊</h2>
+                </div>
+                <div className="grid lg:grid-cols-[1.15fr_1fr]">
+                  <dl className="grid gap-6 p-5 sm:grid-cols-2 sm:p-6 lg:p-7">
+                    <div className="min-w-0">
+                      <dt className="flex items-center gap-2 text-xs font-bold text-slate-500"><MessageCircle aria-hidden="true" className="h-4 w-4 text-emerald-700" />LINE 會員帳號</dt>
+                      <dd className="mt-3 break-words text-2xl font-black leading-snug tracking-tight text-slate-900">{lineName || '已完成 LINE 驗證'}</dd>
                     </div>
-                    <div className="flex items-center justify-between gap-4 py-4">
-                      <dt className="text-sm text-slate-500">目前方案</dt>
-                      <dd className="inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-900 bg-[#f1f4e9] px-3 py-1.5 text-sm font-bold text-emerald-900"><Crown aria-hidden="true" className="h-4 w-4" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
+                    <div className="min-w-0 border-t border-slate-200 pt-5 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+                      <dt className="text-xs font-bold text-slate-500">目前方案</dt>
+                      <dd className="mt-3 inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-[#f1f4df] px-3 py-2 text-base font-black text-emerald-950"><Crown aria-hidden="true" className="h-5 w-5" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
                     </div>
                   </dl>
+                  <div className="border-t-2 border-slate-900 bg-[#edf5e9] p-5 sm:p-6 lg:border-l-2 lg:border-t-0 lg:p-7">
+                    <dl>
+                      <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</dt>
+                      <dd className="mt-3 break-words text-2xl font-black leading-snug tracking-tight text-emerald-950 sm:text-3xl">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</dd>
+                    </dl>
+                    <p className="mt-4 flex items-start gap-2 text-xs font-medium leading-5 text-emerald-800"><span aria-hidden="true" className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-emerald-800"><Check className="h-3 w-3 text-white" /></span>有效期間內，安心享用會員服務</p>
+                  </div>
                 </div>
-                <div className="relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-[#f3f8f4] p-5 sm:p-6">
-                  <div className="flex items-center gap-2 text-sm font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</div>
-                  <p className="mt-4 break-words text-2xl font-black tracking-tight text-emerald-950 sm:text-3xl">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</p>
-                  <p className="mt-4 flex items-center gap-1.5 text-xs font-medium text-emerald-700"><Check aria-hidden="true" className="h-4 w-4" />有效期間內，安心享用會員服務</p>
-                </div>
-              </div>
+              </section>
               <div className="mt-7 flex items-start gap-3 rounded-2xl border-2 border-slate-900 bg-slate-50 p-4 sm:mt-8 sm:p-5">
                 <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><KeyRound className="h-4 w-4 text-emerald-800" /></span>
                 <div><h2 className="text-sm font-bold text-slate-800">準備好成績，就可以開始</h2><p className="mt-1 text-sm leading-6 text-slate-500">會員資格有效期間，回到首頁填妥成績後即可直接開始落點分析，無需再輸入系統授權碼。</p></div>
