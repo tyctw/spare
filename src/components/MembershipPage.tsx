@@ -437,6 +437,10 @@ export default function MembershipPage() {
                   </dl>
                   <div className="border-t-2 border-slate-900 bg-[#edf5e9] p-5 sm:p-6 lg:border-l-2 lg:border-t-0 lg:p-7">
                     <dl>
+                      <div className="mb-5 border-b border-emerald-900/15 pb-5">
+                        <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />會員啟用日期</dt>
+                        <dd className="mt-3 text-xl font-black leading-snug tracking-tight text-emerald-950">{membership.activatedAt ? new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.activatedAt)) : '尚無日期資料'}</dd>
+                      </div>
                       <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</dt>
                       <dd className="mt-3 break-words text-2xl font-black leading-snug tracking-tight text-emerald-950 sm:text-3xl">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</dd>
                     </dl>
