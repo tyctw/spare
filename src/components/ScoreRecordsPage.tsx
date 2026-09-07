@@ -62,6 +62,11 @@ export default function ScoreRecordsPage() {
   const [scores, setScores] = useState<Scores>(emptyScores);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
+  useEffect(() => {
+    if (!notice) return;
+    const timeout = window.setTimeout(() => setNotice(""), 3000);
+    return () => window.clearTimeout(timeout);
+  }, [notice]);
   const load = async () => {
     const result = await callBackend<{
       loggedIn: boolean;
@@ -288,7 +293,7 @@ export default function ScoreRecordsPage() {
                     </select>
                   </label>
                 ))}
-                <label className="rounded-xl border-2 border-slate-900 bg-slate-900 p-3 text-sm font-black text-white">
+                <label className="rounded-xl border-2 border-slate-200 bg-slate-50 p-3 text-sm font-black">
                   寫作
                   <select
                     value={scores.composition}
@@ -301,7 +306,7 @@ export default function ScoreRecordsPage() {
                             : Number(event.target.value),
                       }))
                     }
-                    className="mt-2 w-full rounded-lg border-2 border-slate-700 bg-white px-2 py-2 font-bold text-slate-900"
+                    className="mt-2 w-full rounded-lg border-2 border-slate-300 bg-white px-2 py-2 font-bold"
                   >
                     <option value="" disabled>
                       請選擇級分
@@ -335,14 +340,6 @@ export default function ScoreRecordsPage() {
             <p role="status" aria-live="polite" className="min-w-0 flex-1 break-words">
               {notice}
             </p>
-            <button
-              type="button"
-              onClick={() => setNotice("")}
-              aria-label="關閉提醒"
-              className="shrink-0 rounded-lg bg-slate-900 px-3 py-2 text-xs font-black text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-            >
-              關閉
-            </button>
           </div>
         )}
       </div>
