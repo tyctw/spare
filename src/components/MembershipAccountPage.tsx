@@ -400,19 +400,18 @@ export default function MembershipAccountPage() {
             </div>
             
             <div className="flex flex-col gap-6">
-              <a
-                href={withBasePath('/score-records')}
-                className="group flex items-center justify-between gap-4 rounded-[2rem] border-2 border-slate-900 bg-[#f1f4df] p-6 text-slate-900 transition hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800 sm:p-7"
-              >
-                <span className="flex min-w-0 items-center gap-4">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-emerald-900"><History aria-hidden="true" className="h-5 w-5" /></span>
-                  <span className="min-w-0">
-                    <span className="block text-lg font-black">我的成績紀錄</span>
-                    <span className="mt-1 block text-sm font-medium leading-6 text-slate-600">查看、儲存模擬考與會考成績</span>
-                  </span>
-                </span>
-                <ArrowRight aria-hidden="true" className="h-5 w-5 shrink-0 transition-transform motion-safe:group-hover:translate-x-1" />
-              </a>
+              <section aria-labelledby="account-score-records-title" className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[4px_4px_0_#161b35]">
+                <div className="flex items-center gap-3 border-b-2 border-slate-900 bg-[#faf9f3] p-6 sm:p-7">
+                  <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-emerald-100 text-emerald-900"><History className="h-5 w-5" /></span>
+                  <h2 id="account-score-records-title" className="text-lg font-black text-slate-900">我的成績紀錄</h2>
+                </div>
+                <div className="p-6 sm:p-7">
+                  <p className="text-sm font-bold leading-6 text-slate-600">查看、儲存模擬考與會考成績</p>
+                  <a href={withBasePath('/score-records')} className="group mt-5 flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0_#161b35] transition hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-800">
+                    前往成績紀錄<ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-1" />
+                  </a>
+                </div>
+              </section>
               <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[4px_4px_0_#161b35]">
             <div className="border-b-2 border-slate-900 bg-[#faf9f3] p-6 sm:p-7">
               <div className="flex items-center gap-3">
