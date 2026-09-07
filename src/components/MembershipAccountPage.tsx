@@ -172,22 +172,21 @@ export default function MembershipAccountPage() {
     : 0;
 
   return (
-    <main id="main-content" aria-labelledby="member-account-title" className="min-h-screen overflow-hidden bg-[#f5f6ff] px-4 py-6 text-slate-900 sm:px-6 sm:py-10">
-      <div aria-hidden="true" className="fixed -left-28 top-20 h-72 w-72 rounded-full bg-violet-200/60 blur-3xl" />
-      <div aria-hidden="true" className="fixed -right-24 bottom-0 h-80 w-80 rounded-full bg-sky-200/60 blur-3xl" />
-      <section className="relative mx-auto max-w-5xl">
+    <main id="main-content" aria-labelledby="member-account-title" className="min-h-screen overflow-hidden bg-[#f6f7f2] px-4 py-6 text-slate-900 sm:px-6 sm:py-10">
+      <section className="relative mx-auto max-w-7xl">
         <a href={withBasePath('/membership')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0_#161b35]">
           <ArrowLeft className="h-4 w-4" />會員免廣告
         </a>
 
-        <header className="mt-5 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[5px_5px_0_#161b35] sm:mt-6 sm:p-7">
-          <div className="flex items-start justify-between gap-4 sm:items-center">
+        <header className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-[#edf5e9] px-6 py-8 text-slate-900 shadow-[5px_5px_0_#161b35] sm:px-10 sm:py-10">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 h-72 w-72 rounded-full border-[32px] border-emerald-100/80" />
+          <div className="relative flex items-center justify-between gap-6">
             <div className="min-w-0">
-              <p className="flex items-center gap-2 text-[11px] font-black tracking-[.16em] text-violet-700"><Crown className="h-4 w-4 fill-amber-300 text-violet-700" />MEMBER ACCOUNT</p>
-              <h1 id="member-account-title" className="mt-1.5 text-2xl font-black tracking-tight sm:text-4xl">我的會員帳號</h1>
-              <p className="mt-2 max-w-xl text-sm font-bold leading-6 text-slate-600">資格、效期與常用操作都集中在這裡，確認後就能繼續專心查落點。</p>
+              <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-bold text-emerald-900"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
+              <h1 id="member-account-title" className="mt-5 text-3xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl">我的會員帳號</h1>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">資格、效期與常用操作都集中在這裡，確認後就能繼續專心查落點。</p>
             </div>
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35] sm:h-14 sm:w-14 sm:rounded-2xl"><CircleUserRound className="h-5 w-5 sm:h-7 sm:w-7" /></div>
+            <div aria-hidden="true" className="hidden h-28 w-28 shrink-0 rotate-3 place-items-center rounded-3xl border-2 border-slate-900 bg-[#fffdf5] text-emerald-900 shadow-[5px_5px_0_#161b35] sm:grid"><CircleUserRound className="h-14 w-14" strokeWidth={1.5} /></div>
           </div>
         </header>
 
@@ -207,9 +206,9 @@ export default function MembershipAccountPage() {
           </div>
         ) : (
           <>
-          <div className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_.8fr] lg:items-start">
-            <div className="flex flex-col gap-5">
-            <article className="shrink-0 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
+          <div className="mt-7 grid gap-6 lg:grid-cols-[1.35fr_1fr] lg:items-start">
+            <div className="flex flex-col gap-6">
+            <article className="shrink-0 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[4px_4px_0_#161b35]">
               <div className={`border-b-2 border-slate-900 p-6 sm:p-7 ${membership.active ? 'bg-emerald-50' : 'bg-slate-50'}`}>
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
@@ -217,7 +216,7 @@ export default function MembershipAccountPage() {
                       {membership.active ? <BadgeCheck className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
                     </div>
                     <div>
-                      <p className={`text-[10px] font-black tracking-[.16em] ${membership.active ? 'text-emerald-700' : 'text-slate-500'}`}>MEMBERSHIP STATUS</p>
+                      <p className={`text-[10px] font-black tracking-[.16em] ${membership.active ? 'text-emerald-700' : 'text-slate-500'}`}>會員資格</p>
                       <h2 className="mt-0.5 text-lg font-black text-slate-900">{membership.active ? '免廣告已生效' : '尚未啟用免廣告'}</h2>
                     </div>
                   </div>
@@ -228,14 +227,14 @@ export default function MembershipAccountPage() {
               <div className="p-6 sm:p-7">
                 {membership.active ? <>
                   <p className="text-sm font-bold leading-relaxed text-slate-700">你正在使用 {planName}，查詢、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
-                  <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3">
-                    <div className="min-w-0 rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-3 transition hover:border-emerald-200 sm:px-4 sm:py-3">
+                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                    <div className="min-w-0 rounded-2xl border-2 border-slate-900 bg-[#edf5e9] p-4 sm:p-5">
                       <p className="text-[10px] font-black text-emerald-800 sm:text-xs">目前方案</p>
-                      <p className="mt-1 break-words text-base font-black text-emerald-950 sm:text-lg">{planName}</p>
+                      <p className="mt-1 break-words text-2xl font-black text-emerald-950 sm:text-3xl">{planName}</p>
                     </div>
-                    <div className="min-w-0 rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 p-3 transition hover:border-emerald-200 sm:px-4 sm:py-3">
+                    <div className="min-w-0 rounded-2xl border-2 border-slate-900 bg-[#edf5e9] p-4 sm:p-5">
                       <p className="text-[10px] font-black text-emerald-800 sm:text-xs">距離到期</p>
-                      <p className="mt-1 break-words text-base font-black text-emerald-950 sm:text-lg">剩下 {remainingDays} 天</p>
+                      <p className="mt-1 break-words text-2xl font-black text-emerald-950 sm:text-3xl">剩下 {remainingDays} 天</p>
                       <p className="mt-0.5 break-words text-[10px] font-bold text-emerald-700 sm:text-xs">至 {formatDate(membership.expiresAt)}</p>
                     </div>
                   </div>
@@ -268,7 +267,7 @@ export default function MembershipAccountPage() {
                             type="button"
                             onClick={() => { setEmailEditMode(false); setEmailInput(''); setEmailError(''); }}
                             disabled={emailSaving}
-                            className="flex-1 sm:flex-none rounded-xl border-2 border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-500 transition hover:border-slate-400"
+                            className="flex-1 sm:flex-none rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black text-slate-500 transition hover:border-slate-400"
                           >
                             取消
                           </button>
@@ -301,57 +300,57 @@ export default function MembershipAccountPage() {
                     </button>
                   )}
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                    <a href={withBasePath('/')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-indigo-700"><Home className="h-4 w-4" />回到落點分析</a>
-                    <a href={withBasePath('/membership')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-black transition hover:-translate-y-0.5 hover:shadow-[3px_3px_0_#161b35]"><Sparkles className="h-4 w-4 text-indigo-600" />續購與查詢方案</a>
+                    <a href={withBasePath('/')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-900 px-4 py-3 font-black text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-emerald-800"><Home className="h-4 w-4" />回到落點分析</a>
+                    <a href={withBasePath('/membership')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-black transition hover:-translate-y-0.5 hover:shadow-[3px_3px_0_#161b35]"><Sparkles className="h-4 w-4 text-emerald-600" />續購與查詢方案</a>
                   </div>
                 </> : <>
-                  <div className="rounded-2xl bg-indigo-50/50 p-4 sm:p-5 mb-5 border-2 border-indigo-100/50">
-                    <p className="text-sm font-bold leading-relaxed text-indigo-900">
+                  <div className="rounded-2xl bg-emerald-50/50 p-4 sm:p-5 mb-5 border-2 border-emerald-100/50">
+                    <p className="text-sm font-bold leading-relaxed text-emerald-900">
                       登入 LINE 後可確認既有資格；尚未購買時，可直接從方案頁啟用免廣告。
                     </p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div className="group relative flex items-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md sm:p-5">
-                      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-slate-50 transition-colors group-hover:bg-indigo-50" />
+                    <div className="group relative flex items-center overflow-hidden rounded-2xl border-2 border-slate-900 bg-white p-4 transition-all hover:border-emerald-300 hover:shadow-md sm:p-5">
+                      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-slate-50 transition-colors group-hover:bg-emerald-50" />
                       <div className="relative z-10 flex items-center gap-3 sm:gap-4">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600 sm:h-11 sm:w-11">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-emerald-100 group-hover:text-emerald-600 sm:h-11 sm:w-11">
                           <Ban className="h-5 w-5" />
                         </div>
                         <div>
                           <p className="text-[10px] font-black tracking-wider text-slate-400 uppercase sm:text-xs">專屬特權 1</p>
-                          <p className="mt-0.5 text-base font-black text-slate-800 transition-colors group-hover:text-indigo-950 sm:text-lg">完全移除廣告</p>
+                          <p className="mt-0.5 text-base font-black text-slate-800 transition-colors group-hover:text-emerald-950 sm:text-lg">完全移除廣告</p>
                         </div>
                       </div>
                     </div>
-                    <div className="group relative flex items-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md sm:p-5">
-                      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-slate-50 transition-colors group-hover:bg-indigo-50" />
+                    <div className="group relative flex items-center overflow-hidden rounded-2xl border-2 border-slate-900 bg-white p-4 transition-all hover:border-emerald-300 hover:shadow-md sm:p-5">
+                      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-slate-50 transition-colors group-hover:bg-emerald-50" />
                       <div className="relative z-10 flex items-center gap-3 sm:gap-4">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600 sm:h-11 sm:w-11">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-colors group-hover:bg-emerald-100 group-hover:text-emerald-600 sm:h-11 sm:w-11">
                           <Infinity className="h-5 w-5" />
                         </div>
                         <div>
                           <p className="text-[10px] font-black tracking-wider text-slate-400 uppercase sm:text-xs">專屬特權 2</p>
-                          <p className="mt-0.5 text-base font-black text-slate-800 transition-colors group-hover:text-indigo-950 sm:text-lg">無限次落點分析</p>
+                          <p className="mt-0.5 text-base font-black text-slate-800 transition-colors group-hover:text-emerald-950 sm:text-lg">無限次落點分析</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <a href={withBasePath('/membership')} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-4 text-sm font-black text-white shadow-[4px_4px_0_#161b35] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0_#161b35] active:translate-y-0 active:shadow-none"><Sparkles className="h-5 w-5" />前往啟用免廣告</a>
+                  <a href={withBasePath('/membership')} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-900 px-4 py-4 text-sm font-black text-white shadow-[4px_4px_0_#161b35] transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0_#161b35] active:translate-y-0 active:shadow-none"><Sparkles className="h-5 w-5" />前往啟用免廣告</a>
                 </>}
               </div>
             </article>
 
             <section className="overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[5px_5px_0_#161b35]">
-              <div className="flex items-center justify-between gap-4 border-b-2 border-slate-900 bg-violet-50 px-5 py-4">
-                <div className="flex items-center gap-3"><div className="grid h-9 w-9 place-items-center rounded-xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35]"><ReceiptText className="h-4 w-4" /></div><div><p className="text-[10px] font-black tracking-[.16em] text-violet-700">PURCHASE HISTORY</p><h2 className="mt-0.5 text-lg font-black">購買紀錄</h2></div></div>
-                <span className="rounded-full border border-violet-200 bg-white px-2.5 py-1 text-[11px] font-black text-violet-700">最多 20 筆</span>
+              <div className="flex items-center justify-between gap-4 border-b-2 border-slate-900 bg-[#faf9f3] px-5 py-4">
+                <div className="flex items-center gap-3"><div className="grid h-9 w-9 place-items-center rounded-xl border-2 border-slate-900 bg-white text-emerald-800 shadow-[2px_2px_0_#161b35]"><ReceiptText className="h-4 w-4" /></div><div><p className="text-[10px] font-black tracking-[.16em] text-emerald-800">PURCHASE HISTORY</p><h2 className="mt-0.5 text-lg font-black">購買紀錄</h2></div></div>
+                <span className="rounded-full border border-violet-200 bg-white px-2.5 py-1 text-[11px] font-black text-emerald-800">最多 20 筆</span>
               </div>
               {purchases.length ? <div className="space-y-4 bg-slate-50/50 p-4 sm:p-5">
                 {(isHistoryExpanded ? purchases : purchases.slice(0, 1)).map((purchase) => {
                   const paid = purchase.status === 'paid';
                   const statusLabel = purchase.status === 'paid' ? '已付款' : purchase.status === 'pending' ? '處理中' : purchase.status === 'refunded' ? '已退款' : '未完成';
                   return (
-                    <div key={`${purchase.reference}-${purchase.createdAt}`} className="group relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white transition-all hover:border-slate-300 hover:shadow-md p-4 sm:p-5">
+                    <div key={`${purchase.reference}-${purchase.createdAt}`} className="group relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-white transition-all hover:border-slate-900 hover:shadow-md p-4 sm:p-5">
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3 sm:gap-4">
                           <div className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl border-2 ${paid ? 'border-emerald-200 bg-emerald-50 text-emerald-600' : purchase.status === 'refunded' ? 'border-amber-200 bg-amber-50 text-amber-600' : 'border-slate-200 bg-slate-100 text-slate-500'}`}>
@@ -359,7 +358,7 @@ export default function MembershipAccountPage() {
                           </div>
                           <div>
                             <p className="text-sm sm:text-base font-black text-slate-900">{purchase.plan === 'yearly' ? '年費會員方案' : '月費會員方案'}</p>
-                            <p className="mt-0.5 text-xs sm:text-sm font-black text-indigo-700">NT$ {purchase.amount}</p>
+                            <p className="mt-0.5 text-xs sm:text-sm font-black text-emerald-700">NT$ {purchase.amount}</p>
                           </div>
                         </div>
                         <div className="text-right">
@@ -400,15 +399,15 @@ export default function MembershipAccountPage() {
             </section>
             </div>
             
-            <div className="flex flex-col gap-5">
-              <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35]">
-            <div className="border-b-2 border-slate-900 bg-[#00c300]/10 p-6 sm:p-7">
+            <div className="flex flex-col gap-6">
+              <aside className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[4px_4px_0_#161b35]">
+            <div className="border-b-2 border-slate-900 bg-[#faf9f3] p-6 sm:p-7">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-[#00c300] text-white">
                   <ShieldCheck className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black tracking-[.16em] text-[#00a000]">IDENTITY VERIFICATION</p>
+                  <p className="text-[10px] font-black tracking-[.16em] text-emerald-700">帳號與安全</p>
                   <h2 className="mt-0.5 text-lg font-black text-slate-900">LINE 身分確認</h2>
                 </div>
               </div>
@@ -416,26 +415,26 @@ export default function MembershipAccountPage() {
             
             <div className="p-6 sm:p-7">
               <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 transition-colors hover:border-slate-300">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-200 bg-white text-slate-400">
+                <div className="flex items-center gap-4 rounded-2xl border-2 border-slate-900 bg-slate-50 p-4 transition-colors hover:border-slate-900">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-900 bg-white text-slate-400">
                     <CircleUserRound className="h-6 w-6" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-black text-slate-400">登入帳號</p>
-                    <p className="mt-0.5 truncate text-lg font-black text-slate-900">{lineName || '尚未登入 LINE'}</p>
+                    <p className="mt-1 break-words text-xl font-black text-slate-900">{lineName || '尚未登入 LINE'}</p>
                   </div>
                 </div>
 
-                <p className="rounded-xl bg-indigo-50/50 px-4 py-3 text-xs font-bold leading-relaxed text-indigo-800">
+                <p className="rounded-xl bg-emerald-50/50 px-4 py-3 text-xs font-bold leading-relaxed text-emerald-800">
                   LINE 僅用於確認與恢復會員資格。登入狀態有效 24 小時；登出後，此裝置會立刻恢復一般使用者顯示。
                 </p>
 
                 <a
                   href={withBasePath('/score-records')}
-                  className="group flex items-center justify-between gap-3 rounded-2xl border-2 border-amber-300 bg-amber-50 px-4 py-3.5 text-amber-950 transition hover:border-slate-900 hover:bg-amber-100 hover:shadow-[3px_3px_0_#0f172a]"
+                  className="group flex items-center justify-between gap-3 rounded-2xl border-2 border-slate-900 bg-[#f1f4df] px-4 py-3.5 text-amber-950 transition hover:border-slate-900 hover:bg-amber-100 hover:shadow-[3px_3px_0_#0f172a]"
                 >
                   <span className="flex min-w-0 items-center gap-3">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-amber-500 bg-amber-200 text-amber-950">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white text-amber-950">
                       <History className="h-4 w-4" />
                     </span>
                     <span className="min-w-0">
@@ -447,7 +446,7 @@ export default function MembershipAccountPage() {
                 </a>
 
                 {lineName ? (
-                  <button type="button" onClick={() => void logout()} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-700 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]">
+                  <button type="button" onClick={() => void logout()} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3.5 text-sm font-black text-slate-700 transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]">
                     <LogOut className="h-4 w-4 text-slate-400" />
                     登出 LINE
                   </button>
@@ -482,22 +481,22 @@ export default function MembershipAccountPage() {
                 </div>
               )}
               
-              {accountNotice && <p role="status" aria-live="polite" className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold leading-5 text-indigo-800">{accountNotice}</p>}
+              {accountNotice && <p role="status" aria-live="polite" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold leading-5 text-emerald-800">{accountNotice}</p>}
             </div>
           </aside>
 
             </div>
           </div>
 
-          <div className="mx-auto mt-8 grid max-w-5xl overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-[#f4f7ff] shadow-[6px_6px_0_#161b35] md:grid-cols-2">
+          <div className="mx-auto mt-8 grid overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-[#faf9f3] shadow-[4px_4px_0_#161b35] md:grid-cols-2">
             <div className="p-5 sm:p-8">
               <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
                   <Mail className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black tracking-[0.14em] text-indigo-600 sm:text-xs">
-                    MEMBERSHIP SUPPORT
+                  <p className="text-[10px] font-black tracking-[0.14em] text-emerald-600 sm:text-xs">
+                    需要協助嗎
                   </p>
                   <h2 className="mt-1 text-xl font-black sm:text-2xl">
                     會員協助與交易保障
@@ -509,15 +508,15 @@ export default function MembershipAccountPage() {
               </div>
               <a
                 href="mailto:tyctw.analyze@gmail.com?subject=%E6%9C%83%E5%93%A1%E5%85%8D%E5%BB%A3%E5%91%8A%E5%8D%94%E5%8A%A9"
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-indigo-50 px-4 py-3.5 text-sm font-black text-indigo-700 transition hover:border-slate-900 hover:bg-indigo-100 sm:w-auto"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-50 px-4 py-3.5 text-sm font-black text-emerald-700 transition hover:border-slate-900 hover:bg-emerald-100 sm:w-auto"
               >
                 <Mail className="h-4 w-4" />
                 tyctw.analyze@gmail.com
               </a>
             </div>
-            <div className="border-t-2 border-slate-900 bg-[#f7f9ff] p-5 sm:p-8 md:border-l-2 md:border-t-0">
+            <div className="border-t-2 border-slate-900 bg-white p-5 sm:p-8 md:border-l-2 md:border-t-0">
               <p className="text-[10px] font-black tracking-[0.14em] text-slate-500 sm:text-xs">
-                MEMBERSHIP INFORMATION
+                交易保障
               </p>
               <h3 className="mt-1 text-lg font-black text-slate-800 sm:text-xl">
                 售後與退款說明
@@ -528,20 +527,20 @@ export default function MembershipAccountPage() {
               <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3">
                 <a
                   href={withBasePath("/after-sales-service")}
-                  className="group flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-slate-200 bg-white p-2.5 text-center transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a] sm:flex-row sm:justify-between sm:gap-3 sm:px-4 sm:py-3.5"
+                  className="group flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-white p-2.5 text-center transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a] sm:flex-row sm:justify-between sm:gap-3 sm:px-4 sm:py-3.5"
                 >
                   <span className="flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2">
-                    <HeartHandshake className="h-5 w-5 shrink-0 text-indigo-600 sm:h-4 sm:w-4" />
+                    <HeartHandshake className="h-5 w-5 shrink-0 text-emerald-600 sm:h-4 sm:w-4" />
                     <span className="text-xs font-black text-slate-800 sm:text-sm">售後服務</span>
                   </span>
                   <ArrowRight className="hidden h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900 sm:block" />
                 </a>
                 <a
                   href={withBasePath("/refund-cancellation-policy")}
-                  className="group flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-slate-200 bg-white p-2.5 text-center transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a] sm:flex-row sm:justify-between sm:gap-3 sm:px-4 sm:py-3.5"
+                  className="group flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-white p-2.5 text-center transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a] sm:flex-row sm:justify-between sm:gap-3 sm:px-4 sm:py-3.5"
                 >
                   <span className="flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2">
-                    <ReceiptText className="h-5 w-5 shrink-0 text-indigo-600 sm:h-4 sm:w-4" />
+                    <ReceiptText className="h-5 w-5 shrink-0 text-emerald-600 sm:h-4 sm:w-4" />
                     <span className="leading-tight text-xs font-black text-slate-800 sm:text-sm">退款與取消</span>
                   </span>
                   <ArrowRight className="hidden h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900 sm:block" />
