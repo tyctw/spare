@@ -424,7 +424,7 @@ export default function MembershipPage() {
                   <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><BadgeCheck className="h-5 w-5 text-emerald-800" /></span>
                   <h2 id="member-details-title" className="text-base font-black text-slate-900">你的會員資訊</h2>
                 </div>
-                <div className="grid lg:grid-cols-[1.15fr_1fr]">
+                <div className="grid lg:grid-cols-[1fr_1.25fr]">
                   <dl className="grid gap-6 p-5 sm:grid-cols-2 sm:p-6 lg:p-7">
                     <div className="min-w-0">
                       <dt className="flex items-center gap-2 text-xs font-bold text-slate-500"><MessageCircle aria-hidden="true" className="h-4 w-4 text-emerald-700" />LINE 會員帳號</dt>
@@ -436,15 +436,16 @@ export default function MembershipPage() {
                     </div>
                   </dl>
                   <div className="border-t-2 border-slate-900 bg-[#edf5e9] p-5 sm:p-6 lg:border-l-2 lg:border-t-0 lg:p-7">
-                    <dl>
-                      <div className="mb-5 border-b border-emerald-900/15 pb-5">
+                    <dl className="grid gap-5 sm:grid-cols-2">
+                      <div className="min-w-0">
                         <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />會員啟用日期</dt>
                         <dd className="mt-3 text-xl font-black leading-snug tracking-tight text-emerald-950">{membership.activatedAt ? new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.activatedAt)) : '尚無日期資料'}</dd>
                       </div>
-                      <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</dt>
-                      <dd className="mt-3 break-words text-2xl font-black leading-snug tracking-tight text-emerald-950 sm:text-3xl">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</dd>
+                      <div className="min-w-0 border-t border-emerald-900/15 pt-5 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
+                        <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</dt>
+                        <dd className="mt-3 break-words text-xl font-black leading-snug tracking-tight text-emerald-950">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</dd>
+                      </div>
                     </dl>
-                    <p className="mt-4 flex items-start gap-2 text-xs font-medium leading-5 text-emerald-800"><span aria-hidden="true" className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-emerald-800"><Check className="h-3 w-3 text-white" /></span>有效期間內，安心享用會員服務</p>
                   </div>
                 </div>
               </section>
