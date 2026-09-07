@@ -429,12 +429,12 @@ export default function MembershipPage() {
                       <dt className="flex items-center gap-2 text-xs font-bold text-slate-500"><MessageCircle aria-hidden="true" className="h-4 w-4 text-emerald-700" />LINE 會員帳號</dt>
                       <dd className="mt-3 break-words text-2xl font-black leading-snug tracking-tight text-slate-900">{lineName || '已完成 LINE 驗證'}</dd>
                     </div>
-                    <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-[#f1f4df] p-4">
+                    <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
                       <dt className="text-xs font-bold text-slate-500">目前方案</dt>
                       <dd className="mt-3 inline-flex items-center gap-2 text-xl font-black text-emerald-950"><Crown aria-hidden="true" className="h-5 w-5" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
                     </div>
 
-                      <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-[#edf5e9] p-4">
+                      <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
                         <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />會員啟用日期</dt>
                         <dd className="mt-3 text-xl font-black leading-snug tracking-tight text-emerald-950">{membership.activatedAt ? new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.activatedAt)) : '尚無日期資料'}</dd>
                       </div>
