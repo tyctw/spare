@@ -384,27 +384,26 @@ export default function MembershipPage() {
   if (membership.active)
     return (
       <main id="main-content" aria-labelledby="member-active-title" className="min-h-screen bg-[#f6f7f2] px-4 py-6 text-slate-900 sm:px-6 sm:py-12">
-        <section className="mx-auto max-w-5xl">
+        <section className="mx-auto max-w-7xl">
           <nav aria-label="會員頁面導覽" className="flex items-center justify-between gap-4">
             <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-bold text-slate-600 transition hover:text-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
               <ArrowRight aria-hidden="true" className="h-4 w-4 rotate-180" />回到落點分析
             </a>
-            <span className="flex items-center gap-2 text-xs font-bold tracking-widest text-emerald-800"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
+            <span className="flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-xs font-bold tracking-widest text-emerald-800 shadow-[2px_2px_0_#161b35]"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
           </nav>
           <article className="mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35] sm:mt-8">
-            <div className="relative overflow-hidden border-b-2 border-slate-900 bg-[#123e35] px-6 py-8 text-white sm:px-10 sm:py-12">
-              <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full border-[48px] border-white/[0.04]" />
-              <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 right-16 h-72 w-72 rounded-full border border-emerald-200/10" />
+            <div className="relative overflow-hidden border-b-2 border-slate-900 bg-emerald-50 px-6 py-8 text-slate-900 sm:px-10 sm:py-12">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full border-[48px] border-emerald-100/80" />
+              <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 right-16 h-72 w-72 rounded-full border border-emerald-200/60" />
               <div className="relative flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-slate-900 bg-emerald-300/10 px-3 py-1.5 text-xs font-bold text-emerald-100"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-bold text-emerald-800"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
               </div>
               <div className="relative mt-7 flex items-center justify-between gap-6">
                 <div>
-                  <p className="text-[10px] font-bold tracking-[.24em] text-emerald-200/70">YOUR MEMBER SPACE</p>
-                  <h1 id="member-active-title" className="mt-3 text-3xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl">現在享有<br className="sm:hidden" /><span className="text-[#dcedb0]">純淨閱讀</span></h1>
-                  <p className="mt-4 max-w-xl text-sm leading-7 text-emerald-50/80 sm:text-base">在會員資格有效期間，查校、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
+                  <h1 id="member-active-title" className="mt-3 text-3xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl">現在享有<br className="sm:hidden" /><span className="text-emerald-800">純淨閱讀</span></h1>
+                  <p className="mt-4 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">在會員資格有效期間，查校、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
                 </div>
-                <div aria-hidden="true" className="hidden h-28 w-28 shrink-0 rotate-6 items-center justify-center rounded-[2rem] border-2 border-slate-900 bg-white/5 shadow-[0_12px_32px_rgba(0,0,0,0.12)] md:flex"><Crown className="h-12 w-12 text-[#dcedb0]" strokeWidth={1.25} /></div>
+                <div aria-hidden="true" className="hidden h-28 w-28 shrink-0 rotate-6 items-center justify-center rounded-[2rem] border-2 border-slate-900 bg-white shadow-[4px_4px_0_#161b35] md:flex"><Crown className="h-12 w-12 text-emerald-800" strokeWidth={1.25} /></div>
               </div>
             </div>
             <div className="p-6 sm:p-10">
