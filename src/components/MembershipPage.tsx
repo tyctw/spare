@@ -386,18 +386,17 @@ export default function MembershipPage() {
       <main id="main-content" aria-labelledby="member-active-title" className="min-h-screen bg-[#f6f7f2] px-4 py-6 text-slate-900 sm:px-6 sm:py-12">
         <section className="mx-auto max-w-5xl">
           <nav aria-label="會員頁面導覽" className="flex items-center justify-between gap-4">
-            <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-lg py-2 text-sm font-bold text-slate-600 transition hover:text-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
+            <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-bold text-slate-600 transition hover:text-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
               <ArrowRight aria-hidden="true" className="h-4 w-4 rotate-180" />回到落點分析
             </a>
             <span className="flex items-center gap-2 text-xs font-bold tracking-widest text-emerald-800"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
           </nav>
-          <article className="mt-6 overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-[0_20px_70px_-30px_rgba(6,78,59,0.25)] sm:mt-8">
-            <div className="relative overflow-hidden bg-[#123e35] px-6 py-8 text-white sm:px-10 sm:py-12">
+          <article className="mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35] sm:mt-8">
+            <div className="relative overflow-hidden border-b-2 border-slate-900 bg-[#123e35] px-6 py-8 text-white sm:px-10 sm:py-12">
               <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full border-[48px] border-white/[0.04]" />
               <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 right-16 h-72 w-72 rounded-full border border-emerald-200/10" />
               <div className="relative flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1.5 text-xs font-bold text-emerald-100"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
-                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-100/80"><EyeOff aria-hidden="true" className="h-3.5 w-3.5" />廣告已關閉</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-slate-900 bg-emerald-300/10 px-3 py-1.5 text-xs font-bold text-emerald-100"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
               </div>
               <div className="relative mt-7 flex items-center justify-between gap-6">
                 <div>
@@ -405,12 +404,12 @@ export default function MembershipPage() {
                   <h1 id="member-active-title" className="mt-3 text-3xl font-black leading-tight tracking-tight sm:text-4xl lg:text-5xl">現在享有<br className="sm:hidden" /><span className="text-[#dcedb0]">純淨閱讀</span></h1>
                   <p className="mt-4 max-w-xl text-sm leading-7 text-emerald-50/80 sm:text-base">在會員資格有效期間，查校、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
                 </div>
-                <div aria-hidden="true" className="hidden h-28 w-28 shrink-0 rotate-6 items-center justify-center rounded-[2rem] border border-white/20 bg-white/5 shadow-[0_12px_32px_rgba(0,0,0,0.12)] md:flex"><Crown className="h-12 w-12 text-[#dcedb0]" strokeWidth={1.25} /></div>
+                <div aria-hidden="true" className="hidden h-28 w-28 shrink-0 rotate-6 items-center justify-center rounded-[2rem] border-2 border-slate-900 bg-white/5 shadow-[0_12px_32px_rgba(0,0,0,0.12)] md:flex"><Crown className="h-12 w-12 text-[#dcedb0]" strokeWidth={1.25} /></div>
               </div>
             </div>
             <div className="p-6 sm:p-10">
               <div className="grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
-                <div>
+                <div className="rounded-2xl border-2 border-slate-900 p-5 sm:p-6">
                   <h2 className="text-xs font-bold tracking-widest text-slate-500">你的會員資訊</h2>
                   <dl className="mt-4 divide-y divide-slate-100">
                     <div className="flex items-start justify-between gap-4 py-4">
@@ -419,25 +418,25 @@ export default function MembershipPage() {
                     </div>
                     <div className="flex items-center justify-between gap-4 py-4">
                       <dt className="text-sm text-slate-500">目前方案</dt>
-                      <dd className="inline-flex items-center gap-1.5 rounded-lg bg-[#f1f4e9] px-3 py-1.5 text-sm font-bold text-emerald-900"><Crown aria-hidden="true" className="h-4 w-4" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
+                      <dd className="inline-flex items-center gap-1.5 rounded-lg border-2 border-slate-900 bg-[#f1f4e9] px-3 py-1.5 text-sm font-bold text-emerald-900"><Crown aria-hidden="true" className="h-4 w-4" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
                     </div>
                   </dl>
                 </div>
-                <div className="relative overflow-hidden rounded-2xl border border-emerald-100 bg-[#f3f8f4] p-5 sm:p-6">
+                <div className="relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-[#f3f8f4] p-5 sm:p-6">
                   <div className="flex items-center gap-2 text-sm font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</div>
                   <p className="mt-4 break-words text-2xl font-black tracking-tight text-emerald-950 sm:text-3xl">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</p>
                   <p className="mt-4 flex items-center gap-1.5 text-xs font-medium text-emerald-700"><Check aria-hidden="true" className="h-4 w-4" />有效期間內，安心享用會員服務</p>
                 </div>
               </div>
-              <div className="mt-7 flex items-start gap-3 rounded-2xl bg-slate-50 p-4 sm:mt-8 sm:p-5">
-                <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white"><KeyRound className="h-4 w-4 text-emerald-800" /></span>
+              <div className="mt-7 flex items-start gap-3 rounded-2xl border-2 border-slate-900 bg-slate-50 p-4 sm:mt-8 sm:p-5">
+                <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><KeyRound className="h-4 w-4 text-emerald-800" /></span>
                 <div><h2 className="text-sm font-bold text-slate-800">準備好成績，就可以開始</h2><p className="mt-1 text-sm leading-6 text-slate-500">會員資格有效期間，回到首頁填妥成績後即可直接開始落點分析，無需再輸入系統授權碼。</p></div>
               </div>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:mt-8">
-                <a href={withBasePath("/")} className="group inline-flex min-h-14 flex-1 items-center justify-center gap-3 rounded-xl bg-[#123e35] px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
+                <a href={withBasePath("/")} className="group inline-flex min-h-14 flex-1 items-center justify-center gap-3 rounded-xl border-2 border-slate-900 bg-[#123e35] px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
                   <Sparkles aria-hidden="true" className="h-5 w-5 text-[#dcedb0]" />開始使用落點分析<ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-1" />
                 </a>
-                <a href={withBasePath("/membership/account")} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-slate-200 px-6 py-4 text-sm font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"><BadgeCheck aria-hidden="true" className="h-4 w-4" />我的會員帳號</a>
+                <a href={withBasePath("/membership/account")} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 px-6 py-4 text-sm font-bold text-slate-700 transition hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"><BadgeCheck aria-hidden="true" className="h-4 w-4" />我的會員帳號</a>
               </div>
               <div className="mt-6 flex justify-center border-t border-slate-100 pt-5">
                 <button type="button" onClick={logoutFromLine} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"><LogOut aria-hidden="true" className="h-3.5 w-3.5" />登出 LINE</button>
