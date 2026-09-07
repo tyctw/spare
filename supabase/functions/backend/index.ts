@@ -363,7 +363,7 @@ async function activeMembershipForRequest(request: Request) {
 
   const { data, error } = await supabase
     .from('membership_payments')
-    .select('plan, expires_at, contact_email')
+    .select('plan, expires_at, paid_at, contact_email')
     .eq('status', 'paid')
     .gt('expires_at', new Date().toISOString())
     .eq('line_user_id', lineSession.line_user_id)
@@ -1445,7 +1445,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
 
     case 'getMembershipStatus': {
       const data = await activeMembershipForRequest(request);
-      return data ? { active: true, plan: data.plan, expiresAt: data.expires_at, contactEmail: data.contact_email ?? null } : { active: false };
+      return data ? { active: true, plan: data.plan, expiresAt: data.expires_at, activatedAt: data.paid_at ?? null, contactEmail: data.contact_email ?? null } : { active: false };
     }
 
     case 'getMembershipPurchaseHistory': {
