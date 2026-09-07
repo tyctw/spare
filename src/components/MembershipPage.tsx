@@ -392,34 +392,34 @@ export default function MembershipPage() {
             <span className="flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-xs font-bold tracking-widest text-emerald-800 shadow-[2px_2px_0_#161b35]"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
           </nav>
           <article className="mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35] sm:mt-8">
-            <header className="relative isolate overflow-hidden border-b-2 border-slate-900 bg-[#edf5e9] px-6 py-8 text-slate-900 sm:px-10 sm:py-12 lg:px-12">
+            <header className="relative isolate overflow-hidden border-b-2 border-slate-900 bg-[#edf5e9] px-6 py-5 text-slate-900 sm:px-10 sm:py-6 lg:px-12">
               <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-1/3 bg-gradient-to-l from-emerald-100/70 to-transparent" />
-              <div className="grid items-center gap-8 md:grid-cols-[1fr_200px] lg:grid-cols-[1fr_240px]">
+              <div className="grid items-center gap-6 md:grid-cols-[1fr_140px] lg:grid-cols-[1fr_160px]">
                 <div className="min-w-0">
                   <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-[2px_2px_0_#161b35]"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
-                  <h1 id="member-active-title" className="mt-6 flex items-baseline gap-2 whitespace-nowrap text-2xl font-black leading-tight tracking-tight sm:gap-3 sm:text-4xl lg:text-5xl">
+                  <h1 id="member-active-title" className="mt-3 flex items-baseline gap-2 whitespace-nowrap text-2xl font-black leading-tight tracking-tight sm:gap-3 sm:text-4xl lg:text-5xl">
                     <span className="text-slate-700">現在享有</span>
                     <span className="relative inline-block text-emerald-900">
                       <span aria-hidden="true" className="absolute inset-x-0 bottom-1 -z-10 h-3 -rotate-1 rounded-sm bg-[#d5e8a8] sm:h-4" />
                       純淨閱讀
                     </span>
                   </h1>
-                  <p className="mt-5 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">在會員資格有效期間，查校、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
+                  <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">在會員資格有效期間，查校、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
                 </div>
                 <div aria-hidden="true" className="relative hidden aspect-square items-center justify-center md:flex">
                   <div className="absolute inset-2 rounded-full border border-emerald-800/20" />
                   <div className="absolute inset-6 rounded-full border border-dashed border-emerald-800/20" />
-                  <div className="relative flex h-36 w-32 -rotate-6 flex-col items-center justify-center gap-4 rounded-3xl border-2 border-slate-900 bg-[#fffdf5] shadow-[6px_6px_0_#161b35] lg:h-44 lg:w-40">
-                    <Crown className="h-16 w-16 fill-[#e6edb8] text-emerald-900 lg:h-20 lg:w-20" strokeWidth={1.5} />
+                  <div className="relative flex h-24 w-24 -rotate-6 flex-col items-center justify-center gap-2 rounded-3xl border-2 border-slate-900 bg-[#fffdf5] shadow-[6px_6px_0_#161b35] lg:h-28 lg:w-28">
+                    <Crown className="h-10 w-10 fill-[#e6edb8] text-emerald-900 lg:h-12 lg:w-12" strokeWidth={1.5} />
                     <div className="h-1.5 w-12 rounded-full bg-emerald-900/15" />
-                    <span className="absolute -bottom-3 -right-3 grid h-11 w-11 place-items-center rounded-full border-2 border-slate-900 bg-emerald-200"><Check className="h-6 w-6 text-emerald-950" strokeWidth={3} /></span>
+                    <span className="absolute -bottom-3 -right-3 grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-emerald-200"><Check className="h-4 w-4 text-emerald-950" strokeWidth={3} /></span>
                   </div>
                   <Sparkles className="absolute right-0 top-3 h-7 w-7 text-emerald-800" strokeWidth={1.5} />
                 </div>
               </div>
             </header>
             <div className="p-6 sm:p-10">
-              <section aria-labelledby="member-details-title" className="overflow-hidden rounded-2xl border-2 border-slate-900 bg-white shadow-[4px_4px_0_#161b35]">
+              <section aria-labelledby="member-details-title" className="overflow-hidden rounded-2xl border-2 border-slate-900 bg-white">
                 <div className="flex items-center gap-3 border-b-2 border-slate-900 bg-[#faf9f3] px-5 py-4 sm:px-6">
                   <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><BadgeCheck className="h-5 w-5 text-emerald-800" /></span>
                   <h2 id="member-details-title" className="text-base font-black text-slate-900">你的會員資訊</h2>
