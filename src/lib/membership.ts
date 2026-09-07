@@ -7,6 +7,7 @@ export type MembershipStatus = {
   active: boolean;
   plan?: 'monthly' | 'yearly';
   expiresAt?: string;
+  activatedAt?: string | null;
   contactEmail?: string | null;
 };
 
