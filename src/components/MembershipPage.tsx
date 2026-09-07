@@ -397,9 +397,9 @@ export default function MembershipPage() {
               <div className="grid items-center gap-8 md:grid-cols-[1fr_200px] lg:grid-cols-[1fr_240px]">
                 <div className="min-w-0">
                   <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-[2px_2px_0_#161b35]"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
-                  <h1 id="member-active-title" className="mt-6 font-black tracking-tight">
-                    <span className="block text-xl leading-snug text-slate-700 sm:text-2xl">現在享有</span>
-                    <span className="relative mt-2 inline-block text-4xl leading-tight text-emerald-900 sm:text-5xl lg:text-6xl">
+                  <h1 id="member-active-title" className="mt-6 flex items-baseline gap-2 whitespace-nowrap text-2xl font-black leading-tight tracking-tight sm:gap-3 sm:text-4xl lg:text-5xl">
+                    <span className="text-slate-700">現在享有</span>
+                    <span className="relative inline-block text-emerald-900">
                       <span aria-hidden="true" className="absolute inset-x-0 bottom-1 -z-10 h-3 -rotate-1 rounded-sm bg-[#d5e8a8] sm:h-4" />
                       純淨閱讀
                     </span>
