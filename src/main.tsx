@@ -105,6 +105,7 @@ const page =
   path === '/changelog' ? <ChangelogPage /> :
   path === '/guide/find' ? <CategoryOverviewPage categoryId="find" /> :
   path === '/guide/choose' ? <CategoryOverviewPage categoryId="choose" /> :
+  path === '/guide/scoring' ? <CategoryOverviewPage categoryId="scoring" /> :
   path === '/guide/plan' ? <CategoryOverviewPage categoryId="plan" /> :
   path === '/guide/member' ? <CategoryOverviewPage categoryId="member" /> :
   path === '/guide/help' ? <CategoryOverviewPage categoryId="help" /> :
