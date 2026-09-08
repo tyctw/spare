@@ -18,6 +18,12 @@ const pageContent: Record<CategoryOverviewId, { title: string; intro: string; ca
     categoryIds: ['choose'],
     steps: ['輸入成績與相關條件。', '查看推薦清單與歷年趨勢。', '透過模擬功能調整志願排序。'],
   },
+  scoring: {
+    title: '各區計分方式',
+    intro: '集中查詢各就學區的會考換算、超額比序及五專優先免試規則，先看懂計分，再安排志願。',
+    categoryIds: ['scoring'],
+    steps: ['選擇你要報名的就學區或五專招生管道。', '查看會考換算、積分項目與同分比序。', '核對當年度官方簡章，再使用落點分析與模擬志願。'],
+  },
   plan: {
     title: '我要規劃升學',
     intro: '把探索興趣、掌握時程與認識升學方向放在同一個規劃流程中。',
