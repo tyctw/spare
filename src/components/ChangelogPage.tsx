@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, BadgeCheck, BookOpenCheck, History, Rocket, Search, Sparkles, Wrench } from 'lucide-react';
+import { ArrowLeft, BadgeCheck, BookOpenCheck, History, Rocket, Search, ShieldCheck, Sparkles, Wrench } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
 
@@ -13,9 +13,19 @@ type Release = {
   sections: { title: string; items: string[] }[];
 };
 
-const updatedAt = '2026-08-15';
+const updatedAt = '2026-09-09';
 
 const releases: Release[] = [
+  {
+    version: 'v2.7', date: '2026-09-09', title: '個資管理、志願版本與共編體驗更新', icon: ShieldCheck, tone: 'emerald',
+    summary: '新增個資與分享管理中心，並完成志願版本比較、還原及家長共編的流程強化，讓重要的升學討論更容易保存、追蹤與管理。',
+    sections: [
+      { title: '個資與分享管理', items: ['新增管理中心，可查看自己建立的分享連結、分享類型、建立時間、期限、協作版本及目前狀態。', '支援由建立者撤銷唯讀與協作分享；撤銷後的新讀取與編輯請求會被拒絕。', '新增本機資料匯出與確認清除流程，採用白名單管理，避免將登入憑證或付款資料一併匯出。'] },
+      { title: '志願版本比較', items: ['模擬志願序可保存不同時間的清單，標示新增、刪除及順位變動。', '支援比較歷史版本與目前清單，並可在確認後還原；還原會保留原歷史並建立新版本。', '版本面板改為點擊展開，手機與桌機均採用更清楚的摘要、統計卡及還原確認操作。'] },
+      { title: '家長協作與安全', items: ['協作寫入加入版本檢查，避免舊版本覆蓋其他人剛完成的修改。', '修改、還原與確認會在同一個交易流程中保存目前清單、版本事件及確認狀態。', '協作載入失敗時會停用修改，並清楚提示重新讀取、權限失效或後端版本尚未同步等狀態。'] },
+      { title: '介面與響應式版面', items: ['放寬模擬志願序、分享頁、各區計分、職群百科、荷倫測驗、成績紀錄與升學說明頁的桌機內容寬度。', '改善手機版管理按鈕的自動延伸與排列，並將撤銷與清除等高風險操作改用確認彈窗。', '調整分享頁標頭、會員比較彈窗、資訊卡與陰影層次，區分唯讀分享與可共同編輯權限。'] },
+    ],
+  },
   {
     version: 'v2.6', date: '2026-08-15', title: '分類導覽、新聞文章與行動選單優化', icon: Sparkles, tone: 'indigo',
     summary: '新增五個分類說明頁與可收錄的獨立新聞文章頁，並持續調整桌機、平板與手機的導覽、搜尋及互動細節。',
@@ -95,7 +105,7 @@ const toneClasses = {
 export default function ChangelogPage() {
   return <main className="min-h-screen bg-slate-50 text-slate-900">
     <section className="border-b-4 border-slate-900 bg-indigo-50">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
         <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5"><ArrowLeft className="h-4 w-4" />返回首頁</a>
         <div className="py-10">
           <div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0_#0f172a]"><div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-indigo-100"><History className="h-6 w-6 text-indigo-600" /></div><div><p className="text-xs font-black uppercase tracking-widest text-slate-500">Release Notes</p><p className="text-sm font-black text-slate-700">最後更新：{updatedAt}</p></div></div>
@@ -104,7 +114,7 @@ export default function ChangelogPage() {
         </div>
       </div>
     </section>
-    <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[240px_1fr] lg:px-8">
+    <section className="mx-auto grid w-full max-w-[110rem] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-10">
       <aside className={pageNavigationAsideClassName}><PageNavigation navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0_#0f172a]" itemLayoutClassName="space-y-2" items={releases.map((release) => ({ id: release.version, label: `${release.version}｜${release.title}`, className: 'block rounded-xl' }))} /></aside>
       <div className="relative space-y-6"><div className="absolute bottom-3 left-5 top-3 hidden w-1 rounded-full bg-slate-200 sm:block" />
         {releases.map((release) => { const Icon = release.icon; const tone = toneClasses[release.tone]; return <article key={release.version} id={release.version} className="relative scroll-mt-8 sm:pl-14"><div className={`absolute left-0 top-6 hidden h-11 w-11 items-center justify-center rounded-2xl border-4 border-slate-900 bg-white shadow-[2px_2px_0_#0f172a] sm:flex ${tone.soft} ${tone.text}`}><Icon className="h-6 w-6" /></div><div className="rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0_#0f172a] sm:p-8"><div className="border-b-2 border-dashed border-slate-200 pb-5"><div className="mb-3 flex flex-wrap items-center gap-2"><span className={`rounded-lg border-2 border-slate-900 px-2.5 py-1 text-xs font-black text-white shadow-[2px_2px_0_#0f172a] ${tone.badge}`}>{release.version}</span><span className="rounded-lg border-2 border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-black text-slate-500">{release.date}</span></div><h2 className="text-2xl font-black tracking-tight sm:text-3xl">{release.title}</h2><p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-slate-600 sm:text-base">{release.summary}</p></div><div className="mt-6 grid gap-4 lg:grid-cols-3">{release.sections.map((section) => <section key={section.title} className={`rounded-2xl border-2 p-4 ${tone.border} ${tone.soft}`}><h3 className={`text-lg font-black ${tone.text}`}>{section.title}</h3><ul className="mt-3 space-y-3">{section.items.map((item) => <li key={item} className="flex gap-3 text-sm font-bold leading-6 text-slate-700"><span className={`mt-2 h-2 w-2 shrink-0 rounded-full border border-slate-900 ${tone.badge}`} /><span>{item}</span></li>)}</ul></section>)}</div></div></article>; })}
