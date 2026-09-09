@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 import { callBackend } from "../lib/api";
 import { withBasePath } from "../lib/routes";
+import VolunteerVersionHistory from './VolunteerVersionHistory';
+import type { VolunteerVersion } from '../lib/volunteerVersions';
 import RelatedReading from "./RelatedReading";
 
 type SharedReport = {
@@ -69,6 +71,7 @@ export default function SharedReportPage({ token }: { token: string }) {
   if (report.kind === "volunteer")
     return (
       <VolunteerReport
+        token={token}
         choices={
           Array.isArray(report.payload?.choices) ? report.payload.choices : []
         }
@@ -133,6 +136,7 @@ export default function SharedReportPage({ token }: { token: string }) {
 }
 
 function VolunteerReport({
+  token,
   choices,
   region,
   regionName,
@@ -145,6 +149,7 @@ function VolunteerReport({
   collaborationConfirmedBy,
   onChoicesUpdated,
 }: {
+  token: string;
   choices: any[];
   region: string;
   regionName: string;
@@ -289,7 +294,7 @@ function VolunteerReport({
           </section>
         )}
         {collaborationEnabled && collaborationKey && <VolunteerCollaborationPanel
-          token={new URL(window.location.href).pathname.split('/').pop() || ''}
+          token={token}
           editorKey={collaborationKey}
           choices={choices}
           initialVersion={collaborationVersion}
@@ -387,7 +392,11 @@ function VolunteerCollaborationPanel({ token, editorKey, choices, initialVersion
   initialConfirmedBy: string | null;
   onChoicesUpdated: (choices: any[], version: number, confirmation?: { confirmedAt: string | null; confirmedBy: string | null }) => void;
 }) {
-  const [actorName, setActorName] = useState(() => window.localStorage.getItem('volunteer-collaboration-name') || '');
+  const [versions, setVersions] = useState<VolunteerVersion[]>([]);
+  const [revisionNote, setRevisionNote] = useState('');
+  const [actorName, setActorName] = useState(() => {
+    try { return window.localStorage.getItem('volunteer-collaboration-name') || ''; } catch { return ''; }
+  });
   const [message, setMessage] = useState('');
   const [events, setEvents] = useState<CollaborationEvent[]>([]);
   const [version, setVersion] = useState(initialVersion);
@@ -395,15 +404,24 @@ function VolunteerCollaborationPanel({ token, editorKey, choices, initialVersion
   const [confirmedBy, setConfirmedBy] = useState(initialConfirmedBy);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [ready, setReady] = useState(false);
   const [error, setError] = useState('');
   const [schoolSearch, setSchoolSearch] = useState('');
   const [availableSchools, setAvailableSchools] = useState<any[]>([]);
   const [schoolsLoading, setSchoolsLoading] = useState(false);
   const load = async () => {
+    setLoading(true); setReady(false); setError('');
     try {
-      const data = await callBackend<{ events: CollaborationEvent[]; version: number; confirmedAt: string | null; confirmedBy: string | null }>({ action: 'getVolunteerShareCollaboration', token, editorKey });
+      const data = await callBackend<{ versions: VolunteerVersion[]; choices: any[]; events: CollaborationEvent[]; version: number; confirmedAt: string | null; confirmedBy: string | null }>({ action: 'getVolunteerVersions', token, editorKey });
+      if (!Array.isArray(data.choices) || !Number.isInteger(data.version) || !Array.isArray(data.versions)) {
+        throw new Error('共編服務版本不相容，請重新整理；若仍失敗，請聯絡管理員確認前後端已同步更新。');
+      }
+      onChoicesUpdated(data.choices, data.version, data);
+      setReady(true);
+      setVersions(data.versions || []);
       setEvents(data.events || []); setVersion(data.version || 1); setConfirmedAt(data.confirmedAt); setConfirmedBy(data.confirmedBy);
-    } catch (err) { setError(err instanceof Error ? err.message : '無法讀取協作紀錄。'); }
+      return true;
+    } catch (err) { setError(err instanceof Error ? err.message : '無法讀取協作紀錄。'); return false; }
     finally { setLoading(false); }
   };
   useEffect(() => { load(); }, [token, editorKey]);
@@ -417,8 +435,13 @@ function VolunteerCollaborationPanel({ token, editorKey, choices, initialVersion
       .finally(() => { if (!cancelled) setSchoolsLoading(false); });
     return () => { cancelled = true; };
   }, []);
-  const rememberName = () => { const value = actorName.trim(); if (value) window.localStorage.setItem('volunteer-collaboration-name', value); return value; };
+  const rememberName = () => {
+    const value = actorName.trim();
+    try { if (value) window.localStorage.setItem('volunteer-collaboration-name', value); } catch { /* Remembering a name is optional; collaboration must still work. */ }
+    return value;
+  };
   const sendComment = async () => {
+    if (!ready || loading || saving) return;
     const name = rememberName();
     if (!name || !message.trim()) { setError('請先填寫你的稱呼與留言內容。'); return; }
     setSaving(true); setError('');
@@ -426,13 +449,19 @@ function VolunteerCollaborationPanel({ token, editorKey, choices, initialVersion
     catch (err) { setError(err instanceof Error ? err.message : '留言送出失敗。'); }
     finally { setSaving(false); }
   };
-  const saveChoices = async (nextChoices: any[]) => {
+  const saveChoices = async (nextChoices: any[], restoreVersion?: number, note = revisionNote) => {
+    if (!ready || loading || saving) return;
     const name = rememberName();
     if (!name) { setError('請先填寫你的稱呼，再調整志願。'); return; }
     setSaving(true); setError('');
     try {
-      const result = await callBackend<{ choices: any[]; version: number }>({ action: 'updateVolunteerShareChoices', token, editorKey, actorName: name, choices: nextChoices });
-      setVersion(result.version); setConfirmedAt(null); setConfirmedBy(null); onChoicesUpdated(result.choices, result.version); await load();
+      const result = await callBackend<{ conflict?: boolean } | null>({ action: restoreVersion ? 'restoreVolunteerVersion' : 'updateVolunteerShareChoices', token, editorKey, actorName: name, choices: nextChoices, expectedVersion: version, restoreVersion, note });
+      if (result?.conflict) { const refreshed = await load(); if (refreshed) setError('清單已由其他人更新，已重新讀取。請比較後再操作。'); return; }
+      setRevisionNote('');
+      // Mutation responses may only acknowledge the write. Publish choices,
+      // version and confirmation together from the validated history read.
+      // If it fails, retain the last displayed list and block further edits.
+      await load();
     } catch (err) { setError(err instanceof Error ? err.message : '儲存志願變更失敗。'); }
     finally { setSaving(false); }
   };
@@ -451,19 +480,25 @@ function VolunteerCollaborationPanel({ token, editorKey, choices, initialVersion
     saveChoices([...choices, { ...school, id: `${school.code}-${school.deptCode}-${Date.now()}` }]);
   };
   const confirmVersion = async () => {
+    if (!ready || loading || saving) return;
     const name = rememberName();
     if (!name) { setError('請先填寫你的稱呼，再確認版本。'); return; }
     setSaving(true); setError('');
     try {
-      const result = await callBackend<{ confirmedAt: string; confirmedBy: string; version: number }>({ action: 'confirmVolunteerShareVersion', token, editorKey, actorName: name });
-      setVersion(result.version); setConfirmedAt(result.confirmedAt); setConfirmedBy(result.confirmedBy); onChoicesUpdated(choices, result.version, result); await load();
+      const result = await callBackend<{ conflict?: boolean } | null>({ action: 'confirmVolunteerShareVersion', token, editorKey, actorName: name, expectedVersion: version });
+      if (result?.conflict) { const refreshed = await load(); if (refreshed) setError('清單已變更，請閱讀新版後再確認。'); return; }
+      await load();
     } catch (err) { setError(err instanceof Error ? err.message : '確認版本失敗。'); }
     finally { setSaving(false); }
   };
   return <section className="mt-9 rounded-[2rem] border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="flex items-center gap-2 text-xs font-black tracking-[.16em] text-indigo-700"><MessageCircle className="h-4 w-4" />FAMILY COLLABORATION</p><h2 className="mt-1 text-2xl font-black text-slate-950">一起調整，也留下討論紀錄</h2><p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-slate-600">這是一份可編輯連結。調整志願、留言與確認都會記錄時間與版本；請只轉傳給願意一起討論的人。</p></div><span className="shrink-0 rounded-xl border-2 border-slate-900 bg-indigo-100 px-3 py-2 text-sm font-black text-indigo-950">第 {version} 版</span></div>
-    <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]"><div className="rounded-2xl border-2 border-slate-900 bg-slate-50 p-4"><label className="text-sm font-black text-slate-900">我的稱呼<input value={actorName} onChange={(event) => setActorName(event.target.value.slice(0, 24))} placeholder="例如：媽媽、爸爸、小明" className="mt-2 w-full rounded-xl border-2 border-slate-300 bg-white px-3 py-2.5 font-bold outline-none focus:border-indigo-600" /></label><label className="mt-4 block text-sm font-black text-slate-900">留言<textarea value={message} onChange={(event) => setMessage(event.target.value.slice(0, 800))} placeholder="例如：這個科別的通勤時間要再確認。" className="mt-2 min-h-28 w-full resize-y rounded-xl border-2 border-slate-300 bg-white px-3 py-2.5 font-bold leading-6 outline-none focus:border-indigo-600" /></label><button type="button" onClick={sendComment} disabled={saving} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:opacity-50"><Send className="h-4 w-4" />送出留言</button><button type="button" onClick={confirmVersion} disabled={saving} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-400 px-4 py-3 text-sm font-black text-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:opacity-50"><CheckCircle2 className="h-4 w-4" />確認目前版本</button>{confirmedAt && <p className="mt-3 rounded-xl bg-emerald-50 p-3 text-xs font-bold leading-5 text-emerald-900">已由「{confirmedBy}」於 {new Date(confirmedAt).toLocaleString('zh-TW')} 確認第 {version} 版。</p>}</div>
-      <div className="rounded-2xl border-2 border-slate-900 bg-white p-4"><h3 className="font-black text-slate-950">共同調整志願</h3><p className="mt-1 text-xs font-bold leading-5 text-slate-500">可新增校科、調整優先順序或移除不考慮的選項；每次變更會新增版本。</p><div className="relative z-20 mt-3 rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3"><label className="relative block"><span className="sr-only">搜尋要加入的校科</span><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-indigo-500" /><input value={schoolSearch} onChange={(event) => setSchoolSearch(event.target.value)} placeholder="搜尋學校、科別或地區後加入" className="w-full rounded-xl border-2 border-indigo-200 bg-white py-2.5 pl-9 pr-3 text-sm font-bold outline-none focus:border-indigo-600" /></label>{schoolsLoading && schoolSearch.trim() && <p className="absolute left-3 right-3 top-[calc(100%-0.75rem)] z-30 rounded-xl border-2 border-indigo-200 bg-white p-3 text-xs font-bold text-slate-500 shadow-[3px_4px_10px_rgba(15,23,42,0.14)]">正在載入校科資料…</p>}{matchingSchools.length > 0 && <ul className="absolute left-3 right-3 top-[calc(100%-0.75rem)] z-30 max-h-64 space-y-1 overflow-y-auto rounded-xl border-2 border-indigo-200 bg-white p-2 shadow-[3px_4px_10px_rgba(15,23,42,0.14)]">{matchingSchools.map((school) => <li key={`${school.code}-${school.deptCode}-${school.shift}`} className="flex items-center gap-2 rounded-lg p-2 hover:bg-indigo-50"><span className="min-w-0 flex-1"><strong className="block truncate text-xs text-slate-900">{school.name}</strong><small className="block truncate font-bold text-slate-500">{school.deptName} · {school.county}</small></span><button type="button" disabled={saving || choices.length >= 30} onClick={() => addChoice(school)} className="inline-flex shrink-0 items-center gap-1 rounded-lg border-2 border-slate-900 bg-amber-300 px-2 py-1.5 text-xs font-black disabled:opacity-40"><Plus className="h-3.5 w-3.5" />加入</button></li>)}</ul>}{schoolSearch.trim() && !schoolsLoading && matchingSchools.length === 0 && <p className="absolute left-3 right-3 top-[calc(100%-0.75rem)] z-30 rounded-xl border-2 border-indigo-200 bg-white p-3 text-xs font-bold text-slate-500 shadow-[3px_4px_10px_rgba(15,23,42,0.14)]">找不到可加入的校科，或它已在目前志願中。</p>}</div><ol className="relative z-10 mt-3 space-y-2">{choices.map((choice, index) => <li key={`${choice.code}-${choice.deptCode}-${index}`} className="flex items-center gap-2 rounded-xl border-2 border-slate-200 bg-slate-50 p-2"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-300 text-sm font-black">{index + 1}</span><span className="min-w-0 flex-1"><strong className="block truncate text-sm">{choice.name}</strong><small className="block truncate font-bold text-slate-500">{choice.deptName}</small></span><div className="flex shrink-0 gap-1"><button type="button" aria-label="上移志願" disabled={saving || index === 0} onClick={() => moveChoice(index, -1)} className="rounded-lg border border-slate-300 bg-white p-2 disabled:opacity-30"><ArrowUp className="h-4 w-4" /></button><button type="button" aria-label="下移志願" disabled={saving || index === choices.length - 1} onClick={() => moveChoice(index, 1)} className="rounded-lg border border-slate-300 bg-white p-2 disabled:opacity-30"><ArrowDown className="h-4 w-4" /></button><button type="button" aria-label="移除志願" disabled={saving} onClick={() => removeChoice(index)} className="rounded-lg border border-rose-300 bg-rose-50 p-2 text-rose-700 disabled:opacity-30"><Trash2 className="h-4 w-4" /></button></div></li>)}</ol></div></div>
+    <label className="mt-4 block text-sm font-bold">這次修改的原因（選填）<input maxLength={120} value={revisionNote} onChange={e => setRevisionNote(e.target.value)} placeholder="例如：考量交通，調整優先順序" className="mt-2 w-full rounded-xl border-2 p-2" /></label>
+    <button disabled={saving || loading} onClick={() => void load()} className="mt-3 rounded-lg border px-3 py-2">重新讀取最新清單</button>
+    <VolunteerVersionHistory versions={versions} choices={choices} busy={!ready || saving || loading} onSave={note => saveChoices(choices, undefined, note)} onRestore={v => saveChoices(v.choices, v.version)} />
+    <p className="text-xs text-slate-500">顯示最近 100 版；功能啟用前的舊內容無法回溯。每次修改自動保存，還原會清除原確認狀態。</p>
+    <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]"><div className="rounded-2xl border-2 border-slate-900 bg-slate-50 p-4"><label className="text-sm font-black text-slate-900">我的稱呼<input value={actorName} onChange={(event) => setActorName(event.target.value.slice(0, 24))} placeholder="例如：媽媽、爸爸、小明" className="mt-2 w-full rounded-xl border-2 border-slate-300 bg-white px-3 py-2.5 font-bold outline-none focus:border-indigo-600" /></label><label className="mt-4 block text-sm font-black text-slate-900">留言<textarea value={message} onChange={(event) => setMessage(event.target.value.slice(0, 800))} placeholder="例如：這個科別的通勤時間要再確認。" className="mt-2 min-h-28 w-full resize-y rounded-xl border-2 border-slate-300 bg-white px-3 py-2.5 font-bold leading-6 outline-none focus:border-indigo-600" /></label><button type="button" onClick={sendComment} disabled={!ready || saving || loading} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:opacity-50"><Send className="h-4 w-4" />送出留言</button><button type="button" onClick={confirmVersion} disabled={!ready || saving || loading} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-400 px-4 py-3 text-sm font-black text-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] disabled:opacity-50"><CheckCircle2 className="h-4 w-4" />確認目前版本</button>{confirmedAt && <p className="mt-3 rounded-xl bg-emerald-50 p-3 text-xs font-bold leading-5 text-emerald-900">已由「{confirmedBy}」於 {new Date(confirmedAt).toLocaleString('zh-TW')} 確認第 {version} 版。</p>}</div>
+      <div className="rounded-2xl border-2 border-slate-900 bg-white p-4"><h3 className="font-black text-slate-950">共同調整志願</h3><p className="mt-1 text-xs font-bold leading-5 text-slate-500">可新增校科、調整優先順序或移除不考慮的選項；每次變更會新增版本。</p><div className="relative z-20 mt-3 rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3"><label className="relative block"><span className="sr-only">搜尋要加入的校科</span><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-indigo-500" /><input value={schoolSearch} onChange={(event) => setSchoolSearch(event.target.value)} placeholder="搜尋學校、科別或地區後加入" className="w-full rounded-xl border-2 border-indigo-200 bg-white py-2.5 pl-9 pr-3 text-sm font-bold outline-none focus:border-indigo-600" /></label>{schoolsLoading && schoolSearch.trim() && <p className="absolute left-3 right-3 top-[calc(100%-0.75rem)] z-30 rounded-xl border-2 border-indigo-200 bg-white p-3 text-xs font-bold text-slate-500 shadow-[3px_4px_10px_rgba(15,23,42,0.14)]">正在載入校科資料…</p>}{matchingSchools.length > 0 && <ul className="absolute left-3 right-3 top-[calc(100%-0.75rem)] z-30 max-h-64 space-y-1 overflow-y-auto rounded-xl border-2 border-indigo-200 bg-white p-2 shadow-[3px_4px_10px_rgba(15,23,42,0.14)]">{matchingSchools.map((school) => <li key={`${school.code}-${school.deptCode}-${school.shift}`} className="flex items-center gap-2 rounded-lg p-2 hover:bg-indigo-50"><span className="min-w-0 flex-1"><strong className="block truncate text-xs text-slate-900">{school.name}</strong><small className="block truncate font-bold text-slate-500">{school.deptName} · {school.county}</small></span><button type="button" disabled={!ready || saving || loading || choices.length >= 30} onClick={() => addChoice(school)} className="inline-flex shrink-0 items-center gap-1 rounded-lg border-2 border-slate-900 bg-amber-300 px-2 py-1.5 text-xs font-black disabled:opacity-40"><Plus className="h-3.5 w-3.5" />加入</button></li>)}</ul>}{schoolSearch.trim() && !schoolsLoading && matchingSchools.length === 0 && <p className="absolute left-3 right-3 top-[calc(100%-0.75rem)] z-30 rounded-xl border-2 border-indigo-200 bg-white p-3 text-xs font-bold text-slate-500 shadow-[3px_4px_10px_rgba(15,23,42,0.14)]">找不到可加入的校科，或它已在目前志願中。</p>}</div><ol className="relative z-10 mt-3 space-y-2">{choices.map((choice, index) => <li key={`${choice.code}-${choice.deptCode}-${index}`} className="flex items-center gap-2 rounded-xl border-2 border-slate-200 bg-slate-50 p-2"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-300 text-sm font-black">{index + 1}</span><span className="min-w-0 flex-1"><strong className="block truncate text-sm">{choice.name}</strong><small className="block truncate font-bold text-slate-500">{choice.deptName}</small></span><div className="flex shrink-0 gap-1"><button type="button" aria-label="上移志願" disabled={!ready || saving || loading || index === 0} onClick={() => moveChoice(index, -1)} className="rounded-lg border border-slate-300 bg-white p-2 disabled:opacity-30"><ArrowUp className="h-4 w-4" /></button><button type="button" aria-label="下移志願" disabled={!ready || saving || loading || index === choices.length - 1} onClick={() => moveChoice(index, 1)} className="rounded-lg border border-slate-300 bg-white p-2 disabled:opacity-30"><ArrowDown className="h-4 w-4" /></button><button type="button" aria-label="移除志願" disabled={!ready || saving || loading} onClick={() => removeChoice(index)} className="rounded-lg border border-rose-300 bg-rose-50 p-2 text-rose-700 disabled:opacity-30"><Trash2 className="h-4 w-4" /></button></div></li>)}</ol></div></div>
     <div className="mt-4 rounded-2xl border-2 border-slate-900 bg-amber-50 p-4"><h3 className="font-black text-slate-950">討論與版本紀錄</h3>{loading ? <p className="mt-3 text-sm font-bold text-slate-500">正在讀取紀錄…</p> : events.length ? <ol className="mt-3 space-y-3">{events.map((event) => <li key={event.id} className="border-l-4 border-indigo-300 pl-3 text-sm"><p className="font-black text-slate-950">{event.actor_name} <span className="font-bold text-slate-500">· {event.event_type === 'comment' ? '留言' : event.event_type === 'confirmed' ? '確認版本' : '更新志願'}</span></p><p className="mt-1 font-bold leading-6 text-slate-700">{event.message}</p><p className="mt-1 text-xs font-bold text-slate-400">{new Date(event.created_at).toLocaleString('zh-TW')}{event.version ? ` · 第 ${event.version} 版` : ''}</p></li>)}</ol> : <p className="mt-3 text-sm font-bold text-slate-500">還沒有討論紀錄；從一則留言開始吧。</p>}</div>
     {error && <p role="alert" className="mt-4 rounded-xl border-2 border-rose-300 bg-rose-50 p-3 text-sm font-bold text-rose-700">{error}</p>}
   </section>;
