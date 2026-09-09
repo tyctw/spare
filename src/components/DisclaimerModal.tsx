@@ -24,7 +24,7 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
         <section className="mt-4 flex gap-3 rounded-2xl border-2 border-slate-900 bg-sky-50 p-4"><FileSearch className="mt-0.5 h-5 w-5 shrink-0 text-sky-700" /><div><p className="text-sm font-black text-slate-800">填志願前，請再確認一次</p><p className="mt-1 text-sm font-bold leading-6 text-slate-600">核對就學區、成績與報名資格；不確定時，請查閱當學年度招生簡章或詢問學校輔導老師。</p></div></section>
         <a href={withBasePath('/disclaimer')} className="mt-5 inline-flex items-center gap-2 text-sm font-black text-indigo-700 underline decoration-2 underline-offset-4 transition hover:text-indigo-900">閱讀完整免責聲明 <ArrowRight className="h-4 w-4" /></a>
       </div>
-      <footer className="shrink-0 border-t-4 border-slate-900 bg-white p-4 sm:px-6 sm:py-5"><button type="button" onClick={onClose} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border-4 border-slate-900 bg-rose-500 px-5 py-3.5 text-sm font-black text-white shadow-[4px_4px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-[6px_6px_0_#0f172a] active:translate-y-0 active:shadow-none"><Check className="h-5 w-5" />我已了解，繼續使用</button></footer>
+      <footer className="shrink-0 border-t-2 border-slate-200 bg-white p-4 sm:px-6 sm:py-5"><button type="button" onClick={onClose} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-500 px-5 py-3.5 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-[3px_3px_0_#0f172a] active:translate-y-0 active:shadow-none"><Check className="h-5 w-5" />我已了解，繼續使用</button></footer>
     </motion.section>
   </div>}</AnimatePresence>;
 }
