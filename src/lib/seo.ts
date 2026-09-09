@@ -174,6 +174,12 @@ const pageMetadata: Record<string, PageMeta> = {
     description: '查看目前會員資格與到期時間。',
     noindex: true,
   },
+  '/privacy-center': {
+    title: '個資與分享管理中心｜全國會考落點分析',
+    description: '集中管理分享期限、撤銷連結、本機升學資料與個人資料管理入口。',
+    noindex: true,
+    nofollow: true,
+  },
   '/membership/success': {
     title: '會員付款完成｜全國會考落點分析',
     description: '會員付款完成後的資格確認頁面。',
