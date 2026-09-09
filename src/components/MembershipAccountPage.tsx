@@ -190,7 +190,10 @@ export default function MembershipAccountPage() {
           </div>
         </header>
 
-        <a href={withBasePath('/privacy-center')} className="mt-5 block rounded-2xl border-2 border-slate-900 bg-white p-5 font-black">個資與分享管理中心 →<span className="mt-2 block text-sm font-normal text-slate-600">查看所有可管理分享、撤銷連結與整理本機資料。</span></a>
+        <a href={withBasePath('/privacy-center')} className="group relative mt-5 block overflow-hidden rounded-2xl border-2 border-slate-900 bg-gradient-to-br from-emerald-50 via-white to-indigo-50 p-5 shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_#161b35] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700 sm:p-6">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full border-[12px] border-emerald-100/80" />
+          <div className="relative flex items-center gap-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-emerald-900 text-lime-200 shadow-[2px_2px_0_#161b35]"><ShieldCheck className="h-6 w-6" /></span><span className="min-w-0 flex-1"><span className="block text-[11px] font-black tracking-[0.16em] text-emerald-700">PRIVACY & SHARING</span><span className="mt-1 block text-lg font-black text-slate-950">個資與分享管理中心</span><span className="mt-1 block text-sm font-bold leading-6 text-slate-600">查看分享期限、撤銷連結與整理本機資料。</span></span><ArrowRight className="h-6 w-6 shrink-0 text-emerald-800 transition-transform group-hover:translate-x-1" /></div>
+        </a>
 
         {state === 'loading' ? (
           <div role="status" aria-live="polite" aria-busy="true" className="mt-5 rounded-2xl border-2 border-slate-900 bg-white p-8 text-center font-black shadow-[5px_5px_0_#161b35]">正在確認會員資格…</div>
