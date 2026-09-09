@@ -121,7 +121,11 @@ const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: num
   getVolunteerSchools: { windowSeconds: 60, maxRequests: 20 },
   createSharedReport: { windowSeconds: 60, maxRequests: 10 },
   getSharedReport: { windowSeconds: 60, maxRequests: 30 },
+  listOwnedShares: { windowSeconds: 60, maxRequests: 30 },
+  revokeOwnedShare: { windowSeconds: 60, maxRequests: 12 },
   getVolunteerShareCollaboration: { windowSeconds: 60, maxRequests: 30 },
+  getVolunteerVersions: { windowSeconds: 60, maxRequests: 30 },
+  restoreVolunteerVersion: { windowSeconds: 60, maxRequests: 12 },
   addVolunteerShareComment: { windowSeconds: 60, maxRequests: 12 },
   updateVolunteerShareChoices: { windowSeconds: 60, maxRequests: 12 },
   confirmVolunteerShareVersion: { windowSeconds: 60, maxRequests: 12 },
@@ -1584,6 +1588,32 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         : { deleted: false, reason: 'ACTIVE_MEMBERSHIP' };
     }
 
+    case 'listOwnedShares': {
+      const session = await getLineLoginSession(lineSessionTokenFromCookie(request));
+      if (!session) return { loggedIn: false, shares: [], hasMore: false };
+      const offset = payload.offset ?? 0;
+      if (!Number.isSafeInteger(offset) || offset < 0 || offset > 100000) throw new Error('頁碼不正確。');
+      const { data, error } = await supabase.from('shared_reports')
+        .select('token, kind, created_at, expires_at, revoked_at, collaboration_key, collaboration_version')
+        .eq('owner_line_user_id', session.line_user_id)
+        .order('created_at', { ascending: false }).order('token', { ascending: false }).range(offset, offset + 50);
+      if (error) throw error;
+      return { loggedIn: true, hasMore: (data || []).length > 50, shares: (data || []).slice(0, 50).map(({ collaboration_key, ...share }) => ({ ...share, collaborationEnabled: Boolean(collaboration_key) })) };
+    }
+
+    case 'revokeOwnedShare': {
+      const session = await getLineLoginSession(lineSessionTokenFromCookie(request));
+      const token = String(payload.token || '');
+      if (!session || !uuidPattern.test(token)) throw new Error('請登入建立分享的帳號。');
+      // Scope the write itself to the owner; possession of a share token grants no management rights.
+      const { data, error } = await supabase.from('shared_reports')
+        .update({ revoked_at: new Date().toISOString() })
+        .eq('token', token).eq('owner_line_user_id', session.line_user_id).select('token').maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error('找不到可管理的分享連結。');
+      return { revoked: true };
+    }
+
     case 'createSharedReport': {
       const kind = String(payload.kind || '');
       const report = payload.payload;
@@ -1701,57 +1731,31 @@ async function handleAction(payload: Record<string, any>, request: Request) {
       };
     }
 
-    case 'addVolunteerShareComment': {
-      const report = await collaborationReportForKey(payload.token, payload.editorKey);
-      const actorName = cleanCollaborationText(payload.actorName, 24);
-      const message = cleanCollaborationText(payload.message, 800);
-      if (!actorName || !message) throw new Error('請填寫姓名與留言內容。');
-      if (hasInappropriateContent(`${actorName} ${message}`)) throw new Error('留言含有不適當字詞，請調整後再送出。');
-      const { error } = await supabase.from('shared_report_collaboration_events').insert({
-        report_token: report.token, event_type: 'comment', actor_name: actorName, message, version: report.collaboration_version || 1,
-      });
-      if (error) throw error;
-      return { added: true };
-    }
-
-    case 'updateVolunteerShareChoices': {
-      const report = await collaborationReportForKey(payload.token, payload.editorKey);
-      const actorName = cleanCollaborationText(payload.actorName, 24);
-      const choices = validateVolunteerChoices(payload.choices);
-      if (!actorName) throw new Error('請先填寫你的稱呼。');
-      const nextPayload = { ...(report.payload as Record<string, unknown>), choices, updatedAt: new Date().toISOString() };
-      const nextVersion = Number(report.collaboration_version || 1) + 1;
-      const { data: updatedReport, error: updateError } = await supabase.from('shared_reports').update({
-        payload: nextPayload,
-        collaboration_version: nextVersion,
-        collaboration_confirmed_at: null,
-        collaboration_confirmed_by: null,
-      }).eq('token', report.token).eq('collaboration_version', report.collaboration_version || 1).select('token').maybeSingle();
-      if (updateError) throw updateError;
-      if (!updatedReport) throw new Error('志願清單已被其他人更新，請重新整理後再試。');
-      const { error: eventError } = await supabase.from('shared_report_collaboration_events').insert({
-        report_token: report.token, event_type: 'revision', actor_name: actorName,
-        message: `更新志願清單（${choices.length} 個志願）`, version: nextVersion,
-      });
-      if (eventError) throw eventError;
-      return { choices, version: nextVersion };
-    }
-
+    case 'getVolunteerVersions':
+    case 'restoreVolunteerVersion':
+    case 'addVolunteerShareComment':
+    case 'updateVolunteerShareChoices':
     case 'confirmVolunteerShareVersion': {
-      const report = await collaborationReportForKey(payload.token, payload.editorKey);
-      const actorName = cleanCollaborationText(payload.actorName, 24);
-      if (!actorName) throw new Error('請先填寫你的稱呼。');
-      const confirmedAt = new Date().toISOString();
-      const { error: updateError } = await supabase.from('shared_reports').update({
-        collaboration_confirmed_at: confirmedAt, collaboration_confirmed_by: actorName,
-      }).eq('token', report.token);
-      if (updateError) throw updateError;
-      const { error: eventError } = await supabase.from('shared_report_collaboration_events').insert({
-        report_token: report.token, event_type: 'confirmed', actor_name: actorName,
-        message: `確認第 ${report.collaboration_version || 1} 版志願清單`, version: report.collaboration_version || 1,
+      const token = String(payload.token || '');
+      const key = String(payload.editorKey || '');
+      if (!uuidPattern.test(token) || !uuidPattern.test(key)) throw new Error('Invalid collaboration link.');
+      const actionMap: Record<string, string> = {
+        getVolunteerVersions: 'history', restoreVolunteerVersion: 'restore',
+        addVolunteerShareComment: 'comment', updateVolunteerShareChoices: 'save', confirmVolunteerShareVersion: 'confirm',
+      };
+      const actor = cleanCollaborationText(payload.actorName, 24);
+      const note = cleanCollaborationText(payload.message || payload.note, 800);
+      if (hasInappropriateContent(`${actor} ${note}`)) throw new Error('請使用適當的稱呼及說明。');
+      const { data, error } = await supabase.rpc('manage_volunteer_version', {
+        p_token: token, p_key: key, p_action: actionMap[String(payload.action)],
+        p_expected: Number.isInteger(payload.expectedVersion) ? payload.expectedVersion : null,
+        p_actor: actor, p_note: note,
+        p_choices: payload.action === 'updateVolunteerShareChoices' ? validateVolunteerChoices(payload.choices) : null,
+        p_restore: Number.isInteger(payload.restoreVersion) ? payload.restoreVersion : null,
       });
-      if (eventError) throw eventError;
-      return { confirmedAt, confirmedBy: actorName, version: report.collaboration_version || 1 };
+      if (error?.message?.includes('VERSION_CONFLICT')) return { conflict: true };
+      if (error) throw error;
+      return data;
     }
 
     case 'validateInvitationCode':
@@ -2187,7 +2191,9 @@ Deno.serve(async (request) => {
     const responseHeaders: HeadersInit = {};
     // Score records are personal education data. Do not let a browser, CDN or
     // shared device cache an API response after the user signs out.
-    if (action === 'getMemberScoreRecords' || action === 'saveMemberScoreRecord' || action === 'deleteMemberScoreRecord') {
+    if (['getMemberScoreRecords', 'saveMemberScoreRecord', 'deleteMemberScoreRecord',
+      'listOwnedShares', 'revokeOwnedShare', 'getSharedReport', 'getVolunteerShareCollaboration', 'getVolunteerVersions',
+      'restoreVolunteerVersion', 'updateVolunteerShareChoices', 'confirmVolunteerShareVersion'].includes(action)) {
       responseHeaders['Cache-Control'] = 'no-store, private, max-age=0';
       responseHeaders.Pragma = 'no-cache';
       responseHeaders.Expires = '0';
