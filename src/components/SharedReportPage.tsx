@@ -179,7 +179,7 @@ function VolunteerReport({
     <main className="relative min-h-screen overflow-hidden bg-[#f5f7ff] px-4 py-5 text-slate-900 sm:px-6 sm:py-8">
       <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 top-72 h-80 w-80 rounded-full bg-amber-200/60 blur-3xl" />
-      <div className={`relative mx-auto w-full ${collaborationEnabled && collaborationKey ? 'max-w-[1440px]' : 'max-w-4xl'}`}>
+      <div className="relative mx-auto w-full max-w-[110rem]">
         <a
           href={withBasePath("/")}
           className="inline-flex items-center gap-2 rounded-xl border-[3px] border-slate-900 bg-white px-5 py-3 text-lg font-black text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"
