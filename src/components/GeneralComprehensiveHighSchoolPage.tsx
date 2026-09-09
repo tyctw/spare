@@ -15,7 +15,7 @@ export default function GeneralComprehensiveHighSchoolPage() {
   return (
     <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-gradient-to-br from-sky-100 via-white to-emerald-100">
-        <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[110rem] px-4 py-5 sm:px-6 lg:px-10">
           <a
             href={withBasePath("/")}
             className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
@@ -37,7 +37,7 @@ export default function GeneralComprehensiveHighSchoolPage() {
           </div>
         </div>
       </section>
-      <div className="mx-auto max-w-6xl space-y-7 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[110rem] space-y-7 px-4 py-8 sm:px-6 lg:px-10">
         <section className="grid gap-5 lg:grid-cols-2">
           <SchoolTypeCard
             title="普通科（普通型高中）"

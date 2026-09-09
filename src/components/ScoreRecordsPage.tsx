@@ -147,7 +147,7 @@ export default function ScoreRecordsPage() {
   };
   return (
     <main className="min-h-screen bg-[#f5f6ff] px-4 py-6 text-slate-900 sm:px-6 sm:py-10">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto w-full max-w-[110rem]">
         <a
           href={withBasePath("/")}
           className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[2px_2px_0_#161b35]"
