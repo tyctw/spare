@@ -19,11 +19,17 @@ export default function PrivacyCenterPage() {
   const [pending, setPending] = useState<Share | null>(null);
   const [clearPending, setClearPending] = useState(false);
   const clearDialogRef = useRef<HTMLDialogElement>(null);
+  const revokeDialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = clearDialogRef.current;
     if (clearPending && dialog && !dialog.open) dialog.showModal();
     return () => { if (dialog?.open) dialog.close(); };
   }, [clearPending]);
+  useEffect(() => {
+    const dialog = revokeDialogRef.current;
+    if (pending && dialog && !dialog.open) dialog.showModal();
+    return () => { if (dialog?.open) dialog.close(); };
+  }, [pending]);
   const [localCount, setLocalCount] = useState(0);
   const [localError, setLocalError] = useState('');
   const refreshLocal = () => {
@@ -107,7 +113,13 @@ export default function PrivacyCenterPage() {
         <p className="mt-3 text-sm leading-6 text-slate-600">列出此 LINE 帳號建立的分析報告與志願清單，不需有效付費資格即可管理。未登入時建立或早期未記錄建立者的連結不會出現在這裡。到期或撤銷會停止後續存取，無法收回他人已下載、截圖或已開啟的內容；撤銷不會刪除雲端紀錄。</p>
         {error && <p role="alert" className="mt-3 text-rose-700">{error}</p>}
         {busy && <p role="status" className="mt-3">正在處理…</p>}
-        {loggedIn === false && <div className="mt-4 rounded-xl bg-indigo-50 p-4"><p>請先登入建立分享時使用的 LINE 帳號，再回到本頁重新整理。</p><a className="mt-2 inline-block font-bold underline" href={withBasePath('/membership/account')}>前往會員帳號登入</a></div>}
+        {loggedIn === false && <div className="relative mt-5 overflow-hidden rounded-2xl border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-sky-50 p-5 sm:p-6">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full border-[14px] border-indigo-100" />
+          <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-start gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border-2 border-indigo-900 bg-indigo-600 text-white shadow-[2px_2px_0_#312e81]"><ShieldCheck className="h-5 w-5" /></span><div><p className="text-xs font-black tracking-[0.14em] text-indigo-700">ACCOUNT ACCESS</p><h3 className="mt-1 text-lg font-black text-slate-950">登入後管理你的分享</h3><p className="mt-1 max-w-xl text-sm leading-6 text-slate-600">請先登入建立分享時使用的 LINE 帳號，再回到本頁重新整理，即可查看期限或撤銷連結。</p></div></div>
+            <a className="inline-flex w-full shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0_#312e81] transition hover:-translate-y-0.5 hover:bg-indigo-700 sm:w-auto" href={withBasePath('/membership/account')}>前往會員帳號登入 <ArrowUpRight className="ml-2 h-4 w-4" /></a>
+          </div>
+        </div>}
         {loggedIn && !shares.length && !busy && !error && <p className="mt-4">尚無可管理的分享紀錄。</p>}
         <ul className="mt-5 grid gap-3 lg:grid-cols-2">{shares.map((s, index) => {
           const expired = !!s.expires_at && new Date(s.expires_at).getTime() <= Date.now();
@@ -117,7 +129,12 @@ export default function PrivacyCenterPage() {
             <p className="mt-3 text-sm leading-6 text-slate-600">建立：{date(s.created_at)}<br />期限：{date(s.expires_at)}<br />權限：{s.collaborationEnabled ? `家長協作 · 第 ${s.collaboration_version} 版` : '唯讀分享'}</p>
             {s.revoked_at && <p className="mt-1 text-sm">撤銷：{date(s.revoked_at)}</p>}
             <div className="mt-3 grid gap-2 sm:flex sm:flex-wrap">{!inactive && <a className={`${button} w-full sm:w-auto`} href={withBasePath(`/shared/${s.token}`)} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">查看唯讀內容</a>}{!s.revoked_at && <button disabled={busy} className={`${button} w-full text-rose-700 sm:w-auto`} onClick={() => setPending(s)}>撤銷此連結</button>}</div>
-            {pending?.token === s.token && <div className="mt-3 rounded-xl bg-amber-50 p-3"><p>確定撤銷這份{s.kind === 'volunteer' ? '志願清單' : '分析報告'}？唯讀與協作連結都會失效，無法重新啟用；之後需要重新建立分享。</p><div className="mt-3 flex gap-3"><button disabled={busy} className={`${button} bg-rose-600 text-white`} onClick={revoke}>確認撤銷</button><button disabled={busy} className={button} onClick={() => setPending(null)}>取消撤銷</button></div></div>}
+            {pending?.token === s.token && <dialog ref={revokeDialogRef} aria-labelledby="revoke-share-title" aria-describedby="revoke-share-description" onCancel={event => { event.preventDefault(); setPending(null); }} className="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-2xl border-2 border-slate-900 bg-white p-6 text-slate-900 shadow-xl backdrop:bg-slate-950/60 backdrop:backdrop-blur-sm">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-rose-100 text-rose-700"><Trash2 className="h-6 w-6" /></div>
+              <h2 id="revoke-share-title" className="mt-4 text-xl font-black">確認撤銷這份{s.kind === 'volunteer' ? '志願清單' : '分析報告'}？</h2>
+              <p id="revoke-share-description" className="mt-3 leading-7 text-slate-600">唯讀與協作連結都會失效，無法重新啟用；之後需要重新建立分享。</p>
+              <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"><button disabled={busy} className={`${button} w-full sm:w-auto`} onClick={() => setPending(null)}>取消撤銷</button><button disabled={busy} className={`${button} w-full border-rose-700 bg-rose-600 text-white hover:bg-rose-700 sm:w-auto`} onClick={revoke}>確認撤銷</button></div>
+            </dialog>}
           </li>;
         })}</ul>
         {loggedIn && <div className="mt-5 grid w-full items-center gap-2 border-t border-slate-200 pt-4 sm:flex sm:flex-wrap"><button className={`${button} w-full sm:w-auto`} disabled={busy || page === 0} onClick={() => load(page - 1)}>上一頁</button><span className="text-center text-xs font-black text-slate-500 sm:w-auto">第 {page + 1} 頁</span><button className={`${button} w-full sm:w-auto`} disabled={busy || !more} onClick={() => load(page + 1)}>下一頁</button></div>}
