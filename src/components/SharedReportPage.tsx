@@ -182,12 +182,12 @@ function VolunteerReport({
       <div className="relative mx-auto w-full max-w-[110rem]">
         <a
           href={withBasePath("/")}
-          className="inline-flex items-center gap-2 rounded-xl border-[3px] border-slate-900 bg-white px-5 py-3 text-lg font-black text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"
+          className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-5 py-3 text-lg font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
         >
           <ArrowLeft className="h-5 w-5 stroke-[3]" />
           回到首頁
         </a>
-        <header className="relative mt-6 overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-slate-900 px-6 py-7 text-white shadow-[9px_9px_0px_0px_rgba(15,23,42,1)] sm:px-9 sm:py-9">
+        <header className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-slate-900 px-6 py-7 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:px-9 sm:py-9">
           <div className="absolute -right-12 -top-14 h-44 w-44 rounded-full border-4 border-slate-900 bg-amber-300" />
           <div className="relative max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-black text-indigo-100">
@@ -231,7 +231,7 @@ function VolunteerReport({
           />
         </section>
         {choices.length > 0 && (
-          <section className="mt-9 rounded-[2rem] border-4 border-slate-900 bg-white p-5 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:p-6">
+          <section className="mt-9 rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <div className="flex items-center gap-2 text-indigo-700">
@@ -327,7 +327,7 @@ function VolunteerReport({
                   key={`${choice.code}-${choice.deptCode}-${index}`}
                   className="relative"
                 >
-                  <article className="relative overflow-hidden rounded-2xl border-3 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-5">
+                  <article className="relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:p-5">
                     <div className="relative flex gap-4">
                       <div className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-3 border-slate-900 bg-amber-300 text-lg font-black text-slate-950">
                         {index + 1}
@@ -491,7 +491,7 @@ function VolunteerCollaborationPanel({ token, editorKey, choices, initialVersion
     } catch (err) { setError(err instanceof Error ? err.message : '確認版本失敗。'); }
     finally { setSaving(false); }
   };
-  return <section className="mt-9 rounded-[2rem] border-4 border-slate-900 bg-white p-3 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
+  return <section className="mt-9 rounded-[2rem] border-2 border-slate-900 bg-white p-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-6">
     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="flex items-center gap-2 text-xs font-black tracking-[.16em] text-indigo-700"><MessageCircle className="h-4 w-4" />FAMILY COLLABORATION</p><h2 className="mt-1 text-2xl font-black text-slate-950">一起調整，也留下討論紀錄</h2><p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-slate-600">這是一份可編輯連結。調整志願、留言與確認都會記錄時間與版本；請只轉傳給願意一起討論的人。</p></div><span className="shrink-0 rounded-xl border-2 border-slate-900 bg-indigo-100 px-3 py-2 text-sm font-black text-indigo-950">第 {version} 版</span></div>
     <label className="mt-4 block text-sm font-bold">這次修改的原因（選填）<input maxLength={120} value={revisionNote} onChange={e => setRevisionNote(e.target.value)} placeholder="例如：考量交通，調整優先順序" className="mt-2 w-full rounded-xl border-2 p-2" /></label>
     <button disabled={saving || loading} onClick={() => void load()} className="mt-3 rounded-lg border px-3 py-2">重新讀取最新清單</button>
