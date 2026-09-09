@@ -187,25 +187,25 @@ function VolunteerReport({
           <ArrowLeft className="h-5 w-5 stroke-[3]" />
           回到首頁
         </a>
-        <header className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-slate-900 px-6 py-7 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:px-9 sm:py-9">
-          <div className="absolute -right-12 -top-14 h-44 w-44 rounded-full border-4 border-slate-900 bg-amber-300" />
+        <header className={`relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 px-6 py-7 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:px-9 sm:py-9 ${collaborationEnabled && collaborationKey ? 'bg-emerald-50 text-slate-950' : 'bg-sky-50 text-slate-950'}`}>
+          <div className={`absolute -right-12 -top-14 h-44 w-44 rounded-full border-4 ${collaborationEnabled && collaborationKey ? 'border-emerald-200 bg-emerald-200/70' : 'border-sky-200 bg-sky-200/70'}`} />
           <div className="relative max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-black text-indigo-100">
-              <ShieldCheck className="h-4 w-4 text-emerald-300" />
-              唯讀分享
+            <div className={`inline-flex items-center gap-2 rounded-full border-2 px-3 py-1 text-xs font-black ${collaborationEnabled && collaborationKey ? 'border-emerald-300 bg-emerald-100 text-emerald-900' : 'border-sky-300 bg-sky-100 text-sky-900'}`}>
+              <ShieldCheck className={`h-4 w-4 ${collaborationEnabled && collaborationKey ? 'text-emerald-700' : 'text-sky-700'}`} />
+              {collaborationEnabled && collaborationKey ? '可共同編輯' : '唯讀分享'}
             </div>
             <div className="mt-5 flex items-start gap-3">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900">
                 <ClipboardList className="h-6 w-6" />
               </div>
               <div>
-                <p className="text-sm font-black text-sky-200">學生志願規劃</p>
+                <p className={`text-sm font-black ${collaborationEnabled && collaborationKey ? 'text-emerald-700' : 'text-sky-700'}`}>學生志願規劃</p>
                 <h1 className="mt-1 text-3xl font-black tracking-tight sm:text-5xl">
                   模擬志願序
                 </h1>
               </div>
             </div>
-            <p className="mt-5 max-w-xl text-sm font-bold leading-7 text-slate-200">
+            <p className="mt-5 max-w-xl text-sm font-bold leading-7 text-slate-600">
               依志願順序整理，讓家庭可以快速討論孩子的探索方向。
             </p>
           </div>
