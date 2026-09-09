@@ -190,6 +190,8 @@ export default function MembershipAccountPage() {
           </div>
         </header>
 
+        <a href={withBasePath('/privacy-center')} className="mt-5 block rounded-2xl border-2 border-slate-900 bg-white p-5 font-black">個資與分享管理中心 →<span className="mt-2 block text-sm font-normal text-slate-600">查看所有可管理分享、撤銷連結與整理本機資料。</span></a>
+
         {state === 'loading' ? (
           <div role="status" aria-live="polite" aria-busy="true" className="mt-5 rounded-2xl border-2 border-slate-900 bg-white p-8 text-center font-black shadow-[5px_5px_0_#161b35]">正在確認會員資格…</div>
         ) : state === 'error' ? (

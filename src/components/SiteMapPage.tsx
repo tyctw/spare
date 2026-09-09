@@ -30,6 +30,7 @@ const categories: Category[] = [
   { title: '會員與最新消息', desc: '查看網站公告，或管理你的免廣告會員資格。', items: [
     { title: '最新消息', desc: '查看系統公告、資料更新與重要考試資訊。', href: '/news', icon: Megaphone, tone: 'bg-rose-100 text-rose-700', keywords: '最新 消息 公告 更新 116 考試 日期' },
     { title: '會員免廣告', desc: '使用 LINE 登入確認資格，選擇免廣告方案。', href: '/membership', icon: Crown, tone: 'bg-violet-100 text-violet-700', keywords: '會員 免廣告 LINE 付款 月費 年費 方案' },
+    { title: '個資與分享管理中心', desc: '查看分享期限、撤銷連結與管理本機資料。', href: '/privacy-center', icon: UserRound, tone: 'bg-indigo-100 text-indigo-700', keywords: '個資 隱私 分享 撤銷 刪除' },
     { title: '我的會員帳號', desc: '查看目前方案、到期日與 LINE 登入狀態。', href: '/membership/account', icon: UserRound, tone: 'bg-emerald-100 text-emerald-700', keywords: '會員 帳號 到期 日 LINE 登入 免廣告' },
   ] },
   { title: '各就學區會考落點分析', desc: '查詢全國 15 個免試入學就學區的會考落點分析專頁，包含區域升學資訊、工具連結與常見問答。', items: [

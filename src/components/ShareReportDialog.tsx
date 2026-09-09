@@ -238,6 +238,7 @@ export default function ShareReportDialog({
             </button>
           </div>
         </header>
+        <a href={withBasePath('/privacy-center')} className="block border-b border-slate-200 px-5 py-3 text-sm font-bold text-indigo-700 underline">個資與分享管理中心：查看期限與撤銷分享</a>
         <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
           {!url ? (
             <>
