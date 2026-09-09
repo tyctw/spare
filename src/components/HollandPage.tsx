@@ -485,7 +485,7 @@ export default function HollandPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-purple-50">
-        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
           <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
             <ArrowLeft className="h-4 w-4" />
             返回首頁
@@ -532,7 +532,7 @@ export default function HollandPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-8">
+      <section className="mx-auto grid max-w-[110rem] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-10">
         <aside className={pageNavigationAsideClassName}>
           <div className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
             <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500">
