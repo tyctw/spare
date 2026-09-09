@@ -1754,6 +1754,10 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         p_restore: Number.isInteger(payload.restoreVersion) ? payload.restoreVersion : null,
       });
       if (error?.message?.includes('VERSION_CONFLICT')) return { conflict: true };
+      if (error && ['PGRST202', '42883', '42P01'].includes(error.code)) throw new Error('COLLABORATION_NOT_READY');
+      if (error?.message === 'SHARE_UNAVAILABLE') throw new Error('COLLABORATION_UNAVAILABLE');
+      if (error?.message === 'INVALID_INPUT') throw new Error('COLLABORATION_INVALID_INPUT');
+      if (error?.message === 'VERSION_NOT_FOUND') throw new Error('COLLABORATION_VERSION_NOT_FOUND');
       if (error) throw error;
       return data;
     }
@@ -2223,6 +2227,16 @@ Deno.serve(async (request) => {
     });
 
     const isInvalidRequest = error instanceof Error && error.message === 'Invalid JSON request body.';
+    const collaborationErrors: Record<string, { message: string; status: number }> = {
+      COLLABORATION_NOT_READY: { message: '共編版本服務尚未完成更新，請聯絡管理員套用志願版本資料庫更新並部署後端。', status: 503 },
+      COLLABORATION_UNAVAILABLE: { message: '共編連結已到期、撤銷或編輯權限已換發，請向建立者索取最新連結。', status: 403 },
+      COLLABORATION_INVALID_INPUT: { message: '請填寫稱呼並確認志願內容與留言格式。', status: 400 },
+      COLLABORATION_VERSION_NOT_FOUND: { message: '找不到要還原的版本，請重新讀取版本紀錄。', status: 404 },
+    };
+    const collaborationError = error instanceof Error ? collaborationErrors[error.message] : undefined;
+    if (collaborationError) return json(request, {
+      error: 'COLLABORATION_ERROR', code: 'SERVER_ERROR', message: collaborationError.message, requestId,
+    }, collaborationError.status, { 'Cache-Control': 'no-store' });
     return json(request, {
       error: isInvalidRequest ? 'INVALID_REQUEST' : 'SERVER_ERROR',
       code: isInvalidRequest ? 'INVALID_REQUEST' : 'SERVER_ERROR',
