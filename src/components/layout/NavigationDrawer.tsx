@@ -174,6 +174,7 @@ export const menuCategories: MenuCategory[] = [
     accent: 'border-violet-500',
     items: [
       { id: 'membership', label: '會員免廣告', description: '查看方案並用 LINE 安全確認資格', keywords: '會員 免廣告 LINE 付款 月費 年費 方案', icon: Crown, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/membership' } },
+      { id: 'privacyCenter', label: '個資與分享管理中心', description: '查看分享期限、撤銷連結與管理資料', keywords: '個資 隱私 分享 期限 撤銷 刪除 資料', icon: ShieldCheck, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/privacy-center' } },
       { id: 'membershipAccount', label: '我的會員帳號', description: '查看方案、到期日與登入狀態', keywords: '會員 帳號 到期 日 LINE 登入 資格', icon: UserCircle, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/membership/account' } },
     ],
   },
@@ -241,19 +242,26 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
   const triggerRef = useRef<HTMLElement | null>(null);
   const hasHistoryEntryRef = useRef(false);
   const isMobileCategoryOpenRef = useRef(false);
+  const isClosingRef = useRef(false);
 
   // On touch devices, make the browser back gesture dismiss the drawer before
   // it leaves the current page. Closing by a UI control removes that temporary
   // history entry as well, so it does not consume an extra back press later.
   const closeDrawer = () => {
-    if (hasHistoryEntryRef.current) {
-      window.history.go(isMobileCategoryOpenRef.current ? -2 : -1);
-      return;
-    }
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+    const historySteps = hasHistoryEntryRef.current
+      ? (isMobileCategoryOpenRef.current ? -2 : -1) : 0;
+    hasHistoryEntryRef.current = false;
+    isMobileCategoryOpenRef.current = false;
+    // A UI close must not depend on asynchronous (and sometimes throttled)
+    // history traversal delivering popstate on a mobile browser.
     onClose();
+    if (historySteps) window.history.go(historySteps);
   };
 
   const openMobileCategory = (category: MenuCategory) => {
+    if (isClosingRef.current || isMobileCategoryOpenRef.current) return;
     setMobileCategory(category);
     isMobileCategoryOpenRef.current = true;
     window.history.pushState(
@@ -300,7 +308,8 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
   useEffect(() => {
     if (!isOpen || !isCompactNavigationViewport()) return;
 
-    window.history.pushState(
+    // StrictMode replays effects; do not add a second entry for this instance.
+    if (!hasHistoryEntryRef.current) window.history.pushState(
       { ...(window.history.state ?? {}), navigationDrawerOpen: true, navigationDrawerLevel: 'root' },
       '',
       window.location.href,
@@ -308,6 +317,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
     hasHistoryEntryRef.current = true;
 
     const handlePopState = (event: PopStateEvent) => {
+      if (isClosingRef.current) return;
       const state = event.state as { navigationDrawerOpen?: boolean; navigationDrawerLevel?: string } | null;
       if (state?.navigationDrawerOpen && state.navigationDrawerLevel === 'root') {
         isMobileCategoryOpenRef.current = false;

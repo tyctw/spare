@@ -3,6 +3,7 @@ import { ArrowRight, Compass, Copyright, Heart, Mail, Map, ShieldCheck } from 'l
 import { withBasePath } from '../../lib/routes';
 
 const links = [
+  { label: '個資與分享管理', href: '/privacy-center', icon: ShieldCheck },
   { label: '小額支持', href: '/support', icon: Heart },
   { label: '服務條款', href: '/terms', icon: ShieldCheck },
   { label: '網站地圖', href: '/site-map', icon: Map },
