@@ -842,7 +842,7 @@ export default function App() {
       <main
         id="main-content"
         aria-label="主要內容"
-        className="relative z-10 mx-auto mt-32 w-full max-w-6xl flex-1 space-y-8 px-4 sm:mt-40"
+        className="relative z-10 mx-auto mt-32 w-full max-w-[1400px] flex-1 space-y-8 px-4 sm:mt-40 sm:px-6 lg:px-8"
       >
         <HeroBanner />
 
@@ -859,7 +859,7 @@ export default function App() {
         )}
 
         {/* Bento Grid Form Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 xl:gap-10">
           {/* Left Column: Basic Info & Region */}
           <div className="lg:col-span-4 space-y-4">
             {/* Card: Auth */}
