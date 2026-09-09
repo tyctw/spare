@@ -76,7 +76,7 @@ export default function AdvantagesPage() {
   return (
     <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-indigo-50">
-        <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[110rem] px-4 py-5 sm:px-6 lg:px-10">
           <a
             href={withBasePath('/')}
             className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:px-4"
@@ -103,7 +103,7 @@ export default function AdvantagesPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
+      <section className="mx-auto grid w-full max-w-[110rem] gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[260px_1fr] lg:px-10">
         <aside className={pageNavigationAsideClassName}>
           <PageNavigation
             navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
@@ -132,6 +132,12 @@ export default function AdvantagesPage() {
               </p>
               <p>
                 因此，本服務的核心目標是免費提供大家可使用的升學輔助工具。不論是前段、中段、後段學校，或是高中、高職、五專等不同升學路徑，都應該有被整理、被看見、被比較的機會。
+              </p>
+              <p>
+                我們也理解，升學規劃很少是一個人獨自完成的決定。學生可能在意興趣與未來生活，家長可能關心通勤、費用與學習穩定度，老師則需要協助把分散的規則與資料轉成可以討論的方向。好的資訊工具，不是替家庭做決定，而是讓每個人能站在同一份清楚的資料上開始對話。
+              </p>
+              <p>
+                因此我們努力把複雜的就學區規則、會考成績、學校類型、群科內容、志願排序與比較結果，整理成容易搜尋、容易閱讀、也方便保存與分享的內容。使用者可以先快速掌握全貌，再回到官方簡章與學校公告逐項核對，逐步建立自己的判斷。
               </p>
             </div>
           </section>
@@ -201,8 +207,9 @@ export default function AdvantagesPage() {
         <section id="updates" className="mt-6 scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
           <h2 className="text-2xl font-black sm:text-3xl">持續優化</h2>
           <p className="mt-4 max-w-4xl text-sm font-bold leading-8 text-slate-800 sm:text-base">
-            我們會持續優化資料整理、計算邏輯與使用體驗，也歡迎使用者回報錯誤、提供補充資料或提出改善建議。
+            我們會持續優化資料整理、計算邏輯與使用體驗，也歡迎使用者回報錯誤、提供補充資料或提出改善建議。每年度招生規則、校系名額與採計方式都可能調整，我們會依官方公告更新內容，並在有必要時補充資料來源、適用年度與使用限制。
           </p>
+          <div className="mt-5 grid gap-3 md:grid-cols-3"><div className="rounded-xl border-2 border-slate-900 bg-white/70 p-4"><h3 className="font-black">資料更新</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-700">依官方簡章與公告調整規則、校系資料及說明。</p></div><div className="rounded-xl border-2 border-slate-900 bg-white/70 p-4"><h3 className="font-black">錯誤回報</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-700">發現資料不一致時，可提供頁面、年度與來源協助核對。</p></div><div className="rounded-xl border-2 border-slate-900 bg-white/70 p-4"><h3 className="font-black">透明使用</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-700">分析結果僅供參考，正式填選仍以當年度官方資訊為準。</p></div></div>
         </section>
         </div>
       </section>
