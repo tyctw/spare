@@ -132,7 +132,7 @@ export default function ComparisonPage() {
   };
 
   return <div className="min-h-screen bg-slate-50 text-slate-900">
-    <main className="mx-auto max-w-[90rem] px-4 py-6 sm:px-6 lg:px-8 xl:px-10">
+    <main className="mx-auto w-full max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
       <a href={withBasePath('/results')} className="mb-4 inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-xs font-black text-indigo-700 shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-indigo-100">
         <ArrowLeft className="h-4 w-4" />回到分析結果
       </a>
