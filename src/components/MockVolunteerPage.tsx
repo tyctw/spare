@@ -548,7 +548,7 @@ export default function MockVolunteerPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-gradient-to-br from-sky-100 via-white to-indigo-100">
-        <div className="mx-auto max-w-[96rem] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
           <a
             href={withBasePath('/')}
             onClick={requestLeavePage}
@@ -588,7 +588,7 @@ export default function MockVolunteerPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[96rem] px-4 py-6 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
         <div className="mb-5 grid gap-3 sm:grid-cols-3">
           <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
             <div className="text-xs font-black text-slate-500">目前區域</div>
@@ -613,7 +613,7 @@ export default function MockVolunteerPage() {
           <p className="mt-2 text-xs font-bold leading-5 text-slate-500">此為志願序項目說明；資格、會考、多元表現與其他超額比序項目，請以當年度官方系統與簡章為準。</p>
         </section>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-start">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(460px,520px)] lg:items-start">
           <section className="min-h-[620px] overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
             <div className="border-b-4 border-slate-900 bg-sky-50/70 p-4 sm:p-5">
               <div className="flex items-center gap-2 text-lg font-black">
