@@ -180,7 +180,7 @@ function VolunteerReport({
     <main className="relative min-h-screen overflow-hidden bg-[#f5f7ff] px-4 py-5 text-slate-900 sm:px-6 sm:py-8">
       <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 top-72 h-80 w-80 rounded-full bg-amber-200/60 blur-3xl" />
-      <div className="relative mx-auto w-full max-w-[110rem]">
+      <div className="relative mx-auto w-full min-w-0 max-w-[110rem]">
         <a
           href={withBasePath("/")}
           className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-5 py-3 text-lg font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
@@ -313,14 +313,14 @@ function VolunteerReport({
                 志願順序
               </h2>
             </div>
-            <div className="flex items-center gap-2"><div className="inline-flex overflow-hidden rounded-xl border-2 border-slate-900 bg-white text-xs font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"><button type="button" onClick={() => setDisplayMode('table')} className={`px-3 py-2 ${displayMode === 'table' ? 'bg-indigo-600 text-white' : 'text-slate-700'}`}>表格</button><button type="button" onClick={() => setDisplayMode('cards')} className={`border-l-2 border-slate-900 px-3 py-2 ${displayMode === 'cards' ? 'bg-indigo-600 text-white' : 'text-slate-700'}`}>卡片</button></div><div className="rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">{choices.length} / 30</div></div>
+            <div className="mb-2 flex items-center gap-2"><div className="inline-flex overflow-hidden rounded-xl border-2 border-slate-900 bg-white text-xs font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"><button type="button" onClick={() => setDisplayMode('table')} className={`px-3 py-2 ${displayMode === 'table' ? 'bg-indigo-600 text-white' : 'text-slate-700'}`}>表格</button><button type="button" onClick={() => setDisplayMode('cards')} className={`border-l-2 border-slate-900 px-3 py-2 ${displayMode === 'cards' ? 'bg-indigo-600 text-white' : 'text-slate-700'}`}>卡片</button></div><div className="rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">{choices.length} / 30</div></div>
           </div>
           {choices.length === 0 ? (
             <p className="mt-5 rounded-2xl border-2 border-dashed border-slate-300 bg-white p-8 text-center font-bold text-slate-500">
               此報告尚未加入志願。
             </p>
           ) : (
-            displayMode === 'table' ? <><p className="mt-5 mb-2 text-xs font-bold text-slate-500 sm:hidden">左右滑動查看完整欄位</p><div className="overflow-x-auto rounded-2xl border-2 border-slate-900">
+            displayMode === 'table' ? <><p className="mt-5 mb-2 text-xs font-bold text-slate-500 sm:hidden">左右滑動查看完整欄位</p><div className="min-w-0 max-w-full overflow-x-auto rounded-2xl border-2 border-slate-900">
               <table className="min-w-[36rem] w-full text-left text-xs sm:min-w-[40rem] sm:text-sm">
                 <thead className="bg-indigo-50 text-xs font-black text-slate-700">
                   <tr><th className="w-16 px-2 py-2.5 text-center sm:w-20 sm:px-4 sm:py-3">順序</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">學校</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">科別／班別</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">類型</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">地區</th></tr>
