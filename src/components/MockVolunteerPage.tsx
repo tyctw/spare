@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import ShareReportDialog from './ShareReportDialog';
+import LocalVolunteerVersions from './LocalVolunteerVersions';
+import type { VersionChoice } from '../lib/volunteerVersions';
 
 interface SchoolItem {
   id: string;
@@ -1001,6 +1003,7 @@ export default function MockVolunteerPage() {
           </button>}
         </div>
       )}
+      <div className="mx-auto max-w-6xl px-4"><LocalVolunteerVersions key={region} region={region} choices={selectedChoices as unknown as VersionChoice[]} onRestore={items => setSelectedChoices(items.map(item => ({ ...item, id: createChoiceId(item as unknown as SchoolItem) })) as unknown as SchoolItem[])} /></div>
       <ShareReportDialog
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
