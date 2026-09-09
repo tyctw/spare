@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { ShieldCheck, Link2, Database, Download, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ShieldCheck, Link2, Database, Download, Trash2, ArrowUpRight, ArrowLeft, Clock3 } from 'lucide-react';
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
 import { managedLocalEntries } from '../lib/privacyStorage';
@@ -18,6 +18,12 @@ export default function PrivacyCenterPage() {
   const [notice, setNotice] = useState('');
   const [pending, setPending] = useState<Share | null>(null);
   const [clearPending, setClearPending] = useState(false);
+  const clearDialogRef = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const dialog = clearDialogRef.current;
+    if (clearPending && dialog && !dialog.open) dialog.showModal();
+    return () => { if (dialog?.open) dialog.close(); };
+  }, [clearPending]);
   const [localCount, setLocalCount] = useState(0);
   const [localError, setLocalError] = useState('');
   const refreshLocal = () => {
@@ -60,7 +66,41 @@ export default function PrivacyCenterPage() {
   };
   return <main id="main-content" className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
     <div className="mx-auto max-w-5xl space-y-6">
-      <header className={card}><ShieldCheck className="mb-3 h-9 w-9 text-indigo-700" /><h1 className="text-3xl font-black">個資與分享管理中心</h1><p className="mt-3 leading-7 text-slate-600">查看分享期限、停止分享，並集中管理你的成績紀錄、帳號與本機資料。</p></header>
+      <header className="relative isolate overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-[#e9efea] shadow-[5px_5px_0_#0f172a]">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full border-[50px] border-white/40" />
+        <div className="relative border-b border-slate-900/15 px-5 py-4 sm:px-8">
+          <button type="button" onClick={() => {
+            let fromThisSite = false;
+            try { fromThisSite = !!document.referrer && new URL(document.referrer).origin === window.location.origin; } catch { /* Treat an unavailable referrer as a direct visit. */ }
+            if (fromThisSite && window.history.length > 1) window.history.back();
+            else window.location.assign(withBasePath('/'));
+          }} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-bold text-slate-700 outline-offset-4 hover:bg-emerald-50"><ArrowLeft aria-hidden="true" className="h-4 w-4" />返回上一頁</button>
+          <span className="float-right pt-1 text-[10px] font-bold tracking-[0.16em] text-slate-600 sm:text-xs">PRIVACY & SHARING</span>
+        </div>
+        <div className="relative grid gap-8 px-5 py-8 sm:px-8 sm:py-10 md:grid-cols-[1fr_220px] md:items-center">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-900/20 bg-white/70 px-3 py-1.5 text-xs font-bold text-emerald-900"><ShieldCheck className="h-4 w-4" />你的資料，由你管理</span>
+            <h1 className="mt-5 text-[2rem] font-black leading-[1.25] tracking-tight text-slate-950 sm:text-5xl">個資與分享<span className="block text-emerald-900">管理中心</span></h1>
+            <p className="mt-4 max-w-lg text-sm leading-7 text-slate-600 sm:text-base">查看分享期限、停止分享，並集中管理你的成績紀錄、帳號與本機資料。</p>
+          </div>
+          <div aria-hidden="true" className="relative hidden h-52 items-center justify-center md:flex">
+            <div className="absolute h-44 w-44 rounded-full border border-emerald-900/20" />
+            <div className="absolute h-32 w-32 rounded-full bg-white/60" />
+            <div className="relative -rotate-6 rounded-[1.8rem] border-2 border-slate-900 bg-emerald-900 p-7 text-lime-200 shadow-[5px_5px_0_#0f172a]"><ShieldCheck className="h-16 w-16" strokeWidth={1.4} /></div>
+            <div className="absolute right-0 top-3 rotate-6 rounded-2xl border-2 border-slate-900 bg-white p-3"><Link2 className="h-6 w-6 text-emerald-900" /></div>
+            <div className="absolute bottom-1 left-1 -rotate-6 rounded-2xl border-2 border-slate-900 bg-[#e5edbd] p-3"><Database className="h-6 w-6 text-emerald-900" /></div>
+          </div>
+        </div>
+        <nav aria-label="管理中心快速導覽" className="relative grid border-t-2 border-slate-900 bg-white sm:grid-cols-3">
+          {[
+            { href: '#shares-title', icon: Clock3, title: '管理分享', description: '查看期限・撤銷連結' },
+            { href: '#local-title', icon: Database, title: '整理本機資料', description: '匯出備份・清除資料' },
+            { href: withBasePath('/membership/account'), icon: ShieldCheck, title: '帳號與個資', description: '聯絡資料・帳號管理' },
+          ].map(({ href, icon: Icon, title, description }, index) => <a key={href} href={href} className={`group flex items-center gap-3 px-5 py-4 transition-colors hover:bg-emerald-50 focus-visible:outline-offset-[-4px] sm:px-6 ${index ? 'border-t border-slate-200 sm:border-l sm:border-t-0' : ''}`}>
+            <Icon aria-hidden="true" className="h-5 w-5 shrink-0 text-emerald-800" /><span className="flex-1"><span className="block text-sm font-black">{title}</span><span className="mt-1 block text-xs text-slate-500">{description}</span></span><ArrowUpRight aria-hidden="true" className="h-4 w-4 text-slate-400 transition-colors group-hover:text-emerald-800" />
+          </a>)}
+        </nav>
+      </header>
       {notice && <p role="status" className="rounded-xl bg-emerald-50 p-4 text-emerald-900">{notice}</p>}
       <section className={card} aria-labelledby="shares-title">
         <div className="flex flex-wrap items-center justify-between gap-3"><h2 id="shares-title" className="flex items-center gap-2 text-xl font-black"><Link2 />我的分享連結</h2><button className={button} disabled={busy} onClick={() => load()}>重新整理分享</button></div>
@@ -85,7 +125,12 @@ export default function PrivacyCenterPage() {
       <section className={card} aria-labelledby="local-title"><h2 id="local-title" className="flex items-center gap-2 text-xl font-black"><Database />此裝置的升學資料</h2><p className="mt-3 leading-7 text-slate-600">包含本機志願版本、待匯入志願、協作稱呼，以及本分頁的分析結果、校系比較清單與欄位設定。目前有 {localCount} 筆儲存項目（不是志願數量）。本機清除不影響雲端分享、成績紀錄或會員資格。</p>
         {localError && <p role="alert" className="mt-3 text-rose-700">{localError}</p>}
         <div className="mt-4 flex flex-wrap gap-3"><button className={`${button} flex items-center gap-2`} onClick={exportLocal}><Download className="h-4 w-4" />匯出本機資料</button><button className={`${button} flex items-center gap-2 text-rose-700`} onClick={() => setClearPending(true)}><Trash2 className="h-4 w-4" />清除上述本機資料</button></div>
-        {clearPending && <div className="mt-4 rounded-xl bg-amber-50 p-4"><p>清除後無法在網站直接還原。請先匯出需要保留的資料，再確認清除。</p><div className="mt-3 flex flex-wrap gap-3"><button className={`${button} bg-rose-600 text-white`} onClick={clearLocal}>確認清除本機資料</button><button className={button} onClick={() => setClearPending(false)}>取消清除</button></div></div>}
+        {clearPending && <dialog ref={clearDialogRef} aria-labelledby="clear-local-title" aria-describedby="clear-local-description" onCancel={event => { event.preventDefault(); setClearPending(false); }} className="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-2xl border-2 border-slate-900 bg-white p-6 text-slate-900 shadow-xl backdrop:bg-slate-950/60 backdrop:backdrop-blur-sm">
+          <h2 id="clear-local-title" className="text-xl font-black">確認清除本機資料？</h2>
+          <p id="clear-local-description" className="mt-3 leading-7 text-slate-600">將清除上述本機升學資料，包含本機志願版本。清除後無法在網站直接還原，請先匯出需要保留的資料。雲端分享、成績紀錄與會員資格不受影響。</p>
+          {localError && <p role="alert" className="mt-3 text-rose-700">{localError}</p>}
+          <div className="mt-5 flex flex-wrap justify-end gap-3"><button autoFocus className={button} onClick={() => setClearPending(false)}>取消清除</button><button className={`${button} bg-rose-600 text-white`} onClick={clearLocal}>確認清除本機資料</button></div>
+        </dialog>}
       </section>
       <section className="grid gap-4 sm:grid-cols-2" aria-label="其他資料管理">{[
         ['/score-records', '雲端成績紀錄', '查看、管理與刪除已保存的成績紀錄。'],
