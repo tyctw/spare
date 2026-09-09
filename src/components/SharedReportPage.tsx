@@ -211,7 +211,7 @@ function VolunteerReport({
             </p>
           </div>
         </header>
-        <section className="relative z-10 mt-6 grid gap-3 sm:grid-cols-3">
+        <section className="relative z-10 mt-6 grid grid-cols-3 gap-2 sm:gap-3">
           <StatCard
             icon={<MapPin className="h-5 w-5" />}
             label="就學區"
@@ -628,14 +628,14 @@ function StatCard({
   tone: string;
 }) {
   return (
-    <article className="rounded-2xl border-3 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+    <article className="min-w-0 rounded-2xl border-2 border-slate-900 bg-white p-2.5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:border-3 sm:p-4 sm:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
       <div
-        className={`inline-flex rounded-xl border-2 border-slate-900 p-2 ${tone}`}
+        className={`inline-flex rounded-lg border-2 border-slate-900 p-1.5 sm:rounded-xl sm:p-2 ${tone}`}
       >
         {icon}
       </div>
       <p className="mt-2 text-xs font-black text-slate-500">{label}</p>
-      <p className="mt-1 truncate text-lg font-black text-slate-950">{value}</p>
+      <p className="mt-1 truncate text-sm font-black text-slate-950 sm:text-lg">{value}</p>
     </article>
   );
 }
