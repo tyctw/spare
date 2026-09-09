@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, Share2, Menu, Compass, Calculator, Target, CalendarDays, CircleHelp, ArrowRight, X, Instagram, Megaphone } from 'lucide-react';
+import { Search, Share2, Menu, Compass, Calculator, Target, CalendarDays, CircleHelp, ArrowRight, X, Instagram, Megaphone, Heart } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
 import { menuCategories, type MenuCategory, type MenuItem } from './NavigationDrawer';
 import { categoryOverviewPaths } from '../../lib/categoryOverview';
@@ -207,8 +207,8 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                       <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-slate-600 transition hover:bg-white hover:text-pink-600" aria-label="前往 Instagram，新分頁開啟"><span className="flex min-w-0 items-center gap-2"><Instagram className="h-4 w-4 shrink-0" />Instagram</span><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></a>
                       <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-slate-600 transition hover:bg-white hover:text-slate-900" aria-label="前往 Threads，新分頁開啟"><span className="flex min-w-0 items-center gap-2"><ThreadsIcon className="h-4 w-4 shrink-0" />Threads</span><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></a>
                     </div>
-                    <a href={withBasePath('/support')} className="group flex items-center justify-between bg-rose-200 px-4 py-4 text-left text-slate-900 transition hover:bg-rose-300">
-                      <span className="min-w-0"><span className="block text-sm font-black">小額支持，升學資訊持續免費</span><span className="mt-0.5 block text-[11px] font-bold text-rose-950/70">陪更多學生安心找到方向</span></span>
+                    <a href={withBasePath('/support')} className="group flex items-center justify-between gap-3 bg-rose-200 px-4 py-4 text-left text-slate-900 transition hover:bg-rose-300">
+                      <span className="flex min-w-0 items-start gap-2.5"><Heart className="mt-0.5 h-5 w-5 shrink-0 fill-rose-500 text-rose-600 transition-transform group-hover:scale-110" aria-hidden="true" /><span className="min-w-0"><span className="block text-sm font-black">小額支持，升學資訊持續免費</span><span className="mt-0.5 block text-[11px] font-bold text-rose-950/70">陪更多學生安心找到方向</span></span></span>
                       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span>
                     </a>
                   </div>
