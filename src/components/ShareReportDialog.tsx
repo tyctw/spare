@@ -238,7 +238,6 @@ export default function ShareReportDialog({
             </button>
           </div>
         </header>
-        <a href={withBasePath('/privacy-center')} className="block border-b border-slate-200 px-5 py-3 text-sm font-bold text-indigo-700 underline">個資與分享管理中心：查看期限與撤銷分享</a>
         <div className="min-h-0 overflow-y-auto p-5 sm:p-7">
           {!url ? (
             <>
@@ -478,6 +477,10 @@ export default function ShareReportDialog({
               {error}
             </p>
           )}
+          <a href={withBasePath('/privacy-center')} className="mt-6 flex items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 py-3 text-left transition hover:border-indigo-300 hover:bg-indigo-50 focus-visible:outline-2 focus-visible:outline-indigo-600">
+            <span><span className="block text-sm font-black text-slate-900">需要管理已建立的分享？</span><span className="mt-1 block text-xs font-bold text-slate-500">前往個資與分享管理中心查看期限、撤銷連結</span></span>
+            <span aria-hidden="true" className="shrink-0 rounded-lg bg-indigo-100 px-2.5 py-1.5 text-xs font-black text-indigo-800">前往管理</span>
+          </a>
         </div>
       </section>
     </div>
