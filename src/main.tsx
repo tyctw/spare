@@ -1,3 +1,4 @@
+import VocationalComparePage from './components/VocationalComparePage';
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Lightbulb } from 'lucide-react';
@@ -143,6 +144,7 @@ const page =
   path === '/membership' || path === '/membership/success' ? <MembershipPage /> :
   path === '/after-sales-service' ? <SupportPolicyPage kind="after-sales" /> :
   path === '/refund-cancellation-policy' ? <SupportPolicyPage kind="refund-cancellation" /> :
+  path === '/vocational-compare' ? <VocationalComparePage /> :
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
   scoringRulesRegionId ? <RegionScoringRulesPage regionId={scoringRulesRegionId} /> :
   areaSlug ? <AreaPage slug={areaSlug} /> :
