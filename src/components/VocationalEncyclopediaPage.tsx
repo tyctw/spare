@@ -1,42 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowLeft, BookOpen, Briefcase, GraduationCap, Search, Sparkles, Tags } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Building2, BookOpen, Briefcase, GraduationCap, Search, Sparkles, Tags } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { pageNavigationAsideClassName } from './PageNavigation';
 
-type VocationalGroup = {
-  id: string;
-  icon: string;
-  summary: string;
-  holland: string;
-  hollandDesc: string;
-  traits: string[];
-  learning: string[];
-  majors: string[];
-  careers: string[];
-  furtherStudy: string[];
-  selectionTip: string;
-};
-
-// 15 groups follow the technical senior high school group classification.
-// Departments offered differ by school; this page intentionally lists common
-// examples rather than implying every school offers every department.
-const groups: VocationalGroup[] = [
-  { id: '機械群', icon: '⚙️', summary: '以機械設計、製圖、加工與製造為核心，從材料、量測到車床、銑床、CNC 與自動化設備，練習把圖面做成可用的零件或成品。', holland: 'R／I', hollandDesc: '適合喜歡動手拆裝、理解機構原理、耐心調整細節的人；對數學、空間概念與實作都有興趣會更容易投入。', traits: ['喜歡動手製作', '重視精準與安全', '具空間與邏輯概念'], learning: ['機械製圖與電腦繪圖', '機械加工、量測與材料', '機構、機件原理與製造'], majors: ['機械科', '模具科', '製圖科', '電腦機械製圖科', '鑄造科', '板金科', '機電科', '生物產業機電科'], careers: ['機械製造與加工技術', '模具與產品開發', '品管與量測', '自動化設備維護'], furtherStudy: ['機械工程', '材料工程', '自動化工程', '工業工程與管理'], selectionTip: '先確認自己是否喜歡長時間的實作、量測與反覆修正；不同學校的設備與實習工場特色差異很大。' },
-  { id: '動力機械群', icon: '🚗', summary: '認識車輛、引擎、底盤、電系、液壓與動力系統的運作，重點不只在修車，也包含故障診斷、保養、安全與新式車輛技術。', holland: 'R／I', hollandDesc: '適合對汽機車、引擎、交通工具與機械維修有好奇心，願意依流程檢測問題並重視操作安全的人。', traits: ['對車輛與機械有興趣', '願意實作檢測', '具問題排除耐心'], learning: ['引擎、底盤與車身系統', '汽機車電系與電子控制', '保養、檢修與故障診斷'], majors: ['汽車科', '重機科', '動力機械科', '農業機械科', '飛機修護科', '軌道車輛科'], careers: ['汽機車檢修', '車輛保養服務', '車輛零組件製造', '運輸與維修技術'], furtherStudy: ['車輛工程', '機械工程', '航空工程', '運輸與物流管理'], selectionTip: '喜歡車不等於喜歡維修；先了解實習是否包含拆裝、油污環境與依規範進行的檢修流程。' },
-  { id: '電機與電子群', icon: '💡', summary: '涵蓋電路、電子、資訊、控制、通訊與冷凍空調，從配線、程式與電路實驗，理解各種電力與智慧設備如何運作。', holland: 'R／I', hollandDesc: '適合喜歡電腦、電路、科技產品或解題的人。需要細心閱讀圖表、依規範操作，並持續練習邏輯思考。', traits: ['喜歡科技與拆解原理', '邏輯思考佳', '能細心依規範操作'], learning: ['基本電學、電子學與電路實驗', '程式設計、控制與資訊應用', '電機配線、通訊或冷凍空調實作'], majors: ['電機科', '電子科', '資訊科', '控制科', '冷凍空調科', '電子通信科', '航空電子科', '電機空調科'], careers: ['電機電子製造與測試', '資訊與網路技術', '自動控制設備', '冷凍空調維護'], furtherStudy: ['電機工程', '電子工程', '資訊工程', '自動化與控制工程'], selectionTip: '資訊科、電子科與電機科名稱相近但課程重心不同；務必比較學校課程地圖、專題與實習設備。' },
-  { id: '化工群', icon: '🧪', summary: '以化學實驗、分析、製程與安全管理為基礎，認識原料如何轉化為日常產品，並學習在實驗室與工廠環境中正確操作。', holland: 'I／R', hollandDesc: '適合對化學反應、實驗操作與數據紀錄感興趣，能遵守安全規範、耐心觀察並分析結果的人。', traits: ['喜歡化學與實驗', '重視安全細節', '能整理觀察數據'], learning: ['化學、化工原理與分析', '實驗器材與製程操作', '工業安全、環保與品質管理'], majors: ['化工科', '紡織科', '染整科'], careers: ['化學製程操作', '品管與檢驗', '材料與紡織技術', '環安衛相關工作'], furtherStudy: ['化學工程', '材料工程', '環境工程', '生物科技'], selectionTip: '化工課程很重視實驗安全與紀錄；若只喜歡「做實驗」但不喜歡化學原理與數據分析，需先審慎評估。' },
-  { id: '土木與建築群', icon: '🏗️', summary: '從建築圖、測量、營建材料到施工管理，理解建物與公共工程如何被規劃、設計、建造與維護。', holland: 'R／I', hollandDesc: '適合喜歡建築、空間規劃、模型或戶外測量的人；需具備細心、空間感與團隊協作能力。', traits: ['喜歡建築與空間規劃', '具空間想像力', '能配合現場與團隊作業'], learning: ['工程圖學與電腦繪圖', '測量、營建材料與施工', '建築構造與工程管理'], majors: ['土木科', '建築科', '消防工程科', '空間測繪科'], careers: ['營造與工程技術', '測量與繪圖', '建築設計助理', '工地管理與建物維護'], furtherStudy: ['土木工程', '建築', '營建工程', '空間資訊與測繪'], selectionTip: '建築科不等於只畫設計圖，土木科也不等於只做工地；先看課程中的測量、施工、繪圖比例。' },
-  { id: '商業與管理群', icon: '📈', summary: '學習會計、經濟、商業概論、行銷、門市與數位商務，理解商品、金流、資訊與顧客需求如何串成一門生意。', holland: 'E／C', hollandDesc: '適合喜歡規劃、數字、溝通或經營想法的人。細心整理資料、與人合作及理解市場變化都很重要。', traits: ['喜歡規劃與數字', '溝通與協作能力', '做事有條理'], learning: ['會計、經濟與商業概論', '行銷、門市與顧客服務', '商業資訊與電子商務'], majors: ['商業經營科', '國際貿易科', '會計事務科', '資料處理科', '流通管理科', '電子商務科'], careers: ['會計與行政', '行銷企劃與門市管理', '電商營運', '貿易與物流服務'], furtherStudy: ['企業管理', '會計', '資訊管理', '行銷與流通管理'], selectionTip: '商管群不只是在學「做生意」；會計、文書、資料處理與報表閱讀是常見基礎，需能接受細節性工作。' },
-  { id: '外語群', icon: '🌐', summary: '透過英語或日語等語言的聽說讀寫、跨文化溝通與商務應用，培養運用外語取得資訊、服務他人與連結世界的能力。', holland: 'S／A／E', hollandDesc: '適合喜歡語言、文化、閱讀、表達與交流的人。需要願意長期練習，並對不同文化保持開放態度。', traits: ['喜歡語言與文化', '願意持續練習', '樂於溝通表達'], learning: ['外語聽說讀寫', '跨文化溝通', '商務、觀光或數位外語應用'], majors: ['應用英語科', '應用日語科'], careers: ['國際事務與行政', '觀光與旅運服務', '外語客服', '翻譯與語言相關進修'], furtherStudy: ['應用外語', '國際貿易', '觀光與休閒', '語言與文化相關領域'], selectionTip: '外語能力來自長期累積；選科前可先想想自己是否享受每天聽、說、讀、寫與反覆練習。' },
-  { id: '設計群', icon: '🎨', summary: '把觀察、創意與技術轉化成視覺、商品、空間或互動作品；除了美感，也重視使用者需求、製作流程與作品表達。', holland: 'A／R', hollandDesc: '適合喜歡畫畫、影像、手作、觀察生活細節與解決設計問題的人；願意反覆修改作品很重要。', traits: ['具美感與觀察力', '喜歡創作與手作', '能接受反覆修正'], learning: ['設計基礎、色彩與構成', '繪圖、攝影或數位設計', '模型、工藝與作品集表達'], majors: ['廣告設計科', '多媒體設計科', '室內空間設計科', '家具設計科', '陶瓷工程科', '圖文傳播科'], careers: ['視覺與平面設計', '數位內容製作', '空間與商品設計', '印刷與傳播技術'], furtherStudy: ['視覺傳達設計', '數位媒體設計', '工業設計', '室內設計'], selectionTip: '設計不是只靠靈感；需接受基礎素描、軟體操作、提案與作品反覆修改，作品集累積也很重要。' },
-  { id: '農業群', icon: '🌱', summary: '認識作物、園藝、畜產、森林、生物技術與農業經營，將自然科學、環境永續與實作管理結合在一起。', holland: 'R／I', hollandDesc: '適合喜歡自然、生物、動植物或戶外實作的人；需有耐心觀察、照護生命並重視環境與安全。', traits: ['喜歡自然與生命科學', '願意戶外實作', '細心觀察與照護'], learning: ['植物、動物與生物技術', '栽培、飼養與農業機械', '農業經營、環境與永續'], majors: ['農場經營科', '園藝科', '森林科', '畜產保健科', '野生動物保育科', '生物產業機電科'], careers: ['農業與園藝技術', '畜產與動物照護', '生態保育', '農業經營與技術服務'], furtherStudy: ['農業', '園藝', '動物科學', '森林與自然資源'], selectionTip: '農業群有許多戶外、栽培與照護實作；對動植物有興趣外，也要能接受依季節與工作流程進行作業。' },
-  { id: '食品群', icon: '🍞', summary: '從食品原料、加工、烘焙到衛生、檢驗與品質管理，學習安全地製作與保存食物，並了解食品產業的流程。', holland: 'R／I／C', hollandDesc: '適合喜歡食品、烘焙、化學實驗或精準操作的人。對衛生規範、流程紀錄與品質要求要有耐心。', traits: ['喜歡食品製作或科學', '重視衛生與流程', '能精準操作'], learning: ['食品加工與烘焙', '食品化學、微生物與檢驗', '衛生安全與品質管理'], majors: ['食品加工科', '食品科', '烘焙科'], careers: ['食品製造', '烘焙與產品研發', '食品檢驗與品管', '餐飲食品創業'], furtherStudy: ['食品科學', '保健營養相關領域', '餐飲管理', '生物科技'], selectionTip: '食品群除了烘焙，也會學食品化學、衛生與檢驗；若只想做料理，餐旅群的課程可能更符合期待。' },
-  { id: '家政群', icon: '🧵', summary: '聚焦生活應用、服飾、美容、美髮、幼兒保育與照顧服務，從專業技術、衛生安全到服務溝通，回應人的生活需求。', holland: 'S／A／R', hollandDesc: '適合喜歡照顧人、造型、美感或生活服務的人。需具備同理心、耐心、衛生觀念與與人互動的能力。', traits: ['有服務與同理心', '重視衛生與細節', '喜歡美感或照護'], learning: ['服飾、造型或美容技術', '幼兒保育與生活照顧', '衛生、安全與服務溝通'], majors: ['家政科', '服裝科', '美容科', '美髮技術科', '幼兒保育科', '時尚造型科'], careers: ['美容美髮與造型', '服飾製作', '幼兒與照顧服務', '生活服務相關工作'], furtherStudy: ['美容與造型設計', '服飾設計', '幼兒教育與保育', '老人服務與健康管理'], selectionTip: '與幼兒、照顧或美容相關工作各有法規與專業資格要求；高中所學是基礎，升學與證照規劃要另外確認。' },
-  { id: '餐旅群', icon: '🍽️', summary: '學習餐飲製備、旅館服務、飲調、烘焙與旅遊實務，重視服務流程、衛生安全、團隊合作與面對顧客的應對能力。', holland: 'S／E', hollandDesc: '適合喜歡料理、服務、旅遊文化與團隊合作的人。工作節奏可能較快，需能溝通、應變並維持專業態度。', traits: ['喜歡料理或旅遊服務', '樂於與人互動', '能在忙碌中保持條理'], learning: ['中西餐烹調、烘焙或飲調', '旅館、餐飲與旅遊服務', '衛生安全、成本與服務管理'], majors: ['餐飲管理科', '觀光事業科', '餐飲技術科', '烘焙科', '旅遊事務科'], careers: ['餐飲內外場服務', '廚藝與烘焙', '旅館與旅運服務', '活動與宴會企劃'], furtherStudy: ['餐旅管理', '觀光與休閒', '餐飲廚藝', '運動休閒與活動管理'], selectionTip: '餐旅群的重點是服務專業與現場合作，不只「吃喝玩樂」；實作、服儀、衛生與顧客應對都會占重要比重。' },
-  { id: '水產群', icon: '🐟', summary: '以水生生物、養殖、漁業資源與水產食品為主，認識從繁殖、飼養、環境管理到水產品處理的完整過程。', holland: 'R／I', hollandDesc: '適合喜歡海洋、生物、動物照護與實地觀察的人；需能配合戶外或水域環境，並重視生物與作業安全。', traits: ['喜歡海洋與生物', '能接受戶外實作', '具觀察與照護耐心'], learning: ['水產生物與養殖', '水質、飼養與疾病管理', '漁業資源與水產食品'], majors: ['水產養殖科', '漁業科'], careers: ['養殖與水產技術', '水質與生物管理', '水產加工', '漁業相關服務'], furtherStudy: ['水產養殖', '海洋科學', '食品科學', '環境與生態相關領域'], selectionTip: '水產群的校數與地理分布較集中，選填時除興趣外，也要確認通勤、住宿及學校的實習場域。' },
-  { id: '海事群', icon: '⚓', summary: '認識船舶、航海、輪機、海運與海洋工程；學習航行、機電、船舶維護與海上安全等專業基礎。', holland: 'R／I', hollandDesc: '適合對船舶、海洋、機械或航行有興趣，能遵守嚴謹安全規範、具責任感並適應團隊生活的人。', traits: ['對海洋與船舶有興趣', '責任感與安全意識', '能適應團隊與規範'], learning: ['航海、船藝與海上安全', '輪機、船舶電機與維修', '海運與海事法規基礎'], majors: ['航海科', '輪機科', '船舶機電科', '船舶電機科'], careers: ['航運與船務', '船舶輪機維護', '港埠與海運服務', '海事技術工作'], furtherStudy: ['航運管理', '輪機工程', '海洋工程', '物流與港埠管理'], selectionTip: '海事相關工作與升學可能涉及體格、證照或航海實習條件；請直接查閱學校及主管機關最新規定。' },
-  { id: '藝術群', icon: '🎭', summary: '以音樂、戲劇、舞蹈、影視等藝術專業為核心，透過長期練習、表演製作與作品呈現，培養藝術表達與舞台合作能力。', holland: 'A', hollandDesc: '適合對表演、音樂、影像或舞台創作有熱情且願意長期練功的人；除了天分，持續練習與團隊合作同樣關鍵。', traits: ['強烈藝術表達動機', '願意持續練習', '能接受公開演出與回饋'], learning: ['表演、音樂、舞蹈或影視專業', '藝術史、創作與製作', '舞台技術與作品呈現'], majors: ['音樂科', '西樂科', '國樂科', '戲劇科', '舞蹈科', '影視科'], careers: ['表演與創作', '影視與舞台製作', '藝術教育與推廣', '文化內容產業'], furtherStudy: ['音樂', '戲劇', '舞蹈', '影視與表演藝術'], selectionTip: '部分藝術群科別設有術科或甄選要求；選填前應確認招生方式、專長準備與持續練習所需的時間投入。' },
-];
+import { groups, type VocationalGroup } from '../lib/vocationalGroups';
 
 type Myth = { myth: string; fact: string };
 
@@ -163,8 +130,14 @@ export default function VocationalEncyclopediaPage() {
       <div className="min-w-0 space-y-6"><section className="overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"><div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-emerald-100 text-lg font-black text-emerald-800">15</div><div><p className="text-sm font-black text-slate-900">技術型高中 15 群</p><p className="mt-1 text-sm font-bold text-slate-500">從興趣、學習內容與科別開始探索。</p></div></div><a href={withBasePath('/holland')} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5"><Sparkles className="h-5 w-5" />還不確定方向？做荷倫碼測驗</a></div></section>
         <section id="group-detail" className="scroll-mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#0f172a]"><div className={`relative overflow-hidden bg-gradient-to-br ${selectedTheme.hero} px-5 py-6 text-white sm:px-7 sm:py-8`}><div className="pointer-events-none absolute -right-14 -top-16 h-52 w-52 rounded-full border-8 border-white/20" /><div className="pointer-events-none absolute bottom-0 right-28 h-24 w-24 rotate-12 rounded-3xl bg-white/10" /><div className="relative flex flex-col gap-5 sm:flex-row sm:items-center"><div className={`flex h-20 w-20 shrink-0 items-center justify-center rounded-[1.4rem] border-4 border-slate-900 ${selectedTheme.icon} text-5xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]`}>{selectedGroup.icon}</div><div className="min-w-0"><div className="flex flex-wrap gap-2"><span className="rounded-full border-2 border-white/80 bg-white/15 px-3 py-1 text-xs font-black">技術型高中 15 群</span><span className="rounded-full border-2 border-white/80 bg-white/15 px-3 py-1 text-xs font-black">Holland {selectedGroup.holland}</span></div><h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">{selectedGroup.id}</h2><p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-white/90 sm:text-base">{selectedGroup.summary}</p></div></div></div>
           <div className="space-y-6 bg-slate-50/70 p-4 sm:p-7">
+            <a href={withBasePath(`/vocational-compare?${new URLSearchParams({ group: selectedGroup.id })}`)} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-slate-900 bg-amber-100 p-4 shadow-[2px_2px_0_#0f172a] transition hover:bg-amber-200">
+              <span><span className="block font-black">職群比較</span><span className="mt-1 block text-sm text-slate-700">還在猶豫？帶著{selectedGroup.id}，比較其他職群的課程與未來方向。</span></span><span className="flex items-center gap-2 text-sm font-bold">開始比較<ArrowUpRight className="h-4 w-4" /></span>
+            </a>
             <InfoBlock icon={<BookOpen className="h-5 w-5" />} title="主要學習內容" description="從課程出發，看看你會接觸哪些專業。" tone="emerald" items={selectedGroup.learning} />
-            <InfoBlock icon={<GraduationCap className="h-5 w-5" />} title="常見相關科別" description="同一職群有不同科別，實際開設情況請以各校簡章為準。" tone="emerald" items={selectedGroup.majors} variant="tags" />
+            <InfoBlock icon={<GraduationCap className="h-5 w-5" />} title="常見相關科別" description="點選科別查看開設學校；實際開設與招生情況請以各校當年度簡章為準。" tone="emerald" items={selectedGroup.majors} variant="tags" schoolGroup={selectedGroup.id} />
+            <a href={withBasePath(`/search?${new URLSearchParams({ group: selectedGroup.id })}`)} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-slate-900 bg-sky-100 px-5 py-4 text-sm font-bold shadow-[2px_2px_0_#0f172a] transition hover:bg-sky-200 focus-visible:ring-2 focus-visible:ring-sky-600">
+              <span className="flex items-center gap-2"><Building2 className="h-5 w-5" />查看開設學校 · {selectedGroup.id}</span><span className="flex items-center gap-2 text-sky-800">可依縣市篩選<ArrowUpRight className="h-4 w-4" /></span>
+            </a>
             <div className="grid gap-5 xl:grid-cols-2">
               <InfoBlock icon={<GraduationCap className="h-5 w-5" />} title="升學延伸方向" tone="sky" items={selectedGroup.furtherStudy} variant="list" />
               <InfoBlock icon={<Briefcase className="h-5 w-5" />} title="可能職涯方向" tone="amber" items={selectedGroup.careers} variant="list" />
@@ -192,13 +165,14 @@ export default function VocationalEncyclopediaPage() {
       </div></section></main>;
 }
 
-function InfoBlock({ icon, title, description, tone, items, variant = 'cards' }: {
+function InfoBlock({ icon, title, description, tone, items, variant = 'cards', schoolGroup }: {
   icon: React.ReactNode;
   title: string;
   description?: string;
   tone: 'emerald' | 'amber' | 'sky';
   items: string[];
   variant?: 'cards' | 'tags' | 'list';
+  schoolGroup?: string;
 }) {
   const tones = {
     emerald: { icon: 'bg-emerald-50 text-emerald-700', item: 'bg-emerald-50/70 text-emerald-950', dot: 'bg-emerald-500' },
@@ -220,7 +194,7 @@ function InfoBlock({ icon, title, description, tone, items, variant = 'cards' }:
               ? 'flex items-start gap-3 py-3 text-sm font-medium leading-6 text-slate-700'
               : `flex items-start gap-3 rounded-xl p-4 text-sm font-bold leading-7 ${tones.item}`}>
             {variant !== 'tags' && <span aria-hidden="true" className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${tones.dot}`} />}
-            <span className="min-w-0">{item}</span>
+            {schoolGroup ? <a href={withBasePath(`/search?${new URLSearchParams({ group: schoolGroup, q: item })}`)} aria-label={`查看開設${item}的學校`} className="inline-flex items-center gap-2 underline decoration-emerald-300 underline-offset-4 hover:text-emerald-700"><span>{item}</span><ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5 shrink-0" /></a> : <span className="min-w-0">{item}</span>}
           </li>
         ))}
       </ul>
