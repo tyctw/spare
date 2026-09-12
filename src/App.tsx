@@ -879,41 +879,21 @@ export default function App() {
               </p>
 
               {/* Announcement */}
-              <div
-                className={`relative z-10 mb-5 overflow-hidden rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-white to-orange-100 p-4 shadow-[0_8px_24px_rgba(245,158,11,0.16)]${memberAccess ? " hidden" : ""}`}
-              >
-                <div className="absolute -right-7 -top-8 h-28 w-28 rounded-full bg-amber-300/50 blur-2xl" />
-                <div className="absolute bottom-0 left-0 h-16 w-24 rounded-tr-full bg-orange-200/40" />
-                <div className="relative">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-black tracking-wide text-white shadow-sm">
-                      <span className="text-base leading-none">📢</span>
-                      <span>限時公告</span>
-                    </div>
-                    <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-black text-rose-600">
-                      免費開放中
-                    </span>
+              <div className={`relative z-10 mb-5 overflow-hidden rounded-2xl border-2 border-slate-900 bg-amber-50 shadow-[2px_2px_0_#0f172a]${memberAccess ? " hidden" : ""}`}>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-900 bg-amber-200 px-4 py-2.5">
+                  <span className="inline-flex items-center gap-2 text-xs font-black tracking-wide"><span aria-hidden="true">📢</span>限時公告</span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-900 bg-white px-2.5 py-1 text-[11px] font-bold text-emerald-800"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-emerald-600" />免費開放中</span>
+                </div>
+                <div className="p-4 sm:p-5">
+                  <h3 className="text-xl font-black leading-snug tracking-tight text-slate-900">進階功能，限時免費體驗</h3>
+                  <p className="mt-2 text-sm leading-7 text-slate-600">即日起至 <time dateTime="2026-12-30" className="whitespace-nowrap font-black text-slate-900 underline decoration-amber-300 decoration-4 underline-offset-2">2026/12/30</time> 前，提供免費使用。</p>
+                  <div className="mt-4 border-t border-dashed border-amber-300 pt-4">
+                    <p className="text-xs font-medium leading-6 text-slate-600">點擊下方邀請碼，一鍵填入並解鎖所有進階功能。</p>
+                    <button type="button" onClick={() => updateForm("invitationCode", "TYCTW")} aria-label="填入免費邀請碼 TYCTW" className="mt-2 flex w-full flex-wrap items-center justify-between gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-left shadow-[2px_2px_0_#0f172a] transition hover:bg-amber-100 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2">
+                      <span><span className="block text-[10px] font-bold tracking-widest text-slate-500">免費邀請碼</span><span className="mt-0.5 block font-mono text-2xl font-black tracking-[0.16em] text-indigo-700">TYCTW</span></span>
+                      <span aria-live="polite" className={`rounded-lg px-3 py-2 text-xs font-bold ${formData.invitationCode === "TYCTW" ? "bg-emerald-100 text-emerald-800" : "bg-slate-900 text-white"}`}>{formData.invitationCode === "TYCTW" ? "已填入 ✓" : "一鍵填入 →"}</span>
+                    </button>
                   </div>
-                  <p className="mt-4 text-sm font-bold leading-6 text-slate-700">
-                    即日起至{" "}
-                    <span className="whitespace-nowrap font-black text-rose-600">
-                      2026/12/30
-                    </span>{" "}
-                    前，提供免費使用。
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => updateForm("invitationCode", "TYCTW")}
-                    className="mt-3 flex w-full items-center justify-between gap-3 rounded-xl border border-indigo-200 bg-white/90 p-3 text-left transition hover:-translate-y-0.5 hover:border-indigo-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    title="點擊自動填入邀請碼"
-                  >
-                    <span className="min-w-0 text-xs font-bold leading-5 text-slate-600">
-                      點擊邀請碼，一鍵填入並解鎖所有進階功能
-                    </span>
-                    <span className="shrink-0 rounded-lg bg-indigo-600 px-3 py-1.5 font-mono text-sm font-black tracking-[0.16em] text-white shadow-sm">
-                      TYCTW
-                    </span>
-                  </button>
                 </div>
               </div>
 
