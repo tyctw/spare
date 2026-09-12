@@ -85,7 +85,7 @@ export default function VocationalModal({ isOpen, onClose, selectedGroups, onCha
             </div>
 
             <div className="flex-1 overflow-y-auto bg-slate-50 p-6 custom-scrollbar sm:p-8">
-              <div className="mb-6 flex flex-col justify-between gap-3 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:flex-row sm:items-center">
+              <div className="mb-6 flex flex-col justify-between gap-3 rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] sm:flex-row sm:items-center">
                 <div className="flex items-start gap-3">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-200 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
                     <Brain className="h-5 w-5 text-amber-800" />
