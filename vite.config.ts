@@ -84,6 +84,7 @@ const seoRoutes = [
   'after-sales-service',
   'refund-cancellation-policy',
   'vocational-encyclopedia',
+  'vocational-compare',
   'site-map',
   'privacy',
   'terms',
