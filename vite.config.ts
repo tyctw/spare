@@ -109,6 +109,10 @@ const staticNoindexRoutes = new Set([
 ]);
 
 const staticPageMetadata: Record<string, { title: string; description: string }> = {
+  'vocational-compare': {
+    title: '職群比較｜高中職課程、升學與職涯方向比較',
+    description: '選擇 2～3 個技術型高中職群，從主要課程、相關科別、升學方向、可能職涯與 Holland 興趣比較差異，並查詢開設學校，探索適合自己的升學方向。',
+  },
   membership: {
     title: '會員方案｜免廣告與升學工具｜全國會考落點分析',
     description: '以 LINE 登入確認會員資格，選擇免廣告方案並持續使用會考落點分析與升學規劃工具。',
