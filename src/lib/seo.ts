@@ -58,6 +58,10 @@ type PageMeta = {
 };
 
 const pageMetadata: Record<string, PageMeta> = {
+  '/vocational-compare': {
+    title: '職群比較｜高中職課程、升學與職涯方向比較',
+    description: '選擇 2～3 個技術型高中職群，從主要課程、相關科別、升學方向、可能職涯與 Holland 興趣比較差異，並查詢開設學校，探索適合自己的升學方向。',
+  },
   '/': {
     title: '免費會考落點分析｜你的成績，能選哪些高中職？',
     description: defaultDescription,
