@@ -37,9 +37,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isGlobalSearchOpen, setIsGlobalSearchOpen] = useState(false);
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
-  const getCompactNavigation = () => typeof window !== 'undefined' && (
-    window.innerWidth < 1440 || window.matchMedia('(hover: none), (pointer: coarse)').matches
-  );
+  const getCompactNavigation = () => typeof window !== 'undefined' && window.innerWidth < 1024;
   const [isCompactNavigation, setIsCompactNavigation] = useState(getCompactNavigation);
   const closeMenuTimer = useRef<number | null>(null);
   const globalSearchInputRef = useRef<HTMLInputElement>(null);
@@ -89,7 +87,11 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
     return () => window.removeEventListener('open-site-search', openSiteSearch);
   }, []);
   useEffect(() => {
-    const updateNavigationMode = () => setIsCompactNavigation(getCompactNavigation());
+    const updateNavigationMode = () => {
+      const compact = getCompactNavigation();
+      setIsCompactNavigation(compact);
+      if (compact) setActiveMenu(null);
+    };
     updateNavigationMode();
     window.addEventListener('resize', updateNavigationMode);
     return () => window.removeEventListener('resize', updateNavigationMode);
@@ -158,7 +160,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
             </div>
           </a>
 
-          <nav aria-label="主要導覽" className={`${isCompactNavigation ? 'hidden' : 'flex'} items-center gap-1 rounded-2xl bg-slate-100/80 p-1.5`}>
+          <nav aria-label="主要導覽" className={`${isCompactNavigation ? 'hidden' : 'flex'} shrink-0 items-center gap-0.5 rounded-2xl bg-slate-100/80 p-1 xl:gap-1 xl:p-1.5`}>
             {navigationLinks.map(({ id, label, icon: Icon, iconColor }) => (
               <button
                 type="button"
@@ -169,9 +171,9 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                 aria-haspopup="true"
                 aria-expanded={activeMenu === id}
                 aria-controls="desktop-mega-menu"
-                className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-black text-slate-700 transition hover:bg-white hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 ${activeMenu === id ? 'bg-amber-200/80 text-slate-900 shadow-sm' : ''}`}
+                className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-2 py-2 text-sm font-black text-slate-700 transition hover:bg-white hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 xl:px-3 ${activeMenu === id ? 'bg-amber-200/80 text-slate-900 shadow-sm' : ''}`}
               >
-                <Icon className={`h-4 w-4 ${iconColor}`} />
+                <Icon className={`hidden h-4 w-4 shrink-0 xl:block ${iconColor}`} />
                 {label}
               </button>
             ))}
