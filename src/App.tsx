@@ -1836,8 +1836,6 @@ export default function App() {
                     </a>
                     <button
                       onClick={() => {
-                        // Begin preparing the export library while the format picker is open.
-                        void import("./lib/exportUtils");
                         setActiveModal("export");
                       }}
                       className="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs rounded-lg border-2 border-slate-900 flex items-center gap-1 hover:-translate-y-0.5 active:translate-y-0 transition-transform shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
