@@ -30,7 +30,6 @@ import {
 import ExportModal from './ExportModal';
 import Footer from './layout/Footer';
 import { ALL_REGIONS } from './RegionModal';
-import { exportExcel, exportJson, exportTxt, printResults } from '../lib/exportUtils';
 import { withBasePath } from '../lib/routes';
 import { getComparisonSchools, saveComparisonSchools } from '../lib/comparisonStorage';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
@@ -170,6 +169,7 @@ export default function ResultsPage() {
 
   const handleExport = async (type: 'txt' | 'excel' | 'json' | 'print') => {
     const payload = { scores, results, identity: scores?.identity, vocationalGroups };
+    const { exportExcel, exportJson, exportTxt, printResults } = await import('../lib/exportUtils');
     switch (type) {
       case 'txt':
         exportTxt(payload, regionName);
