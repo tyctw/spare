@@ -1,5 +1,4 @@
 import { saveAs } from 'file-saver';
-import ExcelJS from 'exceljs';
 import { formatSchoolOwnership, formatSchoolOwnershipPreference } from './schoolDisplay';
 
 // The print popup inherits this page's origin, so dynamic values must remain
@@ -106,6 +105,7 @@ export const exportJson = (data: any) => {
 };
 
 export const exportExcel = async (data: any, regionName: string) => {
+  const { default: ExcelJS } = await import('exceljs');
   const wb = new ExcelJS.Workbook();
   wb.creator = '升學導航平台';
   wb.created = new Date();
@@ -275,6 +275,7 @@ const getComparisonColumns = (visibleFields: string[]) => [
 ];
 
 export const exportComparisonExcel = async ({ schools, visibleFields }: ComparisonExportOptions) => {
+  const { default: ExcelJS } = await import('exceljs');
   const columns = getComparisonColumns(visibleFields);
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'TW 全國會考落點分析';
