@@ -1,230 +1,102 @@
-import React from 'react';
-import {
-  ArrowLeft,
-  Award,
-  Bell,
-  BookOpenCheck,
-  CalendarDays,
-  CheckCircle2,
-  ClipboardList,
-  FileCheck2,
-  GraduationCap,
-  Info,
-  MapPin,
-  Megaphone,
-  PenLine,
-  ShieldCheck,
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, CalendarDays, ChevronDown, ExternalLink, FileText, Info } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import { admissionPathways, getScheduleForPathway, scheduleNotes, schedulePdf, type AdmissionPathwayId } from '../lib/importantDates';
 
-const dateGroups = [
-  {
-    title: '考前準備',
-    desc: '先確認報名、准考證與考場資訊，避免考前才發現資料需要補正。',
-    tone: 'amber',
-    items: [
-      {
-        date: '03/05 - 03/07',
-        title: '國中教育會考報名',
-        desc: '確認報名資料、應考身分與相關文件。若資料有誤，盡早向學校或承辦單位確認。',
-        icon: PenLine,
-      },
-      {
-        date: '04/10',
-        title: '寄發准考證',
-        desc: '收到後檢查姓名、考區、考場與應試資訊，並妥善保存。',
-        icon: FileCheck2,
-      },
-    ],
-  },
-  {
-    title: '會考與成績',
-    desc: '考試、成績公布與序位區間是後續落點判斷的核心節點。',
-    tone: 'purple',
-    items: [
-      {
-        date: '05/16 - 05/17',
-        title: '國中教育會考',
-        desc: '依准考證與官方試場規則應試。考前先確認交通時間、文具與證件。',
-        icon: Award,
-        featured: true,
-      },
-      {
-        date: '06/05',
-        title: '會考成績公布',
-        desc: '取得五科等級、加號標示與作文級分後，可回到本站進行落點試算。',
-        icon: Megaphone,
-      },
-    ],
-  },
-  {
-    title: '志願選填',
-    desc: '序位區間與志願選填期間，需要把成績、興趣、交通與家庭討論一起納入。',
-    tone: 'sky',
-    items: [
-      {
-        date: '06/18',
-        title: '個人序位區間公布',
-        desc: '序位區間是判斷志願風險的重要參考，仍須搭配歷年資料與當年度招生名額。',
-        icon: ClipboardList,
-      },
-      {
-        date: '06/18 起',
-        title: '開放志願選填與試選填',
-        desc: '建議先建立多版志願草稿，再與導師、輔導老師或家長討論排序。',
-        icon: BookOpenCheck,
-      },
-    ],
-  },
-  {
-    title: '分發與報到',
-    desc: '放榜後留意報到期限、報到方式與後續補件規定。',
-    tone: 'emerald',
-    items: [
-      {
-        date: '07/07',
-        title: '免試入學放榜',
-        desc: '查看錄取結果，並立即確認報到時間、地點與需要攜帶的資料。',
-        icon: GraduationCap,
-      },
-      {
-        date: '07/09',
-        title: '免試入學報到',
-        desc: '依錄取學校公告完成報到。若有放棄、轉銜或其他選擇，務必確認官方流程。',
-        icon: MapPin,
-      },
-    ],
-  },
-];
-
-const toneClasses: Record<string, { soft: string; strong: string; text: string; border: string }> = {
-  amber: { soft: 'bg-amber-50', strong: 'bg-amber-300', text: 'text-amber-800', border: 'border-amber-300' },
-  purple: { soft: 'bg-purple-50', strong: 'bg-purple-500', text: 'text-purple-800', border: 'border-purple-300' },
-  sky: { soft: 'bg-sky-50', strong: 'bg-sky-300', text: 'text-sky-800', border: 'border-sky-300' },
-  emerald: { soft: 'bg-emerald-50', strong: 'bg-emerald-300', text: 'text-emerald-800', border: 'border-emerald-300' },
-};
-
-const checklist = [
-  '成績公布後先確認五科等級、加號與作文級分是否正確。',
-  '用序位區間搭配歷年錄取資料，不要只看單一年最低分。',
-  '志願排序以「真正願意就讀」為原則，再評估夢幻、實際與保守配置。',
-  '所有日期、名額與報到規定仍以官方簡章和招生委員會公告為準。',
+const highlights = [
+  ['03/04–03/06', '會考報名'],
+  ['05/15–05/16', '國中教育會考'],
+  ['06/04', '會考成績查詢'],
+  ['06/18–06/24', '免試入學序位查詢、志願選填'],
+  ['07/06', '免試入學放榜'],
+  ['07/08', '免試入學報到'],
 ];
 
 export default function ImportantDatesPage() {
+  const [selectedPathway, setSelectedPathway] = useState<AdmissionPathwayId>('all');
+  const [pathwaysExpanded, setPathwaysExpanded] = useState(false);
+  const visibleMonths = getScheduleForPathway(selectedPathway);
+  const selectedLabel = admissionPathways.find(pathway => pathway.id === selectedPathway)?.label ?? '全部管道';
+  const eventCount = visibleMonths.reduce((total, group) => total + group.rows.reduce((sum, row) => sum + row.items.length, 0), 0);
   return (
     <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-purple-50">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <a
-            href={withBasePath('/')}
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            回首頁
+          <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a]">
+            <ArrowLeft className="h-4 w-4" />回首頁
           </a>
-
-          <div className="grid gap-8 py-10 lg:grid-cols-[1fr_360px] lg:items-end">
-            <div>
-              <div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-purple-100">
-                  <CalendarDays className="h-6 w-6 text-purple-700" />
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">Important Dates</p>
-                  <p className="text-sm font-black text-slate-700">115 學年度升學時程整理</p>
-                </div>
-              </div>
-              <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">重要日程</h1>
-              <p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">
-                將會考、成績公布、序位區間、志願選填、放榜與報到整理成完整時間線，方便學生與家長安排準備節奏。
-              </p>
-            </div>
-
-            <div className="rounded-2xl border-4 border-slate-900 bg-slate-900 p-5 text-white shadow-[6px_6px_0px_0px_rgba(168,85,247,1)]">
-              <Bell className="h-8 w-8 text-purple-200" />
-              <h2 className="mt-4 text-2xl font-black">先記住三個節點</h2>
-              <div className="mt-4 grid gap-3 text-sm font-bold text-slate-200">
-                <div className="rounded-xl border border-white/15 bg-white/10 p-3">05/16 - 05/17 會考</div>
-                <div className="rounded-xl border border-white/15 bg-white/10 p-3">06/05 成績公布</div>
-                <div className="rounded-xl border border-white/15 bg-white/10 p-3">07/07 放榜</div>
-              </div>
-            </div>
+          <div className="py-10">
+            <p className="mb-4 flex items-center gap-2 text-sm font-black text-purple-800"><CalendarDays className="h-5 w-5" />116 學年度 · 民國 116 年（西元 2027 年）</p>
+            <h1 className="text-4xl font-black tracking-tight sm:text-5xl">重要日程</h1>
+            <p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700">國中教育會考及全國高級中等學校與專科學校五年制適性入學，完整整理 2 至 7 月各管道的報名、測驗、選填、放榜、報到與放棄錄取資格日程。</p>
+            <p className="mt-3 text-sm leading-7 text-slate-600">依教育部 115 年 9 月 11 日臺教授國部字第 1155404304 號函附件整理。以下日期皆為民國 116 年；跨月期間列於開始月份。</p>
           </div>
+          <section aria-labelledby="key-dates" className="pb-8">
+            <h2 id="key-dates" className="mb-4 text-xl font-black">會考與免試入學關鍵節點</h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {highlights.map(([date, title]) => <div key={title} className="rounded-xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0_#0f172a]"><p className="text-xl font-black text-purple-800">{date}</p><p className="mt-2 text-sm font-bold">{title}</p></div>)}
+            </div>
+          </section>
         </div>
       </section>
-
-      <section className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:px-8">
-        <div className="space-y-6">
-          {dateGroups.map((group) => {
-            const tone = toneClasses[group.tone];
-            return (
-              <section key={group.title} className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-7">
-                <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <div className={`mb-3 inline-flex rounded-lg border-2 border-slate-900 px-3 py-1 text-xs font-black ${tone.soft} ${tone.text}`}>
-                      {group.title}
-                    </div>
-                    <p className="max-w-3xl text-sm font-bold leading-7 text-slate-600">{group.desc}</p>
-                  </div>
-                </div>
-
-                <div className="relative grid gap-4 lg:grid-cols-2">
-                  {group.items.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <article
-                        key={`${group.title}-${item.date}`}
-                        className={`rounded-2xl border-2 border-slate-900 p-5 ${item.featured ? 'bg-purple-50 shadow-[4px_4px_0px_0px_rgba(126,34,206,1)]' : 'bg-slate-50 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]'}`}
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 ${item.featured ? 'bg-purple-500 text-white' : `${tone.strong} text-slate-900`}`}>
-                            <Icon className="h-6 w-6" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className={`mb-2 inline-flex rounded-lg border-2 border-slate-900 px-3 py-1 text-sm font-black ${item.featured ? 'bg-purple-500 text-white' : 'bg-white text-slate-900'}`}>
-                              {item.date}
-                            </div>
-                            <h3 className="text-xl font-black leading-tight text-slate-900">{item.title}</h3>
-                            <p className="mt-2 text-sm font-bold leading-7 text-slate-600">{item.desc}</p>
-                          </div>
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              </section>
-            );
-          })}
-        </div>
-
-        <aside className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="h-6 w-6 text-emerald-700" />
-              <h2 className="text-xl font-black">準備提醒</h2>
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-8">
+        <div className="min-w-0 space-y-6">
+          <section aria-labelledby="pathway-heading" className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0_#0f172a] sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <h2 id="pathway-heading" className="min-w-0 text-2xl font-black">
+                <button type="button" aria-expanded={pathwaysExpanded} aria-controls="pathway-options" onClick={() => setPathwaysExpanded(expanded => !expanded)} className="flex min-h-11 items-center gap-3 rounded-lg text-left hover:text-purple-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700">
+                  <span>依入學管道查看<span className="mt-1 block text-xs font-bold text-slate-500">{pathwaysExpanded ? '收合管道選項' : '點擊展開完整管道'}</span></span>
+                  <ChevronDown aria-hidden="true" className={`h-5 w-5 shrink-0 transition-transform ${pathwaysExpanded ? 'rotate-180' : ''}`} />
+                </button>
+              </h2>
+              <a href={withBasePath(schedulePdf)} target="_blank" rel="noreferrer" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-purple-800 bg-purple-50 px-4 py-3 text-sm font-black text-purple-900 shadow-[3px_3px_0_#6b21a8] transition-colors hover:bg-purple-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700 sm:w-auto">
+                <FileText aria-hidden="true" className="h-5 w-5 shrink-0" />
+                查看完整日程表 PDF
+                <ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />
+                <span className="sr-only">（另開新分頁）</span>
+              </a>
             </div>
-            <div className="mt-5 grid gap-3">
-              {checklist.map((item) => (
-                <div key={item} className="flex gap-3 rounded-xl border-2 border-slate-200 bg-slate-50 p-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                  <p className="text-sm font-bold leading-6 text-slate-700">{item}</p>
-                </div>
+            <div id="pathway-options" hidden={!pathwaysExpanded}>
+            <p className="mt-3 text-sm font-bold leading-7 text-slate-600">選擇管道，依日期查看報名、測驗、放榜、報到與放棄錄取資格等事項。共同辦理的事項會保留在各相關管道中。</p>
+            <div role="group" aria-label="選擇入學管道" className="mt-5 flex flex-wrap gap-2">
+              {[{ id: 'all' as const, label: '全部管道' }, ...admissionPathways].map(pathway => (
+                <button key={pathway.id} type="button" aria-pressed={selectedPathway === pathway.id} aria-controls="pathway-schedule" onClick={() => setSelectedPathway(pathway.id)} className={`rounded-xl border-2 border-slate-900 px-3 py-2 text-sm font-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple-700 ${selectedPathway === pathway.id ? 'bg-purple-700 text-white shadow-[2px_2px_0_#0f172a]' : 'bg-white text-slate-700 hover:bg-purple-50'}`}>{pathway.label}</button>
               ))}
             </div>
-          </div>
-
-          <div className="mt-5 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-            <div className="flex items-center gap-3">
-              <Info className="h-6 w-6 text-slate-900" />
-              <h2 className="text-xl font-black">官方公告優先</h2>
             </div>
-            <p className="mt-3 text-sm font-bold leading-7 text-slate-800">
-              本頁為整理提醒用途，實際日期、簡章、報到方式、分發規定與異動公告，仍應以教育主管機關、招生委員會與各校公告為準。
-            </p>
+            <p role="status" className="mt-5 text-sm font-black text-purple-800">{selectedLabel} · 共 {eventCount} 項日程</p>
+            {selectedPathway !== 'all' && selectedPathway !== 'exam' && <p className="mt-2 text-sm leading-7 text-slate-600">以下列出此管道在原表中的事項；如需參加會考，可切換「國中教育會考」查看考試時程。各管道資格及原表未列出的程序，請依招生簡章確認。</p>}
+          </section>
+          <div id="pathway-schedule" className="space-y-6">
+          {visibleMonths.map(({ month, rows }) => (
+            <section key={month} id={`month-${month}`} aria-labelledby={`month-title-${month}`} className="scroll-mt-24 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0_#0f172a] sm:p-6">
+              <h2 id={`month-title-${month}`} className="mb-5 text-2xl font-black">116 年 {month} 月</h2>
+              <div className="divide-y-2 divide-slate-200">
+                {rows.map(({ date, items }) => (
+                  <article key={date} className="py-5 first:pt-0 last:pb-0">
+                    <h3 className="mb-3 text-base font-black text-purple-800">{date}</h3>
+                    <ul className="list-disc space-y-2 pl-5 text-sm font-bold leading-7 text-slate-700 sm:text-base">
+                      {items.map(item => <li key={item}>{item}</li>)}
+                    </ul>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))}
           </div>
+        </div>
+        <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
+          <section className="rounded-2xl border-4 border-slate-900 bg-amber-200 p-5 shadow-[5px_5px_0_#0f172a]">
+            <h2 className="flex items-center gap-2 text-xl font-black"><Info className="h-6 w-6 shrink-0" />原表備註</h2>
+            <ol className="mt-4 list-decimal space-y-4 pl-5 text-sm font-bold leading-7">{scheduleNotes.map(note => <li key={note}>{note}</li>)}</ol>
+          </section>
+          <section className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0_#0f172a]">
+            <h2 className="text-xl font-black">選填與報到提醒</h2>
+            <p className="mt-3 text-sm font-bold leading-7 text-slate-700">志願選填截止日為 6 月 24 日，免試入學及特色招生考試分發入學報名截止日為 6 月 29 日，兩者為不同程序。請依所屬就學區簡章及學校通知完成。</p>
+            <p className="mt-3 text-sm font-bold leading-7 text-slate-700">原表未列每日受理或截止時刻。報名、報到及放棄錄取資格的辦理方式與確切時間，請查閱各管道簡章與最新公告。</p>
+          </section>
         </aside>
-      </section>
+      </div>
     </main>
   );
 }
