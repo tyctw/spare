@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Search, Share2, Menu, Compass, Calculator, Target, CalendarDays, CircleHelp, ArrowRight, X, Instagram, Megaphone, Heart } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
+import { getScheduleAnnouncement } from '../../lib/scheduleAnnouncement';
 import { menuCategories, type MenuCategory, type MenuItem } from './NavigationDrawer';
 import { categoryOverviewPaths } from '../../lib/categoryOverview';
 
@@ -14,17 +15,6 @@ function ThreadsIcon({ className }: { className?: string }) {
 }
 
 type HeaderModalId = 'rating' | 'scoreInquiry';
-
-function getAnnouncementMessage(date = new Date()) {
-  const month = date.getMonth() + 1;
-  const memberBenefits = '會員 NT$49／月：免廣告、免授權碼，解鎖完整功能。';
-
-  if (month <= 2) return `公告：會考報名與重要時程陸續更新中，現在開始規劃最安心。${memberBenefits}`;
-  if (month <= 5) return `公告：116會考資訊更新中，掌握考前重要時程與升學方向。${memberBenefits}`;
-  if (month <= 7) return `公告：成績公布與志願選填期間，升學資訊持續更新中。${memberBenefits}`;
-  if (month === 8) return `公告：放榜與報到時程更新中，請留意各校最新通知。${memberBenefits}`;
-  return `公告：116會考資訊更新中，提早探索升學方向、為下一步做好準備。${memberBenefits}`;
-}
 
 interface AppHeaderProps {
   isScrolled: boolean;
@@ -131,22 +121,40 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
     return menuCategories.flatMap((category) => category.items.map((item) => ({ ...item, categoryLabel: category.label })))
       .filter((item) => `${item.categoryLabel} ${item.label} ${item.description} ${item.keywords}`.toLowerCase().includes(keyword));
   }, [globalSearchTerm]);
-  const announcementMessage = getAnnouncementMessage();
+  const [announcement, setAnnouncement] = useState(() => getScheduleAnnouncement());
+  useEffect(() => {
+    const refresh = () => setAnnouncement(getScheduleAnnouncement());
+    const interval = window.setInterval(refresh, 30_000);
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, []);
 
   return (
     <div className={`fixed top-0 left-0 right-0 z-[90] pointer-events-none transition-[padding] duration-150 ease-out ${isScrolled ? 'p-2' : 'p-0'}`}>
       <div className="mx-auto w-full max-w-none pointer-events-auto">
         <div
           aria-hidden={isScrolled}
-          className={`overflow-hidden bg-amber-300 text-slate-900 transition-[max-height,opacity] duration-150 ease-out ${isScrolled ? 'max-h-0 opacity-0' : 'max-h-16 border-b-2 border-slate-900 opacity-100'}`}
+          className={`overflow-hidden bg-amber-300 text-slate-900 ${isScrolled ? 'max-h-0 opacity-0' : 'border-b-2 border-slate-900 opacity-100'}`}
         >
           <a
             href={withBasePath('/membership')}
-            aria-label="前往會員頁面，查看會員專屬功能"
-            className="flex min-h-10 items-center justify-center gap-2 px-4 py-2 text-center text-xs font-black transition hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-inset sm:text-sm"
+            aria-label={`公告：${announcement.status}，${announcement.message}。查看會員方案：每月 NT$49，免廣告、免授權碼，解鎖完整功能`}
+            tabIndex={isScrolled ? -1 : 0}
+            className="flex min-h-10 flex-col items-center justify-center px-3 py-1 text-center text-xs font-black transition hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-inset lg:flex-row lg:gap-3"
           >
+            <span className="flex w-full min-w-0 items-center justify-center gap-2 lg:w-auto lg:min-w-0">
             <Megaphone className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span>{announcementMessage}</span>
+            <span className="shrink-0 rounded-md bg-white/80 px-2 py-1">{announcement.status}</span><span className="min-w-0 truncate leading-5">{announcement.message}</span>
+            </span>
+            <span className="flex min-h-6 max-w-full items-center justify-center gap-1 whitespace-normal break-words text-[10px] leading-5 text-purple-950 sm:text-xs lg:shrink-0 lg:border-l lg:border-slate-900/30 lg:pl-3">
+            <span>會員 NT$49／月：免廣告、免授權碼，解鎖完整功能</span>
+            <ArrowRight className="h-3 w-3 shrink-0" aria-hidden="true" />
+            </span>
           </a>
         </div>
         <header onMouseEnter={keepMenuOpen} onMouseLeave={closeMenuWithDelay} className={`relative bg-white/95 backdrop-blur-md flex items-center justify-between gap-2 transition-[border-radius,padding,box-shadow] duration-150 ease-out ${isScrolled ? 'rounded-[1.65rem] border-2 border-slate-900 p-2 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]' : 'rounded-none border-x-0 border-t-0 border-b-2 border-slate-900 p-2 sm:p-3 shadow-[0_2px_0px_0px_rgba(15,23,42,1)]'}`}>
