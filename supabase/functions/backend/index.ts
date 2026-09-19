@@ -221,6 +221,14 @@ const sha256 = async (value: string) => {
   return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
 };
 
+const sha256Base64Url = async (value: string) => {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+};
+
 const ecpayCheckMacValue = async (params: EcpayPayload, hashKey: string, hashIv: string) => {
   const body = Object.entries(params)
     .filter(([key]) => key !== 'CheckMacValue')
@@ -1561,7 +1569,7 @@ async function handleAction(payload: Record<string, any>, request: Request) {
         .from('line_login_exchange_codes')
         .update({ used_at: new Date().toISOString() })
         .eq('code', code)
-        .eq('binding_hash', await sha256(browserBinding))
+        .eq('binding_hash', await sha256Base64Url(browserBinding))
         .is('used_at', null)
         .gt('expires_at', new Date().toISOString())
         .select('line_session_token')
