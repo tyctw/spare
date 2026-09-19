@@ -19,6 +19,7 @@ function publishMembershipStatus(status: MembershipStatus) {
 
 export function clearLineSessionToken() {
   lineLoginExchangePromise = null;
+  localStorage.removeItem('line_membership_session_token');
   publishMembershipStatus({ active: false });
   window.enableAdmissionAds?.();
 }
@@ -56,9 +57,10 @@ export function consumeLineLoginCodeFromFragment(): Promise<boolean> {
   // Fragments are not sent in HTTP requests. Remove it before any third-party
   // resource can observe the visible URL, then exchange its one-time code.
   window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-  lineLoginExchangePromise = callBackend<{ authenticated: boolean }>({ action: 'redeemLineLoginCode', code, browserBinding })
+  lineLoginExchangePromise = callBackend<{ authenticated: boolean; sessionToken?: string }>({ action: 'redeemLineLoginCode', code, browserBinding })
     .then((redeemed) => {
       if (!redeemed.authenticated) throw new Error('LINE session could not be established.');
+      if (redeemed.sessionToken) localStorage.setItem('line_membership_session_token', redeemed.sessionToken);
       localStorage.removeItem('line_login_browser_binding');
       return true;
     })
