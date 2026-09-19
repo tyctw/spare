@@ -1,0 +1,25 @@
+import React from 'react';
+import { AlertTriangle, ArrowLeft, CheckCircle2, FileText, GraduationCap, Scale } from 'lucide-react';
+import { withBasePath } from '../lib/routes';
+
+const rows = [
+  ['志願序（1–30）', '26 分', '每五志願為一群：第 1–5 志願 26 分；第 6–10 志願 25 分；第 11–15 志願 24 分；第 16–20 志願 23 分；第 21–25 志願 22 分；第 26–30 志願 21 分。'],
+  ['多元學習表現：競賽', '7 分', '國際、全國、區域及縣市競賽依簡章項目採計 7–1 分；提供資料的採計日期為國中就學期間至 108 年 5 月（含）前。'],
+  ['多元學習表現：服務學習', '15 分', '幹部、小老師或社團幹部任滿一學期 2 分，同學期仍以 2 分採計；校內外服務每滿 1 小時 0.25 分。'],
+  ['技藝優良', '3 分', '技藝教育課程平均總成績：90 分以上 3 分；80–未滿 90 分 2.5 分；70–未滿 80 分 1.5 分；60–未滿 70 分 1 分。'],
+  ['弱勢身分', '3 分', '低收入戶 3 分；中低收入戶、支領失業給付、特殊境遇家庭 1.5 分，符合一項即可。'],
+  ['均衡學習', '21 分', '健體、藝文、綜合三領域，五學期平均成績及格者，每領域 7 分。'],
+  ['國中教育會考', '32 分', '國文、數學、英語、自然、社會：A++、A+、A、B++、B+、B、C 依序 6.4、6、5、4、3、2、1 分。'],
+  ['寫作測驗', '1 分', '6 至 1 級分依序為 1、0.8、0.6、0.4、0.2、0.1 分。'],
+];
+
+const priority = ['總積分', '均衡學習', '技藝優良', '志願序積分', '弱勢身分', '國中教育會考＋寫作測驗', '多元學習表現', '服務學習', '競賽', '國文', '數學', '英語', '自然', '社會', '寫作測驗'];
+const jointPriority = ['總積分', '均衡學習', '多元學習表現', '適性輔導', '技藝優良', '弱勢身分', '國中教育會考', '日常生活表現評量', '競賽', '服務學習', '體適能', '英語、國文、數學、社會、自然', '各科等級標示', '寫作測驗'];
+
+export default function FiveYearCollegeRulesPage() {
+  return <main className="min-h-screen bg-slate-50 text-slate-900"><section className="border-b-4 border-slate-900 bg-emerald-100"><div className="mx-auto max-w-6xl px-4 py-7 sm:px-6 lg:px-8"><a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_0_#0f172a]"><ArrowLeft className="h-4 w-4" />返回首頁</a><div className="mt-8 flex gap-4"><div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-4 border-slate-900 bg-white"><GraduationCap className="h-7 w-7 text-emerald-700" /></div><div><p className="text-sm font-black tracking-widest text-emerald-800">JUNIOR COLLEGE ADMISSION</p><h1 className="mt-1 text-4xl font-black sm:text-5xl">五專優先免試入學計分規則</h1><p className="mt-3 max-w-3xl font-bold leading-7 text-slate-700">整理志願序、多元表現、技藝優良、弱勢身分、均衡學習與會考積分的對照方式。</p></div></div></div></section><section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8"><div className="rounded-2xl border-2 border-amber-400 bg-amber-50 p-5"><div className="flex gap-3"><AlertTriangle className="h-6 w-6 shrink-0 text-amber-700" /><div><h2 className="font-black">先核對當年度簡章</h2><p className="mt-1 text-sm font-bold leading-6 text-slate-700">提供資料中包含「108 年 5 月」採計日期與個別學校例示，因此本頁作為規則對照參考。五專優先免試、聯合免試與各校實際採計、滿分及同分比序，請以當年度招生簡章為準。</p></div></div></div><section className="mt-8 overflow-x-auto rounded-3xl border-4 border-slate-900 bg-white shadow-[5px_5px_0_0_#0f172a]"><table className="w-full min-w-[760px] border-collapse text-left"><thead className="bg-slate-900 text-white"><tr><th className="p-4">積分採計項目</th><th className="p-4">積分上限</th><th className="p-4">積分採計項目說明</th></tr></thead><tbody>{rows.map(([item, maximum, description]) => <tr key={item} className="border-t-2 border-slate-200 align-top"><td className="p-4 font-black">{item}</td><td className="p-4 font-black text-emerald-700">{maximum}</td><td className="p-4 text-sm font-bold leading-7 text-slate-700">{description}</td></tr>)}</tbody><tfoot><tr className="border-t-4 border-slate-900 bg-emerald-200"><td colSpan={2} className="p-4 text-lg font-black">總積分上限</td><td className="p-4 text-lg font-black">101 分</td></tr></tfoot></table></section><section className="mt-8 rounded-3xl border-4 border-slate-900 bg-indigo-50 p-6 shadow-[5px_5px_0_0_#0f172a]"><h2 className="text-2xl font-black">重要提醒</h2><ul className="mt-4 space-y-3"><li className="flex gap-2 text-sm font-bold leading-7"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-indigo-700" />會考科目違規每扣 1 點，扣該科積分 0.15 分，至該科積分為 0 分止。</li><li className="flex gap-2 text-sm font-bold leading-7"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-indigo-700" />各校採計滿分可能不同；提供資料以耕莘為例為 60.5 分。</li></ul></section><div className="mt-8 grid gap-6 lg:grid-cols-2"><Priority title="優先免試入學同分超額比序" items={priority} /><Priority title="聯合免試入學（撕榜）範例比序" items={jointPriority} /></div><section className="mt-8 rounded-3xl border-4 border-slate-900 bg-slate-900 p-6 text-white shadow-[5px_5px_0_0_#34d399]"><FileText className="h-7 w-7 text-emerald-300" /><h2 className="mt-3 text-2xl font-black">同分同序處理</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-200">優先免試與聯合免試範例均註明「同分同序 → 增額錄取」；實際適用條件請以五專招生委員會及校方公告為準。</p></section></section></main>;
+}
+
+function Priority({ title, items }: { title: string; items: string[] }) {
+  return <section className="rounded-3xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0_0_#0f172a]"><div className="flex items-center gap-2"><Scale className="h-6 w-6 text-indigo-700" /><h2 className="text-xl font-black">{title}</h2></div><ol className="mt-5 space-y-2">{items.map((item, index) => <li key={item} className="flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-slate-50 p-3 text-sm font-black"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs text-white">{index + 1}</span>{item}</li>)}</ol></section>;
+}
