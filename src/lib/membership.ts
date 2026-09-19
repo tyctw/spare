@@ -29,14 +29,17 @@ export function consumeLineLoginCodeFromFragment(): Promise<boolean> {
     lineLoginExchangePromise = window.__lineLoginExchangePromise;
     return lineLoginExchangePromise;
   }
-  const code = new URLSearchParams(window.location.hash.slice(1)).get('line_login_code');
-  if (!code) return Promise.resolve(false);
+  const hash = new URLSearchParams(window.location.hash.slice(1));
+  const code = hash.get('line_login_code');
+  const browserBinding = hash.get('line_login_binding');
+  if (!code || !browserBinding || sessionStorage.getItem('line_login_browser_binding') !== browserBinding) return Promise.resolve(false);
   // Fragments are not sent in HTTP requests. Remove it before any third-party
   // resource can observe the visible URL, then exchange its one-time code.
   window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-  lineLoginExchangePromise = callBackend<{ authenticated: boolean }>({ action: 'redeemLineLoginCode', code })
+  lineLoginExchangePromise = callBackend<{ authenticated: boolean }>({ action: 'redeemLineLoginCode', code, browserBinding })
     .then((redeemed) => {
       if (!redeemed.authenticated) throw new Error('LINE session could not be established.');
+      sessionStorage.removeItem('line_login_browser_binding');
       return true;
     })
     .catch((error) => {
