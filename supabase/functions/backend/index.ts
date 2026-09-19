@@ -335,6 +335,7 @@ async function getLineLoginSession(token: unknown) {
 }
 
 const lineSessionCookieName = 'line_membership_session';
+const exchangeBindingCookieName = 'line_login_exchange_binding';
 const lineSessionCookie = (token: string, maxAge = 24 * 60 * 60) =>
   `${lineSessionCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Partitioned; Path=/functions/v1/backend; Max-Age=${maxAge}`;
 const supportPaymentStatusCookieName = 'support_payment_status';
@@ -353,6 +354,10 @@ function cookieValue(request: Request, name: string) {
 
 function lineSessionTokenFromCookie(request: Request) {
   return cookieValue(request, lineSessionCookieName).trim();
+}
+
+function exchangeBindingFromCookie(request: Request) {
+  return cookieValue(request, exchangeBindingCookieName).trim();
 }
 
 function supportPaymentStatusTokenFromCookie(request: Request) {
@@ -1554,11 +1559,13 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     case 'redeemLineLoginCode': {
       await pruneExpiredLineLoginData();
       const code = String(payload.code || '').trim();
+      const bindingHash = await sha256(exchangeBindingFromCookie(request));
       if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(code)) throw new Error('Invalid LINE login code.');
       const { data, error } = await supabase
         .from('line_login_exchange_codes')
         .update({ used_at: new Date().toISOString() })
         .eq('code', code)
+        .eq('binding_hash', bindingHash)
         .is('used_at', null)
         .gt('expires_at', new Date().toISOString())
         .select('line_session_token')
@@ -2203,7 +2210,7 @@ Deno.serve(async (request) => {
       responseHeaders.Expires = '0';
     }
     if (action === 'redeemLineLoginCode' && typeof result?.sessionToken === 'string') {
-      responseHeaders['Set-Cookie'] = lineSessionCookie(result.sessionToken);
+      responseHeaders['Set-Cookie'] = `${lineSessionCookie(result.sessionToken)}, ${exchangeBindingCookieName}=; HttpOnly; Secure; SameSite=None; Partitioned; Path=/functions/v1/backend; Max-Age=0`;
       delete result.sessionToken;
     }
     if (action === 'createEcpaySupportPayment' && typeof result?.supportPaymentStatusToken === 'string') {
