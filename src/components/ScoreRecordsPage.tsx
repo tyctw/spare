@@ -81,7 +81,12 @@ export default function ScoreRecordsPage() {
   useEffect(() => {
     void (async () => {
       try {
-        await consumeLineLoginCodeFromFragment();
+        const hash = new URLSearchParams(window.location.hash.slice(1));
+        const hasLoginCode = hash.has('line_login_code');
+        const consumed = await consumeLineLoginCodeFromFragment();
+        if (hasLoginCode && !consumed) {
+          setNotice("LINE 登入連結已失效或逾時，請重新點擊「LINE 登入」。");
+        }
         await load();
       } catch {
         setNotice("無法讀取帳號資料，請稍後再試。");

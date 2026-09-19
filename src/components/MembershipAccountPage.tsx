@@ -84,7 +84,14 @@ export default function MembershipAccountPage() {
   useEffect(() => {
     void (async () => {
       try {
-        await consumeLineLoginCodeFromFragment();
+        const hash = new URLSearchParams(window.location.hash.slice(1));
+        const hasLoginCode = hash.has('line_login_code');
+        const consumed = await consumeLineLoginCodeFromFragment();
+        if (hasLoginCode && !consumed) {
+          setErrorMessage('LINE 登入連結已失效或逾時，請重新點擊「LINE 登入」。');
+          setState('error');
+          return;
+        }
         await refresh();
       } catch (err) {
         const msg = err instanceof Error ? err.message : '';

@@ -201,8 +201,14 @@ export default function MembershipPage() {
     let cancelled = false;
     (async () => {
       try {
-        if (await consumeLineLoginCodeFromFragment())
-          setNotice("LINE 登入成功，現在可以查看會員資格。");
+        const hash = new URLSearchParams(window.location.hash.slice(1));
+        const hasLoginCode = hash.has('line_login_code');
+        const consumed = await consumeLineLoginCodeFromFragment();
+        if (hasLoginCode && !consumed) {
+          if (!cancelled) setNotice("LINE 登入連結已失效或逾時，請重新點擊「LINE 登入」。");
+        } else if (consumed) {
+          if (!cancelled) setNotice("LINE 登入成功，現在可以查看會員資格。");
+        }
         await refresh();
       } catch {
         if (!cancelled) {
