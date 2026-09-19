@@ -8,7 +8,6 @@ const encoder = new TextEncoder();
 const baseUrl = Deno.env.get('SITE_URL')?.replace(/\/$/, '') || 'https://tyctw.github.io/spare';
 const callbackUrl = Deno.env.get('LINE_LOGIN_CALLBACK_URL')?.trim() || `${Deno.env.get('SUPABASE_URL')}/functions/v1/line-login`;
 const randomToken = () => crypto.randomUUID();
-const exchangeBindingCookie = 'line_login_exchange_binding';
 
 function safeReturnPath(value: string | null) { return value === '/' || value === '/membership' || value === '/membership/account' || value === '/score-records' ? value : '/membership'; }
 function redirect(url: string, headers: HeadersInit = {}) { return new Response(null, { status: 302, headers: { Location: url, ...headers } }); }
@@ -32,8 +31,7 @@ Deno.serve(async (request) => {
       const nonce = randomToken();
       const verifier = `${randomToken()}${randomToken()}`.replace(/-/g, '');
       const returnPath = safeReturnPath(url.searchParams.get('returnTo'));
-      const binding = randomToken();
-      const statePayload = `${state}.${nonce}.${verifier}.${returnPath}.${binding}`;
+      const statePayload = `${state}.${nonce}.${verifier}.${returnPath}`;
       const authUrl = new URL('https://access.line.me/oauth2/v2.1/authorize');
       authUrl.searchParams.set('response_type', 'code');
       authUrl.searchParams.set('client_id', channelId);
@@ -48,10 +46,10 @@ Deno.serve(async (request) => {
 
     const cookie = request.headers.get('cookie') || '';
     const saved = cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith('line_login_state='))?.slice('line_login_state='.length);
-    const [state, nonce, verifier, returnPath, binding] = saved ? decodeURIComponent(saved).split('.') : [];
+    const [state, nonce, verifier, returnPath] = saved ? decodeURIComponent(saved).split('.') : [];
     const receivedState = url.searchParams.get('state');
     const code = url.searchParams.get('code');
-    if (!state || state !== receivedState || !nonce || !verifier || !binding || !code) return codedError('LINE_LOGIN_REQUEST_INVALID', 400);
+    if (!state || state !== receivedState || !nonce || !verifier || !code) return codedError('LINE_LOGIN_REQUEST_INVALID', 400);
 
     const tokenResponse = await fetch('https://api.line.me/oauth2/v2.1/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'authorization_code', code, redirect_uri: callbackUrl, client_id: channelId, client_secret: channelSecret, code_verifier: verifier }) });
     const tokenData = await tokenResponse.json() as { id_token?: string };
@@ -63,16 +61,12 @@ Deno.serve(async (request) => {
 
     const { data: session, error } = await supabase.from('line_login_sessions').insert({ line_user_id: profile.sub, display_name: profile.name || null, picture_url: profile.picture || null, expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() }).select('token').single();
     if (error || !session) throw error || new Error('Could not create LINE session.');
-    const bindingHash = await sha256(binding);
-    const { data: exchange, error: exchangeError } = await supabase.from('line_login_exchange_codes').insert({ line_session_token: session.token, binding_hash: bindingHash, expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString() }).select('code').single();
+    const { data: exchange, error: exchangeError } = await supabase.from('line_login_exchange_codes').insert({ line_session_token: session.token, expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString() }).select('code').single();
     if (exchangeError || !exchange) throw exchangeError || new Error('Could not create LINE login exchange code.');
 
     const destination = new URL(`${baseUrl}${safeReturnPath(returnPath)}`);
     destination.hash = `line_login_code=${exchange.code}`;
-    return redirect(destination.toString(), { 'Set-Cookie': [
-      'line_login_state=; HttpOnly; Secure; SameSite=Lax; Path=/functions/v1/line-login; Max-Age=0',
-      `${exchangeBindingCookie}=${encodeURIComponent(binding)}; HttpOnly; Secure; SameSite=None; Partitioned; Path=/functions/v1/backend; Max-Age=600`,
-    ].join(', ') });
+    return redirect(destination.toString(), { 'Set-Cookie': 'line_login_state=; HttpOnly; Secure; SameSite=Lax; Path=/functions/v1/line-login; Max-Age=0' });
   } catch (error) {
     const requestId = crypto.randomUUID();
     console.error('LINE login failed', { requestId, error });
