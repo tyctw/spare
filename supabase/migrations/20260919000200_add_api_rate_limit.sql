@@ -10,6 +10,23 @@ create table if not exists public.api_rate_limits (
 alter table public.api_rate_limits
   add column if not exists updated_at timestamptz not null default now();
 
+-- Older manual installations used window_started_at. Normalize that schema
+-- before creating the RPC so the function and table use one column name.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'api_rate_limits'
+      and column_name = 'window_started_at'
+  ) and not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'api_rate_limits'
+      and column_name = 'window_start'
+  ) then
+    alter table public.api_rate_limits rename column window_started_at to window_start;
+  end if;
+end $$;
+
 alter table public.api_rate_limits enable row level security;
 revoke all on table public.api_rate_limits from public, anon, authenticated;
 
