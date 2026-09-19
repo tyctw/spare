@@ -104,7 +104,7 @@ function corsHeaders(request: Request) {
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-line-session, x-payment-status-token',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-payment-status-token',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Max-Age': '600',
     Vary: 'Origin',
@@ -336,15 +336,16 @@ async function getLineLoginSession(token: unknown) {
     .from('line_login_sessions')
     .select('line_user_id, display_name, picture_url, expires_at')
     .eq('token', sessionToken)
+    .eq('cookie_only', true)
     .gt('expires_at', new Date().toISOString())
     .maybeSingle();
   if (error) throw error;
   return data;
 }
 
-const lineSessionCookieName = 'line_membership_session';
+const lineSessionCookieName = '__Secure-line_membership_session_v2';
 const lineSessionCookie = (token: string, maxAge = 24 * 60 * 60) =>
-  `${lineSessionCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Path=/functions/v1/backend; Max-Age=${maxAge}`;
+  `${lineSessionCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Partitioned; Path=/functions/v1/backend; Max-Age=${maxAge}`;
 const supportPaymentStatusCookieName = 'support_payment_status';
 const supportPaymentStatusCookie = (token: string, maxAge = 24 * 60 * 60) =>
   `${supportPaymentStatusCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Path=/functions/v1/backend; Max-Age=${maxAge}`;
@@ -360,10 +361,6 @@ function cookieValue(request: Request, name: string) {
 }
 
 function lineSessionTokenFromCookie(request: Request) {
-  const headerToken = request.headers.get('X-Line-Session') || request.headers.get('authorization')?.match(/^Bearer\s+(.+)$/i)?.[1];
-  if (headerToken && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(headerToken)) {
-    return headerToken.trim();
-  }
   return cookieValue(request, lineSessionCookieName).trim();
 }
 
@@ -1296,7 +1293,7 @@ function analysisReportV2(
   };
 }
 
-async function handleAction(payload: Record<string, any>, request: Request) {
+async function handleAction(payload: Record<string, any>, request: Request, responseHeaders: Record<string, string>) {
   switch (payload.action) {
     case 'wakeup':
       return { message: 'System is awake and ready!' };
@@ -1570,21 +1567,25 @@ async function handleAction(payload: Record<string, any>, request: Request) {
     case 'redeemLineLoginCode': {
       await pruneExpiredLineLoginData();
       const code = String(payload.code || '').trim();
-      const browserBinding = String(payload.browserBinding || '').trim();
+      const browserVerifier = String(payload.browserVerifier || '').trim();
       if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(code)) throw new Error('Invalid LINE login code.');
-      if (!/^[A-Za-z0-9_-]{32,128}$/.test(browserBinding)) throw new Error('Invalid LINE login binding.');
+      if (!/^[A-Za-z0-9_-]{43}$/.test(browserVerifier)) throw new Error('Invalid LINE login binding.');
       const { data, error } = await supabase
         .from('line_login_exchange_codes')
         .update({ used_at: new Date().toISOString() })
         .eq('code', code)
-        .eq('binding_hash', await sha256Base64Url(browserBinding))
+        .eq('binding_version', 2)
+        .eq('binding_hash', await sha256Base64Url(browserVerifier))
         .is('used_at', null)
         .gt('expires_at', new Date().toISOString())
         .select('line_session_token')
         .maybeSingle();
       if (error) throw error;
       if (!data?.line_session_token) throw new Error('LINE login code has expired or was already used.');
-      return { authenticated: true, sessionToken: data.line_session_token };
+      // Legacy sessions may already have escaped through localStorage/JSON.
+      if (!await getLineLoginSession(data.line_session_token)) throw new Error('LINE session has expired. Please log in again.');
+      responseHeaders['Set-Cookie'] = lineSessionCookie(data.line_session_token);
+      return { authenticated: true };
     }
 
     case 'revokeLineLoginSession': {
@@ -2203,7 +2204,8 @@ Deno.serve(async (request) => {
     if (!await consumeRateLimit(request, action)) {
       return json(request, { error: 'Too many requests. Please try again later.' }, 429);
     }
-    const result = await handleAction(payload, request);
+    const responseHeaders: Record<string, string> = { 'Cache-Control': 'no-store, private, max-age=0' };
+    const result = await handleAction(payload, request, responseHeaders);
 
     console.log({
       path,
@@ -2211,7 +2213,6 @@ Deno.serve(async (request) => {
       ms: Date.now() - start,
     });
 
-    const responseHeaders: HeadersInit = {};
     // Score records are personal education data. Do not let a browser, CDN or
     // shared device cache an API response after the user signs out.
     if (['getMemberScoreRecords', 'saveMemberScoreRecord', 'deleteMemberScoreRecord',
@@ -2220,9 +2221,6 @@ Deno.serve(async (request) => {
       responseHeaders['Cache-Control'] = 'no-store, private, max-age=0';
       responseHeaders.Pragma = 'no-cache';
       responseHeaders.Expires = '0';
-    }
-    if (action === 'redeemLineLoginCode' && typeof result?.sessionToken === 'string') {
-      responseHeaders['Set-Cookie'] = lineSessionCookie(result.sessionToken);
     }
     if (action === 'createEcpaySupportPayment' && typeof result?.supportPaymentStatusToken === 'string') {
       responseHeaders['Set-Cookie'] = supportPaymentStatusCookie(result.supportPaymentStatusToken);
