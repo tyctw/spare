@@ -7,6 +7,9 @@ create table if not exists public.api_rate_limits (
   primary key (client_key, action, window_start)
 );
 
+alter table public.api_rate_limits
+  add column if not exists updated_at timestamptz not null default now();
+
 alter table public.api_rate_limits enable row level security;
 revoke all on table public.api_rate_limits from public, anon, authenticated;
 
