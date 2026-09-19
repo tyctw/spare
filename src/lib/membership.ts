@@ -32,18 +32,39 @@ export function consumeLineLoginCodeFromFragment(): Promise<boolean> {
   const hash = new URLSearchParams(window.location.hash.slice(1));
   const code = hash.get('line_login_code');
   const browserBinding = hash.get('line_login_binding');
-  if (!code || !browserBinding || sessionStorage.getItem('line_login_browser_binding') !== browserBinding) return Promise.resolve(false);
+  if (!code || !browserBinding) return Promise.resolve(false);
+
+  // Read binding from localStorage (supports cross-tab / WebView navigation)
+  let storedBinding: string | null = null;
+  try {
+    const raw = localStorage.getItem('line_login_browser_binding');
+    if (raw) {
+      const parsed = JSON.parse(raw) as { value?: string; expiresAt?: number };
+      if (parsed.value && typeof parsed.expiresAt === 'number' && Date.now() < parsed.expiresAt) {
+        storedBinding = parsed.value;
+      } else {
+        // Expired — remove stale entry
+        localStorage.removeItem('line_login_browser_binding');
+      }
+    }
+  } catch {
+    localStorage.removeItem('line_login_browser_binding');
+  }
+
+  if (storedBinding !== browserBinding) return Promise.resolve(false);
+
   // Fragments are not sent in HTTP requests. Remove it before any third-party
   // resource can observe the visible URL, then exchange its one-time code.
   window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
   lineLoginExchangePromise = callBackend<{ authenticated: boolean }>({ action: 'redeemLineLoginCode', code, browserBinding })
     .then((redeemed) => {
       if (!redeemed.authenticated) throw new Error('LINE session could not be established.');
-      sessionStorage.removeItem('line_login_browser_binding');
+      localStorage.removeItem('line_login_browser_binding');
       return true;
     })
     .catch((error) => {
       lineLoginExchangePromise = null;
+      localStorage.removeItem('line_login_browser_binding');
       throw error;
     });
   return lineLoginExchangePromise;
