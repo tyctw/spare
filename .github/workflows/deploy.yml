@@ -59,6 +59,13 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
+      - name: Verify LINE login binding is included
+        run: |
+          if ! grep -R -q "browserBinding" dist/assets dist/auth-fragment-guard.js; then
+            echo "ERROR: browser-bound LINE login code is missing from the build"
+            exit 1
+          fi
+
       - name: Verify build output
         run: |
           if [ ! -d "dist" ]; then
@@ -80,4 +87,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
