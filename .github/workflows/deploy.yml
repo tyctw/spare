@@ -53,6 +53,16 @@ jobs:
           echo "Dist folder:"
           ls -la dist 2>/dev/null || echo "dist folder does not exist yet"
 
+      - name: Verify LINE login security
+        run: |
+          for test_file in security-audit/line-login-security.test.mjs security-audit/cookie-session-security.test.mjs; do
+            if [ ! -f "$test_file" ]; then
+              echo "::error file=$test_file::Required security test is missing. Commit and push both security test files with this workflow."
+              exit 1
+            fi
+          done
+          node --test security-audit/line-login-security.test.mjs security-audit/cookie-session-security.test.mjs
+
       - name: Build production site
         run: npm run build
         env:
@@ -61,7 +71,7 @@ jobs:
 
       - name: Verify LINE login binding is included
         run: |
-          if ! grep -R -q "browserBinding" dist/assets dist/auth-fragment-guard.js; then
+          if ! grep -q "browserVerifier" dist/auth-fragment-guard.js || ! grep -R -q "browserChallenge" dist/assets; then
             echo "ERROR: browser-bound LINE login code is missing from the build"
             exit 1
           fi
