@@ -3,8 +3,10 @@
   var config = {};
   try { config = JSON.parse(configElement ? configElement.textContent || '{}' : '{}'); } catch (_) { config = {}; }
   var code = new URLSearchParams(window.location.hash.slice(1)).get('line_login_code');
+  var binding = new URLSearchParams(window.location.hash.slice(1)).get('line_login_binding');
+  var expectedBinding = sessionStorage.getItem('line_login_browser_binding');
 
-  if (!code || !config.supabaseUrl || !config.supabaseAnonKey) {
+  if (!code || !binding || !expectedBinding || binding !== expectedBinding || !config.supabaseUrl || !config.supabaseAnonKey) {
     window.__lineLoginExchangePromise = Promise.resolve(false);
     return;
   }
@@ -20,9 +22,12 @@
       apikey: config.supabaseAnonKey,
       Authorization: 'Bearer ' + config.supabaseAnonKey,
     },
-    body: JSON.stringify({ action: 'redeemLineLoginCode', code: code }),
+    body: JSON.stringify({ action: 'redeemLineLoginCode', code: code, browserBinding: binding }),
   }).then(function (response) {
     if (!response.ok) return false;
-    return response.json().then(function (data) { return data && data.authenticated === true; }).catch(function () { return false; });
+    return response.json().then(function (data) {
+      if (data && data.authenticated === true) sessionStorage.removeItem('line_login_browser_binding');
+      return data && data.authenticated === true;
+    }).catch(function () { return false; });
   }).catch(function () { return false; });
 }());
