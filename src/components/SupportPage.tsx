@@ -68,11 +68,13 @@ export default function SupportPage() {
 
           if (payment.status === 'paid') {
             window.sessionStorage.removeItem(supportPaymentStorageKey);
+            window.localStorage.removeItem('support_payment_status_token');
             setThankYouAmount(Number(payment.amount) || null);
             return;
           }
           if (payment.status === 'failed') {
             window.sessionStorage.removeItem(supportPaymentStorageKey);
+            window.localStorage.removeItem('support_payment_status_token');
             setNotice('這筆付款尚未完成；若已付款，請稍候再重新整理頁面確認。');
             return;
           }
@@ -115,6 +117,9 @@ export default function SupportPage() {
         { action: 'createEcpaySupportPayment', amount },
         { timeoutMs: 12_000 },
       );
+      if ((payment as any).supportPaymentStatusToken) {
+        localStorage.setItem('support_payment_status_token', (payment as any).supportPaymentStatusToken);
+      }
       const merchantTradeNo = String(payment.fields.MerchantTradeNo || '');
       if (/^[A-Za-z0-9]{8,32}$/.test(merchantTradeNo)) {
         const tracking: SupportPaymentTracking = {
