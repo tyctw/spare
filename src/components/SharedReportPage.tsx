@@ -28,6 +28,12 @@ import VolunteerVersionHistory from './VolunteerVersionHistory';
 import type { VolunteerVersion } from '../lib/volunteerVersions';
 import RelatedReading from "./RelatedReading";
 
+declare global {
+  interface Window {
+    __collaborationKey?: string;
+  }
+}
+
 type SharedReport = {
   kind: "analysis" | "volunteer";
   payload: any;
@@ -81,7 +87,7 @@ export default function SharedReportPage({ token }: { token: string }) {
         )}
         createdAt={createdAt}
         expiresAt={report.expiresAt}
-        collaborationKey={new URLSearchParams(window.location.search).get("collab") || ""}
+        collaborationKey={window.__collaborationKey || ""}
         collaborationEnabled={report.collaborationEnabled === true}
         collaborationVersion={report.collaborationVersion || 1}
         collaborationConfirmedAt={report.collaborationConfirmedAt || null}

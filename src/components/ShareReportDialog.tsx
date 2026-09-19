@@ -125,7 +125,7 @@ export default function ShareReportDialog({
       setUrl(readUrl);
       setEditorUrl(
         response.collaborationKey
-          ? `${readUrl}?collab=${encodeURIComponent(response.collaborationKey)}`
+          ? `${readUrl}#collab=${encodeURIComponent(response.collaborationKey)}`
           : "",
       );
       setShareToken(response.token);
@@ -146,7 +146,7 @@ export default function ShareReportDialog({
         token: shareToken,
       });
       setEditorUrl(
-        `${url}?collab=${encodeURIComponent(response.collaborationKey)}`,
+        `${url}#collab=${encodeURIComponent(response.collaborationKey)}`,
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "無法更新協作連結。");
