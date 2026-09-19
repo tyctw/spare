@@ -1,0 +1,137 @@
+vite v6.4.3 building for production...
+transforming...
+✓ 2169 modules transformed.
+rendering chunks...
+[plugin vite:reporter] 
+(!) C:/Users/zhang/Downloads/spare-main/spare-main/src/components/AreaPage.tsx is dynamically imported by C:/Users/zhang/Downloads/spare-main/spare-main/src/main.tsx but also statically imported by C:/Users/zhang/Downloads/spare-main/spare-main/src/lib/seo.ts, dynamic import will not move module into another chunk.
+
+computing gzip size...
+security-audit/build-check/index.html                                              11.86 kB │ gzip:   3.22 kB
+security-audit/build-check/assets/index-CFbrMWLX.css                              203.67 kB │ gzip:  27.01 kB
+security-audit/build-check/assets/check-DRa62-3z.js                                 0.30 kB │ gzip:   0.25 kB
+security-audit/build-check/assets/comparisonStorage-CXkekZ3l.js                     0.30 kB │ gzip:   0.23 kB
+security-audit/build-check/assets/chevron-down-ik96S2NI.js                          0.30 kB │ gzip:   0.25 kB
+security-audit/build-check/assets/chevron-up-Cr16pZqV.js                            0.30 kB │ gzip:   0.25 kB
+security-audit/build-check/assets/loader-circle-DwoDyNMJ.js                         0.32 kB │ gzip:   0.26 kB
+security-audit/build-check/assets/schoolDisplay-BTgYnd97.js                         0.33 kB │ gzip:   0.21 kB
+security-audit/build-check/assets/arrow-up-wHYiJmZ5.js                              0.34 kB │ gzip:   0.27 kB
+security-audit/build-check/assets/arrow-down-CwCGo7q_.js                            0.34 kB │ gzip:   0.27 kB
+security-audit/build-check/assets/clock-3-C7ADQaun.js                               0.34 kB │ gzip:   0.27 kB
+security-audit/build-check/assets/trending-up-_YGCaJvC.js                           0.35 kB │ gzip:   0.28 kB
+security-audit/build-check/assets/circle-check-CCDPTjcy.js                          0.35 kB │ gzip:   0.28 kB
+security-audit/build-check/assets/flame-DBSizKUP.js                                 0.37 kB │ gzip:   0.29 kB
+security-audit/build-check/assets/rotate-ccw-CgB3pms0.js                            0.37 kB │ gzip:   0.29 kB
+security-audit/build-check/assets/info-D4lTkkR3.js                                  0.38 kB │ gzip:   0.28 kB
+security-audit/build-check/assets/credit-card-B74mWrFn.js                           0.38 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/table-2-DCQts8td.js                               0.39 kB │ gzip:   0.29 kB
+security-audit/build-check/assets/search-check-Z0H_LkPT.js                          0.39 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/log-out-Cq3wGQ6V.js                               0.40 kB │ gzip:   0.29 kB
+security-audit/build-check/assets/log-in-DSVTHWGK.js                                0.40 kB │ gzip:   0.29 kB
+security-audit/build-check/assets/download-JH6U6LZR.js                              0.41 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/copy-BT6ma155.js                                  0.41 kB │ gzip:   0.31 kB
+security-audit/build-check/assets/history-DoA_pbfm.js                               0.41 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/message-circle-CjuS79CS.js                        0.41 kB │ gzip:   0.32 kB
+security-audit/build-check/assets/link-2-DAX1QF50.js                                0.42 kB │ gzip:   0.31 kB
+security-audit/build-check/assets/database-CW9IjVc1.js                              0.42 kB │ gzip:   0.31 kB
+security-audit/build-check/assets/file-warning-D_ANoyef.js                          0.42 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/circle-alert-CTGOQ1-8.js                          0.42 kB │ gzip:   0.29 kB
+security-audit/build-check/assets/chart-column-BC1HCFkE.js                          0.42 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/external-link-C3oX_zQH.js                         0.42 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/route-9jgAo8GO.js                                 0.43 kB │ gzip:   0.31 kB
+security-audit/build-check/assets/lock-keyhole-Dljp9EZD.js                          0.43 kB │ gzip:   0.33 kB
+security-audit/build-check/assets/funnel-DYgSFSlq.js                                0.43 kB │ gzip:   0.32 kB
+security-audit/build-check/assets/link-CYjUcwr6.js                                  0.43 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/file-check-2-B9zhdaXR.js                          0.43 kB │ gzip:   0.30 kB
+security-audit/build-check/assets/shield-BvkmXmk1.js                                0.45 kB │ gzip:   0.33 kB
+security-audit/build-check/assets/award-C_J57jR9.js                                 0.45 kB │ gzip:   0.33 kB
+security-audit/build-check/assets/house-BHy5Rcsa.js                                 0.45 kB │ gzip:   0.32 kB
+security-audit/build-check/assets/send-B32RGLRu.js                                  0.46 kB │ gzip:   0.34 kB
+security-audit/build-check/assets/badge-check-VCp_OLsx.js                           0.49 kB │ gzip:   0.32 kB
+security-audit/build-check/assets/printer-CrGREr_j.js                               0.49 kB │ gzip:   0.34 kB
+security-audit/build-check/assets/file-search-DmQDdBrb.js                           0.50 kB │ gzip:   0.35 kB
+security-audit/build-check/assets/save-DUdDeE3o.js                                  0.50 kB │ gzip:   0.33 kB
+security-audit/build-check/assets/trash-2-CZMlxDxW.js                               0.50 kB │ gzip:   0.32 kB
+security-audit/build-check/assets/file-text-BWaIEbIB.js                             0.51 kB │ gzip:   0.32 kB
+security-audit/build-check/assets/book-open-check-DfTiyN1i.js                       0.51 kB │ gzip:   0.34 kB
+security-audit/build-check/assets/megaphone-BHkeVPrQ.js                             0.52 kB │ gzip:   0.35 kB
+security-audit/build-check/assets/shield-alert-CtrouV5S.js                          0.53 kB │ gzip:   0.37 kB
+security-audit/build-check/assets/key-round-CI5l9D4N.js                             0.53 kB │ gzip:   0.36 kB
+security-audit/build-check/assets/share-2-BdF_KkNS.js                               0.53 kB │ gzip:   0.34 kB
+security-audit/build-check/assets/crown-Cw52HH40.js                                 0.54 kB │ gzip:   0.36 kB
+security-audit/build-check/assets/scale-DLxg3-h_.js                                 0.54 kB │ gzip:   0.34 kB
+security-audit/build-check/assets/useModalHistory-CQgqCNIL.js                       0.57 kB │ gzip:   0.33 kB
+security-audit/build-check/assets/map-pinned-CAbCJ10g.js                            0.57 kB │ gzip:   0.40 kB
+security-audit/build-check/assets/clipboard-list-CMAXvaZc.js                        0.58 kB │ gzip:   0.36 kB
+security-audit/build-check/assets/tags-BiqHAe96.js                                  0.59 kB │ gzip:   0.39 kB
+security-audit/build-check/assets/layers-lPJVP1Xt.js                                0.59 kB │ gzip:   0.35 kB
+security-audit/build-check/assets/sliders-horizontal-CgyCLynp.js                    0.60 kB │ gzip:   0.35 kB
+security-audit/build-check/assets/heart-handshake-BOunYZx7.js                       0.63 kB │ gzip:   0.40 kB
+security-audit/build-check/assets/lineLogin-gCEd4xI4.js                             0.67 kB │ gzip:   0.41 kB
+security-audit/build-check/assets/brain-C0HlGr7Z.js                                 0.75 kB │ gzip:   0.42 kB
+security-audit/build-check/assets/receipt-text-CronOWlN.js                          0.84 kB │ gzip:   0.39 kB
+security-audit/build-check/assets/pen-tool-CX-_0KqM.js                              1.01 kB │ gzip:   0.49 kB
+security-audit/build-check/assets/PageNavigation-BnwJRokv.js                        1.57 kB │ gzip:   0.90 kB
+security-audit/build-check/assets/MissingFeatureCard-DpZPxCc5.js                    1.76 kB │ gzip:   0.76 kB
+security-audit/build-check/assets/NewsArticlePage-Da1nb_PH.js                       3.15 kB │ gzip:   1.15 kB
+security-audit/build-check/assets/ScoreInquiryModal-DwejW0bH.js                     4.00 kB │ gzip:   1.37 kB
+security-audit/build-check/assets/SupportPaymentSuccessPage-DJJu7_QF.js             4.21 kB │ gzip:   1.52 kB
+security-audit/build-check/assets/AuthFailModal-DL_NYTm6.js                         4.21 kB │ gzip:   1.48 kB
+security-audit/build-check/assets/SupportPaymentFailedPage-BPS16aee.js              4.56 kB │ gzip:   1.80 kB
+security-audit/build-check/assets/ExportModal-Bzbg1B2W.js                           6.39 kB │ gzip:   1.61 kB
+security-audit/build-check/assets/CategoryOverviewPage-DxKnL_7m.js                  6.44 kB │ gzip:   2.93 kB
+security-audit/build-check/assets/LatestNewsPage-BbtFCQsi.js                        6.48 kB │ gzip:   2.36 kB
+security-audit/build-check/assets/FiveYearCollegeRulesPage-C3mb2Xze.js              7.02 kB │ gzip:   2.69 kB
+security-audit/build-check/assets/RatingModal-BVuXJjZT.js                           7.27 kB │ gzip:   2.82 kB
+security-audit/build-check/assets/VocationalModal-BtKbkRM2.js                       7.51 kB │ gzip:   2.52 kB
+security-audit/build-check/assets/SharePlatformModal-CgE4v5jo.js                    8.03 kB │ gzip:   3.38 kB
+security-audit/build-check/assets/GeneralComprehensiveHighSchoolPage-EJdKCtDu.js    8.09 kB │ gzip:   3.19 kB
+security-audit/build-check/assets/SearchPage-CGLzNadq.js                            8.41 kB │ gzip:   2.78 kB
+security-audit/build-check/assets/VolunteerVersionHistory-B4OMhN0W.js               8.54 kB │ gzip:   3.06 kB
+security-audit/build-check/assets/ImportantDatesPage-DBnN_jzh.js                    9.12 kB │ gzip:   3.56 kB
+security-audit/build-check/assets/AdvantagesPage-Cy3vA9zc.js                       10.70 kB │ gzip:   3.91 kB
+security-audit/build-check/assets/HistoricalStatsPage-D52CYiv1.js                  10.91 kB │ gzip:   3.65 kB
+security-audit/build-check/assets/GradeLevelPage-DBFwMHo3.js                       11.84 kB │ gzip:   3.41 kB
+security-audit/build-check/assets/StrategyPage-B_vWE3BN.js                         12.01 kB │ gzip:   3.96 kB
+security-audit/build-check/assets/InstructionsPage-CjDaBJSU.js                     12.25 kB │ gzip:   4.48 kB
+security-audit/build-check/assets/Grade11PathwaysPage-Dumqz_RL.js                  12.50 kB │ gzip:   4.47 kB
+security-audit/build-check/assets/DisclaimerPage-Dko22Qqn.js                       12.97 kB │ gzip:   4.69 kB
+security-audit/build-check/assets/FuturePathwaysPage-CZLD1URa.js                   13.67 kB │ gzip:   5.23 kB
+security-audit/build-check/assets/LifeFeasibilityPage-DlvG3A5o.js                  14.01 kB │ gzip:   4.56 kB
+security-audit/build-check/assets/ChangelogPage-B48FQ6-W.js                        14.28 kB │ gzip:   6.29 kB
+security-audit/build-check/assets/ReportErrorPage-CfhOzjj7.js                      14.45 kB │ gzip:   4.85 kB
+security-audit/build-check/assets/RegionModal-C1GeqpgK.js                          14.72 kB │ gzip:   4.61 kB
+security-audit/build-check/assets/SupportPage-mkezMo6i.js                          16.19 kB │ gzip:   5.36 kB
+security-audit/build-check/assets/index-B6c65YOI.js                                16.68 kB │ gzip:   6.28 kB
+security-audit/build-check/assets/PrivacyCenterPage-Bx5TTDFZ.js                    17.04 kB │ gzip:   6.07 kB
+security-audit/build-check/assets/SchoolTypesPage-BxBINFc6.js                      17.74 kB │ gzip:   6.36 kB
+security-audit/build-check/assets/ScoreRecordsPage-D-kdUgnD.js                     17.98 kB │ gzip:   6.10 kB
+security-audit/build-check/assets/ScoreChangePage-DMdYA6Co.js                      18.18 kB │ gzip:   5.66 kB
+security-audit/build-check/assets/ComparisonPage-D6sK2YLK.js                       18.41 kB │ gzip:   5.68 kB
+security-audit/build-check/assets/HistoricalStatsModal-D5BiR3yV.js                 18.42 kB │ gzip:   5.29 kB
+security-audit/build-check/assets/SiteMapPage-BXlt4q50.js                          20.82 kB │ gzip:   6.68 kB
+security-audit/build-check/assets/FaqGlossaryPage-O8A6vawr.js                      22.18 kB │ gzip:   8.52 kB
+security-audit/build-check/assets/VocationalEncyclopediaPage-B4R0TMWO.js           23.78 kB │ gzip:   8.04 kB
+security-audit/build-check/assets/HollandTestModal-1NcoFavi.js                     25.66 kB │ gzip:   8.43 kB
+security-audit/build-check/assets/HollandPage-DZyOFCLs.js                          28.96 kB │ gzip:   8.62 kB
+security-audit/build-check/assets/ResultsDialogs-R0zkoV0Q.js                       30.48 kB │ gzip:   8.02 kB
+security-audit/build-check/assets/MembershipAccountPage-BHRZ-wJ8.js                30.61 kB │ gzip:   7.54 kB
+security-audit/build-check/assets/ResultsPage-CPdRF891.js                          32.88 kB │ gzip:   8.70 kB
+security-audit/build-check/assets/NavigationDrawer-DW-gzVZI.js                     33.89 kB │ gzip:  10.50 kB
+security-audit/build-check/assets/SharedReportPage-Cc__3j20.js                     35.83 kB │ gzip:  10.23 kB
+security-audit/build-check/assets/LegalPage-kq241Kzz.js                            46.27 kB │ gzip:  18.30 kB
+security-audit/build-check/assets/MembershipPage-BLrmXsCD.js                       48.95 kB │ gzip:  12.02 kB
+security-audit/build-check/assets/SupportPolicyPage-yq1Y0eUf.js                    50.59 kB │ gzip:  19.26 kB
+security-audit/build-check/assets/MockVolunteerPage-BukhIwtL.js                    58.08 kB │ gzip:  16.13 kB
+security-audit/build-check/assets/exportUtils-BNO-7bL_.js                          62.46 kB │ gzip:  16.92 kB
+security-audit/build-check/assets/RegionScoringRulesPage-BiQ1Q_J6.js               66.05 kB │ gzip:  17.81 kB
+security-audit/build-check/assets/App-ByrzJNcR.js                                 106.36 kB │ gzip:  27.95 kB
+security-audit/build-check/assets/proxy-B2JtyncL.js                               127.88 kB │ gzip:  42.01 kB
+security-audit/build-check/assets/QRCodeModal-D6mCyiGI.js                         137.82 kB │ gzip:  50.05 kB
+security-audit/build-check/assets/index-DxPahNF0.js                               431.46 kB │ gzip: 141.52 kB
+security-audit/build-check/assets/exceljs.min-DVORlmoX.js                         940.19 kB │ gzip: 271.33 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 7.24s

@@ -1,0 +1,10 @@
+{
+  "observations": [
+    "LINE login v2 security regression suite passed.",
+    "Predictable invitation bypasses database consumption.",
+    "Shared page starts analytics with read token in pathname and editor key in query; fragment guard is not loaded.",
+    "Duplicate migration versions: 20260807000100, 20260807000200.",
+    "Rate-limit RPC now exists; old missing-RPC finding is obsolete."
+  ],
+  "networkRequests": 0
+}
