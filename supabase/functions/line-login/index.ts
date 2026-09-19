@@ -19,6 +19,27 @@ function codedError(code: string, status: number, requestId?: string) {
   return new Response(code, { status, headers: requestId ? { 'X-Request-Id': requestId } : undefined });
 }
 
+// Encode the state payload as a URL-safe base64 JSON blob so the full flow
+// state (nonce, verifier, browserBinding, returnPath) survives the round-trip
+// through LINE's OAuth redirect without relying on any cookie. This removes
+// the Safari/WebView cross-site cookie incompatibility entirely.
+function encodeState(payload: object): string {
+  return btoa(JSON.stringify(payload)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function decodeState(value: string): Record<string, string> | null {
+  try {
+    // Restore standard base64 padding
+    const padded = value.replace(/-/g, '+').replace(/_/g, '/');
+    const padLength = (4 - (padded.length % 4)) % 4;
+    const parsed = JSON.parse(atob(padded + '='.repeat(padLength)));
+    if (!parsed || typeof parsed !== 'object') return null;
+    return parsed as Record<string, string>;
+  } catch {
+    return null;
+  }
+}
+
 Deno.serve(async (request) => {
   try {
     const url = new URL(request.url);
@@ -33,25 +54,39 @@ Deno.serve(async (request) => {
       const browserBinding = url.searchParams.get('browserBinding')?.trim() || '';
       if (!/^[A-Za-z0-9_-]{32,128}$/.test(browserBinding)) return codedError('LINE_LOGIN_REQUEST_INVALID', 400);
       const returnPath = safeReturnPath(url.searchParams.get('returnTo'));
-      const statePayload = `${state}.${nonce}.${verifier}.${browserBinding}.${returnPath}`;
+
+      // Pack all flow state into the OAuth `state` parameter as a signed JSON blob.
+      // No cookie is needed: LINE echoes `state` back verbatim on the callback,
+      // so the edge function can recover every value it needs from the URL alone.
+      const stateBlob = encodeState({ state, nonce, verifier, browserBinding, returnPath });
+
       const authUrl = new URL('https://access.line.me/oauth2/v2.1/authorize');
       authUrl.searchParams.set('response_type', 'code');
       authUrl.searchParams.set('client_id', channelId);
       authUrl.searchParams.set('redirect_uri', callbackUrl);
-      authUrl.searchParams.set('state', state);
+      authUrl.searchParams.set('state', stateBlob);
       authUrl.searchParams.set('scope', 'profile openid');
       authUrl.searchParams.set('nonce', nonce);
       authUrl.searchParams.set('code_challenge', await sha256(verifier));
       authUrl.searchParams.set('code_challenge_method', 'S256');
-      return redirect(authUrl.toString(), { 'Set-Cookie': `line_login_state=${encodeURIComponent(statePayload)}; HttpOnly; Secure; SameSite=Lax; Path=/functions/v1/line-login; Max-Age=600` });
+      // Clear any leftover state cookie from a previous attempt.
+      return redirect(authUrl.toString(), { 'Set-Cookie': 'line_login_state=; HttpOnly; Secure; SameSite=None; Partitioned; Path=/functions/v1/line-login; Max-Age=0' });
     }
 
-    const cookie = request.headers.get('cookie') || '';
-    const saved = cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith('line_login_state='))?.slice('line_login_state='.length);
-    const [state, nonce, verifier, browserBinding, returnPath] = saved ? decodeURIComponent(saved).split('.') : [];
-    const receivedState = url.searchParams.get('state');
+    // Callback: recover flow state from the echoed `state` parameter.
+    const rawState = url.searchParams.get('state') || '';
+    const stateData = decodeState(rawState);
+    const { state, nonce, verifier, browserBinding, returnPath } = stateData || {};
     const code = url.searchParams.get('code');
-    if (!state || state !== receivedState || !nonce || !verifier || !browserBinding || !code) return codedError('LINE_LOGIN_REQUEST_INVALID', 400);
+
+    // Validate all required fields are present and non-empty.
+    if (!state || !nonce || !verifier || !browserBinding || !code ||
+        typeof state !== 'string' || typeof nonce !== 'string' ||
+        typeof verifier !== 'string' || typeof browserBinding !== 'string') {
+      return codedError('LINE_LOGIN_REQUEST_INVALID', 400);
+    }
+    // Validate browserBinding format to prevent injection.
+    if (!/^[A-Za-z0-9_-]{32,128}$/.test(browserBinding)) return codedError('LINE_LOGIN_REQUEST_INVALID', 400);
 
     const tokenResponse = await fetch('https://api.line.me/oauth2/v2.1/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'authorization_code', code, redirect_uri: callbackUrl, client_id: channelId, client_secret: channelSecret, code_verifier: verifier }) });
     const tokenData = await tokenResponse.json() as { id_token?: string };
@@ -68,7 +103,7 @@ Deno.serve(async (request) => {
 
     const destination = new URL(`${baseUrl}${safeReturnPath(returnPath)}`);
     destination.hash = `line_login_code=${exchange.code}&line_login_binding=${encodeURIComponent(browserBinding)}`;
-    return redirect(destination.toString(), { 'Set-Cookie': 'line_login_state=; HttpOnly; Secure; SameSite=Lax; Path=/functions/v1/line-login; Max-Age=0' });
+    return redirect(destination.toString());
   } catch (error) {
     const requestId = crypto.randomUUID();
     console.error('LINE login failed', { requestId, error });

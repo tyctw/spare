@@ -139,15 +139,11 @@ export default function MembershipAccountPage() {
   };
 
   const logout = async () => {
-    try {
-      await callBackend({ action: 'revokeLineLoginSession' });
-      clearLineSessionToken();
-      setMembership({ active: false });
-      setLineName('');
-      setPurchases([]);
-    } catch {
-      setAccountNotice('登出未完成，請確認網路連線後再試一次。');
-    }
+    clearLineSessionToken();
+    setMembership({ active: false });
+    setLineName('');
+    setPurchases([]);
+    await callBackend({ action: 'revokeLineLoginSession' }).catch(() => undefined);
   };
 
   const deleteAccount = async () => {

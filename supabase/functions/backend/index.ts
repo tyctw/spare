@@ -104,7 +104,7 @@ function corsHeaders(request: Request) {
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-line-session, x-payment-status-token',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Max-Age': '600',
     Vary: 'Origin',
@@ -344,10 +344,10 @@ async function getLineLoginSession(token: unknown) {
 
 const lineSessionCookieName = 'line_membership_session';
 const lineSessionCookie = (token: string, maxAge = 24 * 60 * 60) =>
-  `${lineSessionCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Partitioned; Path=/functions/v1/backend; Max-Age=${maxAge}`;
+  `${lineSessionCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Path=/functions/v1/backend; Max-Age=${maxAge}`;
 const supportPaymentStatusCookieName = 'support_payment_status';
 const supportPaymentStatusCookie = (token: string, maxAge = 24 * 60 * 60) =>
-  `${supportPaymentStatusCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Partitioned; Path=/functions/v1/backend; Max-Age=${maxAge}`;
+  `${supportPaymentStatusCookieName}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=None; Path=/functions/v1/backend; Max-Age=${maxAge}`;
 
 function cookieValue(request: Request, name: string) {
   const prefix = `${name}=`;
@@ -360,10 +360,18 @@ function cookieValue(request: Request, name: string) {
 }
 
 function lineSessionTokenFromCookie(request: Request) {
+  const headerToken = request.headers.get('X-Line-Session') || request.headers.get('authorization')?.match(/^Bearer\s+(.+)$/i)?.[1];
+  if (headerToken && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(headerToken)) {
+    return headerToken.trim();
+  }
   return cookieValue(request, lineSessionCookieName).trim();
 }
 
 function supportPaymentStatusTokenFromCookie(request: Request) {
+  const headerToken = request.headers.get('X-Payment-Status-Token');
+  if (headerToken && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(headerToken)) {
+    return headerToken.trim();
+  }
   return cookieValue(request, supportPaymentStatusCookieName).trim();
 }
 
@@ -2215,11 +2223,9 @@ Deno.serve(async (request) => {
     }
     if (action === 'redeemLineLoginCode' && typeof result?.sessionToken === 'string') {
       responseHeaders['Set-Cookie'] = lineSessionCookie(result.sessionToken);
-      delete result.sessionToken;
     }
     if (action === 'createEcpaySupportPayment' && typeof result?.supportPaymentStatusToken === 'string') {
       responseHeaders['Set-Cookie'] = supportPaymentStatusCookie(result.supportPaymentStatusToken);
-      delete result.supportPaymentStatusToken;
     }
     if (action === 'getEcpaySupportPaymentStatus' && (result?.status === 'paid' || result?.status === 'failed')) {
       responseHeaders['Set-Cookie'] = supportPaymentStatusCookie('', 0);

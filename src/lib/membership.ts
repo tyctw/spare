@@ -19,61 +19,54 @@ function publishMembershipStatus(status: MembershipStatus) {
 
 export function clearLineSessionToken() {
   lineLoginExchangePromise = null;
-  window.__lineLoginExchangePromise = undefined;
-  window.__lineLoginError = undefined;
-  try { localStorage.removeItem('line_membership_session_token'); } catch { /* Storage may be blocked. */ }
+  localStorage.removeItem('line_membership_session_token');
   publishMembershipStatus({ active: false });
   window.enableAdmissionAds?.();
 }
 
 export function consumeLineLoginCodeFromFragment(): Promise<boolean> {
-  try { localStorage.removeItem('line_membership_session_token'); } catch { /* Cookie authentication does not depend on storage. */ }
   if (lineLoginExchangePromise) return lineLoginExchangePromise;
   if (window.__lineLoginExchangePromise) {
-    lineLoginExchangePromise = window.__lineLoginExchangePromise.then((authenticated) => {
-      if (window.__lineLoginError) throw new Error(window.__lineLoginError);
-      return authenticated;
-    });
+    lineLoginExchangePromise = window.__lineLoginExchangePromise;
     return lineLoginExchangePromise;
   }
   const hash = new URLSearchParams(window.location.hash.slice(1));
   const code = hash.get('line_login_code');
-  if (code || hash.has('line_login_binding')) {
-    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-  }
-  if (!code) return Promise.resolve(false);
+  const browserBinding = hash.get('line_login_binding');
+  if (!code || !browserBinding) return Promise.resolve(false);
 
   // Read binding from localStorage (supports cross-tab / WebView navigation)
   let storedBinding: string | null = null;
   try {
-    const raw = localStorage.getItem('line_login_browser_verifier_v2');
+    const raw = localStorage.getItem('line_login_browser_binding');
     if (raw) {
       const parsed = JSON.parse(raw) as { value?: string; expiresAt?: number };
-      if (typeof parsed.value === 'string' && /^[A-Za-z0-9_-]{43}$/.test(parsed.value) && typeof parsed.expiresAt === 'number' && Date.now() < parsed.expiresAt) {
+      if (parsed.value && typeof parsed.expiresAt === 'number' && Date.now() < parsed.expiresAt) {
         storedBinding = parsed.value;
       } else {
         // Expired — remove stale entry
-        localStorage.removeItem('line_login_browser_verifier_v2');
+        localStorage.removeItem('line_login_browser_binding');
       }
     }
   } catch {
-    localStorage.removeItem('line_login_browser_verifier_v2');
+    localStorage.removeItem('line_login_browser_binding');
   }
 
-  if (!storedBinding) return Promise.resolve(false);
+  if (storedBinding !== browserBinding) return Promise.resolve(false);
 
-  // The independent verifier comes only from the initiating browser's storage.
-  lineLoginExchangePromise = callBackend<{ authenticated: boolean }>({ action: 'redeemLineLoginCode', code, browserVerifier: storedBinding })
-    .then(async (redeemed) => {
+  // Fragments are not sent in HTTP requests. Remove it before any third-party
+  // resource can observe the visible URL, then exchange its one-time code.
+  window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+  lineLoginExchangePromise = callBackend<{ authenticated: boolean; sessionToken?: string }>({ action: 'redeemLineLoginCode', code, browserBinding })
+    .then((redeemed) => {
       if (!redeemed.authenticated) throw new Error('LINE session could not be established.');
-      localStorage.removeItem('line_login_browser_verifier_v2');
-      const session = await callBackend<{ loggedIn: boolean }>({ action: 'getLineLoginSession' });
-      if (!session.loggedIn) throw new Error('瀏覽器未能保存登入狀態，請允許此網站的 Cookie，或使用一般瀏覽器重新登入。');
+      if (redeemed.sessionToken) localStorage.setItem('line_membership_session_token', redeemed.sessionToken);
+      localStorage.removeItem('line_login_browser_binding');
       return true;
     })
     .catch((error) => {
       lineLoginExchangePromise = null;
-      localStorage.removeItem('line_login_browser_verifier_v2');
+      localStorage.removeItem('line_login_browser_binding');
       throw error;
     });
   return lineLoginExchangePromise;
@@ -117,6 +110,5 @@ declare global {
     disableAdmissionAds?: () => void;
     enableAdmissionAds?: () => void;
     __lineLoginExchangePromise?: Promise<boolean>;
-    __lineLoginError?: string;
   }
 }

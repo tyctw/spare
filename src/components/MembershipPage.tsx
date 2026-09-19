@@ -210,10 +210,10 @@ export default function MembershipPage() {
           if (!cancelled) setNotice("LINE 登入成功，現在可以查看會員資格。");
         }
         await refresh();
-      } catch (error) {
+      } catch {
         if (!cancelled) {
           setMembership({ active: false });
-          setNotice(error instanceof Error ? error.message : "LINE 登入已逾時，請再試一次。");
+          setNotice("LINE 登入已逾時，請再試一次。");
         }
       }
     })();
@@ -274,14 +274,10 @@ export default function MembershipPage() {
   };
 
   const logoutFromLine = async () => {
-    try {
-      await callBackend({ action: "revokeLineLoginSession" });
-      clearLineSessionToken();
-      setLineName("");
-      setMembership({ active: false });
-    } catch {
-      setNotice("登出未完成，請確認網路連線後再試一次。");
-    }
+    clearLineSessionToken();
+    setLineName("");
+    setMembership({ active: false });
+    await callBackend({ action: "revokeLineLoginSession" }).catch(() => undefined);
   };
 
   const checkout = async () => {
