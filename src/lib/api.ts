@@ -69,7 +69,7 @@ async function fetchBackend<T>(
   payload: Record<string, unknown>,
   signal: AbortSignal,
 ): Promise<T> {
-  const response = await fetch(`${supabaseUrl}/functions/v1/backend`, {
+  const response = await fetch(`${supabaseUrl}/functions/v1/backend?_v=2`, {
     method: 'POST',
     credentials: 'include',
     headers: {
