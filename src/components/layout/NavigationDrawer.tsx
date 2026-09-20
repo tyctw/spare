@@ -187,6 +187,7 @@ export const menuCategories: MenuCategory[] = [
     bg: 'bg-violet-100',
     accent: 'border-violet-500',
     items: [
+      { id: 'officialLine', label: '加入官方 LINE', description: '加入好友，查看升學資訊與功能入口', keywords: 'line 賴 官方 好友 日程 提醒', icon: MessageCircleQuestion, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'external', href: 'https://line.me/R/ti/p/@166zozmd' } },
       { id: 'officialVolunteer', label: '志願選填平台', description: '開啟外部志願選填平台', keywords: '志願 選填 外部 平台 官方', icon: MousePointerClick, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'external', href: 'https://tyctw.github.io/volunteer/' } },
       { id: 'shared', label: '錄取分享', description: '開啟全國錄取結果分享平台', keywords: '共同 就學區 資料 外部 錄取 分享', icon: Share2, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'external', href: 'https://tyctw.github.io/shared/' } },
       { id: 'score', label: '序位分享', description: '開啟會考積分與序位分享平台', keywords: '會考 積分 積點 外部 序位 分享', icon: BarChart4, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'external', href: 'https://tyctw.github.io/score/' } },
