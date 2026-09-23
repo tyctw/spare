@@ -1,4 +1,5 @@
 import React, { Suspense, useState, useEffect, useLayoutEffect } from "react";
+import { parseLineGuideImport } from "./lib/lineGuide";
 import { motion, AnimatePresence } from "motion/react";
 import {
   MapPin,
@@ -414,6 +415,14 @@ export default function App() {
   >(null);
   const [scoreImportNotice, setScoreImportNotice] = useState("");
 
+  useEffect(() => {
+    const imported = parseLineGuideImport(window.location.hash);
+    if (!imported) return;
+    setFormData((current) => ({ ...current, ...imported }));
+    setScoreImportNotice("已帶入 LINE 逐步操作的就學區與成績，請確認後再開始分析。");
+    window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+  }, []);
+
   // Comparison
   const [comparisonSchools, setComparisonSchools] =
     useState<any[]>(getComparisonSchools);
@@ -818,10 +827,10 @@ export default function App() {
       {scoreImportNotice && (
         <div
           role="status"
-          className="fixed bottom-5 left-1/2 z-[200] flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-400 px-4 py-3 text-sm font-black text-slate-950"
+          className="fixed bottom-5 left-1/2 z-[200] flex w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 items-start gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black text-slate-950 shadow-[4px_4px_0_#0f172a]"
         >
-          <Check className="h-5 w-5 shrink-0" />
-          {scoreImportNotice}
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-400 text-slate-950"><Check className="h-5 w-5" /></span>
+          <span className="pt-1 leading-5">{scoreImportNotice}</span>
         </div>
       )}
 
