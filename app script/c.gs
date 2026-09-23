@@ -123,7 +123,9 @@ function guideCard_(title, description, choices, back, route) {
       body: { type: 'box', layout: 'vertical', paddingAll: '18px', spacing: 'md', backgroundColor: '#FFFFFF', contents: [
         { type: 'box', layout: 'vertical', paddingAll: '14px', cornerRadius: '12px', backgroundColor: visual[2], contents: [botText_(description, { color: '#0F172A', size: 'sm' })] },
       ].concat(page.map(function(item, itemIndex) {
-        const button = { type: 'button', style: item.url || itemIndex === 0 ? 'primary' : 'secondary', color: item.url || itemIndex === 0 ? visual[1] : undefined, height: 'sm', action: action(item, itemIndex) };
+        // Each bubble has one visual primary action only. URI links after the
+        // first choice stay secondary so the next step remains obvious.
+        const button = { type: 'button', style: itemIndex === 0 ? 'primary' : 'secondary', color: itemIndex === 0 ? visual[1] : undefined, height: 'sm', action: action(item, itemIndex) };
         return button;
       })) },
       footer: { type: 'box', layout: 'vertical', backgroundColor: '#F8FAFC', paddingAll: '12px', spacing: 'xs', contents: controls.map(function(item) {

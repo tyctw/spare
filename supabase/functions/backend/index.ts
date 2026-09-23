@@ -141,6 +141,7 @@ const actionRateLimits: Record<string, { windowSeconds: number; maxRequests: num
   saveMemberScoreRecord: { windowSeconds: 60, maxRequests: 12 },
   deleteMemberScoreRecord: { windowSeconds: 60, maxRequests: 12 },
   redeemLineLoginCode: { windowSeconds: 60, maxRequests: 10 },
+  redeemLiffIdToken: { windowSeconds: 60, maxRequests: 10 },
   revokeLineLoginSession: { windowSeconds: 60, maxRequests: 10 },
   deleteMembershipAccount: { windowSeconds: 3600, maxRequests: 3 },
   submitFeedback: { windowSeconds: 3600, maxRequests: 5 },
@@ -1594,6 +1595,33 @@ async function handleAction(payload: Record<string, any>, request: Request, resp
       const { error } = await supabase.from('line_login_sessions').delete().eq('token', sessionToken);
       if (error) throw error;
       return { revoked: true };
+    }
+
+    case 'redeemLiffIdToken': {
+      const idToken = String(payload.idToken || '').trim();
+      if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(idToken) || idToken.length > 4096) {
+        throw new Error('Invalid LIFF ID token.');
+      }
+      const channelId = Deno.env.get('LINE_CHANNEL_ID')?.trim();
+      if (!channelId) throw new Error('LINE LIFF login is unavailable.');
+      const verifyResponse = await fetch('https://api.line.me/oauth2/v2.1/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ id_token: idToken, client_id: channelId }),
+      });
+      if (!verifyResponse.ok) throw new Error('LIFF login verification failed.');
+      const profile = await verifyResponse.json() as { sub?: string; name?: string; picture?: string };
+      if (!profile.sub || !/^[A-Za-z0-9_-]{10,100}$/.test(profile.sub)) throw new Error('LIFF profile is invalid.');
+      const { data: session, error } = await supabase.from('line_login_sessions').insert({
+        line_user_id: profile.sub,
+        cookie_only: true,
+        display_name: profile.name || null,
+        picture_url: profile.picture || null,
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      }).select('token').single();
+      if (error || !session?.token) throw error || new Error('Could not create LIFF session.');
+      responseHeaders['Set-Cookie'] = lineSessionCookie(session.token);
+      return { authenticated: true };
     }
 
     case 'deleteMembershipAccount': {

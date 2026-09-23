@@ -28,7 +28,11 @@ function validateMessage(message) {
   if (message.quickReply) assert.ok(message.quickReply.items.length <= 13);
   const bubbles = message.contents.type === 'carousel' ? message.contents.contents : [message.contents];
   assert.ok(bubbles.length <= 12);
-  for (const bubble of bubbles) assert.ok(Buffer.byteLength(JSON.stringify(bubble)) < 30000);
+  for (const bubble of bubbles) {
+    assert.ok(Buffer.byteLength(JSON.stringify(bubble)) < 30000);
+    const primaryCount = JSON.stringify(bubble).match(/"style":"primary"/g)?.length || 0;
+    assert.ok(primaryCount <= 1, '每張 LINE 卡片只能有一個主要按鈕');
+  }
   function walk(value) {
     if (!value || typeof value !== 'object') return;
     if (value.type === 'postback') {
