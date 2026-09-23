@@ -100,6 +100,9 @@ export async function getMembershipStatus(): Promise<MembershipStatus> {
 
 export async function initializeAdvertising() {
   try {
+    // Keep LIFF lazy so the ordinary browser login path does not load its SDK.
+    const { initializeLiffLogin } = await import('./liff');
+    await initializeLiffLogin();
     await consumeLineLoginCodeFromFragment();
     const membership = await getMembershipStatus();
     if (membership.active) return membership;
