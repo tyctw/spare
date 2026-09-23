@@ -19,15 +19,38 @@ export const withBasePath = (route = '/') => {
 };
 
 export const getCurrentRoutePath = () => {
-  const redirectedRoute = new URLSearchParams(window.location.search).get('route');
+  const searchParams = new URLSearchParams(window.location.search);
+  const liffState = getLiffStateLocation();
+  if (liffState) return routeFromLocation_(liffState.pathname);
+
+  const redirectedRoute = searchParams.get('route');
   if (redirectedRoute) return normalizeRoute(redirectedRoute);
 
-  const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
+  return routeFromLocation_(window.location.pathname);
+};
+
+function routeFromLocation_(pathname: string) {
+  const cleanPathname = pathname.replace(/\/+$/, '') || '/';
   const baseWithoutSlash = appBasePath.replace(/\/+$/, '') || '/';
 
-  if (baseWithoutSlash !== '/' && (pathname === baseWithoutSlash || pathname.startsWith(`${baseWithoutSlash}/`))) {
-    return normalizeRoute(pathname.slice(baseWithoutSlash.length) || '/');
+  if (baseWithoutSlash !== '/' && (cleanPathname === baseWithoutSlash || cleanPathname.startsWith(`${baseWithoutSlash}/`))) {
+    return normalizeRoute(cleanPathname.slice(baseWithoutSlash.length) || '/');
   }
 
-  return normalizeRoute(pathname);
+  return normalizeRoute(cleanPathname);
+}
+
+/** LIFF puts a deep-link suffix in `liff.state` while redirecting to the
+ * configured endpoint. Read only same-origin paths and ignore malformed or
+ * external values. */
+export const getLiffStateLocation = () => {
+  const raw = new URLSearchParams(window.location.search).get('liff.state');
+  if (!raw) return null;
+  try {
+    const target = new URL(raw, window.location.origin);
+    if (target.origin !== window.location.origin || target.pathname.startsWith('//')) return null;
+    return target;
+  } catch {
+    return null;
+  }
 };
