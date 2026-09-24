@@ -2,8 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   CalendarDays,
-  ChevronDown,
-  ChevronUp,
   Check,
   CreditCard,
   Crown,
@@ -31,6 +29,7 @@ import {
   type MembershipStatus,
 } from "../lib/membership";
 import { withBasePath } from "../lib/routes";
+import './membership.css';
 
 const plans = [
   {
@@ -39,7 +38,7 @@ const plans = [
     price: 49,
     duration: "30 天",
     note: "不到一杯飲料的價格，立即享有 30 天純淨無廣告",
-    comparison: "🔥 新手推薦！銅板價立即關閉所有廣告",
+    comparison: "短期準備，輕鬆開始",
     accent: "sky",
     featured: true,
   },
@@ -49,8 +48,8 @@ const plans = [
     price: 399,
     duration: "365 天",
     note: "平均每天只要 1.1 元，全年專注規劃，免去一切打擾",
-    comparison: "🚀 最受歡迎！比月費激省 NT$189",
-    accent: "indigo",
+    comparison: "比連續購買 12 個月月費省 NT$189",
+    accent: "emerald",
     featured: false,
   },
 ] as const;
@@ -103,65 +102,65 @@ function MembershipSupportLinks() {
   return (
     <section
       aria-labelledby="membership-support-title"
-      className="mt-8 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#0f172a]"
+      className="mt-8 overflow-hidden rounded-[1.75rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35]"
     >
       <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(16rem,.7fr)]">
         <div className="p-5 sm:p-8">
           <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
               <Mail className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-[10px] sm:text-xs font-black tracking-[0.14em] text-indigo-600">
+              <p className="text-[10px] sm:text-xs font-bold tracking-[0.14em] text-emerald-600">
                 MEMBERSHIP SUPPORT
               </p>
               <h2
                 id="membership-support-title"
-                className="mt-1 text-xl sm:text-2xl font-black"
+                className="mt-1 text-xl sm:text-2xl font-bold"
               >
                 會員協助與交易保障
               </h2>
-              <p className="mt-2 max-w-xl text-sm font-bold leading-6 text-slate-600">
+              <p className="mt-2 max-w-xl text-sm font-normal leading-6 text-slate-600">
                 需要協助時，我們在這裡。付款、資格確認或使用上的問題，都可以直接來信聯絡。
               </p>
             </div>
           </div>
           <a
             href="mailto:tyctw.analyze@gmail.com?subject=%E6%9C%83%E5%93%A1%E5%85%8D%E5%BB%A3%E5%91%8A%E5%8D%94%E5%8A%A9"
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-indigo-50 px-4 py-3.5 text-sm font-black text-indigo-700 transition hover:border-slate-900 hover:bg-indigo-100 sm:w-auto"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-emerald-50 px-4 py-3.5 text-sm font-bold text-emerald-700 transition hover:border-stone-200 hover:bg-emerald-100 sm:w-auto"
           >
             <Mail className="h-4 w-4" />
             tyctw.analyze@gmail.com
           </a>
         </div>
-        <div className="border-t-2 border-slate-900 bg-[#f7f9ff] p-5 sm:p-8 md:border-l-2 md:border-t-0">
-          <p className="text-[10px] sm:text-xs font-black tracking-[0.14em] text-slate-500">
+        <div className="border-t-2 border-slate-900 bg-[#f7f9ff] p-5 sm:p-8 md:border-l md:border-t-0">
+          <p className="text-[10px] sm:text-xs font-bold tracking-[0.14em] text-slate-500">
             MEMBERSHIP INFORMATION
           </p>
-          <h3 className="mt-1 text-lg sm:text-xl font-black text-slate-800">
+          <h3 className="mt-1 text-lg sm:text-xl font-bold text-slate-800">
             售後與退款說明
           </h3>
-          <p className="mt-2 text-sm font-bold leading-6 text-slate-600">
+          <p className="mt-2 text-sm font-normal leading-6 text-slate-600">
             查看付款異常、取消申請、退款方式與交易爭議的處理原則。
           </p>
           <div className="mt-5 grid gap-2 sm:gap-3 grid-cols-2">
             <a
               href={withBasePath("/after-sales-service")}
-              className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1.5 sm:gap-3 rounded-xl border-2 border-slate-200 bg-white p-2.5 sm:px-4 sm:py-3.5 text-center transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]"
+              className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1.5 sm:gap-3 rounded-xl border border-slate-200 bg-white p-2.5 sm:px-4 sm:py-3.5 text-center transition hover:border-stone-200 hover:shadow-[5px_5px_0_#161b35]"
             >
               <span className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2">
-                <HeartHandshake className="h-5 w-5 sm:h-4 sm:w-4 shrink-0 text-indigo-600" />
-                <span className="text-xs sm:text-sm font-black text-slate-800">售後服務</span>
+                <HeartHandshake className="h-5 w-5 sm:h-4 sm:w-4 shrink-0 text-emerald-600" />
+                <span className="text-xs sm:text-sm font-bold text-slate-800">售後服務</span>
               </span>
               <ArrowRight className="hidden sm:block h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900" />
             </a>
             <a
               href={withBasePath("/refund-cancellation-policy")}
-              className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1.5 sm:gap-3 rounded-xl border-2 border-slate-200 bg-white p-2.5 sm:px-4 sm:py-3.5 text-center transition hover:border-slate-900 hover:shadow-[3px_3px_0_#0f172a]"
+              className="group flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-1.5 sm:gap-3 rounded-xl border border-slate-200 bg-white p-2.5 sm:px-4 sm:py-3.5 text-center transition hover:border-stone-200 hover:shadow-[5px_5px_0_#161b35]"
             >
               <span className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2">
-                <ReceiptText className="h-5 w-5 sm:h-4 sm:w-4 shrink-0 text-indigo-600" />
-                <span className="text-xs sm:text-sm font-black text-slate-800 leading-tight">退款與取消</span>
+                <ReceiptText className="h-5 w-5 sm:h-4 sm:w-4 shrink-0 text-emerald-600" />
+                <span className="text-xs sm:text-sm font-bold text-slate-800 leading-tight">退款與取消</span>
               </span>
               <ArrowRight className="hidden sm:block h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900" />
             </a>
@@ -182,7 +181,6 @@ export default function MembershipPage() {
   const [payerNameError, setPayerNameError] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [showAllMembershipBenefits, setShowAllMembershipBenefits] = useState(false);
   const [showPlanComparison, setShowPlanComparison] = useState(false);
   const selectedPlan = useMemo(
     () => plans.find((plan) => plan.id === selected)!,
@@ -325,7 +323,7 @@ export default function MembershipPage() {
       });
       document.body.appendChild(form);
       form.submit();
-      
+
       // Fallback: reset the button state after a short delay in case navigation
       // is cancelled, blocked, or the user returns via bfcache where pageshow might fail.
       setTimeout(() => {
@@ -339,21 +337,21 @@ export default function MembershipPage() {
 
   if (membership === null)
     return (
-      <main id="main-content" aria-busy="true" aria-labelledby="membership-check-title" className="min-h-screen overflow-hidden bg-[#f5f6ff] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
-        <div aria-hidden="true" className="fixed -left-24 top-20 h-64 w-64 rounded-full bg-violet-200/60 blur-3xl" />
+      <main id="main-content" aria-busy="true" aria-labelledby="membership-check-title" className="membership-page min-h-screen overflow-hidden bg-[#f7f8f5] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
+        <div aria-hidden="true" className="fixed -left-24 top-20 h-64 w-64 rounded-full bg-emerald-200/60 blur-3xl" />
         <div aria-hidden="true" className="fixed -right-20 bottom-0 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
         <section className="relative mx-auto max-w-lg">
-          <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
-          <article className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[7px_7px_0_#161b35]">
-            <div aria-hidden="true" className="absolute -right-10 -top-12 h-36 w-36 rounded-full border-[15px] border-violet-100" />
-            <div className="relative border-b-2 border-slate-900 bg-violet-100 px-6 py-5 sm:px-8">
-              <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white px-3 py-1 text-[11px] font-black tracking-[.14em] text-violet-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />SECURE MEMBER CHECK</span>
-              <div className="mt-4 flex items-center gap-4"><div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-violet-700 shadow-[2px_2px_0_#161b35]"><Crown className="h-6 w-6 fill-amber-300" /></div><div><h1 id="membership-check-title" className="text-2xl font-black tracking-tight sm:text-3xl">正在確認會員資格</h1><p className="mt-1 text-sm font-bold text-slate-600">請稍候，我們正在安全確認你的 LINE 身分。</p></div></div>
+          <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
+          <article className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35]">
+            <div aria-hidden="true" className="absolute -right-10 -top-12 h-36 w-36 rounded-full border-[15px] border-emerald-100" />
+            <div className="relative border-b-2 border-slate-900 bg-emerald-100 px-6 py-5 sm:px-8">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-bold tracking-[.14em] text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />SECURE MEMBER CHECK</span>
+              <div className="mt-4 flex items-center gap-4"><div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-emerald-700 shadow-[3px_3px_0_#161b35]"><Crown className="h-6 w-6 fill-amber-300" /></div><div><h1 id="membership-check-title" className="text-2xl font-bold tracking-tight sm:text-3xl">正在確認會員資格</h1><p className="mt-1 text-sm font-bold text-slate-600">請稍候，我們正在安全確認你的 LINE 身分。</p></div></div>
             </div>
             <div className="relative space-y-3 p-5 sm:p-6">
-              <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-black text-white">1</span><div className="min-w-0 flex-1"><p className="text-sm font-black">確認 LINE 安全工作階段</p><p className="text-xs font-bold text-emerald-700">已啟動安全驗證</p></div><Check className="h-5 w-5 text-emerald-600" /></div>
-              <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3"><span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-indigo-600 text-xs font-black text-white">2</span><div className="min-w-0 flex-1"><p className="text-sm font-black">查詢免廣告資格</p><p className="text-xs font-bold text-indigo-700">正在確認方案與有效期限</p></div><span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-600" /></div>
-              <p className="px-1 pt-1 text-center text-xs font-bold leading-5 text-slate-500">登入憑證不會儲存在網址或瀏覽器儲存空間。</p>
+              <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-bold text-white">1</span><div className="min-w-0 flex-1"><p className="text-sm font-bold">確認 LINE 安全工作階段</p><p className="text-xs font-bold text-emerald-700">已啟動安全驗證</p></div><Check className="h-5 w-5 text-emerald-600" /></div>
+              <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-900 text-xs font-bold text-white">2</span><div className="min-w-0 flex-1"><p className="text-sm font-bold">查詢免廣告資格</p><p className="text-xs font-bold text-emerald-700">正在確認方案與有效期限</p></div><span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border border-emerald-200 border-t-emerald-600" /></div>
+              <p className="px-1 pt-1 text-center text-xs font-medium leading-5 text-slate-500">登入憑證不會儲存在網址或瀏覽器儲存空間。</p>
             </div>
           </article>
         </section>
@@ -362,25 +360,25 @@ export default function MembershipPage() {
 
   if (isSuccessPage && membership !== null && !membership.active)
     return (
-      <main id="main-content" aria-busy="true" aria-labelledby="payment-confirming-title" className="min-h-screen overflow-hidden bg-[#f5f6ff] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
+      <main id="main-content" aria-busy="true" aria-labelledby="payment-confirming-title" className="membership-page min-h-screen overflow-hidden bg-[#f7f8f5] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
         <div aria-hidden="true" className="fixed -left-24 top-20 h-64 w-64 rounded-full bg-emerald-200/60 blur-3xl" />
         <div aria-hidden="true" className="fixed -right-20 bottom-0 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
         <section className="relative mx-auto max-w-lg">
-          <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
-          <article className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[7px_7px_0_#161b35]">
+          <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
+          <article className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35]">
             <div aria-hidden="true" className="absolute -right-10 -top-12 h-36 w-36 rounded-full border-[15px] border-emerald-100" />
             <div className="relative border-b-2 border-slate-900 bg-emerald-100 px-6 py-5 sm:px-8">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-black tracking-[.14em] text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />PAYMENT CONFIRMING</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-bold tracking-[.14em] text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />PAYMENT CONFIRMING</span>
               <div className="mt-4 flex items-center gap-4">
-                <div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-emerald-700 shadow-[2px_2px_0_#161b35]"><Crown className="h-6 w-6 fill-amber-300" /></div>
-                <div><h1 id="payment-confirming-title" className="text-2xl font-black tracking-tight sm:text-3xl">付款確認中</h1><p className="mt-1 text-sm font-bold text-slate-600">正在等待付款系統回傳結果，請稍候⋯</p></div>
+                <div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-emerald-700 shadow-[3px_3px_0_#161b35]"><Crown className="h-6 w-6 fill-amber-300" /></div>
+                <div><h1 id="payment-confirming-title" className="text-2xl font-bold tracking-tight sm:text-3xl">付款確認中</h1><p className="mt-1 text-sm font-bold text-slate-600">正在等待付款系統回傳結果，請稍候⋯</p></div>
               </div>
             </div>
             <div role="status" aria-live="polite" className="relative space-y-3 p-5 sm:p-6">
-              <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-black text-white">1</span><div className="min-w-0 flex-1"><p className="text-sm font-black">付款已送出</p><p className="text-xs font-bold text-emerald-700">我們已收到付款指示</p></div><Check className="h-5 w-5 text-emerald-600" /></div>
-              <div className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3"><span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-xs font-black text-white">2</span><div className="min-w-0 flex-1"><p className="text-sm font-black">等待付款機構確認</p><p className="text-xs font-bold text-amber-700">正在與綠界確認交易結果</p></div><span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border-2 border-amber-200 border-t-amber-500" /></div>
-              <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 opacity-50"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-300 text-xs font-black text-white">3</span><div className="min-w-0 flex-1"><p className="text-sm font-black">啟用免廣告會員資格</p><p className="text-xs font-bold text-slate-500">確認後立即生效</p></div></div>
-              <p className="px-1 pt-1 text-center text-xs font-bold leading-5 text-slate-500">若付款已完成但此頁超過 30 秒仍未更新，請重新整理或來信客服確認。</p>
+              <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-bold text-white">1</span><div className="min-w-0 flex-1"><p className="text-sm font-bold">付款已送出</p><p className="text-xs font-bold text-emerald-700">我們已收到付款指示</p></div><Check className="h-5 w-5 text-emerald-600" /></div>
+              <div className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3"><span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-amber-400 text-xs font-bold text-white">2</span><div className="min-w-0 flex-1"><p className="text-sm font-bold">等待付款機構確認</p><p className="text-xs font-bold text-amber-700">正在與綠界確認交易結果</p></div><span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border border-amber-200 border-t-amber-500" /></div>
+              <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 opacity-50"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-300 text-xs font-bold text-white">3</span><div className="min-w-0 flex-1"><p className="text-sm font-bold">啟用免廣告會員資格</p><p className="text-xs font-bold text-slate-500">確認後立即生效</p></div></div>
+              <p className="px-1 pt-1 text-center text-xs font-medium leading-5 text-slate-500">若付款已完成但此頁超過 30 秒仍未更新，請重新整理或來信客服確認。</p>
             </div>
           </article>
         </section>
@@ -389,21 +387,21 @@ export default function MembershipPage() {
 
   if (membership.active)
     return (
-      <main id="main-content" aria-labelledby="member-active-title" className="min-h-screen bg-[#f6f7f2] px-4 py-6 text-slate-900 sm:px-6 sm:py-12">
-        <section className="mx-auto max-w-7xl">
+      <main id="main-content" aria-labelledby="member-active-title" className="membership-page min-h-screen bg-[#f7f8f5] px-4 py-6 text-slate-900 sm:px-6 sm:py-12">
+        <section className="mx-auto max-w-6xl">
           <nav aria-label="會員頁面導覽" className="flex items-center justify-between gap-4">
             <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-bold text-slate-600 transition hover:text-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
               <ArrowRight aria-hidden="true" className="h-4 w-4 rotate-180" />回到落點分析
             </a>
-            <span className="flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-xs font-bold tracking-widest text-emerald-800 shadow-[2px_2px_0_#161b35]"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
+            <span className="flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-xs font-bold tracking-widest text-emerald-800 shadow-[3px_3px_0_#161b35]"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
           </nav>
-          <article className="mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[6px_6px_0_#161b35] sm:mt-8">
+          <article className="mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35] sm:mt-8">
             <header className="relative isolate overflow-hidden border-b-2 border-slate-900 bg-[#edf5e9] px-6 py-5 text-slate-900 sm:px-10 sm:py-6 lg:px-12">
               <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-1/3 bg-gradient-to-l from-emerald-100/70 to-transparent" />
               <div className="grid items-center gap-6 md:grid-cols-[1fr_140px] lg:grid-cols-[1fr_160px]">
                 <div className="min-w-0">
-                  <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-[2px_2px_0_#161b35]"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
-                  <h1 id="member-active-title" className="mt-3 flex items-baseline gap-2 whitespace-nowrap text-2xl font-black leading-tight tracking-tight sm:gap-3 sm:text-4xl lg:text-5xl">
+                  <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-[3px_3px_0_#161b35]"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
+                  <h1 id="member-active-title" className="mt-3 flex items-baseline gap-2 whitespace-nowrap text-2xl font-bold leading-tight tracking-tight sm:gap-3 sm:text-4xl lg:text-5xl">
                     <span className="text-slate-700">現在享有</span>
                     <span className="relative inline-block text-emerald-900">
                       <span aria-hidden="true" className="absolute inset-x-0 bottom-1 -z-10 h-3 -rotate-1 rounded-sm bg-[#d5e8a8] sm:h-4" />
@@ -415,7 +413,7 @@ export default function MembershipPage() {
                 <div aria-hidden="true" className="relative hidden aspect-square items-center justify-center md:flex">
                   <div className="absolute inset-2 rounded-full border border-emerald-800/20" />
                   <div className="absolute inset-6 rounded-full border border-dashed border-emerald-800/20" />
-                  <div className="relative flex h-24 w-24 -rotate-6 flex-col items-center justify-center gap-2 rounded-3xl border-2 border-slate-900 bg-[#fffdf5] shadow-[6px_6px_0_#161b35] lg:h-28 lg:w-28">
+                  <div className="relative flex h-24 w-24 -rotate-6 flex-col items-center justify-center gap-2 rounded-3xl border-2 border-slate-900 bg-[#fffdf5] shadow-[3px_3px_0_#161b35] lg:h-28 lg:w-28">
                     <Crown className="h-10 w-10 fill-[#e6edb8] text-emerald-900 lg:h-12 lg:w-12" strokeWidth={1.5} />
                     <div className="h-1.5 w-12 rounded-full bg-emerald-900/15" />
                     <span className="absolute -bottom-3 -right-3 grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-emerald-200"><Check className="h-4 w-4 text-emerald-950" strokeWidth={3} /></span>
@@ -428,25 +426,25 @@ export default function MembershipPage() {
               <section aria-labelledby="member-details-title" className="overflow-hidden rounded-2xl border-2 border-slate-900 bg-white">
                 <div className="flex items-center gap-3 border-b-2 border-slate-900 bg-[#faf9f3] px-5 py-4 sm:px-6">
                   <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><BadgeCheck className="h-5 w-5 text-emerald-800" /></span>
-                  <h2 id="member-details-title" className="text-base font-black text-slate-900">你的會員資訊</h2>
+                  <h2 id="member-details-title" className="text-base font-bold text-slate-900">你的會員資訊</h2>
                 </div>
                 <dl className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
                     <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
                       <dt className="flex items-center gap-2 text-xs font-bold text-slate-500"><MessageCircle aria-hidden="true" className="h-4 w-4 text-emerald-700" />LINE 會員帳號</dt>
-                      <dd className="mt-3 break-words text-2xl font-black leading-snug tracking-tight text-slate-900">{lineName || '已完成 LINE 驗證'}</dd>
+                      <dd className="mt-3 break-words text-2xl font-bold leading-snug tracking-tight text-slate-900">{lineName || '已完成 LINE 驗證'}</dd>
                     </div>
                     <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
                       <dt className="text-xs font-bold text-slate-500">目前方案</dt>
-                      <dd className="mt-3 inline-flex items-center gap-2 text-xl font-black text-emerald-950"><Crown aria-hidden="true" className="h-5 w-5" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
+                      <dd className="mt-3 inline-flex items-center gap-2 text-xl font-bold text-emerald-950"><Crown aria-hidden="true" className="h-5 w-5" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
                     </div>
 
                       <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
                         <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />會員啟用日期</dt>
-                        <dd className="mt-3 text-xl font-black leading-snug tracking-tight text-emerald-950">{membership.activatedAt ? new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.activatedAt)) : '尚無日期資料'}</dd>
+                        <dd className="mt-3 text-xl font-bold leading-snug tracking-tight text-emerald-950">{membership.activatedAt ? new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.activatedAt)) : '尚無日期資料'}</dd>
                       </div>
                       <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-[#edf5e9] p-4">
                         <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</dt>
-                        <dd className="mt-3 break-words text-xl font-black leading-snug tracking-tight text-emerald-950">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</dd>
+                        <dd className="mt-3 break-words text-xl font-bold leading-snug tracking-tight text-emerald-950">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</dd>
                       </div>
                 </dl>
               </section>
@@ -455,7 +453,7 @@ export default function MembershipPage() {
                 <div><h2 className="text-sm font-bold text-slate-800">準備好成績，就可以開始</h2><p className="mt-1 text-sm leading-6 text-slate-500">會員資格有效期間，回到首頁填妥成績後即可直接開始落點分析，無需再輸入系統授權碼。</p></div>
               </div>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:mt-8">
-                <a href={withBasePath("/")} className="group inline-flex min-h-14 flex-1 items-center justify-center gap-3 rounded-xl border-2 border-slate-900 bg-[#123e35] px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
+                <a href={withBasePath("/")} className="group inline-flex min-h-14 flex-1 items-center justify-center gap-3 rounded-xl border-2 border-slate-900 bg-[#123e35] px-5 py-4 text-base font-bold text-white shadow-[3px_3px_0_#161b35] transition hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
                   <Sparkles aria-hidden="true" className="h-5 w-5 text-[#dcedb0]" />開始使用落點分析<ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-1" />
                 </a>
                 <a href={withBasePath("/membership/account")} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 px-6 py-4 text-sm font-bold text-slate-700 transition hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"><BadgeCheck aria-hidden="true" className="h-4 w-4" />我的會員帳號</a>
@@ -471,195 +469,49 @@ export default function MembershipPage() {
     );
 
   return (
-    <main id="main-content" aria-labelledby="membership-page-title" className="min-h-screen overflow-hidden bg-[#f5f6ff] px-4 py-5 text-slate-900 sm:px-6 sm:py-10">
+    <main id="main-content" aria-labelledby="member-benefits-title" className="membership-page min-h-screen overflow-hidden bg-[#f7f8f5] px-4 py-5 text-slate-900 sm:px-6 sm:py-10">
       <section className="relative mx-auto max-w-6xl">
         <nav aria-label="會員頁面導覽" className="flex items-center justify-between">
           <a
             href={withBasePath("/")}
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
           >
             <ArrowRight className="h-4 w-4 rotate-180" />
             回到落點分析
           </a>
-          <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-amber-300 px-4 py-2 text-sm font-black text-slate-900 shadow-[3px_3px_0_#161b35]">
+          <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-[#e7edce] px-4 py-2 text-sm font-bold text-slate-900 shadow-[3px_3px_0_#161b35]">
             <Crown className="h-4 w-4 fill-amber-100 text-slate-900" />
             會員中心
           </span>
         </nav>
-        <div className="mt-6 grid gap-4 lg:grid-cols-[1.12fr_.88fr]">
-          <section className="relative overflow-hidden rounded-[2.5rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[4px_4px_0_#161b35] sm:p-6">
-            <div
-              aria-hidden="true"
-              className="absolute -right-12 -top-16 h-48 w-48 rounded-full border-[14px] border-violet-300/70"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute bottom-0 right-16 h-16 w-16 rounded-t-full bg-amber-300/60"
-            />
-            <div className="relative">
-              <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/85 px-3 py-1.5 text-xs font-black tracking-[.16em] text-violet-700">
-                <Crown className="h-4 w-4 fill-amber-300 text-amber-500" />
-                會員專屬優點
-              </span>
-              <h1 id="membership-page-title" className="mt-4 text-2xl font-black leading-tight tracking-tight sm:text-3xl">
-                升級會員，<span className="text-violet-700">差在這裡</span>
-              </h1>
-              <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600">
-                    <EyeOff className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-black">完全無廣告</p>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">全程不被廣告打斷，專注在志願選擇上。</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-600">
-                    <KeyRound className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-black">無限次數落點分析</p>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">綁定 LINE 帳號，免輸入授權碼即可無限次數暢測。</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
-                    <Sparkles className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-black">一分改變分析</p>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">任選六科提高或降低一級，查看可能增減的校科選擇。</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
-                    <MessageCircle className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-black">家長協作志願表</p>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">留言、共同新增校科與調整排序，每次變更都保留版本紀錄。</p>
-                  </div>
-                </li>
-                {showAllMembershipBenefits && <li className="flex items-start gap-3 rounded-2xl border border-violet-200 bg-white/80 p-4">
-                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
-                    <LockKeyhole className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-black">一次付款不自動續扣</p>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">NT$49 起，方案到期後不扣款，無需手動取消。</p>
-                  </div>
-                </li>}
-              </ul>
-              <button type="button" onClick={() => setShowAllMembershipBenefits((value) => !value)} className="mt-4 flex w-full items-center justify-between gap-3 rounded-2xl border-2 border-dashed border-violet-300 bg-white/70 px-4 py-3 text-left text-slate-900 transition hover:border-slate-900 hover:bg-white">
-                <span><span className="block text-sm font-black">{showAllMembershipBenefits ? '已顯示全部會員權益' : '還有 1 項安心使用保障'}</span><span className="mt-0.5 block text-xs font-bold text-slate-500">{showAllMembershipBenefits ? '點擊可收起額外內容' : '點擊查看付款與使用保障'}</span></span>
-                <span className="inline-flex shrink-0 items-center gap-1 rounded-xl border-2 border-slate-900 bg-violet-100 px-2.5 py-1.5 text-xs font-black text-violet-900">{showAllMembershipBenefits ? '收起' : '展開'}{showAllMembershipBenefits ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</span>
-              </button>
-              {showAllMembershipBenefits && <button type="button" onClick={() => setShowPlanComparison(true)} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-violet-900 bg-white px-4 py-2.5 text-sm font-black text-violet-900 shadow-[2px_2px_0_#4c1d95] transition hover:-translate-y-0.5 hover:bg-violet-50"><Sparkles className="h-4 w-4 text-amber-500" />會員與非會員差在哪？<ArrowRight className="h-4 w-4" /></button>}
-            </div>
-          </section>
-          <aside className="relative flex flex-col justify-between overflow-hidden rounded-[2.5rem] border-2 border-slate-900 bg-white p-6 shadow-[4px_4px_0_#161b35] sm:p-8">
-            <div aria-hidden="true" className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald-100/50 blur-2xl pointer-events-none" />
-            <div aria-hidden="true" className="absolute -bottom-16 -left-16 h-32 w-32 rounded-full bg-amber-100/50 blur-2xl pointer-events-none" />
-            
-            <div className="relative">
-              <div className="flex items-center gap-3">
-                <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-emerald-400 text-sm font-black">
-                  1
-                </span>
-                <p className="text-xs font-black tracking-[.2em] text-emerald-600">
-                  身分確認
-                </p>
-              </div>
-              <h2 className="mt-4 text-2xl font-black">先登入你的 LINE</h2>
-              <p className="mt-2 text-sm font-bold leading-6 text-slate-500">
-                會員資格會與 LINE 帳號連結，登入後即可選擇方案並在其他裝置找回資格。
-              </p>
-
-              <div
-                className={`relative mt-6 overflow-hidden rounded-2xl border-2 p-4 transition-colors ${lineName ? "border-emerald-400 bg-emerald-50" : "border-slate-200 bg-slate-50"}`}
-              >
-                {lineName && (
-                  <div aria-hidden="true" className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-emerald-200/40 blur-xl pointer-events-none" />
-                )}
-                <div className="relative flex items-center gap-4">
-                  <div
-                    className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 shadow-[2px_2px_0_#161b35] ${lineName ? "bg-emerald-400 text-slate-900" : "bg-white text-slate-400"}`}
-                  >
-                    {lineName ? (
-                      <Check className="h-6 w-6" strokeWidth={3} />
-                    ) : (
-                      <LogIn className="h-6 w-6" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-base font-black text-slate-900">
-                      {lineName ? `已登入・${lineName}` : "尚未登入 LINE"}
-                    </p>
-                    <p className="mt-0.5 flex items-center gap-1.5 text-xs font-bold text-slate-500">
-                      <span className={!lineName ? "text-slate-600" : ""}>
-                        {lineName ? "可以繼續選擇方案" : "登入後即可啟用付款按鈕"}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative mt-8">
-              {lineName ? (
-                <div className="space-y-3">
-                  <a
-                    href={withBasePath("/membership/account")}
-                    className="group flex w-full items-center justify-between gap-3 rounded-2xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-black text-slate-700 transition hover:border-slate-900 hover:shadow-[4px_4px_0_#161b35]"
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <ReceiptText className="h-5 w-5 text-indigo-500" />
-                      查看訂單與購買紀錄
-                    </span>
-                    <ArrowRight className="h-4 w-4 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900" />
-                  </a>
-                  <button
-                    type="button"
-                    onClick={logoutFromLine}
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-transparent px-4 py-3 text-sm font-black text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    登出 LINE
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={loginWithLine}
-                  className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl border-2 border-slate-900 bg-[#06c755] px-6 py-4 text-base font-black text-white shadow-[4px_4px_0_#161b35] transition-all hover:-translate-y-1 hover:bg-[#05b84e] hover:shadow-[6px_6px_0_#161b35] active:translate-y-0 active:shadow-none"
-                >
-                  <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
-                    <div className="relative h-full w-8 bg-white/20" />
-                  </div>
-                  <LogIn className="h-5 w-5" />
-                  使用 LINE 登入
-                </button>
-              )}
-            </div>
-          </aside>
-        </div>
-
-        <section className="mt-8">
+        <section className="member-benefits" aria-labelledby="member-benefits-title">
+          <div className="member-section-heading"><div><p className="member-eyebrow">MADE FOR YOUR JOURNEY</p><h1 id="member-benefits-title">一份會員，讓規劃更從容。</h1></div><button type="button" onClick={() => setShowPlanComparison(true)}>比較會員權益 <ArrowRight className="h-4 w-4" /></button></div>
+          <div className="member-benefit-grid">
+            {[
+              { icon: EyeOff, title: '純淨，沒有打擾', text: '關閉廣告，把注意力留給每一次重要的選擇。', label: '免廣告體驗' },
+              { icon: KeyRound, title: '探索，不設次數', text: '免輸入授權碼，隨時分析成績與可能的落點。', label: '無限次數分析' },
+              { icon: Sparkles, title: '一分，更多可能', text: '調整各科級分，看看努力能帶來哪些新選擇。', label: '一分改變分析' },
+              { icon: MessageCircle, title: '一起，找到方向', text: '邀請家人協作志願表，留言討論、保留版本。', label: '家長協作' },
+            ].map(({ icon: Icon, title, text, label }, index) => <article className="member-benefit" key={title}><div className="member-benefit-top"><Icon className="h-5 w-5" strokeWidth={1.5} /><span>0{index + 1}</span></div><p className="member-benefit-label">{label}</p><h3>{title}</h3><p>{text}</p></article>)}
+          </div>
+        </section>
+        <div id="membership-plans" className="member-purchase-grid">
+          <div className="min-w-0">
+        <section aria-labelledby="membership-plans-title" className="member-plan-section">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
               <div className="flex items-center gap-3">
-                <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-amber-300 text-sm font-black">
-                  2
+                <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-[#e7edce] text-sm font-bold">
+                  1
                 </span>
-                <p className="text-xs font-black tracking-[.18em] text-indigo-600">
+                <p className="text-xs font-bold tracking-[.18em] text-emerald-600">
                   選擇方案
                 </p>
               </div>
-              <h2 className="mt-2 text-2xl font-black">選擇適合你的專注時光</h2>
+              <h2 id="membership-plans-title" className="mt-2 text-2xl font-bold">選擇適合你的專注時光</h2>
             </div>
           </div>
-          <div role="radiogroup" aria-label="選擇會員方案" className="mt-4 grid gap-4 md:grid-cols-2">
+          <div role="radiogroup" aria-label="選擇會員方案" className="mt-4 grid gap-4 sm:grid-cols-2">
             {plans.map((plan) => {
               const active = plan.id === selected;
               return (
@@ -670,43 +522,44 @@ export default function MembershipPage() {
                   role="radio"
                   aria-checked={active}
                   aria-label={`${plan.name}，NT$ ${plan.price}，${plan.duration}${active ? '，目前已選擇' : ''}`}
-                  className={`relative overflow-hidden rounded-[2rem] border-2 p-4 text-left transition sm:p-5 ${active ? "border-slate-900 bg-white shadow-[4px_4px_0_#161b35] -translate-y-1 ring-4 ring-amber-200" : "border-slate-300 bg-white/70 hover:border-slate-900 hover:bg-white"}`}
+                  className={`member-plan relative overflow-hidden rounded-3xl border p-6 text-left transition sm:p-6 ${active ? "border-emerald-700 bg-white shadow-[3px_3px_0_#161b35] ring-2 ring-emerald-700" : "border-stone-200 bg-white/70 hover:border-emerald-400 hover:bg-white"}`}
                 >
                   {plan.featured && (
-                    <span className="absolute right-5 top-0 rounded-b-xl border-x-2 border-b-2 border-slate-900 bg-amber-300 px-3 py-1.5 text-xs font-black">
-                      最推薦・低門檻
+                    <span className="absolute right-5 top-0 rounded-b-xl border-x border-b-2 border-slate-900 bg-[#e7edce] px-3 py-1.5 text-xs font-bold">
+                      入門推薦
                     </span>
                   )}
                   <div className="flex items-start justify-between">
                     <div
-                      className={`grid h-10 w-10 place-items-center rounded-xl border-2 border-slate-900 ${plan.accent === "indigo" ? "bg-indigo-600 text-white" : "bg-sky-300 text-slate-900"}`}
+                      className={`grid h-10 w-10 place-items-center rounded-xl border-2 border-slate-900 ${plan.accent === "emerald" ? "bg-emerald-900 text-white" : "bg-emerald-100 text-slate-900"}`}
                     >
                       <Crown className="h-5 w-5" />
                     </div>
                     {active && (
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full border-2 border-slate-900 bg-emerald-300 px-2 py-1 text-xs font-black ${plan.featured ? "absolute right-4 top-11" : ""}`}
+                        className={`inline-flex items-center gap-1 rounded-full border-2 border-slate-900 bg-emerald-100 px-2 py-1 text-xs font-bold ${plan.featured ? "absolute right-4 top-11" : ""}`}
                       >
                         <Check className="h-3.5 w-3.5" />
                         已選擇
                       </span>
                     )}
                   </div>
-                  <h3 className="mt-3 text-xl font-black">{plan.name}</h3>
+                  <h3 className="mt-3 text-xl font-bold">{plan.name}</h3>
                   <p className="mt-1 text-sm font-bold text-slate-500">
                     {plan.note}
                   </p>
                   <p
-                    className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-black ${plan.featured ? "bg-amber-100 text-amber-800" : "bg-indigo-50 text-indigo-700"}`}
+                    className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-bold ${plan.featured ? "bg-amber-100 text-amber-800" : "bg-emerald-50 text-emerald-700"}`}
                   >
                     {plan.comparison}
                   </p>
-                  <p className="mt-3 text-3xl font-black">
-                    NT$ {plan.price}
-                    <span className="ml-2 text-base text-slate-500">
+                  <p className="mt-5 text-4xl font-bold tracking-tight tabular-nums">
+                    <span className="mr-1.5 text-sm font-medium text-slate-500">NT$</span>{plan.price}
+                    <span className="ml-2 text-sm font-medium text-slate-500">
                       ／{plan.duration}
                     </span>
                   </p>
+                  <div className="mt-5 flex items-center gap-2 border-t border-stone-100 pt-4 text-xs font-medium text-emerald-800"><Check className="h-4 w-4" />全部會員權益<span className="text-stone-300">／</span>到期不自動續扣</div>
                 </button>
               );
             })}
@@ -718,20 +571,20 @@ export default function MembershipPage() {
           className="mt-6 rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0_#161b35] sm:p-7"
         >
           <div className="flex items-center gap-3">
-            <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-sky-300 text-sm font-black">
-              3
+            <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-slate-900 bg-emerald-100 text-sm font-bold">
+              2
             </span>
-            <p className="text-xs font-black tracking-[.18em] text-sky-600">
+            <p className="text-xs font-bold tracking-[.18em] text-emerald-700">
               付款人資料（必填）
             </p>
           </div>
-          <h2 id="membership-email-title" className="mt-3 text-xl font-black">留下付款資料，方便我們確認與通知</h2>
-          <p className="mt-1 text-sm font-bold leading-6 text-slate-500">
+          <h2 id="membership-email-title" className="mt-3 text-xl font-bold">填寫付款資料</h2>
+          <p className="mt-1 text-sm font-normal leading-6 text-slate-500">
             付款人姓名用於訂單核對；付款確認與到期提醒將寄送至此信箱。
           </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <div>
-              <label htmlFor="membership-payer-name" className="text-sm font-black text-slate-700">付款人姓名</label>
+              <label htmlFor="membership-payer-name" className="text-sm font-bold text-slate-700">付款人姓名</label>
               <input
                 id="membership-payer-name"
                 type="text"
@@ -740,13 +593,12 @@ export default function MembershipPage() {
                 placeholder="請輸入真實姓名"
                 value={payerName}
                 onChange={(e) => { setPayerName(e.target.value); setPayerNameError(""); }}
-                className={`mt-1 w-full rounded-2xl border-2 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:bg-white ${payerNameError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
+                className={`mt-1 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-stone-200 focus:bg-white ${payerNameError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
               />
               {payerNameError && <p role="alert" className="mt-2 text-xs font-bold text-red-600">{payerNameError}</p>}
             </div>
             <div>
-            <label htmlFor="membership-email" className="sr-only">電子信箱</label>
-            <p className="text-sm font-black text-slate-700">付款人電子信箱</p>
+            <label htmlFor="membership-email" className="text-sm font-bold text-slate-700">付款人電子信箱</label>
             <input
               id="membership-email"
               type="email"
@@ -755,7 +607,7 @@ export default function MembershipPage() {
               placeholder="your@email.com"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
-              className={`mt-1 w-full rounded-2xl border-2 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-slate-900 focus:bg-white ${emailError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
+              className={`mt-1 w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-stone-200 focus:bg-white ${emailError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
             />
             {emailError && (
               <p role="alert" className="mt-2 text-xs font-bold text-red-600">{emailError}</p>
@@ -764,81 +616,66 @@ export default function MembershipPage() {
           </div>
         </section>
 
-        <section
-          aria-labelledby="membership-checkout-title"
-          className="mt-6 rounded-[2rem] border-2 border-slate-900 bg-violet-100 p-5 text-slate-900 shadow-[4px_4px_0_#161b35] sm:flex sm:items-center sm:justify-between sm:p-7"
-        >
-          <div>
-            <p className="text-xs font-black tracking-[.18em] text-violet-700">
-              準備好了嗎？
-            </p>
-            <h2 id="membership-checkout-title" className="mt-2 text-2xl font-black">
-              {lineName
-                ? `以 NT$ ${selectedPlan.price} 啟動 ${selectedPlan.name}`
-                : "登入 LINE 後，即可開始你的免廣告方案"}
-            </h2>
+
           </div>
-          <button
-            type="button"
-            onClick={checkout}
-            disabled={submitting || !lineName}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-slate-900 bg-indigo-600 px-6 py-4 text-base font-black text-white shadow-[4px_4px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-50 sm:mt-0 sm:w-auto"
-          >
-            {submitting
-              ? "正在建立付款單…"
-              : lineName
-                ? "前往安全付款"
-                : "請先登入 LINE"}
-            <ArrowRight className="h-5 w-5" />
-          </button>
-        </section>
+          <aside className="member-order" aria-labelledby="membership-checkout-title">
+            <div className="member-order-heading"><LockKeyhole className="h-5 w-5" /><span>最後一步 · 確認與付款</span></div>
+            <h2 id="membership-checkout-title">開始你的專注時光</h2>
+            <p className="member-order-intro">會員資格將綁定 LINE 帳號，換裝置也能輕鬆找回。</p>
+            <div className="member-login-status"><span className="member-login-icon">{lineName ? <BadgeCheck className="h-5 w-5" /> : <LogIn className="h-5 w-5" />}</span><div className="min-w-0"><p className="break-words font-semibold">{lineName || '登入 LINE 以繼續'}</p><p className="mt-1 text-xs text-slate-500">{lineName ? '身分已確認' : '安全連結你的會員資格'}</p></div></div>
+            {lineName ? <div className="mt-3 flex items-center justify-between gap-3 text-xs"><a href={withBasePath('/membership/account')} className="font-semibold text-emerald-800 underline underline-offset-4">我的帳號與訂單</a><button type="button" onClick={logoutFromLine} className="rounded-lg px-3 py-2 text-slate-500 hover:bg-stone-100">登出 LINE</button></div> : <button type="button" onClick={loginWithLine} className="member-line-button"><img src={withBasePath('/brand/line/line-login.png')} width={44} height={44} alt="" aria-hidden="true" /><span>使用 LINE 登入</span></button>}
+            <dl className="member-order-details" aria-live="polite"><div><dt>已選方案</dt><dd>{selectedPlan.name}</dd></div><div><dt>使用期限</dt><dd>{selectedPlan.duration}</dd></div><div><dt>續費方式</dt><dd>不自動續扣</dd></div><div className="member-order-total"><dt>本次付款</dt><dd><span>NT$</span> {selectedPlan.price}</dd></div></dl>
+            <button type="button" onClick={checkout} disabled={submitting || !lineName} className="member-pay-button">{submitting ? '正在建立付款單…' : lineName ? '前往安全付款' : '請先登入 LINE'}<ArrowRight className="h-4 w-4" /></button>
+            <p className="member-payment-note"><Shield className="h-4 w-4 shrink-0" />由綠界科技 ECPay 安全處理付款</p>
+          </aside>
+        </div>
 
         {notice && (
           <p
             role="status"
             aria-live="polite"
-            className="mt-5 rounded-2xl border-2 border-amber-300 bg-amber-50 px-5 py-4 text-sm font-bold text-amber-900"
+            className="mt-5 rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 text-sm font-bold text-amber-900"
           >
             {notice}
           </p>
         )}
-        <section aria-labelledby="membership-faq-title" className="relative mt-10 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0_#161b35] sm:p-8">
+        <section aria-labelledby="membership-faq-title" className="relative mt-10 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0_#161b35] sm:p-8">
           <div aria-hidden="true" className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-amber-100" />
           <div className="relative border-b-2 border-slate-900 pb-6">
             <div className="flex items-start gap-4">
-              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900"><HelpCircle className="h-6 w-6" /></div>
-              <div><p className="text-[10px] font-black tracking-[.2em] text-amber-700">MEMBERSHIP FAQ</p><h2 id="membership-faq-title" className="mt-1 text-2xl font-black sm:text-3xl">常見問題</h2><p className="mt-2 text-sm font-bold leading-6 text-slate-600">付款、會員資格與使用方式，一次整理給你。</p></div>
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-[#e7edce] text-slate-900"><HelpCircle className="h-6 w-6" /></div>
+              <div><p className="text-[10px] font-bold tracking-[.2em] text-amber-700">MEMBERSHIP FAQ</p><h2 id="membership-faq-title" className="mt-1 text-2xl font-bold sm:text-3xl">常見問題</h2><p className="mt-2 text-sm font-normal leading-6 text-slate-600">付款、會員資格與使用方式，一次整理給你。</p></div>
             </div>
           </div>
           <div className="relative mt-5 grid gap-3">
             {membershipFaqs.map((faq, index) => (
-              <details key={faq.q} className="group rounded-2xl border-2 border-slate-200 bg-slate-50 px-4 transition open:border-indigo-300 open:bg-indigo-50/60 sm:px-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-4 font-black [&::-webkit-details-marker]:hidden">
-                  <span className="flex min-w-0 items-center gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white text-[11px] font-black text-indigo-700 shadow-sm">{String(index + 1).padStart(2, '0')}</span><span className="text-sm leading-6 text-slate-800">{faq.q}</span></span>
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-lg leading-none text-slate-500 transition group-open:rotate-45 group-open:border-indigo-300 group-open:text-indigo-700">+</span>
+              <details key={faq.q} className="group rounded-2xl border border-slate-200 bg-slate-50 px-4 transition open:border-emerald-300 open:bg-emerald-50/60 sm:px-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-4 font-bold [&::-webkit-details-marker]:hidden">
+                  <span className="flex min-w-0 items-center gap-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white text-[11px] font-bold text-emerald-700 shadow-[3px_3px_0_#161b35]">{String(index + 1).padStart(2, '0')}</span><span className="text-sm leading-6 text-slate-800">{faq.q}</span></span>
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-lg leading-none text-slate-500 transition group-open:rotate-45 group-open:border-emerald-300 group-open:text-emerald-700">+</span>
                 </summary>
-                <div className="border-t border-indigo-100 pb-4 pt-3">
-                  <p className="text-sm font-bold leading-7 text-slate-600">{faq.a}</p>
+                <div className="border-t border-emerald-100 pb-4 pt-3">
+                  <p className="text-sm font-normal leading-7 text-slate-600">{faq.a}</p>
                   {faq.q === '支援哪些付款方式？' && (
-                    <div className="mt-4 grid gap-3 rounded-2xl border border-indigo-100 bg-[#f7f9ff] p-3 sm:p-4 md:grid-cols-[1fr_1.25fr]">
-                      <div className="rounded-xl border border-indigo-100 bg-white p-3 shadow-sm">
+                    <div className="mt-4 grid gap-3 rounded-2xl border border-emerald-100 bg-[#f7f9ff] p-3 sm:p-4 md:grid-cols-[1fr_1.25fr]">
+                      <div className="rounded-xl border border-emerald-100 bg-white p-3 shadow-[3px_3px_0_#161b35]">
                         <div className="mb-2 flex items-center gap-2">
-                          <div className="grid h-7 w-7 place-items-center rounded-lg bg-indigo-50 text-indigo-700">
+                          <div className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-700">
                             <CreditCard className="h-3.5 w-3.5" />
                           </div>
-                          <p className="text-xs font-black text-slate-700">信用卡付款</p>
+                          <p className="text-xs font-bold text-slate-700">信用卡付款</p>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           {paymentMethods.card.map((method) => (
-                            <span key={method} className="flex min-h-10 items-center justify-center rounded-lg border border-indigo-100 bg-indigo-50/60 px-2 py-2 text-center text-xs font-black text-indigo-900">{method}</span>
+                            <span key={method} className="flex min-h-10 items-center justify-center rounded-lg border border-emerald-100 bg-emerald-50/60 px-2 py-2 text-center text-xs font-bold text-emerald-900">{method}</span>
                           ))}
                         </div>
                       </div>
-                      <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-                        <p className="mb-2 text-xs font-black text-slate-700">非信用卡付款</p>
+                      <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-[3px_3px_0_#161b35]">
+                        <p className="mb-2 text-xs font-bold text-slate-700">非信用卡付款</p>
                         <div className="grid grid-cols-2 gap-2">
                           {paymentMethods.other.map((method) => (
-                            <span key={method} className="flex min-h-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-center text-xs font-black text-slate-700">{method}</span>
+                            <span key={method} className="flex min-h-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-2 py-2 text-center text-xs font-bold text-slate-700">{method}</span>
                           ))}
                         </div>
                       </div>
@@ -852,10 +689,10 @@ export default function MembershipPage() {
         <MembershipSupportLinks />
       </section>
       {showPlanComparison && <div className="fixed inset-0 z-[160] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setShowPlanComparison(false); }}>
-        <section role="dialog" aria-modal="true" aria-labelledby="plan-comparison-title" className="max-h-[calc(100vh-2rem)] w-full max-w-3xl overflow-y-auto rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0_#161b35] sm:p-7">
-          <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-black tracking-[.18em] text-violet-700">SMART UPGRADE</p><h2 id="plan-comparison-title" className="mt-1 text-2xl font-black leading-tight sm:text-3xl">把時間留給選擇，<span className="text-violet-700">不要留給限制</span></h2><p className="mt-2 text-sm font-bold leading-6 text-slate-600">會員可以更自在地反覆分析、調整志願，還能邀請家人一起討論到確認。</p></div><button type="button" aria-label="關閉會員比較" onClick={() => setShowPlanComparison(false)} className="rounded-xl border-2 border-slate-900 p-2 hover:bg-slate-100"><X className="h-5 w-5" /></button></div>
-          <div className="mt-6 grid gap-3 md:grid-cols-2"><div className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 sm:p-5"><div className="flex items-start justify-between gap-3"><div><h3 className="text-lg font-black text-slate-700">非會員</h3><p className="mt-1 text-xs font-bold text-slate-500">可以試用，但每次規劃都會遇到限制</p></div><span className="rounded-full bg-slate-200 px-2 py-1 text-[10px] font-black text-slate-600">基本使用</span></div><ul className="mt-5 space-y-3 text-sm font-bold text-slate-600">{['可查看公開升學資訊與基本探索功能','分析前需依提示輸入使用授權','沒有免廣告體驗，分析途中可能被打斷','無法使用家長共編與版本還原','一般分享有期限，較適合短暫參考'].map(item => <li key={item} className="flex gap-2"><X className="h-4 w-4 shrink-0 text-slate-400" />{item}</li>)}</ul><p className="mt-5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black leading-5 text-slate-500">只想先看看資料，可以從這裡開始。</p></div><div className="relative overflow-hidden rounded-2xl border-2 border-violet-900 bg-violet-600 p-4 text-white shadow-[3px_3px_0_#4c1d95] sm:p-5"><span className="absolute right-3 top-3 rounded-full bg-amber-300 px-2 py-1 text-[10px] font-black text-slate-900">最適合實際選志願</span><h3 className="text-lg font-black">會員</h3><p className="mt-1 text-xs font-bold text-violet-100">把反覆比較、全家討論一次打通</p><ul className="mt-5 space-y-3 text-sm font-bold text-violet-50">{['全程免廣告，專心完成分析','免輸入授權碼，直接開始落點分析','無限次數落點分析與一分改變分析','家長協作志願表、留言與版本還原','分享連結與期限管理更完整','一次付款，到期不自動續扣'].map(item => <li key={item} className="flex gap-2"><Check className="h-4 w-4 shrink-0 text-amber-300" />{item}</li>)}</ul><p className="mt-5 rounded-xl border border-violet-300/50 bg-violet-700/60 px-3 py-2 text-xs font-black leading-5 text-white">如果你正在整理志願、要和家人討論，會員才是完整版本。</p></div></div>
-          <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"><button type="button" onClick={() => setShowPlanComparison(false)} className="rounded-xl border-2 border-slate-900 px-4 py-3 text-sm font-black">先看看</button><button type="button" onClick={() => { setShowPlanComparison(false); document.getElementById('membership-checkout-title')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-amber-300 px-4 py-3 text-sm font-black shadow-[2px_2px_0_#161b35]">查看方案並升級 <ArrowRight className="h-4 w-4" /></button></div>
+        <section role="dialog" aria-modal="true" aria-labelledby="plan-comparison-title" className="max-h-[calc(100vh-2rem)] w-full max-w-3xl overflow-y-auto rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0_#161b35] sm:p-7">
+          <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-bold tracking-[.18em] text-emerald-700">SMART UPGRADE</p><h2 id="plan-comparison-title" className="mt-1 text-2xl font-bold leading-tight sm:text-3xl">把時間留給選擇，<span className="text-emerald-700">不要留給限制</span></h2><p className="mt-2 text-sm font-normal leading-6 text-slate-600">會員可以更自在地反覆分析、調整志願，還能邀請家人一起討論到確認。</p></div><button type="button" aria-label="關閉會員比較" onClick={() => setShowPlanComparison(false)} className="rounded-xl border-2 border-slate-900 p-2 hover:bg-slate-100"><X className="h-5 w-5" /></button></div>
+          <div className="mt-6 grid gap-3 md:grid-cols-2"><div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5"><div className="flex items-start justify-between gap-3"><div><h3 className="text-lg font-bold text-slate-700">非會員</h3><p className="mt-1 text-xs font-bold text-slate-500">可以試用，但每次規劃都會遇到限制</p></div><span className="rounded-full bg-slate-200 px-2 py-1 text-[10px] font-bold text-slate-600">基本使用</span></div><ul className="mt-5 space-y-3 text-sm font-bold text-slate-600">{['可查看公開升學資訊與基本探索功能','分析前需依提示輸入使用授權','沒有免廣告體驗，分析途中可能被打斷','無法使用家長共編與版本還原','一般分享有期限，較適合短暫參考'].map(item => <li key={item} className="flex gap-2"><X className="h-4 w-4 shrink-0 text-slate-400" />{item}</li>)}</ul><p className="mt-5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium leading-5 text-slate-500">只想先看看資料，可以從這裡開始。</p></div><div className="relative overflow-hidden rounded-2xl border border-emerald-900 bg-emerald-900 p-4 text-white shadow-[3px_3px_0_#161b35] sm:p-5"><span className="absolute right-3 top-3 rounded-full bg-[#e7edce] px-2 py-1 text-[10px] font-bold text-slate-900">最適合實際選志願</span><h3 className="text-lg font-bold">會員</h3><p className="mt-1 text-xs font-bold text-emerald-100">把反覆比較、全家討論一次打通</p><ul className="mt-5 space-y-3 text-sm font-bold text-emerald-50">{['全程免廣告，專心完成分析','免輸入授權碼，直接開始落點分析','無限次數落點分析與一分改變分析','家長協作志願表、留言與版本還原','分享連結與期限管理更完整','一次付款，到期不自動續扣'].map(item => <li key={item} className="flex gap-2"><Check className="h-4 w-4 shrink-0 text-amber-300" />{item}</li>)}</ul><p className="mt-5 rounded-xl border border-emerald-300/50 bg-emerald-700/60 px-3 py-2 text-xs font-medium leading-5 text-white">如果你正在整理志願、要和家人討論，會員才是完整版本。</p></div></div>
+          <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"><button type="button" onClick={() => setShowPlanComparison(false)} className="rounded-xl border-2 border-slate-900 px-4 py-3 text-sm font-bold">先看看</button><button type="button" onClick={() => { setShowPlanComparison(false); document.getElementById('membership-checkout-title')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-[#e7edce] px-4 py-3 text-sm font-bold shadow-[3px_3px_0_#161b35]">查看方案並升級 <ArrowRight className="h-4 w-4" /></button></div>
         </section>
       </div>}
     </main>
