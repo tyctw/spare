@@ -97,7 +97,14 @@ function shiftScheduleDate_(dateKey, days) {
   return Utilities.formatDate(date, 'UTC', 'yyyy-MM-dd');
 }
 
-function collectScheduleJobs_(sheet) {
+function scheduleReminderMessage_(message, reminderType) {
+  if (reminderType !== '提前2天') return message;
+  return message.replace(/^今天為/, '兩天後為')
+    .replace(/今天/g, '當天')
+    .replace(/今日/g, '當天');
+}
+
+function collectScheduleJobs_(sheet, dateKey) {
   const values = sheet.getDataRange().getValues();
   const headers = values.shift().map(function(value) {
     return String(value).trim();
@@ -121,7 +128,7 @@ function collectScheduleJobs_(sheet) {
     }
   });
 
-  const today = scheduleDateKey_(new Date());
+  const today = dateKey || scheduleDateKey_(new Date());
   const sheetTimezone = sheet
     .getParent()
     .getSpreadsheetTimeZone();
@@ -185,7 +192,7 @@ function collectScheduleJobs_(sheet) {
       date: eventKey.replace(/-/g, '/'),
       title: title,
       reminderType: reminderType,
-      message: String(row[index.message] || '').trim(),
+      message: scheduleReminderMessage_(String(row[index.message] || '').trim(), reminderType),
       url: String(row[index.url] || '').trim(),
     };
 
@@ -255,8 +262,8 @@ function sendScheduleBroadcast() {
       // LINE retry key 有效管理期間為 24 小時。
       if (Date.now() - pending.createdAt >= 24 * 60 * 60 * 1000) {
         throw new Error(
-          '第 ' + job.rowNumber +
-          ' 列的發送結果待確認且已超過 24 小時，' +
+          '第 ' + job.rowNumber + ' 列' +
+          '的發送結果待確認且已超過 24 小時，' +
           '請先核對 LINE 發送紀錄，避免重複廣播。'
         );
       }
@@ -273,17 +280,15 @@ function sendScheduleBroadcast() {
       );
 
       const records = job.sentRecords.concat(job.sentKey);
-
       sheet
         .getRange(job.rowNumber, job.sentColumn)
         .setValue(records.join(','));
-
       SpreadsheetApp.flush();
       properties.deleteProperty(propertyKey);
 
       console.log(
-        'LINE 已接受廣播：第 ' +
-        job.rowNumber + ' 列｜' +
+        'LINE 已接受廣播：' +
+        '第 ' + job.rowNumber + ' 列｜' +
         job.data.title + '｜' +
         job.data.reminderType
       );
@@ -299,6 +304,20 @@ function sendScheduleBroadcast() {
 
 function getScheduleTheme_(title) {
   const themes = [
+    {
+      pattern: /模擬考|複習考/,
+      color: '#0F766E',
+      soft: '#F0FDFA',
+      category: '模擬考提醒',
+      icon: '✏️',
+    },
+    {
+      pattern: /現場登記分發/,
+      color: '#4338CA',
+      soft: '#EEF2FF',
+      category: '現場分發',
+      icon: '🏫',
+    },
     {
       pattern: /截止|放棄/,
       color: '#BE123C',
@@ -377,12 +396,82 @@ function scheduleText_(text, options) {
   }, options || {});
 }
 
+// 依事件內容給準備方向，避免把所有提醒都寫成同一份通用清單。
+// 實際文件與辦理程序仍以該筆日程的連結及官方公告為準。
+function getScheduleChecklist_(title, isToday) {
+  if (/模擬考|複習考/.test(title)) return [
+    '對照本次考試範圍，整理最後複習重點。',
+    '確認學校公布的考程、地點與應試用品。',
+    isToday ? '留意今天的科目與入場時間。' : '預留交通與作息調整時間。',
+  ];
+  if (/放棄錄取資格/.test(title)) return [
+    '確認放棄資格的適用條件與截止時間。',
+    '依簡章備妥聲明文件與辦理方式。',
+    isToday ? '今天完成聲明並確認是否受理。' : '先與學校核對程序，保留辦理紀錄。',
+  ];
+  if (/現場登記分發/.test(title)) return [
+    '確認現場登記資格、地點與梯次時間。',
+    '備妥公告要求的證件與相關文件。',
+    isToday ? '依現場流程完成分發與報到確認。' : '事先查好交通與現場辦理方式。',
+  ];
+  if (/續招|簡章公告/.test(title)) return [
+    '查看是否已有續招學校與正式簡章。',
+    '核對報名資格、名額與辦理日期。',
+    '有意參加時，依各校公告準備後續資料。',
+  ];
+  if (/報到/.test(title)) return [
+    '確認錄取結果與報到學校。',
+    '備妥通知要求的身分與報到文件。',
+    isToday ? '核對今天的時間、地點並完成報到。' : '先查好報到時間、地點與辦理方式。',
+  ];
+  if (/報名/.test(title)) return [
+    '核對報名資格、管道與受理時間。',
+    '備妥簡章要求的資料與證明文件。',
+    isToday ? '確認今天是否已完成報名及必要程序。' : '送出後確認報名結果，留意截止時間。',
+  ];
+  if (/志願|選填|序位/.test(title)) return [
+    '核對可選校科與當年度招生規則。',
+    '依自己的意願檢查志願順序。',
+    isToday ? '確認今天完成送出並查核結果。' : '留意截止時間與送出後的確認方式。',
+  ];
+  if (/准考證/.test(title)) return [
+    '確認准考證的領取或查詢方式。',
+    '核對姓名、考區與其他應試資料。',
+    '資料有誤時，依官方說明儘速處理。',
+  ];
+  if (/放榜|分發|成績/.test(title)) return [
+    '確認官方公告時間與查詢入口。',
+    '準備查詢所需的個人資料。',
+    '查詢後記下後續申請或報到期限。',
+  ];
+  if (/考試|會考|測驗|檢定/.test(title)) return [
+    '確認應試時間、考場與交通方式。',
+    '依通知備妥應試證件與用品。',
+    isToday ? '預留交通時間，留意入場規定。' : '再次核對官方應試注意事項。',
+  ];
+  if (/截止|放棄/.test(title)) return [
+    '確認官方截止時間與適用資格。',
+    '核對表單、文件與送出方式。',
+    isToday ? '今天完成辦理並確認受理結果。' : '提早完成辦理，保留確認紀錄。',
+  ];
+  return [
+    '確認這項日程適用的對象與時間。',
+    '查看官方公告的辦理方式與所需資料。',
+    '記下後續步驟與相關期限。',
+  ];
+}
+
 function createScheduleFlexMessage_(data) {
   const theme = getScheduleTheme_(data.title);
   const isToday = data.reminderType === '今日';
-  const reminderLabel = isToday ? '就是今天' : '還有 2 天';
+  const isExamDay = /國中教育會考第[一二]天/.test(data.title);
+  const reminderLabel = isToday ? '今天要留意' : '提前 2 天提醒';
+  const checklist = getScheduleChecklist_(data.title, isToday);
 
-  const targetUrl = data.url || SCHEDULE_CONFIG.defaultUrl;
+  // 允許從 Markdown 表格貼入的 [文字](網址)，實際送給 LINE 時只保留網址。
+  const rawUrl = String(data.url || '').trim();
+  const markdownUrl = rawUrl.match(/^\[[^\]]+\]\((https:\/\/[^\s)]+)\)$/i);
+  const targetUrl = (markdownUrl ? markdownUrl[1] : rawUrl) || SCHEDULE_CONFIG.defaultUrl;
 
   if (!/^https:\/\/[^\s]+$/i.test(targetUrl)) {
     throw new Error(
@@ -392,11 +481,13 @@ function createScheduleFlexMessage_(data) {
 
   const message = data.message ||
     '請依學校通知與招生簡章，確認需要準備的文件及辦理方式。';
+  const displayMessage = message.indexOf('當日考程：／') === 0
+    ? message.replace(/／/g, '\n') : message;
 
   return {
     type: 'flex',
     altText: (
-      '【' + reminderLabel + '】' +
+      '【升學日程・' + reminderLabel + '】' +
       data.date + '｜' + data.title
     ).slice(0, 400),
 
@@ -407,7 +498,7 @@ function createScheduleFlexMessage_(data) {
       header: {
         type: 'box',
         layout: 'vertical',
-        backgroundColor: theme.color,
+        backgroundColor: '#14243A',
         paddingAll: '24px',
         spacing: 'lg',
         contents: [
@@ -417,8 +508,8 @@ function createScheduleFlexMessage_(data) {
             alignItems: 'center',
             spacing: 'sm',
             contents: [
-              scheduleText_('升學日程提醒', {
-                color: '#FFFFFF',
+              scheduleText_('升學小助手  ／  日程提醒', {
+                color: '#CBD5E1',
                 size: 'xs',
                 weight: 'bold',
                 flex: 1,
@@ -427,7 +518,7 @@ function createScheduleFlexMessage_(data) {
                 type: 'box',
                 layout: 'vertical',
                 flex: 0,
-                backgroundColor: '#FFFFFF',
+                backgroundColor: theme.soft,
                 cornerRadius: '20px',
                 paddingTop: '5px',
                 paddingBottom: '5px',
@@ -443,6 +534,9 @@ function createScheduleFlexMessage_(data) {
               },
             ],
           },
+          scheduleText_(theme.category, {
+            color: '#A7F3D0', size: 'xs', weight: 'bold',
+          }),
           {
             type: 'box',
             layout: 'horizontal',
@@ -469,7 +563,7 @@ function createScheduleFlexMessage_(data) {
         type: 'box',
         layout: 'vertical',
         backgroundColor: '#FFFFFF',
-        paddingAll: '24px',
+        paddingAll: '22px',
         spacing: 'lg',
         contents: [
           {
@@ -480,38 +574,63 @@ function createScheduleFlexMessage_(data) {
             paddingAll: '18px',
             spacing: 'sm',
             contents: [
-              scheduleText_(theme.category, {
+              scheduleText_('重要日期', {
                 size: 'xs',
                 color: theme.color,
                 weight: 'bold',
               }),
               scheduleText_(data.date, {
-                size: 'xl',
+                size: 'xxl',
                 color: '#0F172A',
                 weight: 'bold',
               }),
               scheduleText_(
-                isToday
-                  ? '請確認今天需要辦理的事項。'
-                  : '提早確認文件與辦理方式，安心準備。',
-                { size: 'xs' }
+                isExamDay
+                  ? (isToday ? '請提前到場，依准考證與考場公告應試。' : '先核對考場、交通與應試用品。')
+                  : (isToday ? '請在今天核對受理時間與辦理方式。' : '先確認所需文件、資格與辦理方式。'),
+                { size: 'sm', color: '#475569' }
               ),
             ],
           },
-          scheduleText_('這次要留意', {
+          scheduleText_('這次要做什麼', {
             weight: 'bold',
             color: '#0F172A',
           }),
-          scheduleText_(message, {
+          scheduleText_(displayMessage, {
             size: 'md',
             color: '#334155',
           }),
+          {
+            type: 'box',
+            layout: 'vertical',
+            backgroundColor: '#F8FAFC',
+            cornerRadius: '14px',
+            paddingAll: '16px',
+            spacing: 'md',
+            contents: [
+              scheduleText_('準備清單', {
+                size: 'sm', color: '#0F172A', weight: 'bold',
+              }),
+            ].concat(checklist.map(function(item, index) {
+              return {
+                type: 'box', layout: 'horizontal', spacing: 'sm',
+                alignItems: 'start', contents: [
+                  scheduleText_(String(index + 1).padStart(2, '0'), {
+                    size: 'xs', color: theme.color, weight: 'bold', flex: 0,
+                  }),
+                  scheduleText_(item, { size: 'sm', color: '#334155', flex: 1 }),
+                ],
+              };
+            })),
+          },
           {
             type: 'separator',
             color: '#E2E8F0',
           },
           scheduleText_(
-            '實際受理時間、資格與辦理方式，請以官方簡章及學校公告為準。',
+            data.sourceNote || (/模擬考|複習考/.test(data.title)
+              ? '各校是否施測、考程與範圍，請以就讀學校通知為準。'
+              : '實際受理時間、資格與辦理方式，請以官方簡章及學校公告為準。'),
             {
               size: 'xxs',
               color: '#64748B',
@@ -533,7 +652,7 @@ function createScheduleFlexMessage_(data) {
             color: theme.color,
             action: {
               type: 'uri',
-              label: '查看日程詳情',
+              label: /模擬考|複習考/.test(data.title) ? '查看模擬考公告' : '查看日程與辦理資訊',
               uri: targetUrl,
             },
           },

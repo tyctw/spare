@@ -67,6 +67,16 @@ function visit(route) {
   }
 }
 visit('home');
+function buttonStyles(route) {
+  const contents = render(route).message.contents;
+  const bubbles = contents.type === 'carousel' ? contents.contents : [contents];
+  return bubbles.flatMap(bubble => bubble.body.contents.filter(item => item.type === 'button').map(item => [item.action.label, item.style]));
+}
+assert.ok(buttonStyles('home').every(([, style]) => style === 'secondary'));
+assert.ok(buttonStyles('regions/analysis').every(([, style]) => style === 'secondary'));
+assert.ok(buttonStyles('scores/taipei/-').every(([, style]) => style === 'secondary'));
+assert.deepEqual(buttonStyles('steps/choose-0/2').slice(0, 2).map(([, style]) => style), ['secondary', 'primary']);
+assert.equal(buttonStyles('scores/taipei/012340')[0][1], 'primary');
 for (const feature of features) {
   const id = context.guideFeatureId_(feature);
   assert.ok(routes.has('feature/' + id), feature.title);

@@ -98,34 +98,55 @@ function guideCard_(title, description, choices, back, route) {
   if (back) controls.push(guideChoice_('上一步', back));
   controls.push(guideChoice_('重新開始', 'home'), guideChoice_('取消操作', 'cancel'));
   const visual = guideVisual_(route);
-  const action = function(item, index) {
+  const action = function(item) {
     if (item.url) return { type: 'uri', label: item.label.slice(0, 20), uri: item.url };
     const result = guideAction_(item.label, item.route);
     result.label = item.label.slice(0, 20);
     return result;
   };
+  const isPrimary = function(item) {
+    if (route.indexOf('feature/') === 0) {
+      const next = choices.find(function(choice) {
+        return choice.route === 'regions/analysis' || choice.route === 'search' ||
+          choice.route === 'vocational' || choice.route === 'regions/rules' ||
+          (choice.route || '').indexOf('steps/') === 0;
+      });
+      return item === next;
+    }
+    if (route.indexOf('steps/') === 0) {
+      return item.label === '下一步' ||
+        (route.slice(-2) === '/2' && !!item.url && item.label.indexOf('開啟') === 0);
+    }
+    if (route.indexOf('rule/') === 0) return item.label === '查看完整計分與比序';
+    if (route.indexOf('scores/') === 0) return item.label === '確認並帶入網站分析';
+    if (route === 'search-result') return item.label === '查看搜尋結果';
+    return ['cancel', 'invalid', 'expired'].indexOf(route) !== -1 && item.label === '重新開始';
+  };
   const bubbles = pages.map(function(page, index) {
     return {
       type: 'bubble', size: 'mega',
-      header: { type: 'box', layout: 'vertical', backgroundColor: visual[1], paddingAll: '22px', spacing: 'md', contents: [
+      header: { type: 'box', layout: 'vertical', backgroundColor: '#14243A', paddingAll: '22px', spacing: 'md', contents: [
         { type: 'box', layout: 'horizontal', alignItems: 'center', contents: [
-          botText_('SPARE · 升學小助手', { color: visual[2], size: 'xxs', weight: 'bold', flex: 1 }),
+          botText_('升學小助手  ／  逐步操作', { color: '#CBD5E1', size: 'xs', weight: 'bold', flex: 1 }),
           { type: 'box', layout: 'vertical', flex: 0, cornerRadius: '10px', backgroundColor: '#FFFFFF33', paddingAll: '5px', contents: [
-            botText_(pages.length > 1 ? (index + 1) + '/' + pages.length : 'GUIDE', { color: '#FFFFFF', size: 'xxs', weight: 'bold', align: 'center' }),
+            botText_(pages.length > 1 ? '第 ' + (index + 1) + '/' + pages.length + ' 頁' : '操作引導', { color: '#FFFFFF', size: 'xxs', weight: 'bold', align: 'center' }),
           ] },
         ] },
         { type: 'box', layout: 'horizontal', alignItems: 'center', spacing: 'md', contents: [
           botText_(visual[0], { color: '#FFFFFF', size: 'xxl', flex: 0 }),
           botText_(title, { color: '#FFFFFF', size: 'xl', weight: 'bold', flex: 1 }),
         ] },
-        botText_('逐步操作' + (pages.length > 1 ? ' · 左右滑動查看' : ''), { color: visual[2], size: 'xs' }),
+        botText_(pages.length > 1 ? '左右滑動，查看其他選項' : '依照下方提示選擇下一步', { color: '#CBD5E1', size: 'xs' }),
       ] },
       body: { type: 'box', layout: 'vertical', paddingAll: '18px', spacing: 'md', backgroundColor: '#FFFFFF', contents: [
-        { type: 'box', layout: 'vertical', paddingAll: '14px', cornerRadius: '12px', backgroundColor: visual[2], contents: [botText_(description, { color: '#0F172A', size: 'sm' })] },
-      ].concat(page.map(function(item, itemIndex) {
-        // Each bubble has one visual primary action only. URI links after the
-        // first choice stay secondary so the next step remains obvious.
-        const button = { type: 'button', style: itemIndex === 0 ? 'primary' : 'secondary', color: itemIndex === 0 ? visual[1] : undefined, height: 'sm', action: action(item, itemIndex) };
+        { type: 'box', layout: 'vertical', paddingAll: '16px', cornerRadius: '14px', backgroundColor: visual[2], spacing: 'sm', contents: [
+          botText_('目前步驟', { color: visual[1], size: 'xs', weight: 'bold' }),
+          botText_(description, { color: '#0F172A', size: 'sm' }),
+        ] },
+      ].concat(page.map(function(item) {
+        // 同等選項使用一般樣式；只突顯明確的下一步或完成動作。
+        const primary = isPrimary(item);
+        const button = { type: 'button', style: primary ? 'primary' : 'secondary', color: primary ? visual[1] : undefined, height: 'sm', action: action(item) };
         return button;
       })) },
       footer: { type: 'box', layout: 'vertical', backgroundColor: '#F8FAFC', paddingAll: '12px', spacing: 'xs', contents: controls.map(function(item) {
@@ -136,6 +157,7 @@ function guideCard_(title, description, choices, back, route) {
   const message = { type: 'flex', altText: (title + '｜' + description).slice(0, 400), contents: bubbles.length === 1 ? bubbles[0] : { type: 'carousel', contents: bubbles } };
   const quick = (choices.length <= 10 ? choices : []).concat(controls);
   message.quickReply = { items: quick.map(function(item) { return { type: 'action', action: action(item) }; }) };
+  if (route === 'home') message.quickReply.items = message.quickReply.items.concat(botScheduleQuickReply_().items);
   // 路徑資訊不放進 LINE payload，只交給本地對話處理器保存。
   return { message: message, route: route, back: back, choices: choices };
 }

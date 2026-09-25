@@ -564,6 +564,7 @@ function handleLineEvent(event) {
     return;
   }
 
+  if (typeof botScheduleHandleEvent_ === 'function' && botScheduleHandleEvent_(event)) return;
   if (typeof guideHandleEvent_ === 'function' && guideHandleEvent_(event)) return;
 
   if (event.type === 'follow') {
@@ -615,6 +616,11 @@ function buildBotReply_(text) {
 
   if (!keyword) {
     return createHelpFlexMessage(false);
+  }
+
+  if (typeof botScheduleQueryKind_ === 'function') {
+    const scheduleKind = botScheduleQueryKind_(text);
+    if (scheduleKind) return botScheduleReply_(scheduleKind);
   }
 
   const isHelp = BOT_HELP_KEYWORDS.some(function(word) {
@@ -731,10 +737,16 @@ function botMenuButton_() {
     color: '#64748B',
     action: {
       type: 'message',
-      label: '返回全部分類',
+      label: '返回功能分類',
       text: '選單',
     },
   };
+}
+
+function botScheduleQuickReply_() {
+  return { items: ['今天日程', '本週日程', '下一個重要日期'].map(function(label) {
+    return { type: 'action', action: { type: 'message', label: label, text: label } };
+  }) };
 }
 
 // ========================================
@@ -757,7 +769,7 @@ function createFeatureFlexMessage(feature) {
         layout: 'vertical',
         paddingAll: '22px',
         spacing: 'lg',
-        backgroundColor: feature.color,
+        backgroundColor: '#14243A',
         contents: [
           {
             type: 'box',
@@ -765,8 +777,8 @@ function createFeatureFlexMessage(feature) {
             alignItems: 'center',
             spacing: 'sm',
             contents: [
-              botText_('會考落點分析', {
-                color: '#FFFFFF',
+              botText_('升學小助手  ／  功能導覽', {
+                color: '#CBD5E1',
                 size: 'xs',
                 weight: 'bold',
                 flex: 1,
@@ -775,12 +787,12 @@ function createFeatureFlexMessage(feature) {
                 type: 'box',
                 layout: 'vertical',
                 flex: 0,
-                backgroundColor: '#FFFFFF',
+                backgroundColor: feature.soft,
                 cornerRadius: '20px',
                 paddingAll: '8px',
                 contents: [
                   botText_(feature.tag, {
-                    color: feature.color,
+                  color: feature.color,
                     size: 'xxs',
                     weight: 'bold',
                   }),
@@ -788,11 +800,10 @@ function createFeatureFlexMessage(feature) {
               },
             ],
           },
-          botTitle_(
-            feature.icon,
-            feature.title,
-            '#FFFFFF'
-          ),
+          botTitle_(feature.icon, feature.title, '#FFFFFF'),
+          botText_('找到需要的資訊，接著到網站使用完整功能。', {
+            color: '#CBD5E1', size: 'xs',
+          }),
         ],
       },
 
@@ -802,19 +813,20 @@ function createFeatureFlexMessage(feature) {
         paddingAll: '22px',
         spacing: 'lg',
         contents: [
+          botText_('你可以做什麼', { color: feature.color, size: 'xs', weight: 'bold' }),
           botText_(feature.description, {
-            size: 'md',
+            size: 'md', weight: 'bold',
             color: '#0F172A',
           }),
           {
             type: 'box',
             layout: 'vertical',
             paddingAll: '16px',
-            cornerRadius: '12px',
+            cornerRadius: '14px',
             backgroundColor: feature.soft,
             spacing: 'sm',
             contents: [
-              botText_('使用提醒', {
+              botText_('使用前先知道', {
                 color: feature.color,
                 weight: 'bold',
                 size: 'xs',
@@ -837,7 +849,7 @@ function createFeatureFlexMessage(feature) {
             color: feature.color,
             action: {
               type: 'uri',
-              label: '開啟功能',
+              label: '前往' + feature.title.slice(0, 14),
               uri: feature.url,
             },
           },
@@ -855,7 +867,8 @@ function createFeatureFlexMessage(feature) {
 function createHelpFlexMessage(unknownKeyword) {
   return {
     type: 'flex',
-    altText: '升學工具箱｜查看網站全部功能分類',
+    altText: '升學小助手｜選擇功能分類，找到需要的升學資訊',
+    quickReply: botScheduleQuickReply_(),
 
     contents: {
       type: 'bubble',
@@ -865,14 +878,15 @@ function createHelpFlexMessage(unknownKeyword) {
         type: 'box',
         layout: 'vertical',
         paddingAll: '22px',
-        backgroundColor: '#0F172A',
+        backgroundColor: '#14243A',
         spacing: 'md',
         contents: [
-          botTitle_('🧭', '升學工具箱', '#FFFFFF'),
+          botText_('升學小助手  ／  功能選單', { color: '#A7F3D0', size: 'xs', weight: 'bold' }),
+          botTitle_('🧭', '今天想查什麼？', '#FFFFFF'),
           botText_(
             unknownKeyword
-              ? '還沒找到對應功能，請選擇分類或換個關鍵字。'
-              : '選擇分類，找到你需要的升學功能。',
+              ? '還沒找到相符項目。選一個分類，或換個關鍵字試試。'
+              : '從下方選擇分類，快速找到下一步。',
             { color: '#CBD5E1' }
           ),
         ],
@@ -881,7 +895,7 @@ function createHelpFlexMessage(unknownKeyword) {
       body: {
         type: 'box',
         layout: 'vertical',
-        paddingAll: '16px',
+        paddingAll: '18px',
         spacing: 'sm',
         contents: BOT_GROUPS.map(function(group) {
           const count = BOT_FEATURE_DATA[group.id].length;
@@ -891,8 +905,8 @@ function createHelpFlexMessage(unknownKeyword) {
             layout: 'horizontal',
             alignItems: 'center',
             spacing: 'sm',
-            paddingAll: '13px',
-            cornerRadius: '12px',
+            paddingAll: '14px',
+            cornerRadius: '14px',
             backgroundColor: group.soft,
             action: {
               type: 'message',
@@ -909,7 +923,7 @@ function createHelpFlexMessage(unknownKeyword) {
                 weight: 'bold',
                 flex: 1,
               }),
-              botText_(count + ' 項 ›', {
+              botText_(count + ' 項  ›', {
                 color: group.color,
                 size: 'xs',
                 flex: 0,
@@ -930,7 +944,7 @@ function createHelpFlexMessage(unknownKeyword) {
             color: '#475569',
             action: {
               type: 'uri',
-              label: '開啟網站全部功能',
+              label: '查看完整網站地圖',
               uri: SITE_URL + 'site-map',
             },
           },
@@ -969,10 +983,11 @@ function createFeatureListFlex_(title, features, color, icon) {
       header: {
         type: 'box',
         layout: 'vertical',
-        backgroundColor: color,
+        backgroundColor: '#14243A',
         paddingAll: '20px',
         spacing: 'sm',
         contents: [
+          botText_('升學小助手  ／  功能清單', { color: '#CBD5E1', size: 'xs', weight: 'bold' }),
           botTitle_(icon, title, '#FFFFFF'),
           botText_(
             '共 ' + features.length + ' 項' +
@@ -980,7 +995,7 @@ function createFeatureListFlex_(title, features, color, icon) {
               ? ' · 第 ' + (pageIndex + 1) +
                 '/' + pages.length + ' 頁，左右滑動查看'
               : ''),
-            { size: 'xs', color: '#FFFFFF' }
+            { size: 'xs', color: '#CBD5E1' }
           ),
         ],
       },
@@ -988,14 +1003,14 @@ function createFeatureListFlex_(title, features, color, icon) {
       body: {
         type: 'box',
         layout: 'vertical',
-        paddingAll: '14px',
+        paddingAll: '16px',
         spacing: 'sm',
         contents: items.map(function(feature) {
           return {
             type: 'box',
             layout: 'horizontal',
-            paddingAll: '13px',
-            cornerRadius: '10px',
+            paddingAll: '14px',
+            cornerRadius: '14px',
             backgroundColor: feature.soft,
             spacing: 'sm',
             alignItems: 'center',
@@ -1020,7 +1035,7 @@ function createFeatureListFlex_(title, features, color, icon) {
                     weight: 'bold',
                   }),
                   botText_(feature.description, {
-                    size: 'xxs',
+                    size: 'xs', color: '#475569',
                   }),
                 ],
               },
@@ -1062,6 +1077,7 @@ function createWelcomeFlexMessage() {
   return {
     type: 'flex',
     altText: '歡迎加入升學小助手！輸入「選單」查看功能。',
+    quickReply: botScheduleQuickReply_(),
 
     contents: {
       type: 'bubble',
@@ -1070,15 +1086,15 @@ function createWelcomeFlexMessage() {
       header: {
         type: 'box',
         layout: 'vertical',
-        backgroundColor: '#047857',
+        backgroundColor: '#14243A',
         paddingAll: '24px',
         spacing: 'md',
         contents: [
-          botText_('歡迎加入', {
-            color: '#D1FAE5',
+          botText_('升學小助手  ／  歡迎加入', {
+            color: '#A7F3D0',
             size: 'xs',
           }),
-          botTitle_('🌱', '升學小助手', '#FFFFFF'),
+          botTitle_('🌱', '一起整理升學下一步', '#FFFFFF'),
         ],
       },
 
@@ -1089,7 +1105,7 @@ function createWelcomeFlexMessage() {
         spacing: 'lg',
         contents: [
           botText_(
-            '從重要日程、學校科別到成績紀錄與志願規劃，找到你需要的資訊。',
+            '重要日程、學校科別、成績紀錄與志願規劃，都可以從這裡開始。',
             {
               size: 'md',
               color: '#0F172A',
@@ -1103,7 +1119,7 @@ function createWelcomeFlexMessage() {
             backgroundColor: '#ECFDF5',
             contents: [
               botText_(
-                '輸入「開始」逐步操作，或輸入：\n日程、成績、桃園、五專、興趣測驗、會員',
+                '想一步步操作？點下方按鈕。\n想查日期？輸入「今天日程」、「本週日程」或「下一個重要日期」。',
                 { color: '#065F46' }
               ),
             ],
