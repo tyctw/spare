@@ -485,7 +485,7 @@ export default function MembershipPage() {
           </span>
         </nav>
         <section className="member-benefits" aria-labelledby="member-benefits-title">
-          <div className="member-section-heading"><div><p className="member-eyebrow">MADE FOR YOUR JOURNEY</p><h1 id="member-benefits-title">一份會員，讓規劃更從容。</h1></div><button type="button" onClick={() => setShowPlanComparison(true)}>比較會員權益 <ArrowRight className="h-4 w-4" /></button></div>
+          <div className="member-section-heading"><div><p className="member-eyebrow">MADE FOR YOUR JOURNEY</p><h1 id="member-benefits-title">一份會員，讓規劃更從容。</h1></div></div>
           <div className="member-benefit-grid">
             {[
               { icon: EyeOff, title: '純淨，沒有打擾', text: '關閉廣告，把注意力留給每一次重要的選擇。', label: '免廣告體驗' },
@@ -509,6 +509,7 @@ export default function MembershipPage() {
                 </p>
               </div>
               <h2 id="membership-plans-title" className="mt-2 text-2xl font-bold">選擇適合你的專注時光</h2>
+              <button type="button" onClick={() => setShowPlanComparison(true)} className="member-comparison-link" aria-haspopup="dialog">比較會員權益 <ArrowRight aria-hidden="true" className="h-4 w-4" /></button>
             </div>
           </div>
           <div role="radiogroup" aria-label="選擇會員方案" className="mt-4 grid gap-4 sm:grid-cols-2">

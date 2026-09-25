@@ -23,8 +23,8 @@
 .member-benefits { margin-top: 2rem; padding: 0 0 3rem; }
 .member-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-bottom: 1.5rem; }
 .member-section-heading h1 { margin-top: .65rem; font-size: 1.6rem; font-weight: 700; color: #243f33; letter-spacing: -.04em; }
-.member-section-heading button { display: inline-flex; align-items: center; gap: .5rem; padding: .6rem 0; color: #466454; font-size: .8rem; white-space: nowrap; }
-.member-section-heading button:hover { color: #123e35; text-decoration: underline; text-underline-offset: 4px; }
+.member-comparison-link { display: inline-flex; align-items: center; gap: .5rem; padding: .6rem 0; color: #466454; font-size: .8rem; white-space: nowrap; }
+.member-comparison-link:hover { color: #123e35; text-decoration: underline; text-underline-offset: 4px; }
 .member-benefit-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .member-benefit { padding: 1.5rem; border: 1px solid #e1e6dc; border-radius: 1.25rem; background: #ffffffa6; }
 .member-benefit-top { display: flex; align-items: center; justify-content: space-between; color: #466454; }
@@ -85,7 +85,7 @@
   box-shadow: 3px 3px 0 var(--member-ink);
 }
 
-.member-section-heading button { border: 0; background: transparent; box-shadow: none; font-weight: 700; }
+.member-comparison-link { margin-top: .25rem; border: 0; background: transparent; box-shadow: none; font-weight: 700; }
 .member-line-button:active,
 .member-pay-button:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--member-ink); }
 .member-pay-button:disabled { box-shadow: none; border-color: #94a18d; }
