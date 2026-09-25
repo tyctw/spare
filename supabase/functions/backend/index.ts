@@ -1636,12 +1636,25 @@ async function handleAction(payload: Record<string, any>, request: Request, resp
       if (!session) return { loggedIn: false, shares: [], hasMore: false };
       const offset = payload.offset ?? 0;
       if (!Number.isSafeInteger(offset) || offset < 0 || offset > 100000) throw new Error('頁碼不正確。');
-      const { data, error } = await supabase.from('shared_reports')
+      const shareQuery = () => supabase.from('shared_reports')
         .select('token, kind, created_at, expires_at, revoked_at, collaboration_key, collaboration_version')
         .eq('owner_line_user_id', session.line_user_id)
         .order('created_at', { ascending: false }).order('token', { ascending: false }).range(offset, offset + 50);
+      let { data, error } = await shareQuery();
+      // Some deployments may have the ownership migration but not the later
+      // collaboration-version column yet. Listing shares should remain usable
+      // during that rollout; collaboration is simply reported as version 1.
+      if (error && /collaboration_version|column .* does not exist/i.test(String(error.message || error))) {
+        const legacy = await supabase.from('shared_reports')
+          .select('token, kind, created_at, expires_at, revoked_at, collaboration_key')
+          .eq('owner_line_user_id', session.line_user_id)
+          .order('created_at', { ascending: false }).order('token', { ascending: false }).range(offset, offset + 50);
+        data = (legacy.data || []).map((share) => ({ ...share, collaboration_version: 1 }));
+        error = legacy.error;
+      }
       if (error) throw error;
-      return { loggedIn: true, hasMore: (data || []).length > 50, shares: (data || []).slice(0, 50).map(({ collaboration_key, ...share }) => ({ ...share, collaborationEnabled: Boolean(collaboration_key) })) };
+      const rows = data || [];
+      return { loggedIn: true, hasMore: rows.length > 50, shares: rows.slice(0, 50).map(({ collaboration_key, ...share }) => ({ ...share, collaborationEnabled: Boolean(collaboration_key) })) };
     }
 
     case 'revokeOwnedShare': {
