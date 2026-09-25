@@ -80,17 +80,14 @@
 
 .member-account-nav a,
 .member-line-button,
-.member-pay-button,
-.member-section-heading button {
+.member-pay-button {
   border: 2px solid var(--member-ink);
   box-shadow: 3px 3px 0 var(--member-ink);
 }
 
-.member-section-heading button { padding: .65rem 1rem; background: #fff; border-radius: .75rem; font-weight: 700; }
-.member-section-heading button:hover { background: #edf5e9; text-decoration: none; }
+.member-section-heading button { border: 0; background: transparent; box-shadow: none; font-weight: 700; }
 .member-line-button:active,
-.member-pay-button:active:not(:disabled),
-.member-section-heading button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--member-ink); }
+.member-pay-button:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--member-ink); }
 .member-pay-button:disabled { box-shadow: none; border-color: #94a18d; }
 
 @media (max-width: 1023px) {
