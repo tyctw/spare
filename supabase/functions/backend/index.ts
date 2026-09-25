@@ -366,10 +366,6 @@ function lineSessionTokenFromCookie(request: Request) {
 }
 
 function supportPaymentStatusTokenFromCookie(request: Request) {
-  const headerToken = request.headers.get('X-Payment-Status-Token');
-  if (headerToken && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(headerToken)) {
-    return headerToken.trim();
-  }
   return cookieValue(request, supportPaymentStatusCookieName).trim();
 }
 
@@ -1337,12 +1333,11 @@ async function handleAction(payload: Record<string, any>, request: Request, resp
         .single();
       if (error || !payment?.status_lookup_token) throw error || new Error('Could not create payment tracking token.');
 
+      // Keep the lookup credential out of the response object entirely.
+      responseHeaders['Set-Cookie'] = supportPaymentStatusCookie(payment.status_lookup_token);
       return {
         actionUrl: config.actionUrl,
         fields: { ...fields, CheckMacValue: checkMacValue },
-        // This field is removed before the response body is returned. It is
-        // delivered only as an HttpOnly, short-lived cookie below.
-        supportPaymentStatusToken: payment.status_lookup_token,
       };
     }
 
@@ -2249,9 +2244,6 @@ Deno.serve(async (request) => {
       responseHeaders['Cache-Control'] = 'no-store, private, max-age=0';
       responseHeaders.Pragma = 'no-cache';
       responseHeaders.Expires = '0';
-    }
-    if (action === 'createEcpaySupportPayment' && typeof result?.supportPaymentStatusToken === 'string') {
-      responseHeaders['Set-Cookie'] = supportPaymentStatusCookie(result.supportPaymentStatusToken);
     }
     if (action === 'getEcpaySupportPaymentStatus' && (result?.status === 'paid' || result?.status === 'failed')) {
       responseHeaders['Set-Cookie'] = supportPaymentStatusCookie('', 0);

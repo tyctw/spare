@@ -53,15 +53,15 @@ jobs:
           echo "Dist folder:"
           ls -la dist 2>/dev/null || echo "dist folder does not exist yet"
 
-      - name: Verify LINE login security
+      - name: Verify login and payment credential security
         run: |
-          for test_file in security-audit/line-login-security.test.mjs security-audit/cookie-session-security.test.mjs; do
+          for test_file in security-audit/line-login-security.test.mjs security-audit/cookie-session-security.test.mjs security-audit/support-payment-security.test.mjs; do
             if [ ! -f "$test_file" ]; then
-              echo "::error file=$test_file::Required security test is missing. Commit and push both security test files with this workflow."
+              echo "::error file=$test_file::Required security test is missing from the checkout."
               exit 1
             fi
           done
-          node --test security-audit/line-login-security.test.mjs security-audit/cookie-session-security.test.mjs
+          node --test security-audit/line-login-security.test.mjs security-audit/cookie-session-security.test.mjs security-audit/support-payment-security.test.mjs
 
       - name: Build production site
         run: npm run build

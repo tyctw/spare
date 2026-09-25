@@ -567,7 +567,7 @@ export default function MembershipAccountPage() {
         <section role="dialog" aria-modal="true" aria-labelledby="delete-account-title" aria-describedby="delete-account-description" className="w-full max-w-md rounded-[1.75rem] border-2 border-slate-900 bg-white p-6 shadow-[3px_3px_0_#161b35] sm:p-7">
           <div className="grid h-11 w-11 place-items-center rounded-xl border border-rose-800 bg-rose-100 text-rose-800"><Trash2 className="h-5 w-5" /></div>
           <h2 id="delete-account-title" className="mt-4 text-2xl font-bold">確認刪除帳號？</h2>
-          <p id="delete-account-description" className="mt-2 text-sm font-medium leading-6 text-slate-600">這會移除你的 LINE 身分連結和目前登入狀態。交易紀錄會保留作為必要的付款與帳務資料，但不再與你的 LINE 帳號連結。</p>
+          <p id="delete-account-description" className="mt-2 text-sm font-medium leading-6 text-slate-600">這會移除你的成績紀錄、名下分享報告與協作紀錄，所有相關分享連結將失效，並登出目前帳號。交易紀錄會保留作為必要的付款與帳務資料，但不再與你的 LINE 帳號連結。</p>
           <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium leading-5 text-amber-800">此操作無法復原；日後如需使用會員服務，需重新登入並重新購買方案。</p>
           <div className="mt-6 grid gap-2 sm:gap-3 grid-cols-2">
             <button type="button" onClick={() => void deleteAccount()} disabled={deletingAccount} className="rounded-xl border border-rose-800 bg-rose-700 p-2.5 sm:px-4 sm:py-3 text-sm sm:text-base font-bold text-white shadow-[3px_3px_0_#161b35] transition hover:bg-rose-800 disabled:cursor-not-allowed disabled:opacity-50">{deletingAccount ? '刪除中...' : '確定刪除'}</button>

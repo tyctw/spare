@@ -1,6 +1,8 @@
 (function () {
   // Remove the legacy JavaScript-readable session before other scripts load.
   try { localStorage.removeItem('line_membership_session_token'); } catch (_) {}
+  // Discard lookup credentials left by older checkout versions on every page.
+  try { localStorage.removeItem('support_payment_status_token'); } catch (_) {}
   var configElement = document.getElementById('runtime-config');
   var config = {};
   try { config = JSON.parse(configElement ? configElement.textContent || '{}' : '{}'); } catch (_) { config = {}; }

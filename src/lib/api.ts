@@ -80,9 +80,6 @@ async function fetchBackend<T>(
             Authorization: `Bearer ${supabaseAnonKey}`,
           }
         : {}),
-      ...(localStorage.getItem('support_payment_status_token') 
-        ? { 'X-Payment-Status-Token': localStorage.getItem('support_payment_status_token')! } 
-        : {}),
     },
     body: JSON.stringify(payload),
     signal,
