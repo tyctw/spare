@@ -31,7 +31,6 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
             </div>
             <a href="https://line.me/R/ti/p/@166zozmd" target="_blank" rel="noopener noreferrer" aria-label="加入官方 LINE（另開新分頁）" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-[#06c755] px-4 py-3 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-[#05b34c] active:translate-y-0 active:shadow-none">加入官方 LINE<ArrowUpRight aria-hidden="true" className="h-4 w-4" /></a>
           </div>
-          <p className="mt-3 text-xs font-medium text-emerald-800">自由加入，未加入也能繼續使用。</p>
         </aside>
       </div>
       <footer className="shrink-0 border-t-2 border-slate-200 bg-white p-4 sm:px-6 sm:py-5"><button type="button" onClick={onClose} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-500 px-5 py-3.5 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-[3px_3px_0_#0f172a] active:translate-y-0 active:shadow-none"><Check className="h-5 w-5" />我已了解，繼續使用</button></footer>
