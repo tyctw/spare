@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, Check, CircleAlert, FileSearch, ShieldAlert, Sparkles, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, CircleAlert, FileSearch, Megaphone, ShieldAlert, Sparkles, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 
 interface Props { isOpen: boolean; onClose: () => void; }
@@ -23,6 +23,17 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
         <div className="grid gap-3 sm:grid-cols-2">{notices.map((notice) => { const Icon = notice.icon; return <article key={notice.title} className="relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0_#0f172a]"><span aria-hidden="true" className="absolute right-3 top-2 text-4xl font-black leading-none text-slate-100">{notice.number}</span><div className="relative flex items-start gap-3"><div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 ${notice.tone}`}><Icon className="h-5 w-5" /></div><div><h3 className="text-base font-black text-slate-900">{notice.title}</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-600">{notice.text}</p></div></div></article>; })}</div>
         <section className="mt-4 flex gap-3 rounded-2xl border-2 border-slate-900 bg-sky-50 p-4"><FileSearch className="mt-0.5 h-5 w-5 shrink-0 text-sky-700" /><div><p className="text-sm font-black text-slate-800">填志願前，請再確認一次</p><p className="mt-1 text-sm font-bold leading-6 text-slate-600">核對就學區、成績與報名資格；不確定時，請查閱當學年度招生簡章或詢問學校輔導老師。</p></div></section>
         <a href={withBasePath('/disclaimer')} className="mt-5 inline-flex items-center gap-2 text-sm font-black text-indigo-700 underline decoration-2 underline-offset-4 transition hover:text-indigo-900">閱讀完整免責聲明 <ArrowRight className="h-4 w-4" /></a>
+        <aside aria-labelledby="disclaimer-line-title" className="mt-5 rounded-2xl border-2 border-slate-900 bg-emerald-50 p-4 shadow-[3px_3px_0_#0f172a] sm:p-5">
+          <p className="flex items-center gap-2 text-xs font-black text-emerald-800"><Megaphone aria-hidden="true" className="h-4 w-4" />推薦 · 官方 LINE</p>
+          <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <h3 id="disclaimer-line-title" className="text-lg font-black text-slate-900">加入我們的官方 LINE</h3>
+              <p className="mt-1 text-sm font-bold leading-6 text-slate-600">加入好友，查看升學資訊與常用功能入口。</p>
+            </div>
+            <a href="https://line.me/R/ti/p/@166zozmd" target="_blank" rel="noopener noreferrer" aria-label="加入官方 LINE（另開新分頁）" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-[#06c755] px-4 py-3 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-[#05b34c] active:translate-y-0 active:shadow-none">加入官方 LINE<ArrowUpRight aria-hidden="true" className="h-4 w-4" /></a>
+          </div>
+          <p className="mt-3 text-xs font-medium text-emerald-800">自由加入，未加入也能繼續使用。</p>
+        </aside>
       </div>
       <footer className="shrink-0 border-t-2 border-slate-200 bg-white p-4 sm:px-6 sm:py-5"><button type="button" onClick={onClose} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-500 px-5 py-3.5 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-[3px_3px_0_#0f172a] active:translate-y-0 active:shadow-none"><Check className="h-5 w-5" />我已了解，繼續使用</button></footer>
     </motion.section>
