@@ -339,22 +339,19 @@ export default function MembershipPage() {
 
   if (membership === null)
     return (
-      <main id="main-content" aria-busy="true" aria-labelledby="membership-check-title" className="membership-page min-h-screen overflow-hidden bg-[#f7f8f5] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
-        <div aria-hidden="true" className="fixed -left-24 top-20 h-64 w-64 rounded-full bg-emerald-200/60 blur-3xl" />
-        <div aria-hidden="true" className="fixed -right-20 bottom-0 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
-        <section className="relative mx-auto max-w-lg">
-          <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
-          <article className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35]">
-            <div aria-hidden="true" className="absolute -right-10 -top-12 h-36 w-36 rounded-full border-[15px] border-emerald-100" />
-            <div className="relative border-b-2 border-slate-900 bg-emerald-100 px-6 py-5 sm:px-8">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-bold tracking-[.14em] text-emerald-700"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />SECURE MEMBER CHECK</span>
-              <div className="mt-4 flex items-center gap-4"><div aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-emerald-700 shadow-[3px_3px_0_#161b35]"><Crown className="h-6 w-6 fill-amber-300" /></div><div><h1 id="membership-check-title" className="text-2xl font-bold tracking-tight sm:text-3xl">正在確認會員資格</h1><p className="mt-1 text-sm font-bold text-slate-600">請稍候，我們正在安全確認你的 LINE 身分。</p></div></div>
+      <main id="main-content" aria-busy="true" aria-labelledby="membership-check-title" className="membership-page member-check-page min-h-screen px-4 py-7 sm:px-6 sm:py-12">
+        <section className="member-check-shell mx-auto max-w-xl">
+          <a href={withBasePath("/")} className="member-check-back"><ArrowRight aria-hidden="true" className="h-4 w-4 rotate-180" />回到落點分析</a>
+          <article className="member-check-card">
+            <div className="member-check-main">
+              <span className="member-check-kicker"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
+              <div className="member-check-visual" aria-hidden="true"><span><Shield className="h-10 w-10" strokeWidth={1.5} /></span></div>
+              <h1 id="membership-check-title">正在確認會員資格</h1>
+              <p>請稍候，我們正在讀取你的 LINE 身分與會員有效期限。</p>
+              <div className="member-check-progress" aria-hidden="true"><span /></div>
+              <div className="member-check-live" role="status" aria-live="polite"><span />確認中，完成後會自動顯示會員狀態</div>
             </div>
-            <div className="relative space-y-3 p-5 sm:p-6">
-              <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-bold text-white">1</span><div className="min-w-0 flex-1"><p className="text-sm font-bold">確認 LINE 安全工作階段</p><p className="text-xs font-bold text-emerald-700">已啟動安全驗證</p></div><Check className="h-5 w-5 text-emerald-600" /></div>
-              <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"><span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-900 text-xs font-bold text-white">2</span><div className="min-w-0 flex-1"><p className="text-sm font-bold">查詢免廣告資格</p><p className="text-xs font-bold text-emerald-700">正在確認方案與有效期限</p></div><span aria-hidden="true" className="h-5 w-5 animate-spin rounded-full border border-emerald-200 border-t-emerald-600" /></div>
-              <p className="px-1 pt-1 text-center text-xs font-medium leading-5 text-slate-500">登入憑證不會儲存在網址或瀏覽器儲存空間。</p>
-            </div>
+            <div className="member-check-details"><div><KeyRound aria-hidden="true" className="h-4 w-4" />確認 LINE 帳號</div><div><BadgeCheck aria-hidden="true" className="h-4 w-4" />讀取方案與期限</div></div>
           </article>
         </section>
       </main>
