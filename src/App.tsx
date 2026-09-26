@@ -1485,9 +1485,9 @@ export default function App() {
       <section className="home-next-section relative z-10 mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8" aria-labelledby="home-next-title">
         <div className="home-next-heading"><div><span>讓選擇更有方向</span><h2 id="home-next-title">分析完，下一步怎麼選？</h2></div><p>從學校、時程到升學路線，把重要資訊看清楚，再決定你的下一步。</p></div>
         <div className="home-next-grid">
-          <a href={withBasePath('/search')}><span><Search aria-hidden="true" size={23} /></span><strong>還有哪些學校值得放進志願？</strong><small>探索高中職與科別，發現更多適合自己的選擇。</small><span className="home-next-link-label">探索學校<ArrowRight aria-hidden="true" size={16} /></span></a>
-          <a href={withBasePath('/important-dates')}><span><CalendarDays aria-hidden="true" size={23} /></span><strong>重要日期，別等錯過才發現</strong><small>會考、報名到志願選填，一次掌握接下來的時程。</small><span className="home-next-link-label">查看日程<ArrowRight aria-hidden="true" size={16} /></span></a>
-          <a href={withBasePath('/school-types')}><span><Building2 aria-hidden="true" size={23} /></span><strong>普通科或技職，哪條路適合你？</strong><small>看懂不同學校類型的特色，找到更喜歡的學習方向。</small><span className="home-next-link-label">了解差異<ArrowRight aria-hidden="true" size={16} /></span></a>
+          <a href={withBasePath('/search')}><span><Search aria-hidden="true" size={23} /></span><strong>還有哪些學校值得放進志願？</strong><small>探索高中職與科別，發現更多適合自己的選擇。</small><span className="home-next-link-label"><span>探索學校</span><ArrowRight aria-hidden="true" size={16} /></span></a>
+          <a href={withBasePath('/important-dates')}><span><CalendarDays aria-hidden="true" size={23} /></span><strong>重要日期，別等錯過才發現</strong><small>會考、報名到志願選填，一次掌握接下來的時程。</small><span className="home-next-link-label"><span>查看日程</span><ArrowRight aria-hidden="true" size={16} /></span></a>
+          <a href={withBasePath('/school-types')}><span><Building2 aria-hidden="true" size={23} /></span><strong>普通科或技職，哪條路適合你？</strong><small>看懂不同學校類型的特色，找到更喜歡的學習方向。</small><span className="home-next-link-label"><span>了解差異</span><ArrowRight aria-hidden="true" size={16} /></span></a>
         </div>
       </section>
 

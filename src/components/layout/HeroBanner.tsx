@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Info, Sparkles } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
 
 export default function HeroBanner() {
@@ -17,12 +17,12 @@ export default function HeroBanner() {
           <h1 id="home-hero-title">探索適合你的<br /><span>未來理想校系</span></h1>
         </div>
         <div className="home-hero-details">
-          <p>從就學區與會考成績出發，比較適合的高中職校科，整理下一步的志願方向。</p>
+          <p>幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。</p>
           <div className="home-hero-actions">
             <a href="#analysis-form" className="home-hero-primary">開始填寫資料<ArrowRight aria-hidden="true" size={18} /></a>
             <a href={withBasePath('/school-types')} className="home-hero-secondary">先認識學校類型<ArrowRight aria-hidden="true" size={16} /></a>
           </div>
-          <span className="home-hero-note">依各就學區資料提供參考，實際結果仍以招生簡章為準。</span>
+          <p className="home-hero-note"><Info aria-hidden="true" size={15} />依各就學區資料提供參考，實際結果仍以招生簡章為準。</p>
         </div>
       </div>
     </motion.section>
