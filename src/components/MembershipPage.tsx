@@ -34,23 +34,23 @@ import './membership.css';
 const plans = [
   {
     id: "monthly",
-    name: "月費體驗方案",
+    name: "30 天方案",
     price: 49,
     duration: "30 天",
-    note: "不到一杯飲料的價格，立即享有 30 天純淨無廣告",
-    comparison: "短期準備，輕鬆開始",
+    note: "適合考前衝刺或先體驗完整會員功能。",
+    comparison: "短期使用",
     accent: "sky",
-    featured: true,
+    featured: false,
   },
   {
     id: "yearly",
-    name: "年費超值方案",
+    name: "365 天方案",
     price: 399,
     duration: "365 天",
-    note: "平均每天只要 1.1 元，全年專注規劃，免去一切打擾",
-    comparison: "比連續購買 12 個月月費省 NT$189",
+    note: "適合長期追蹤成績、比較校科與整理志願。",
+    comparison: "比購買 12 次 30 天方案省 NT$189",
     accent: "emerald",
-    featured: false,
+    featured: true,
   },
 ] as const;
 type PlanId = (typeof plans)[number]["id"];
@@ -58,8 +58,8 @@ type PlanId = (typeof plans)[number]["id"];
 
 const membershipFaqs = [
   {
-    q: '月費與年費有什麼差別？',
-    a: '月費方案 NT$49，有效期 30 天；年費方案 NT$399，有效期 365 天。年費等同每天約 NT$1.1，比連續購買 12 個月月費省下 NT$189。兩種方案均為一次付款，到期不自動續扣。',
+    q: '30 天與 365 天方案有什麼差別？',
+    a: '30 天方案 NT$49；365 天方案 NT$399。權益相同，差別是使用期間。購買 365 天方案比購買 12 次 30 天方案省 NT$189。兩種方案均為一次付款，到期不自動續扣。',
   },
   {
     q: '付款後何時生效？',
@@ -67,7 +67,7 @@ const membershipFaqs = [
   },
   {
     q: '到期後會自動扣款嗎？',
-    a: '不會。月費與年費均為一次性付款，期間結束後不會自動續費或扣款，無需手動取消。若要繼續使用，到期後再重新購買即可。',
+    a: '不會。兩種方案均為一次性付款，期間結束後不會自動續費或扣款，無需手動取消。若要繼續使用，可再選擇方案購買。',
   },
   {
     q: '可以在多台裝置使用嗎？',
@@ -186,6 +186,9 @@ export default function MembershipPage() {
     () => plans.find((plan) => plan.id === selected)!,
     [selected],
   );
+  const activeDaysLeft = membership?.expiresAt
+    ? Math.max(0, Math.ceil((new Date(membership.expiresAt).getTime() - Date.now()) / 86_400_000))
+    : null;
 
   const refresh = async () => {
     const line = await callBackend<{ loggedIn: boolean; name?: string }>({
@@ -401,14 +404,8 @@ export default function MembershipPage() {
               <div className="grid items-center gap-6 md:grid-cols-[1fr_140px] lg:grid-cols-[1fr_160px]">
                 <div className="min-w-0">
                   <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-bold text-emerald-900 shadow-[3px_3px_0_#161b35]"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
-                  <h1 id="member-active-title" className="mt-3 flex items-baseline gap-2 whitespace-nowrap text-2xl font-bold leading-tight tracking-tight sm:gap-3 sm:text-4xl lg:text-5xl">
-                    <span className="text-slate-700">現在享有</span>
-                    <span className="relative inline-block text-emerald-900">
-                      <span aria-hidden="true" className="absolute inset-x-0 bottom-1 -z-10 h-3 -rotate-1 rounded-sm bg-[#d5e8a8] sm:h-4" />
-                      純淨閱讀
-                    </span>
-                  </h1>
-                  <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">在會員資格有效期間，查校、比對與規劃頁面都不會載入 Google 廣告或 Offerwall。</p>
+                  <h1 id="member-active-title" className="mt-4 text-3xl font-bold leading-tight tracking-tight text-emerald-950 sm:text-4xl lg:text-5xl">你的會員資格正在使用中</h1>
+                  <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">{lineName || 'LINE 會員'}，接下來可以直接使用落點分析、整理成績與志願。網站的 Google 廣告及 Offerwall 已於會員期間關閉。</p>
                 </div>
                 <div aria-hidden="true" className="relative hidden aspect-square items-center justify-center md:flex">
                   <div className="absolute inset-2 rounded-full border border-emerald-800/20" />
@@ -423,10 +420,15 @@ export default function MembershipPage() {
               </div>
             </header>
             <div className="p-6 sm:p-10">
+              <div className="member-active-summary" aria-label="目前會員狀態">
+                <div><span>目前方案</span><strong>{membership.plan === 'yearly' ? '365 天方案' : '30 天方案'}</strong></div>
+                <div><span>有效期限</span><strong>{new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long' }).format(new Date(membership.expiresAt!))}</strong></div>
+                <div><span>距離到期</span><strong>{activeDaysLeft === null ? '—' : `${activeDaysLeft} 天`}</strong></div>
+              </div>
               <section aria-labelledby="member-details-title" className="overflow-hidden rounded-2xl border-2 border-slate-900 bg-white">
                 <div className="flex items-center gap-3 border-b-2 border-slate-900 bg-[#faf9f3] px-5 py-4 sm:px-6">
                   <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><BadgeCheck className="h-5 w-5 text-emerald-800" /></span>
-                  <h2 id="member-details-title" className="text-base font-bold text-slate-900">你的會員資訊</h2>
+                  <h2 id="member-details-title" className="text-base font-bold text-slate-900">資格與使用說明</h2>
                 </div>
                 <dl className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
                     <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
@@ -448,9 +450,9 @@ export default function MembershipPage() {
                       </div>
                 </dl>
               </section>
-              <div className="mt-7 flex items-start gap-3 rounded-2xl border-2 border-slate-900 bg-slate-50 p-4 sm:mt-8 sm:p-5">
+              <div className="mt-7 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:mt-8 sm:p-5">
                 <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><KeyRound className="h-4 w-4 text-emerald-800" /></span>
-                <div><h2 className="text-sm font-bold text-slate-800">準備好成績，就可以開始</h2><p className="mt-1 text-sm leading-6 text-slate-500">會員資格有效期間，回到首頁填妥成績後即可直接開始落點分析，無需再輸入系統授權碼。</p></div>
+                <div><h2 className="text-sm font-bold text-slate-800">下一步：開始規劃</h2><p className="mt-1 text-sm leading-6 text-slate-600">回到首頁填妥成績，即可開始落點分析，不需再輸入系統授權碼。</p></div>
               </div>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:mt-8">
                 <a href={withBasePath("/")} className="group inline-flex min-h-14 flex-1 items-center justify-center gap-3 rounded-xl border-2 border-slate-900 bg-[#123e35] px-5 py-4 text-base font-bold text-white shadow-[3px_3px_0_#161b35] transition hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
@@ -479,19 +481,36 @@ export default function MembershipPage() {
             <ArrowRight className="h-4 w-4 rotate-180" />
             回到落點分析
           </a>
-          <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-[#e7edce] px-4 py-2 text-sm font-bold text-slate-900 shadow-[3px_3px_0_#161b35]">
-            <Crown className="h-4 w-4 fill-amber-100 text-slate-900" />
-            會員中心
-          </span>
+          <a href={withBasePath('/membership/account')} aria-label="已購買？查看我的資格" className="member-account-shortcut inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold">
+            <BadgeCheck className="h-4 w-4" />
+            <span className="sm:hidden">查詢資格</span>
+            <span className="hidden sm:inline">已購買？查看我的資格</span>
+          </a>
         </nav>
-        <section className="member-benefits" aria-labelledby="member-benefits-title">
-          <div className="member-section-heading"><div><p className="member-eyebrow">MADE FOR YOUR JOURNEY</p><h1 id="member-benefits-title">一份會員，讓規劃更從容。</h1></div></div>
+        <section className="member-intro" aria-labelledby="member-benefits-title">
+          <div className="member-intro-copy">
+            <span className="member-intro-kicker"><Crown className="h-4 w-4" /> 升學小助手會員</span>
+            <h1 id="member-benefits-title">少一點打擾，<br /><span>專心規劃下一步。</span></h1>
+            <p>從成績分析到志願討論，常用工具都能順暢使用。選擇 30 天或 365 天方案，一次付款，到期不自動續扣。</p>
+          </div>
+          <div className="member-intro-summary" aria-label="會員方案重點">
+            <span>方案一覽</span>
+            <strong>NT$49 <small>起</small></strong>
+            <p>30 天與 365 天可選</p>
+            <a href="#membership-plans" className="member-summary-button">查看方案與價格 <ArrowRight className="h-4 w-4" /></a>
+            <div><Check className="h-4 w-4" /> 免廣告與 Offerwall</div>
+            <div><Check className="h-4 w-4" /> 免輸入分析授權碼</div>
+            <div><Check className="h-4 w-4" /> LINE 登入可找回資格</div>
+          </div>
+        </section>
+        <section className="member-benefits" aria-labelledby="member-benefits-heading">
+          <div className="member-section-heading"><div><p className="member-eyebrow">會員權益</p><h2 id="member-benefits-heading">規劃需要的功能，集中在這裡</h2></div></div>
           <div className="member-benefit-grid">
             {[
-              { icon: EyeOff, title: '純淨，沒有打擾', text: '關閉廣告，把注意力留給每一次重要的選擇。', label: '免廣告體驗' },
-              { icon: KeyRound, title: '探索，不設次數', text: '免輸入授權碼，隨時分析成績與可能的落點。', label: '無限次數分析' },
-              { icon: Sparkles, title: '一分，更多可能', text: '調整各科級分，看看努力能帶來哪些新選擇。', label: '一分改變分析' },
-              { icon: MessageCircle, title: '一起，找到方向', text: '邀請家人協作志願表，留言討論、保留版本。', label: '家長協作' },
+              { icon: EyeOff, title: '專心閱讀', text: '會員期間不載入網站的 Google 廣告與 Offerwall。', label: '免廣告' },
+              { icon: KeyRound, title: '直接開始分析', text: '填好成績後，不必再輸入系統授權碼。', label: '落點分析' },
+              { icon: Sparkles, title: '比較成績變化', text: '反覆調整成績，查看一分改變分析。', label: '成績探索' },
+              { icon: MessageCircle, title: '一起整理志願', text: '邀請家人協作、留言與查看調整版本。', label: '志願協作' },
             ].map(({ icon: Icon, title, text, label }, index) => <article className="member-benefit" key={title}><div className="member-benefit-top"><Icon className="h-5 w-5" strokeWidth={1.5} /><span>0{index + 1}</span></div><p className="member-benefit-label">{label}</p><h3>{title}</h3><p>{text}</p></article>)}
           </div>
         </section>
@@ -508,7 +527,8 @@ export default function MembershipPage() {
                   選擇方案
                 </p>
               </div>
-              <h2 id="membership-plans-title" className="mt-2 text-2xl font-bold">選擇適合你的專注時光</h2>
+              <h2 id="membership-plans-title" className="mt-2 text-2xl font-bold">選擇使用期間</h2>
+              <p className="mt-2 text-sm text-slate-600">兩種方案享有相同權益，差別只有使用天數與價格。</p>
               <button type="button" onClick={() => setShowPlanComparison(true)} className="member-comparison-link" aria-haspopup="dialog">比較會員權益 <ArrowRight aria-hidden="true" className="h-4 w-4" /></button>
             </div>
           </div>
@@ -527,7 +547,7 @@ export default function MembershipPage() {
                 >
                   {plan.featured && (
                     <span className="absolute right-5 top-0 rounded-b-xl border-x border-b-2 border-slate-900 bg-[#e7edce] px-3 py-1.5 text-xs font-bold">
-                      入門推薦
+                      長期規劃更省
                     </span>
                   )}
                   <div className="flex items-start justify-between">
@@ -621,13 +641,13 @@ export default function MembershipPage() {
           </div>
           <aside className="member-order" aria-labelledby="membership-checkout-title">
             <div className="member-order-heading"><LockKeyhole className="h-5 w-5" /><span>最後一步 · 確認與付款</span></div>
-            <h2 id="membership-checkout-title">開始你的專注時光</h2>
-            <p className="member-order-intro">會員資格將綁定 LINE 帳號，換裝置也能輕鬆找回。</p>
+            <h2 id="membership-checkout-title">確認本次購買</h2>
+            <p className="member-order-intro">先確認 LINE 帳號及付款資料。資格會綁定這個 LINE 帳號，換裝置登入即可查詢。</p>
             <div className="member-login-status"><span className="member-login-icon">{lineName ? <BadgeCheck className="h-5 w-5" /> : <LogIn className="h-5 w-5" />}</span><div className="min-w-0"><p className="break-words font-semibold">{lineName || '登入 LINE 以繼續'}</p><p className="mt-1 text-xs text-slate-500">{lineName ? '身分已確認' : '安全連結你的會員資格'}</p></div></div>
             {lineName ? <div className="mt-3 flex items-center justify-between gap-3 text-xs"><a href={withBasePath('/membership/account')} className="font-semibold text-emerald-800 underline underline-offset-4">我的帳號與訂單</a><button type="button" onClick={logoutFromLine} className="rounded-lg px-3 py-2 text-slate-500 hover:bg-stone-100">登出 LINE</button></div> : <button type="button" onClick={loginWithLine} className="member-line-button"><img src={withBasePath('/brand/line/line-login.png')} width={44} height={44} alt="" aria-hidden="true" /><span>使用 LINE 登入</span></button>}
             <dl className="member-order-details" aria-live="polite"><div><dt>已選方案</dt><dd>{selectedPlan.name}</dd></div><div><dt>使用期限</dt><dd>{selectedPlan.duration}</dd></div><div><dt>續費方式</dt><dd>不自動續扣</dd></div><div className="member-order-total"><dt>本次付款</dt><dd><span>NT$</span> {selectedPlan.price}</dd></div></dl>
             <button type="button" onClick={checkout} disabled={submitting || !lineName} className="member-pay-button">{submitting ? '正在建立付款單…' : lineName ? '前往安全付款' : '請先登入 LINE'}<ArrowRight className="h-4 w-4" /></button>
-            <p className="member-payment-note"><Shield className="h-4 w-4 shrink-0" />由綠界科技 ECPay 安全處理付款</p>
+            <p className="member-payment-note"><Shield className="h-4 w-4 shrink-0" />由綠界科技 ECPay 處理付款；實際付款方式以結帳頁為準</p>
           </aside>
         </div>
 

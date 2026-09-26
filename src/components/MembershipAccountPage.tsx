@@ -194,12 +194,26 @@ export default function MembershipAccountPage() {
           <div className="relative flex items-center justify-between gap-6">
             <div className="min-w-0">
               <span className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-bold text-emerald-900"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
-              <h1 id="member-account-title" className="mt-5 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">讓每一次選擇，<br className="sm:hidden" />更有方向。</h1>
-              <p className="member-account-description mt-4 max-w-xl text-sm leading-7 sm:text-base">歡迎回到會員中心。管理你的方案與成績紀錄，繼續規劃理想的下一站。</p>
+              <h1 id="member-account-title" className="mt-5 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">我的會員帳號</h1>
+              <p className="member-account-description mt-4 max-w-xl text-sm leading-7 sm:text-base">在這裡查看資格與到期日、管理購買紀錄和聯絡信箱，並回到你的升學規劃。</p>
             </div>
             <div aria-hidden="true" className="hidden h-28 w-28 shrink-0 place-items-center rounded-3xl border-2 border-slate-900 bg-[#fffdf5] text-emerald-900 shadow-[3px_3px_0_#161b35] sm:grid"><CircleUserRound className="h-14 w-14" strokeWidth={1.5} /></div>
           </div>
         </header>
+
+        {state === 'ready' && (
+          <section className="member-account-snapshot" aria-label="會員資格摘要">
+            <div className="member-account-snapshot-status">
+              <span className="member-account-snapshot-icon">{membership.active ? <BadgeCheck className="h-6 w-6" /> : <CircleUserRound className="h-6 w-6" />}</span>
+              <div><span>{lineName || '尚未登入 LINE'}</span><strong>{membership.active ? '會員資格有效' : '目前沒有有效會員資格'}</strong></div>
+            </div>
+            <div className="member-account-snapshot-details">
+              <div><span>目前方案</span><strong>{membership.active ? planName : '尚未啟用'}</strong></div>
+              <div><span>有效期限</span><strong>{membership.active ? formatDate(membership.expiresAt) : '—'}</strong></div>
+              {membership.active && <div><span>剩餘天數</span><strong>{remainingDays} 天</strong></div>}
+            </div>
+          </section>
+        )}
 
         <nav className="member-account-nav" aria-label="會員常用功能">
           <a href={withBasePath('/')}><Sparkles className="h-5 w-5 shrink-0" />開始落點分析<ArrowRight className="ml-auto hidden h-4 w-4 sm:block" /></a>
@@ -225,7 +239,7 @@ export default function MembershipAccountPage() {
           <>
           <div className="mt-7 grid gap-6 lg:grid-cols-[1.35fr_1fr] lg:items-start">
             <div className="flex flex-col gap-6">
-            <article className="shrink-0 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35]">
+            <article className="member-surface shrink-0 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35]">
               <div className={`border-b-2 border-slate-900 p-6 sm:p-7 ${membership.active ? 'bg-emerald-50' : 'bg-slate-50'}`}>
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
@@ -318,7 +332,7 @@ export default function MembershipAccountPage() {
                   )}
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
                     <a href={withBasePath('/')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-900 px-4 py-3 font-bold text-white shadow-[3px_3px_0_#161b35] transition hover:-translate-y-0.5 hover:bg-emerald-800"><Home className="h-4 w-4" />回到落點分析</a>
-                    <a href={withBasePath('/membership')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-bold transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_#161b35]"><Sparkles className="h-4 w-4 text-emerald-600" />續購與查詢方案</a>
+                    <a href={withBasePath('/membership')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-bold transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_#161b35]"><Sparkles className="h-4 w-4 text-emerald-600" />查看會員權益</a>
                   </div>
                 </> : <>
                   <div className="rounded-2xl bg-emerald-50/50 p-4 sm:p-5 mb-5 border border-emerald-100/50">
