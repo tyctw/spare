@@ -420,34 +420,31 @@ export default function MembershipPage() {
               </div>
             </header>
             <div className="p-6 sm:p-10">
-              <div className="member-active-summary" aria-label="目前會員狀態">
-                <div><span>目前方案</span><strong>{membership.plan === 'yearly' ? '365 天方案' : '30 天方案'}</strong></div>
-                <div><span>有效期限</span><strong>{new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long' }).format(new Date(membership.expiresAt!))}</strong></div>
-                <div><span>距離到期</span><strong>{activeDaysLeft === null ? '—' : `${activeDaysLeft} 天`}</strong></div>
-              </div>
-              <section aria-labelledby="member-details-title" className="overflow-hidden rounded-2xl border-2 border-slate-900 bg-white">
-                <div className="flex items-center gap-3 border-b-2 border-slate-900 bg-[#faf9f3] px-5 py-4 sm:px-6">
-                  <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-white"><BadgeCheck className="h-5 w-5 text-emerald-800" /></span>
-                  <h2 id="member-details-title" className="text-base font-bold text-slate-900">資格與使用說明</h2>
+              <section aria-labelledby="member-details-title" className="member-pass">
+                <div className="member-pass-heading">
+                  <span aria-hidden="true" className="member-pass-heading-icon"><BadgeCheck className="h-5 w-5" /></span>
+                  <div>
+                    <h2 id="member-details-title">資格與使用說明</h2>
+                    <p>你的會員資格與免廣告期限</p>
+                  </div>
                 </div>
-                <dl className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
-                    <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
-                      <dt className="flex items-center gap-2 text-xs font-bold text-slate-500"><MessageCircle aria-hidden="true" className="h-4 w-4 text-emerald-700" />LINE 會員帳號</dt>
-                      <dd className="mt-3 break-words text-2xl font-bold leading-snug tracking-tight text-slate-900">{lineName || '已完成 LINE 驗證'}</dd>
-                    </div>
-                    <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
-                      <dt className="text-xs font-bold text-slate-500">目前方案</dt>
-                      <dd className="mt-3 inline-flex items-center gap-2 text-xl font-bold text-emerald-950"><Crown aria-hidden="true" className="h-5 w-5" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
-                    </div>
-
-                      <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-white p-4">
-                        <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />會員啟用日期</dt>
-                        <dd className="mt-3 text-xl font-bold leading-snug tracking-tight text-emerald-950">{membership.activatedAt ? new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.activatedAt)) : '尚無日期資料'}</dd>
-                      </div>
-                      <div className="min-w-0 rounded-xl border-2 border-slate-900 bg-[#edf5e9] p-4">
-                        <dt className="flex items-center gap-2 text-xs font-bold text-emerald-800"><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</dt>
-                        <dd className="mt-3 break-words text-xl font-bold leading-snug tracking-tight text-emerald-950">{new Intl.DateTimeFormat("zh-TW", { dateStyle: "long" }).format(new Date(membership.expiresAt!))}</dd>
-                      </div>
+                <dl className="member-pass-details">
+                  <div className="member-pass-identity">
+                    <dt><MessageCircle aria-hidden="true" className="h-4 w-4" />LINE 會員帳號</dt>
+                    <dd>{lineName || '已完成 LINE 驗證'}</dd>
+                  </div>
+                  <div className="member-pass-plan">
+                    <dt>目前方案</dt>
+                    <dd><Crown aria-hidden="true" className="h-5 w-5" />{membership.plan === 'yearly' ? '年費會員' : '月費會員'}</dd>
+                  </div>
+                  <div className="member-pass-date member-pass-start">
+                    <dt><CalendarDays aria-hidden="true" className="h-4 w-4" />會員啟用日期</dt>
+                    <dd>{membership.activatedAt ? new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long' }).format(new Date(membership.activatedAt)) : '尚無日期資料'}</dd>
+                  </div>
+                  <div className="member-pass-date member-pass-expiry">
+                    <dt><CalendarDays aria-hidden="true" className="h-4 w-4" />免廣告有效期限</dt>
+                    <dd>{new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long' }).format(new Date(membership.expiresAt!))}{activeDaysLeft !== null && <span className="member-pass-days">剩餘 {activeDaysLeft} 天</span>}</dd>
+                  </div>
                 </dl>
               </section>
               <div className="mt-7 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:mt-8 sm:p-5">
