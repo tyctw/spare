@@ -17,6 +17,13 @@
 .disclaimer-notice-icon { display: grid; width: 36px; height: 36px; flex: none; place-items: center; border-radius: 10px; background: #ecf0fa; color: #3b5393; }
 .disclaimer-notices h3 { margin: 0; color: #202d4b; font-size: 15px; font-weight: 850; }
 .disclaimer-notices p { margin: 5px 0 0; color: #56647a; font-size: 13px; line-height: 1.65; }
+.disclaimer-line { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding: 15px 16px; border: 1px solid #dcebe1; border-radius: 15px; background: #f8fcf9; }
+.disclaimer-line-icon { display: block; width: 44px; height: 44px; flex: none; object-fit: contain; }
+.disclaimer-line > div { flex: 1; min-width: 0; }
+.disclaimer-line strong { color: #26384d; font-size: 14px; }
+.disclaimer-line p { margin: 3px 0 0; color: #5b6874; font-size: 12px; line-height: 1.55; }
+.disclaimer-line a { display: inline-flex; min-height: 42px; flex: none; align-items: center; justify-content: center; gap: 5px; padding: 8px 13px; border-radius: 10px; background: #06c755; color: #fff; font-size: 12px; font-weight: 800; text-decoration: none; }
+.disclaimer-line a:hover { background: #05a947; }
 .disclaimer-footer { flex: none; padding: 14px 30px 18px; border-top: 1px solid #e4e8f0; background: #fff; }
 .disclaimer-footer button { display: inline-flex; width: 100%; min-height: 52px; align-items: center; justify-content: center; gap: 9px; border: 1px solid #20346e; border-radius: 12px; background: #293d80; color: #fff; font-size: 15px; font-weight: 850; cursor: pointer; transition: background .2s, transform .2s; }
 .disclaimer-footer button:hover { background: #1c2e68; transform: translateY(-1px); }
@@ -31,6 +38,8 @@
   .disclaimer-notices { grid-template-columns: 1fr; gap: 9px; }
   .disclaimer-notices article { display: flex; align-items: flex-start; gap: 12px; padding: 13px; }
   .disclaimer-notices h3 { margin-top: 0; }
+  .disclaimer-line { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px 13px; }
+  .disclaimer-line a { grid-column: 1 / -1; width: 100%; }
   .disclaimer-footer { padding: 12px 20px 16px; }
 }
 

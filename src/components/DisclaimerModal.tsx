@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { BookOpenCheck, CalendarClock, Check, CircleAlert, ShieldAlert, X } from 'lucide-react';
+import { ArrowUpRight, BookOpenCheck, CalendarClock, Check, CircleAlert, ShieldAlert, X } from 'lucide-react';
+import { withBasePath } from '../lib/routes';
 import './disclaimer-modal.css';
 
 interface Props { isOpen: boolean; onClose: () => void; }
@@ -80,6 +81,11 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
           <span className="disclaimer-notice-icon"><Icon aria-hidden="true" size={20} /></span>
           <div><h3>{title}</h3><p>{text}</p></div>
         </article>)}</div>
+        <aside className="disclaimer-line" aria-label="本站 LINE 資訊">
+          <img className="disclaimer-line-icon" src={withBasePath('/brand/line/line-brand-icon.png')} alt="LINE" width="44" height="44" />
+          <div><strong>想持續掌握升學資訊？</strong><p>加入本站 LINE，查看升學消息與常用功能。</p></div>
+          <a href="https://line.me/R/ti/p/@166zozmd" target="_blank" rel="noopener noreferrer" aria-label="加入本站 LINE（另開新分頁）">加入 LINE<ArrowUpRight aria-hidden="true" size={16} /></a>
+        </aside>
       </div>
 
       <footer className="disclaimer-footer"><button type="button" onClick={onClose}><Check aria-hidden="true" size={20} />我已了解，開始使用</button></footer>
