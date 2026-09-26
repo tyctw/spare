@@ -163,7 +163,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
               會
             </div>
             <div className="flex flex-col">
-              <h1 className={`font-black text-slate-900 tracking-tight leading-none transition-all ${isScrolled ? 'text-base min-[450px]:text-lg' : 'text-base min-[450px]:text-lg sm:text-xl'}`}>會考落點分析</h1>
+              <span className={`font-black text-slate-900 tracking-tight leading-none transition-all ${isScrolled ? 'text-base min-[450px]:text-lg' : 'text-base min-[450px]:text-lg sm:text-xl'}`}>會考落點分析</span>
               <span className={`mt-1 hidden font-bold text-slate-500 transition-all min-[450px]:block ${isScrolled ? 'h-0 overflow-hidden text-[10px] opacity-0' : 'h-auto text-[10px] opacity-100'}`}>升學選擇的好幫手</span>
             </div>
           </a>

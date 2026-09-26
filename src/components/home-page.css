@@ -241,6 +241,77 @@
 .home-next-grid a > svg { position: absolute; right: 21px; bottom: 22px; color: #4b5a8a; }
 .home-next-grid a:focus-visible { outline: 3px solid #7584b4; outline-offset: 3px; }
 
+/* Make every homepage action read as a control before hover. */
+.home-hero-actions a,
+.home-membership-promo > a,
+.home-free-code,
+.home-next-grid a,
+.home-analysis-grid button:not(:disabled) { cursor: pointer; }
+.home-hero-actions a {
+  min-height: 52px;
+  border: 2px solid #243268;
+  box-shadow: 0 4px 0 #17234e;
+}
+.home-hero-actions a:hover,
+.home-hero-actions a:focus-visible { transform: translateY(-2px); box-shadow: 0 6px 0 #17234e; }
+.home-hero-actions a:active { transform: translateY(2px); box-shadow: 0 2px 0 #17234e; }
+.home-hero-primary { background: #243268; color: #fff; }
+.home-hero-secondary { background: #fff; color: #243268; }
+.home-hero-secondary:hover { background: #edf0fb; }
+.home-hero-actions a svg,
+.home-membership-promo > a svg,
+.home-next-link-label svg { transition: transform .2s ease; }
+.home-hero-actions a:hover svg,
+.home-membership-promo > a:hover svg,
+.home-next-grid a:hover .home-next-link-label svg { transform: translateX(3px); }
+.home-membership-promo > a { border: 2px solid #353044; box-shadow: 0 4px 0 #201b2b; }
+.home-membership-promo > a:hover { box-shadow: 0 6px 0 #201b2b; }
+.home-free-code { border: 2px solid #293b82; box-shadow: 0 3px 0 #293b82; }
+.home-free-code:hover { border-color: #293b82; box-shadow: 0 5px 0 #293b82; }
+.home-free-code:active { transform: translateY(2px); box-shadow: 0 1px 0 #293b82; }
+.home-analysis-grid #region-select-trigger { border: 2px solid #293b82; background: #e8edff; box-shadow: 0 4px 0 #293b82; }
+.home-analysis-grid #region-select-trigger:hover { border-color: #293b82; background: #dbe4ff; box-shadow: 0 5px 0 #293b82; }
+.home-analysis-grid #region-select-trigger:active { transform: translateY(2px); box-shadow: 0 2px 0 #293b82; }
+.home-next-grid a { border: 0; box-shadow: 0 10px 28px rgba(35, 45, 77, .11); }
+.home-next-grid a:hover { box-shadow: 0 14px 32px rgba(35, 45, 77, .17); }
+.home-next-grid a:active { transform: translateY(1px); box-shadow: 0 6px 16px rgba(35, 45, 77, .12); }
+.home-next-grid a > .home-next-link-label {
+  display: inline-flex;
+  width: fit-content;
+  height: auto;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  margin-left: auto;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #293b82;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 850;
+}
+.home-next-grid a:hover > .home-next-link-label { background: #17265b; color: #fff; }
+
+.home-main { scroll-margin-top: 110px; }
+.home-page :is(a, button, input, select):focus-visible {
+  outline: 3px solid #243b92;
+  outline-offset: 3px;
+}
+.home-hero-note { color: #536178; }
+.home-next-grid small { color: #5d6577; }
+.home-promo-copy > p { color: #895414; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home-page *,
+  .home-page *::before,
+  .home-page *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 /* Old utility colors in the form now follow the homepage palette. */
 .home-page [class*="text-emerald"] { color: #4b61b2; }
 .home-page .bg-emerald-50,

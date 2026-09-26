@@ -1,6 +1,6 @@
 import React, { Suspense, useState, useEffect, useLayoutEffect } from "react";
 import { parseLineGuideImport } from "./lib/lineGuide";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import {
   MapPin,
   CalendarDays,
@@ -822,6 +822,7 @@ export default function App() {
   };
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="home-page relative flex min-h-screen flex-col overflow-hidden bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100">
       <a href="#main-content" className="skip-link">
         跳到主要內容
@@ -850,6 +851,7 @@ export default function App() {
       <main
         id="main-content"
         aria-label="主要內容"
+        tabIndex={-1}
         className="home-main relative z-10 mx-auto mt-32 w-full max-w-[1400px] flex-1 space-y-8 px-4 sm:mt-40 sm:px-6 lg:px-8"
       >
         <HeroBanner />
@@ -867,7 +869,7 @@ export default function App() {
         )}
 
         {/* Bento Grid Form Section */}
-        <div id="analysis-form" className="home-analysis-grid grid grid-cols-1 gap-8 lg:grid-cols-12 xl:gap-10">
+        <div id="analysis-form" role="region" aria-label="落點分析資料填寫" className="home-analysis-grid grid grid-cols-1 gap-8 lg:grid-cols-12 xl:gap-10">
           {/* Left Column: Basic Info & Region */}
           <div className="home-form-sidebar lg:col-span-4 space-y-4">
             {/* Card: Auth */}
@@ -893,7 +895,7 @@ export default function App() {
                 </div>
                 <h3>進階功能，限時免費體驗</h3>
                 <p className="home-free-access-date">即日起至 <time dateTime="2026-12-30">2026/12/30</time> 前，提供免費使用。</p>
-                <p className="home-free-access-help">點擊下方邀請碼，一鍵填入並解鎖所有進階功能。</p>
+                <p id="invitation-code-help" className="home-free-access-help">點擊下方邀請碼，一鍵填入並解鎖所有進階功能。</p>
                 <button type="button" onClick={() => updateForm("invitationCode", "TYCTW")} aria-label="填入免費邀請碼 TYCTW" className="home-free-code">
                   <span className="home-free-code-value"><small>免費邀請碼</small><strong>TYCTW</strong></span>
                   <span aria-live="polite" className={`home-free-code-action${formData.invitationCode === "TYCTW" ? " is-applied" : ""}`}>{formData.invitationCode === "TYCTW" ? "已填入 ✓" : "一鍵填入 →"}</span>
@@ -912,6 +914,7 @@ export default function App() {
                 <input
                   id="invitation-code"
                   type="text"
+                  aria-describedby={!memberAccess ? "invitation-code-help" : undefined}
                   placeholder={
                     memberAccess
                       ? "會員資格已確認，無需輸入授權碼"
@@ -964,7 +967,7 @@ export default function App() {
                 <p className="text-xs font-bold text-slate-500 mb-4">
                   我們將根據您的身分提供合適的落點建議
                 </p>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-3" role="group" aria-label="使用者身份">
                   {[
                     { id: "student", label: "我是學生", icon: GraduationCap },
                     { id: "teacher", label: "我是老師", icon: Presentation },
@@ -1131,6 +1134,7 @@ export default function App() {
                     onClick={() => setIsRegionOpen(true)}
                     aria-haspopup="dialog"
                     aria-expanded={isRegionOpen}
+                    aria-label={formData.region ? `目前就學區：${ALL_REGIONS.find((r) => r.id === formData.region)?.name || "未知區域"}，按下以重新選擇` : "選擇就學區"}
                     className="group flex-1 px-4 sm:px-6 py-4 rounded-2xl border-2 border-slate-900 flex items-center justify-between gap-2 sm:gap-4 font-black transition-all bg-amber-100 text-amber-900 hover:bg-amber-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
                   >
                     <div className="flex items-center gap-3">
@@ -1449,6 +1453,7 @@ export default function App() {
               onClick={handleAnalyze}
               disabled={status === "auth" || status === "quantum"}
               aria-busy={status === "auth" || status === "quantum"}
+              aria-label={status === "auth" || status === "quantum" ? "正在分析，請稍候" : "立即落點分析"}
               className="home-analyze-button w-full relative flex items-center justify-center bg-amber-400 border-4 border-slate-950 text-slate-950 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rounded-2xl py-4 sm:py-5 px-6 transition-all hover:-translate-y-1.5 hover:bg-amber-300 hover:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] sm:hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] disabled:bg-slate-400 disabled:shadow-none disabled:translate-y-2 overflow-visible"
             >
               {status === "quantum" ? (
@@ -1478,11 +1483,11 @@ export default function App() {
       </div>
 
       <section className="home-next-section relative z-10 mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8" aria-labelledby="home-next-title">
-        <div className="home-next-heading"><div><span>更多升學工具</span><h2 id="home-next-title">準備升學，也可以從這裡開始</h2></div><p>依照目前需要的資訊，選一個方向繼續探索。</p></div>
+        <div className="home-next-heading"><div><span>讓選擇更有方向</span><h2 id="home-next-title">分析完，下一步怎麼選？</h2></div><p>從學校、時程到升學路線，把重要資訊看清楚，再決定你的下一步。</p></div>
         <div className="home-next-grid">
-          <a href={withBasePath('/search')}><span><Search aria-hidden="true" size={23} /></span><strong>查詢學校與科別</strong><small>瀏覽學校資料，認識不同選擇。</small><ArrowRight aria-hidden="true" size={18} /></a>
-          <a href={withBasePath('/important-dates')}><span><CalendarDays aria-hidden="true" size={23} /></span><strong>掌握重要日程</strong><small>查看會考、報名與志願選填時間。</small><ArrowRight aria-hidden="true" size={18} /></a>
-          <a href={withBasePath('/school-types')}><span><Building2 aria-hidden="true" size={23} /></span><strong>認識學校類型</strong><small>比較普通科與技職的學習方向。</small><ArrowRight aria-hidden="true" size={18} /></a>
+          <a href={withBasePath('/search')}><span><Search aria-hidden="true" size={23} /></span><strong>還有哪些學校值得放進志願？</strong><small>探索高中職與科別，發現更多適合自己的選擇。</small><span className="home-next-link-label">探索學校<ArrowRight aria-hidden="true" size={16} /></span></a>
+          <a href={withBasePath('/important-dates')}><span><CalendarDays aria-hidden="true" size={23} /></span><strong>重要日期，別等錯過才發現</strong><small>會考、報名到志願選填，一次掌握接下來的時程。</small><span className="home-next-link-label">查看日程<ArrowRight aria-hidden="true" size={16} /></span></a>
+          <a href={withBasePath('/school-types')}><span><Building2 aria-hidden="true" size={23} /></span><strong>普通科或技職，哪條路適合你？</strong><small>看懂不同學校類型的特色，找到更喜歡的學習方向。</small><span className="home-next-link-label">了解差異<ArrowRight aria-hidden="true" size={16} /></span></a>
         </div>
       </section>
 
@@ -3194,6 +3199,7 @@ export default function App() {
 
       <Footer />
     </div>
+    </MotionConfig>
   );
 }
 
