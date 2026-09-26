@@ -1,33 +1,30 @@
-import React from 'react';
 import { motion } from 'motion/react';
-import { Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { withBasePath } from '../../lib/routes';
 
 export default function HeroBanner() {
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="flex flex-col items-center justify-center px-2 pb-12 pt-8 text-center sm:pb-16 sm:pt-12"
-      >
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8 inline-flex items-center gap-2 rounded-full border-2 border-indigo-200 bg-white px-5 py-2.5 font-black text-indigo-700 shadow-sm"
-        >
-          <Sparkles className="h-5 w-5 text-indigo-500" />
-          <span className="tracking-wide">116學年度最新版上線</span>
-        </motion.div>
-
-        <h2 className="mb-6 text-5xl font-black leading-[1.1] tracking-tight text-slate-900 sm:text-6xl md:text-7xl">
-          探索適合你的<br className="sm:hidden" />
-          <span className="relative mt-2 inline-block sm:mt-0"><span className="relative z-10 text-indigo-600">未來理想校系</span><span className="absolute bottom-1 left-0 -z-10 h-4 w-full -rotate-1 rounded-sm bg-amber-300 sm:bottom-2 sm:h-6" /></span>
-        </h2>
-
-        <p className="mx-auto max-w-2xl text-lg font-bold leading-relaxed text-slate-600 sm:text-xl">我們致力於提供最精準的會考落點資訊，幫助每一位國中生發掘潛能，探索最適合的高中職校與職群發展方向。</p>
-      </motion.div>
-    </>
+    <motion.section
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="home-hero"
+      aria-labelledby="home-hero-title"
+    >
+      <div className="home-hero-copy">
+        <div className="home-hero-heading">
+          <span className="home-hero-kicker"><Sparkles aria-hidden="true" size={16} />116 學年度會考落點分析</span>
+          <h1 id="home-hero-title">探索適合你的<br /><span>未來理想校系</span></h1>
+        </div>
+        <div className="home-hero-details">
+          <p>從就學區與會考成績出發，比較適合的高中職校科，整理下一步的志願方向。</p>
+          <div className="home-hero-actions">
+            <a href="#analysis-form" className="home-hero-primary">開始填寫資料<ArrowRight aria-hidden="true" size={18} /></a>
+            <a href={withBasePath('/school-types')} className="home-hero-secondary">先認識學校類型<ArrowRight aria-hidden="true" size={16} /></a>
+          </div>
+          <span className="home-hero-note">依各就學區資料提供參考，實際結果仍以招生簡章為準。</span>
+        </div>
+      </div>
+    </motion.section>
   );
 }

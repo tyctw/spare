@@ -3,6 +3,7 @@ import { parseLineGuideImport } from "./lib/lineGuide";
 import { motion, AnimatePresence } from "motion/react";
 import {
   MapPin,
+  CalendarDays,
   User,
   BookOpen,
   Calculator,
@@ -76,6 +77,7 @@ import NavigationDrawer from "./components/layout/NavigationDrawer";
 import Footer from "./components/layout/Footer";
 import HeroBanner from "./components/layout/HeroBanner";
 import MembershipPromo from "./components/MembershipPromo";
+import "./components/home-page.css";
 import {
   formatSchoolOwnership,
   getSchoolOwnershipKey,
@@ -820,7 +822,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100">
+    <div className="home-page relative flex min-h-screen flex-col overflow-hidden bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100">
       <a href="#main-content" className="skip-link">
         跳到主要內容
       </a>
@@ -835,8 +837,8 @@ export default function App() {
       )}
 
       {/* Modern Background Blur Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-300/20 rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-sky-300/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="home-background-orb absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-300/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="home-background-orb absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-sky-300/20 rounded-full blur-[100px] pointer-events-none"></div>
 
       <AppHeader
         isScrolled={isScrolled}
@@ -848,7 +850,7 @@ export default function App() {
       <main
         id="main-content"
         aria-label="主要內容"
-        className="relative z-10 mx-auto mt-32 w-full max-w-[1400px] flex-1 space-y-8 px-4 sm:mt-40 sm:px-6 lg:px-8"
+        className="home-main relative z-10 mx-auto mt-32 w-full max-w-[1400px] flex-1 space-y-8 px-4 sm:mt-40 sm:px-6 lg:px-8"
       >
         <HeroBanner />
 
@@ -865,14 +867,14 @@ export default function App() {
         )}
 
         {/* Bento Grid Form Section */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 xl:gap-10">
+        <div id="analysis-form" className="home-analysis-grid grid grid-cols-1 gap-8 lg:grid-cols-12 xl:gap-10">
           {/* Left Column: Basic Info & Region */}
-          <div className="lg:col-span-4 space-y-4">
+          <div className="home-form-sidebar lg:col-span-4 space-y-4">
             {/* Card: Auth */}
             <motion.section
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="relative p-6 bg-[#fffbea] border-[3px] border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
+              className="home-auth-panel relative p-6 bg-[#fffbea] border-[3px] border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex flex-col overflow-hidden"
             >
               <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2 relative z-10">
                 <div className="w-8 h-8 rounded-full bg-amber-100 border-2 border-slate-900 flex items-center justify-center">
@@ -884,23 +886,18 @@ export default function App() {
                 輸入授權碼後，即可使用完整落點分析與志願建議；會員可直接略過。
               </p>
 
-              {/* Announcement */}
-              <div className={`relative z-10 mb-5 overflow-hidden rounded-2xl border-2 border-slate-900 bg-amber-50 shadow-[2px_2px_0_#0f172a]${memberAccess ? " hidden" : ""}`}>
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-900 bg-amber-200 px-4 py-2.5">
-                  <span className="inline-flex items-center gap-2 text-xs font-black tracking-wide"><span aria-hidden="true">📢</span>限時公告</span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-900 bg-white px-2.5 py-1 text-[11px] font-bold text-emerald-800"><span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-emerald-600" />免費開放中</span>
+              <div className={`home-free-access relative z-10 mb-5${memberAccess ? " hidden" : ""}`}>
+                <div className="home-free-access-top">
+                  <span><Sparkles aria-hidden="true" size={15} />限時公告</span>
+                  <span className="home-free-access-status">免費開放中</span>
                 </div>
-                <div className="p-4 sm:p-5">
-                  <h3 className="text-xl font-black leading-snug tracking-tight text-slate-900">進階功能，限時免費體驗</h3>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">即日起至 <time dateTime="2026-12-30" className="whitespace-nowrap font-black text-slate-900 underline decoration-amber-300 decoration-4 underline-offset-2">2026/12/30</time> 前，提供免費使用。</p>
-                  <div className="mt-4 border-t border-dashed border-amber-300 pt-4">
-                    <p className="text-xs font-medium leading-6 text-slate-600">點擊下方邀請碼，一鍵填入並解鎖所有進階功能。</p>
-                    <button type="button" onClick={() => updateForm("invitationCode", "TYCTW")} aria-label="填入免費邀請碼 TYCTW" className="mt-2 flex w-full flex-wrap items-center justify-between gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-left shadow-[2px_2px_0_#0f172a] transition hover:bg-amber-100 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2">
-                      <span><span className="block text-[10px] font-bold tracking-widest text-slate-500">免費邀請碼</span><span className="mt-0.5 block font-mono text-2xl font-black tracking-[0.16em] text-indigo-700">TYCTW</span></span>
-                      <span aria-live="polite" className={`rounded-lg px-3 py-2 text-xs font-bold ${formData.invitationCode === "TYCTW" ? "bg-emerald-100 text-emerald-800" : "bg-slate-900 text-white"}`}>{formData.invitationCode === "TYCTW" ? "已填入 ✓" : "一鍵填入 →"}</span>
-                    </button>
-                  </div>
-                </div>
+                <h3>進階功能，限時免費體驗</h3>
+                <p className="home-free-access-date">即日起至 <time dateTime="2026-12-30">2026/12/30</time> 前，提供免費使用。</p>
+                <p className="home-free-access-help">點擊下方邀請碼，一鍵填入並解鎖所有進階功能。</p>
+                <button type="button" onClick={() => updateForm("invitationCode", "TYCTW")} aria-label="填入免費邀請碼 TYCTW" className="home-free-code">
+                  <span className="home-free-code-value"><small>免費邀請碼</small><strong>TYCTW</strong></span>
+                  <span aria-live="polite" className={`home-free-code-action${formData.invitationCode === "TYCTW" ? " is-applied" : ""}`}>{formData.invitationCode === "TYCTW" ? "已填入 ✓" : "一鍵填入 →"}</span>
+                </button>
               </div>
 
               {memberAccess && (
@@ -955,7 +952,7 @@ export default function App() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="p-6 bg-emerald-50 border-[3px] border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] space-y-6 relative overflow-hidden"
+              className="home-profile-panel p-6 bg-emerald-50 border-[3px] border-slate-900 rounded-3xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] space-y-6 relative overflow-hidden"
             >
               <div className="relative z-10">
                 <h2 className="text-xl font-black text-slate-900 flex items-center gap-2 mb-2">
@@ -1106,13 +1103,13 @@ export default function App() {
           </div>
 
           {/* Center/Right Column: Region & Scores */}
-          <div className="lg:col-span-8 flex flex-col gap-4">
+          <div className="home-form-primary lg:col-span-8 flex flex-col gap-4">
             {/* Region Select Button */}
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="p-6 bg-white border-[1.5px] border-slate-900 rounded-3xl shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
+              className="home-region-panel p-6 bg-white border-[1.5px] border-slate-900 rounded-3xl shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
             >
               <div>
                 <div>
@@ -1173,7 +1170,7 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="p-6 sm:p-8 bg-sky-100 border-[1.5px] border-slate-900 rounded-3xl shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
+              className="home-scores-panel p-6 sm:p-8 bg-sky-100 border-[1.5px] border-slate-900 rounded-3xl shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"
             >
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
@@ -1228,7 +1225,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="home-subject-grid flex flex-col gap-3 sm:gap-4">
                 {[
                   {
                     id: "chinese",
@@ -1443,7 +1440,7 @@ export default function App() {
       </main>
 
       {/* Floating Action Bar */}
-      <div className="sticky bottom-6 left-0 right-0 w-full px-4 z-50 pointer-events-none mt-8">
+      <div className="home-analyze-bar sticky bottom-6 left-0 right-0 w-full px-4 z-50 pointer-events-none mt-8">
         <div className="max-w-2xl mx-auto pointer-events-auto">
           <div className="relative group">
             <button
@@ -1452,7 +1449,7 @@ export default function App() {
               onClick={handleAnalyze}
               disabled={status === "auth" || status === "quantum"}
               aria-busy={status === "auth" || status === "quantum"}
-              className="w-full relative flex items-center justify-center bg-amber-400 border-4 border-slate-950 text-slate-950 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rounded-2xl py-4 sm:py-5 px-6 transition-all hover:-translate-y-1.5 hover:bg-amber-300 hover:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] sm:hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] disabled:bg-slate-400 disabled:shadow-none disabled:translate-y-2 overflow-visible"
+              className="home-analyze-button w-full relative flex items-center justify-center bg-amber-400 border-4 border-slate-950 text-slate-950 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rounded-2xl py-4 sm:py-5 px-6 transition-all hover:-translate-y-1.5 hover:bg-amber-300 hover:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] sm:hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] disabled:bg-slate-400 disabled:shadow-none disabled:translate-y-2 overflow-visible"
             >
               {status === "quantum" ? (
                 <motion.div
@@ -1479,6 +1476,15 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      <section className="home-next-section relative z-10 mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8" aria-labelledby="home-next-title">
+        <div className="home-next-heading"><div><span>更多升學工具</span><h2 id="home-next-title">準備升學，也可以從這裡開始</h2></div><p>依照目前需要的資訊，選一個方向繼續探索。</p></div>
+        <div className="home-next-grid">
+          <a href={withBasePath('/search')}><span><Search aria-hidden="true" size={23} /></span><strong>查詢學校與科別</strong><small>瀏覽學校資料，認識不同選擇。</small><ArrowRight aria-hidden="true" size={18} /></a>
+          <a href={withBasePath('/important-dates')}><span><CalendarDays aria-hidden="true" size={23} /></span><strong>掌握重要日程</strong><small>查看會考、報名與志願選填時間。</small><ArrowRight aria-hidden="true" size={18} /></a>
+          <a href={withBasePath('/school-types')}><span><Building2 aria-hidden="true" size={23} /></span><strong>認識學校類型</strong><small>比較普通科與技職的學習方向。</small><ArrowRight aria-hidden="true" size={18} /></a>
+        </div>
+      </section>
 
       <CyberAuthOverlay
         isOpen={status === "auth" || status === "quantum"}
