@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Share2, Copy, Check, Facebook, X, Link2 } from 'lucide-react';
+import { Share2, Copy, Check, Facebook, X, Link2, QrCode } from 'lucide-react';
 
 interface SharePlatformModalProps {
   isOpen: boolean;
@@ -19,21 +19,45 @@ function ThreadsIcon({ className }: { className?: string }) {
 function LineIcon({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
     <path fill="currentColor" d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.34 8.02.33.07.78.22.9.51.11.27.07.7.03.97l-.14.92c-.04.27-.2 1.06.89.58 1.09-.46 5.88-3.47 8.02-5.94C21.56 13.5 22 11.87 22 10.13 22 5.64 17.52 2 12 2Z" />
-    <text x="12" y="12.9" textAnchor="middle" fill="#06C755" fontSize="5.2" fontWeight="900" fontFamily="Arial, sans-serif">LINE</text>
+    <text x="12" y="12.9" textAnchor="middle" fill="#fff" fontSize="5.2" fontWeight="900" fontFamily="Arial, sans-serif">LINE</text>
   </svg>;
 }
 
 export default function SharePlatformModal({ isOpen, onClose }: SharePlatformModalProps) {
   const [copied, setCopied] = React.useState(false);
+  const [copyError, setCopyError] = React.useState(false);
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
   const platformUrl = window.location.href.split('?')[0];
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    const previousRootOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    const focusFrame = window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousRootOverflow;
+      previousFocus?.focus();
+    };
+  }, [isOpen, onClose]);
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(platformUrl);
       setCopied(true);
+      setCopyError(false);
       window.setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
+    } catch {
+      setCopyError(true);
     }
   };
 
@@ -42,21 +66,21 @@ export default function SharePlatformModal({ isOpen, onClose }: SharePlatformMod
       id: 'line',
       name: 'LINE',
       icon: LineIcon,
-      className: 'bg-[#06C755] text-white hover:bg-[#05b94f]',
+      iconClassName: 'bg-[#e7f9ed] text-[#06a747]',
       url: `https://line.me/R/msg/text/?${encodeURIComponent(`推薦你使用這個會考落點分析工具：${platformUrl}`)}`,
     },
     {
       id: 'facebook',
       name: 'Facebook',
       icon: Facebook,
-      className: 'bg-[#1877F2] text-white hover:bg-[#1464cc]',
+      iconClassName: 'bg-[#e8f1ff] text-[#1877F2]',
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(platformUrl)}`,
     },
     {
       id: 'threads',
       name: 'Threads',
       icon: ThreadsIcon,
-      className: 'bg-slate-900 text-white hover:bg-slate-700',
+      iconClassName: 'bg-slate-100 text-slate-900',
       url: `https://www.threads.net/intent/post?text=${encodeURIComponent(`推薦你使用這個會考落點分析工具：${platformUrl}`)}`,
     },
   ];
@@ -64,50 +88,101 @@ export default function SharePlatformModal({ isOpen, onClose }: SharePlatformMod
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-slate-900/65 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#17203a]/60 backdrop-blur-[3px]"
             onClick={onClose}
           />
           <motion.section
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 24, scale: 0.96 }}
+            exit={{ opacity: 0, y: 20, scale: 0.98 }}
             role="dialog"
             aria-modal="true"
             aria-labelledby="share-platform-title"
-            className="relative w-full max-w-xl overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
+            aria-describedby="share-platform-description"
+            className="relative max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-[26px] border border-[#e3e6f3] bg-[#fbfbfe] shadow-[0_28px_80px_rgba(16,26,62,0.25)] sm:max-h-[calc(100dvh-3rem)] sm:rounded-[28px]"
           >
-            <div className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-emerald-300 via-cyan-200 to-sky-200 p-5 sm:p-6">
-              <div className="pointer-events-none absolute -right-8 -top-10 h-36 w-36 rounded-full border-4 border-white/50 bg-white/30" />
-              <div className="pointer-events-none absolute -bottom-14 right-20 h-28 w-28 rotate-12 rounded-3xl border-4 border-emerald-400/50 bg-emerald-200/60" />
-              <div className="relative z-10 flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-4 border-slate-900 bg-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-                    <Share2 className="h-6 w-6 text-emerald-600" />
+            <div className="sticky top-0 z-10 border-b border-[#e7e9f4] bg-gradient-to-br from-[#f0edff] via-[#f9f8ff] to-white px-4 py-4 sm:relative sm:px-8 sm:py-7">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#e4dcff] text-[#653cbd] sm:h-12 sm:w-12 sm:rounded-2xl">
+                    <Share2 className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
                   </div>
-                  <div>
-                    <p className="text-xs font-black tracking-[0.16em] text-emerald-800">SHARE THE TOOL</p>
-                    <h2 id="share-platform-title" className="mt-0.5 text-2xl font-black tracking-tight text-slate-900">分享平台</h2>
+                  <div className="min-w-0">
+                    <h2 id="share-platform-title" className="text-[22px] font-black tracking-tight text-[#202640] sm:text-[28px]">分享平台</h2>
+                    <p id="share-platform-description" className="mt-0.5 text-xs leading-5 text-[#5f6881] sm:mt-1 sm:text-sm sm:leading-6">把會考落點分析分享給家人或朋友。</p>
                   </div>
                 </div>
                 <button
+                  ref={closeButtonRef}
                   type="button"
                   onClick={onClose}
                   aria-label="關閉分享平台"
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-emerald-50 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/85 text-[#556078] transition-colors hover:bg-white hover:text-[#202640] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6842c2]"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
             </div>
 
-            <div className="grid gap-5 p-5 sm:grid-cols-[190px_1fr] sm:p-6">
-              <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-slate-900 bg-slate-50 p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-                <div className="rounded-2xl border-2 border-slate-900 bg-white p-2">
+            <div className="grid gap-4 p-4 pb-6 sm:gap-5 sm:p-7 md:grid-cols-[minmax(0,1fr)_210px] md:gap-6">
+              <div className="min-w-0 space-y-4 sm:space-y-6">
+                <div>
+                  <h3 className="text-[15px] font-extrabold text-[#252c45] sm:text-base">分享到社群</h3>
+                  <p className="mt-1 hidden text-xs leading-5 text-[#727a8d] sm:block">選擇常用的平台，分享頁面連結。</p>
+                  <div className="mt-2 grid grid-cols-3 gap-2 sm:mt-3 sm:gap-3">
+                    {shareLinks.map((link) => (
+                      <a
+                        key={link.id}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`分享到 ${link.name}（另開新分頁）`}
+                        className="group flex min-h-[76px] flex-col items-center justify-center gap-1.5 rounded-2xl border border-[#e2e5ef] bg-white px-1 py-2 text-[#26304b] shadow-[0_4px_14px_rgba(35,45,80,0.04)] transition hover:-translate-y-0.5 hover:border-[#bcb0ee] hover:shadow-[0_9px_22px_rgba(64,47,121,0.1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6842c2] sm:min-h-[94px] sm:gap-2 sm:px-2 sm:py-3"
+                      >
+                        <span className={`flex h-8 w-8 items-center justify-center rounded-lg sm:h-10 sm:w-10 sm:rounded-xl ${link.iconClassName}`}>
+                          <link.icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                        </span>
+                        <span className="text-xs font-bold sm:text-sm">{link.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="flex items-center gap-2 text-[15px] font-extrabold text-[#252c45] sm:text-base">
+                    <Link2 className="h-4 w-4 text-[#6842c2]" aria-hidden="true" />
+                    複製分享連結
+                  </h3>
+                  <p className="mt-1 hidden text-xs leading-5 text-[#727a8d] sm:block">也可以把連結貼到訊息或其他平台。</p>
+                  <div className="mt-2 flex gap-2 sm:mt-3">
+                    <input
+                      readOnly
+                      value={platformUrl}
+                      onFocus={(event) => event.currentTarget.select()}
+                      aria-label="分享連結"
+                      className="h-11 min-w-0 flex-1 rounded-xl border border-[#dfe3ee] bg-white px-3 text-sm text-[#536078] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6842c2]"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCopy}
+                      className="inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#6034b8] px-3 text-xs font-bold text-white transition-colors hover:bg-[#4f269f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6842c2] sm:gap-2 sm:px-4 sm:text-sm"
+                    >
+                      {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
+                      {copied ? '已複製' : '複製連結'}
+                    </button>
+                  </div>
+                  <p role="status" className="mt-2 text-xs text-[#67718a] empty:hidden sm:min-h-5">
+                    {copyError ? '無法自動複製，請選取上方連結手動複製。' : copied ? '連結已複製，可以貼給家人或朋友。' : ''}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 rounded-2xl bg-[#f1edfc] p-3 md:flex-col md:justify-center md:gap-0 md:p-5 md:text-center">
+                <div className="shrink-0 rounded-xl bg-white p-1.5 shadow-[0_8px_24px_rgba(61,45,119,0.1)] md:order-2 md:mt-4 md:rounded-2xl md:p-2">
                   <QRCodeSVG
                     value={platformUrl}
                     size={156}
@@ -115,57 +190,19 @@ export default function SharePlatformModal({ isOpen, onClose }: SharePlatformMod
                     includeMargin
                     role="img"
                     aria-label="分享連結 QR Code"
-                    className="h-32 w-32 sm:h-36 sm:w-36"
+                    className="h-24 w-24 md:h-36 md:w-36"
                   />
                 </div>
-                <p className="mt-3 text-center text-xs font-black text-slate-600">掃描 QR Code 開啟網站</p>
-              </div>
-
-              <div className="min-w-0">
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300">
-                    <Share2 className="h-4 w-4" />
-                  </span>
-                  <h3 className="font-black text-slate-900">選擇分享方式</h3>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {shareLinks.map((link) => (
-                    <a
-                      key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={`group flex min-h-20 flex-col items-center justify-center rounded-2xl border-2 border-slate-900 p-2 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none ${link.className}`}
-                    >
-                      <link.icon className="h-6 w-6 transition-transform group-hover:scale-110" />
-                      <span className="mt-1 text-[11px] font-black">{link.name}</span>
-                    </a>
-                  ))}
-                </div>
-
-                <div className="mt-5">
-                  <div className="mb-2 flex items-center gap-2 text-sm font-black text-slate-900">
-                    <Link2 className="h-4 w-4 text-indigo-600" />
-                    或複製分享連結
+                <div className="min-w-0 text-left md:contents">
+                  <div className="flex items-center gap-2 text-sm font-extrabold text-[#4e398c] md:order-1">
+                    <QrCode className="h-4 w-4" aria-hidden="true" />
+                    掃描 QR Code
                   </div>
-                  <div className="flex gap-2">
-                    <div className="min-w-0 flex-1 truncate rounded-xl border-2 border-slate-900 bg-slate-50 px-3 py-2.5 text-xs font-bold text-slate-600">
-                      {platformUrl}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleCopy}
-                      aria-label={copied ? '已複製分享連結' : '複製分享連結'}
-                      aria-live="polite"
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition active:translate-y-0.5 active:shadow-none ${copied ? 'bg-emerald-400 text-slate-900' : 'bg-indigo-500 text-white hover:bg-indigo-400'}`}
-                    >
-                      {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
-                    </button>
-                  </div>
-                  <p className="mt-2 text-xs font-bold text-slate-500">{copied ? '連結已複製，可以直接貼給朋友。' : '複製後可貼到任何訊息或社群平台。'}</p>
+                  <p className="mt-1 text-xs leading-5 text-[#6f668a] md:order-3 md:mt-4 md:text-center">用手機相機掃描，即可開啟目前頁面。</p>
                 </div>
               </div>
             </div>
+
           </motion.section>
         </div>
       )}
