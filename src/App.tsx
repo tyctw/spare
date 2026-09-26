@@ -1264,7 +1264,7 @@ export default function App() {
                     icon: Activity,
                     color: "text-emerald-600",
                     bgBorder:
-                      "bg-emerald-50 border-emerald-300 focus:ring-emerald-400 focus:border-emerald-400 hover:border-emerald-400",
+                      "bg-white border-slate-300 focus:ring-slate-300 focus:border-slate-500 hover:border-slate-400",
                     theme: "bg-white",
                   },
                   {

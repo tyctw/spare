@@ -73,24 +73,6 @@
   box-shadow: 5px 5px 0 0 #0f172a;
 }
 
-/* Keep the full-disclaimer link visually secondary and inside the scrollable modal content. */
-.custom-scrollbar > a[href*="/disclaimer"] {
-  display: none;
-  width: fit-content;
-  margin-left: auto;
-  padding: 0.65rem 0.9rem;
-  border: 2px solid #0f172a;
-  border-radius: 0.75rem;
-  background: #ffffff;
-  box-shadow: 2px 2px 0 0 #0f172a;
-  text-decoration: none;
-}
-
-.custom-scrollbar > a[href*="/disclaimer"]:hover {
-  background: #f8fafc;
-  transform: translateY(-1px);
-}
-
 @layer utilities {
   .sr-only {
     position: absolute;

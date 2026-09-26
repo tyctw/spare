@@ -1,39 +1,95 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowRight, ArrowUpRight, Check, CircleAlert, Megaphone, ShieldAlert, Sparkles, X } from 'lucide-react';
+import { ArrowUpRight, BookOpenCheck, CalendarClock, Check, CircleAlert, MessageCircle, ShieldAlert, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import './disclaimer-modal.css';
 
 interface Props { isOpen: boolean; onClose: () => void; }
 
 const notices = [
-  { number: '01', title: '不是錄取保證', text: '推薦校科與落點區間僅供規劃參考，不代表一定錄取。', icon: ShieldAlert, tone: 'bg-rose-100 text-rose-700' },
-  { number: '02', title: '結果每年都可能變動', text: '名額、報名人數、比序規則與政策，都可能影響實際分發結果。', icon: Sparkles, tone: 'bg-amber-100 text-amber-700' },
+  { title: '落點是推估', text: '推薦校科與落點區間協助規劃志願，無法保證實際錄取。', icon: ShieldAlert },
+  { title: '招生條件會變動', text: '名額、報名人數、比序規則與政策，每年都可能調整。', icon: CalendarClock },
+  { title: '以官方資訊為準', text: '資格、時程與錄取結果，請依當學年度招生簡章及公告確認。', icon: BookOpenCheck },
 ];
 
 export default function DisclaimerModal({ isOpen, onClose }: Props) {
-  return <AnimatePresence>{isOpen && <div className="fixed inset-0 z-[160] flex items-center justify-center p-4 sm:p-6">
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-slate-950/55 backdrop-blur-sm" />
-    <motion.section initial={{ scale: 0.95, opacity: 0, y: 18 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 18 }} transition={{ type: 'spring', damping: 24, stiffness: 280 }} role="dialog" aria-modal="true" aria-labelledby="disclaimer-modal-title" className="relative flex max-h-[90dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[4px_4px_0_#0f172a]">
-      <header className="relative shrink-0 overflow-hidden border-b-4 border-slate-900 bg-[#eef3ff] px-5 py-5 sm:px-7 sm:py-6">
-        <div aria-hidden="true" className="absolute -right-10 -top-10 h-36 w-36 rounded-full border-[18px] border-indigo-200/70" />
-        <div aria-hidden="true" className="absolute right-14 top-10 h-4 w-4 rounded-full bg-rose-400" />
-        <div className="relative flex items-start justify-between gap-4"><div className="flex items-center gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-rose-500 text-white"><CircleAlert className="h-6 w-6" /></div><div><p className="text-[10px] font-black tracking-[0.18em] text-indigo-700">READ BEFORE YOU START</p><h2 id="disclaimer-modal-title" className="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">使用前的重要提醒</h2></div></div><button type="button" onClick={onClose} aria-label="關閉免責聲明" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-slate-50 active:translate-y-0 active:shadow-none"><X className="h-5 w-5" /></button></div>
-      </header>
-      <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto bg-[#f8f9fd] p-4 sm:p-6">
-        <div className="grid gap-3 sm:grid-cols-2">{notices.map((notice) => { const Icon = notice.icon; return <article key={notice.title} className="relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0_#0f172a]"><span aria-hidden="true" className="absolute right-3 top-2 text-4xl font-black leading-none text-slate-100">{notice.number}</span><div className="relative flex items-start gap-3"><div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 ${notice.tone}`}><Icon className="h-5 w-5" /></div><div><h3 className="text-base font-black text-slate-900">{notice.title}</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-600">{notice.text}</p></div></div></article>; })}</div>
-        <a href={withBasePath('/disclaimer')} className="mt-5 inline-flex items-center gap-2 text-sm font-black text-indigo-700 underline decoration-2 underline-offset-4 transition hover:text-indigo-900">閱讀完整免責聲明 <ArrowRight className="h-4 w-4" /></a>
-        <aside aria-labelledby="disclaimer-line-title" className="mt-5 rounded-2xl border-2 border-slate-900 bg-emerald-50 p-4 shadow-[3px_3px_0_#0f172a] sm:p-5">
-          <p className="flex items-center gap-2 text-xs font-black text-emerald-800"><Megaphone aria-hidden="true" className="h-4 w-4" />推薦 · 官方 LINE</p>
-          <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <h3 id="disclaimer-line-title" className="text-lg font-black text-slate-900">加入我們的官方 LINE</h3>
-              <p className="mt-1 text-sm font-bold leading-6 text-slate-600">加入好友，查看升學資訊與常用功能入口。</p>
-            </div>
-            <a href="https://line.me/R/ti/p/@166zozmd" target="_blank" rel="noopener noreferrer" aria-label="加入官方 LINE（另開新分頁）" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-[#06c755] px-4 py-3 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-[#05b34c] active:translate-y-0 active:shadow-none">加入官方 LINE<ArrowUpRight aria-hidden="true" className="h-4 w-4" /></a>
+  const dialogRef = useRef<HTMLElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    dialogRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onCloseRef.current();
+      }
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+      const focusable = Array.from(dialogRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === dialogRef.current)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, [isOpen]);
+
+  return <AnimatePresence>{isOpen && <div className="disclaimer-overlay">
+    <motion.div className="disclaimer-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} aria-hidden="true" />
+    <motion.section
+      ref={dialogRef}
+      tabIndex={-1}
+      initial={{ opacity: 0, y: 16, scale: .98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 12, scale: .98 }}
+      transition={{ duration: .25 }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="disclaimer-modal-title"
+      className="disclaimer-dialog"
+    >
+      <header className="disclaimer-header">
+        <div className="disclaimer-heading-row">
+          <span className="disclaimer-icon"><CircleAlert aria-hidden="true" size={23} /></span>
+          <div className="disclaimer-heading-copy">
+            <p className="disclaimer-kicker">使用前提醒</p>
+            <h2 id="disclaimer-modal-title">先了解分析結果的用途</h2>
           </div>
+          <button type="button" className="disclaimer-close" onClick={onClose} aria-label="關閉免責聲明"><X aria-hidden="true" size={20} /></button>
+        </div>
+      </header>
+
+      <div className="disclaimer-content">
+        <div className="disclaimer-principle"><span>最重要的原則</span><strong>分析結果僅供規劃參考，無法保證錄取。</strong></div>
+        <div className="disclaimer-notices">{notices.map(({ title, text, icon: Icon }) => <article key={title}>
+          <span className="disclaimer-notice-icon"><Icon aria-hidden="true" size={20} /></span>
+          <div><h3>{title}</h3><p>{text}</p></div>
+        </article>)}</div>
+        <aside className="disclaimer-line" aria-label="本站 LINE 資訊">
+          <span className="disclaimer-line-icon"><MessageCircle aria-hidden="true" size={20} /></span>
+          <div><strong>想持續掌握升學資訊？</strong><p>加入本站 LINE，查看升學消息與常用功能。</p></div>
+          <a href="https://line.me/R/ti/p/@166zozmd" target="_blank" rel="noopener noreferrer" aria-label="加入本站 LINE（另開新分頁）">加入 LINE<ArrowUpRight aria-hidden="true" size={16} /></a>
         </aside>
       </div>
-      <footer className="shrink-0 border-t-2 border-slate-200 bg-white p-4 sm:px-6 sm:py-5"><button type="button" onClick={onClose} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-500 px-5 py-3.5 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-rose-600 hover:shadow-[3px_3px_0_#0f172a] active:translate-y-0 active:shadow-none"><Check className="h-5 w-5" />我已了解，繼續使用</button></footer>
+
+      <footer className="disclaimer-footer"><button type="button" onClick={onClose}><Check aria-hidden="true" size={20} />我已了解，開始使用</button></footer>
     </motion.section>
   </div>}</AnimatePresence>;
 }
