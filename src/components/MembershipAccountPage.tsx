@@ -335,8 +335,8 @@ export default function MembershipAccountPage() {
                     <a href={withBasePath('/membership')} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 font-bold transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_#161b35]"><Sparkles className="h-4 w-4 text-emerald-600" />查看會員權益</a>
                   </div>
                 </> : <>
-                  <div className="rounded-2xl bg-emerald-50/50 p-4 sm:p-5 mb-5 border border-emerald-100/50">
-                    <p className="text-sm font-normal leading-relaxed text-emerald-900">
+                  <div className="mb-5 rounded-2xl border border-[#eadcf3] bg-[#f8f3ff] p-4 sm:p-5">
+                    <p className="text-sm font-normal leading-relaxed text-[#51407d]">
                       登入 LINE 後可確認既有資格；尚未購買時，可直接從方案頁啟用免廣告。
                     </p>
                   </div>
@@ -366,7 +366,7 @@ export default function MembershipAccountPage() {
                       </div>
                     </div>
                   </div>
-                  <a href={withBasePath('/membership')} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-900 px-4 py-4 text-sm font-bold text-white shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-1 hover:shadow-[5px_5px_0_#161b35] active:translate-y-0 active:shadow-none"><Sparkles className="h-5 w-5" />前往啟用免廣告</a>
+                  <a href={withBasePath('/membership')} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-[#c74731] px-4 py-4 text-sm font-bold text-white shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-1 hover:bg-[#a93a28] hover:shadow-[5px_5px_0_#161b35] active:translate-y-0 active:shadow-none"><Sparkles className="h-5 w-5" />前往啟用免廣告</a>
                 </>}
               </div>
             </article>

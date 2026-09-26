@@ -452,8 +452,8 @@ export default function MembershipPage() {
                 <div><h2 className="text-sm font-bold text-slate-800">下一步：開始規劃</h2><p className="mt-1 text-sm leading-6 text-slate-600">回到首頁填妥成績，即可開始落點分析，不需再輸入系統授權碼。</p></div>
               </div>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:mt-8">
-                <a href={withBasePath("/")} className="group inline-flex min-h-14 flex-1 items-center justify-center gap-3 rounded-xl border-2 border-slate-900 bg-[#123e35] px-5 py-4 text-base font-bold text-white shadow-[3px_3px_0_#161b35] transition hover:bg-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700">
-                  <Sparkles aria-hidden="true" className="h-5 w-5 text-[#dcedb0]" />開始使用落點分析<ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-1" />
+                <a href={withBasePath("/")} className="group inline-flex min-h-14 flex-1 items-center justify-center gap-3 rounded-xl border-2 border-slate-900 bg-[#c74731] px-5 py-4 text-base font-bold text-white shadow-[3px_3px_0_#161b35] transition hover:bg-[#a93a28] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c74731]">
+                  <Sparkles aria-hidden="true" className="h-5 w-5 text-[#ffe2c6]" />開始使用落點分析<ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform motion-safe:group-hover:translate-x-1" />
                 </a>
                 <a href={withBasePath("/membership/account")} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 px-6 py-4 text-sm font-bold text-slate-700 transition hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700"><BadgeCheck aria-hidden="true" className="h-4 w-4" />我的會員帳號</a>
               </div>
@@ -540,22 +540,22 @@ export default function MembershipPage() {
                   role="radio"
                   aria-checked={active}
                   aria-label={`${plan.name}，NT$ ${plan.price}，${plan.duration}${active ? '，目前已選擇' : ''}`}
-                  className={`member-plan relative overflow-hidden rounded-3xl border p-6 text-left transition sm:p-6 ${active ? "border-emerald-700 bg-white shadow-[3px_3px_0_#161b35] ring-2 ring-emerald-700" : "border-stone-200 bg-white/70 hover:border-emerald-400 hover:bg-white"}`}
+                  className={`member-plan relative overflow-hidden rounded-3xl border p-6 text-left transition sm:p-6 ${active ? "bg-white ring-2" : "bg-white/70 hover:bg-white"}`}
                 >
                   {plan.featured && (
-                    <span className="absolute right-5 top-0 rounded-b-xl border-x border-b-2 border-slate-900 bg-[#e7edce] px-3 py-1.5 text-xs font-bold">
+                    <span className="absolute right-5 top-0 rounded-b-xl border-x border-b-2 border-slate-900 bg-[#ffe1cf] px-3 py-1.5 text-xs font-bold text-[#873a2e]">
                       長期規劃更省
                     </span>
                   )}
                   <div className="flex items-start justify-between">
                     <div
-                      className={`grid h-10 w-10 place-items-center rounded-xl border-2 border-slate-900 ${plan.accent === "emerald" ? "bg-emerald-900 text-white" : "bg-emerald-100 text-slate-900"}`}
+                      className={`grid h-10 w-10 place-items-center rounded-xl border-2 border-slate-900 ${plan.featured ? "bg-[#6f54a3] text-white" : "bg-[#eee8fa] text-[#51407d]"}`}
                     >
                       <Crown className="h-5 w-5" />
                     </div>
                     {active && (
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full border-2 border-slate-900 bg-emerald-100 px-2 py-1 text-xs font-bold ${plan.featured ? "absolute right-4 top-11" : ""}`}
+                        className={`inline-flex items-center gap-1 rounded-full border-2 border-slate-900 bg-[#ffe1cf] px-2 py-1 text-xs font-bold text-[#873a2e] ${plan.featured ? "absolute right-4 top-11" : ""}`}
                       >
                         <Check className="h-3.5 w-3.5" />
                         已選擇
@@ -567,7 +567,7 @@ export default function MembershipPage() {
                     {plan.note}
                   </p>
                   <p
-                    className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-bold ${plan.featured ? "bg-amber-100 text-amber-800" : "bg-emerald-50 text-emerald-700"}`}
+                    className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-bold ${plan.featured ? "bg-[#ffe1cf] text-[#873a2e]" : "bg-[#eee8fa] text-[#51407d]"}`}
                   >
                     {plan.comparison}
                   </p>
@@ -577,7 +577,7 @@ export default function MembershipPage() {
                       ／{plan.duration}
                     </span>
                   </p>
-                  <div className="mt-5 flex items-center gap-2 border-t border-stone-100 pt-4 text-xs font-medium text-emerald-800"><Check className="h-4 w-4" />全部會員權益<span className="text-stone-300">／</span>到期不自動續扣</div>
+                  <div className="mt-5 flex items-center gap-2 border-t border-stone-100 pt-4 text-xs font-medium text-[#5b4784]"><Check className="h-4 w-4" />全部會員權益<span className="text-stone-300">／</span>到期不自動續扣</div>
                 </button>
               );
             })}
