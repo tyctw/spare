@@ -165,26 +165,50 @@
 .member-order h2, .member-order-details dd { color: #332d50; }
 .member-order-total dd { color: #b63e2b; }
 .member-payment-note { text-align: center; line-height: 1.5; }
-.member-pass { overflow: hidden; border: 1px solid #e5dce9; border-radius: 1.5rem; background: #fff; box-shadow: 0 18px 38px -30px #65507385; }
-.member-pass-heading { display: flex; align-items: center; gap: .8rem; padding: 1.1rem 1.35rem; border-bottom: 1px solid #e5dce9; background: #f6f2ff; }
-.member-pass-heading-icon { display: grid; width: 2.5rem; height: 2.5rem; flex-shrink: 0; place-items: center; border-radius: .8rem; color: #665098; background: #ebe3fa; }
-.member-pass-heading h2 { color: #332d50; font-size: 1rem; font-weight: 750; }
-.member-pass-heading p { margin-top: .1rem; color: #746c80; font-size: .75rem; }
-.member-pass-details { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); margin: 0; }
-.member-pass-details > div { min-width: 0; padding: 1.5rem 1.6rem; }
-.member-pass-details dt { display: flex; align-items: center; gap: .4rem; color: #776e82; font-size: .75rem; font-weight: 700; letter-spacing: .025em; }
-.member-pass-details dd { margin: .6rem 0 0; overflow-wrap: anywhere; color: #332d50; font-size: clamp(1.15rem, 2.3vw, 1.55rem); font-weight: 750; line-height: 1.3; letter-spacing: -.025em; }
-.member-pass-identity { border-right: 1px solid #e8e0ed; background: #faf8ff; }
-.member-pass-plan { background: #fff5e9; }
-.member-pass-details .member-pass-identity dt, .member-pass-details .member-pass-plan dt { color: #746b80; }
-.member-pass-details .member-pass-identity dd, .member-pass-details .member-pass-plan dd { color: #332d50; }
-.member-pass-plan dd { display: flex; align-items: center; gap: .55rem; }
-.member-pass-plan dd svg { flex-shrink: 0; color: #b56c36; }
-.member-pass-date { border-top: 1px solid #e8e0ed; }
-.member-pass-start { border-right: 1px solid #e8e0ed; }
-.member-pass-expiry { background: #fff4ec; }
-.member-pass-expiry dd { color: #a43e2e; }
-.member-pass-days { display: flex; width: max-content; margin-top: .7rem; padding: .3rem .65rem; border-radius: 99px; color: #a43e2e; background: #ffe3d7; font-size: .72rem; font-weight: 750; letter-spacing: 0; }
+.member-active-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.member-active-nav a, .member-active-nav > span { display: inline-flex; align-items: center; gap: .5rem; padding: .6rem .8rem; border: 1px solid #e5dce9; border-radius: .8rem; color: #5b4784; background: #fff; font-size: .8rem; font-weight: 700; }
+.member-active-nav a:hover { background: #f7f2ff; }
+.member-active-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(18rem, .8fr); gap: 1.25rem; align-items: stretch; margin-top: 1.5rem; }
+.member-active-hero { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; padding: clamp(1.5rem, 4vw, 3.2rem); border: 1px solid #e9dce8; border-radius: 2rem; background: radial-gradient(circle at 0 0, #eee8ff, transparent 30rem), linear-gradient(135deg, #fffaf5, #ffe8d8); box-shadow: 0 22px 45px -33px #7c587e91; }
+.member-active-status { display: inline-flex; align-items: center; gap: .4rem; padding: .45rem .75rem; border: 1px solid #d8c8ed; border-radius: 99px; color: #584184; background: #fff; font-size: .75rem; font-weight: 750; }
+.member-active-greeting { margin-top: clamp(1.8rem, 4vw, 3rem); color: #82567c; font-size: .85rem; font-weight: 700; }
+.member-active-hero h1 { margin-top: .55rem; color: #332d50; font-size: clamp(2.3rem, 4.8vw, 4.1rem); font-weight: 800; line-height: 1.16; letter-spacing: -.06em; }
+.member-active-description { max-width: 35rem; margin-top: 1rem; color: #655b73; font-size: .95rem; line-height: 1.8; }
+.member-active-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: auto; padding-top: 2rem; }
+.member-active-actions a { display: inline-flex; min-height: 3.25rem; align-items: center; justify-content: center; gap: .65rem; padding: .8rem 1.15rem; border-radius: .85rem; font-size: .9rem; font-weight: 750; transition: background .2s, transform .2s; }
+.member-active-actions a:hover { transform: translateY(-2px); }
+.member-active-primary { color: #fff; background: #c74731; box-shadow: 0 10px 20px -14px #953a2b; }
+.member-active-primary:hover { background: #a93a28; }
+.member-active-secondary { border: 1px solid #d8c8e9; color: #5b4784; background: #fff; }
+.member-active-secondary:hover { background: #f7f2ff; }
+.member-active-hint { display: flex; align-items: center; gap: .4rem; margin-top: 1rem; color: #776c7c; font-size: .75rem; line-height: 1.5; }
+.member-active-hint svg { flex-shrink: 0; }
+.member-active-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid #e6ddeb; border-radius: 2rem; background: #fff; box-shadow: 0 22px 45px -33px #6a547891; }
+.member-active-card-heading { display: flex; align-items: center; gap: .8rem; padding: 1.5rem; border-bottom: 1px solid #eee7f2; background: #f8f5ff; }
+.member-active-card-heading > span { display: grid; width: 2.7rem; height: 2.7rem; flex-shrink: 0; place-items: center; border-radius: .85rem; color: #6a51a1; background: #ebe4fa; }
+.member-active-card-heading p { color: #786c86; font-size: .72rem; font-weight: 700; }
+.member-active-card-heading h2 { margin-top: .15rem; color: #332d50; font-size: 1.3rem; font-weight: 800; }
+.member-active-card-details { margin: 0; padding: .3rem 1.5rem; }
+.member-active-card-details > div { padding: 1.25rem 0; border-bottom: 1px solid #f0eaf1; }
+.member-active-card-details > div:last-child { border-bottom: 0; }
+.member-active-card-details dt { color: #786f81; font-size: .75rem; font-weight: 700; }
+.member-active-card-details dd { margin: .35rem 0 0; overflow-wrap: anywhere; color: #332d50; font-size: 1.1rem; font-weight: 750; line-height: 1.4; }
+.member-active-card-details .member-active-expiry dd { color: #a43e2e; font-size: clamp(1.2rem, 2.2vw, 1.55rem); }
+.member-active-expiry span { display: flex; width: max-content; margin-top: .65rem; padding: .3rem .6rem; border-radius: 99px; color: #a43e2e; background: #fff0e7; font-size: .72rem; font-weight: 750; }
+.member-active-account-link { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: auto 1.5rem 1.5rem; padding: .75rem 0 0; border-top: 1px solid #eee7f2; color: #5b4784; font-size: .83rem; font-weight: 750; }
+.member-active-account-link:hover { color: #aa3e2f; }
+.member-active-benefits { margin-top: 1.25rem; padding: 1.6rem; border: 1px solid #e9dfe9; border-radius: 1.5rem; background: #fff; }
+.member-active-benefits > div > p { color: #aa4a38; font-size: .72rem; font-weight: 750; letter-spacing: .08em; }
+.member-active-benefits h2 { margin-top: .25rem; color: #332d50; font-size: 1.3rem; font-weight: 750; }
+.member-active-benefits ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin: 1.2rem 0 0; padding: 0; list-style: none; }
+.member-active-benefits li { display: flex; align-items: flex-start; gap: .75rem; min-width: 0; padding: 1rem; border: 1px solid #eee8f0; border-radius: 1rem; background: #fdfbff; }
+.member-active-benefits li > svg { flex-shrink: 0; color: #7358a3; }
+.member-active-benefits strong, .member-active-benefits small { display: block; }
+.member-active-benefits strong { color: #332d50; font-size: .85rem; }
+.member-active-benefits small { margin-top: .3rem; color: #70687a; font-size: .72rem; line-height: 1.5; }
+.member-active-logout { display: flex; justify-content: flex-end; padding: 1rem .25rem 0; }
+.member-active-logout button { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem; border-radius: .5rem; color: #7e7784; font-size: .75rem; }
+.member-active-logout button:hover { color: #332d50; background: #f6f1fa; }
 .member-account-snapshot-details span { display: block; color: #60776c; font-size: .72rem; font-weight: 700; }
 .member-account-snapshot-details strong { display: block; margin-top: .4rem; overflow-wrap: anywhere; color: #153b31; font-size: 1.1rem; line-height: 1.35; }
 .member-account-hero { border: 1px solid #e5d8e9; color: #332d50; background: linear-gradient(120deg, #f0eaff, #ffe9db); box-shadow: 0 24px 55px -38px #715279a8; }
@@ -203,15 +227,148 @@
 .member-account-nav a { border: 1px solid #dce7da; color: #214a39; box-shadow: 0 10px 25px -23px #143427; }
 .member-surface { border-color: #dce7da; box-shadow: 0 18px 35px -29px #183b2e91; }
 
+/* 會員帳號：一致的導覽、資格、訂單、帳號與售後版面。 */
+.member-account-page { color: #332d50; }
+.account-back-link { display: inline-flex; align-items: center; gap: .5rem; padding: .55rem .8rem; border: 1px solid #e2d8e9; border-radius: .75rem; color: #5b4784; background: #fff; font-size: .8rem; font-weight: 750; }
+.account-back-link:hover { background: #f7f2ff; }
+.member-account-page .account-hero { padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid #e8d9e9; background: radial-gradient(circle at 6% 0, #eee8ff, transparent 34rem), linear-gradient(120deg, #fff8f2, #ffe8db); box-shadow: 0 22px 48px -34px #77557991; }
+.account-hero-kicker { display: inline-flex; align-items: center; gap: .4rem; padding: .4rem .7rem; border: 1px solid #d9cbed; border-radius: 99px; color: #5b4784; background: #fff; font-size: .75rem; font-weight: 750; }
+.account-hero-mark { width: 7rem; height: 7rem; flex-shrink: 0; place-items: center; border: 1px solid #dfd1e8; border-radius: 1.5rem; color: #6e55a1; background: #fffcff; box-shadow: 0 12px 28px -20px #70557e9c; }
+.account-hero-status { display: inline-flex; align-items: center; gap: .45rem; max-width: 100%; margin-top: 1.5rem; padding: .5rem .75rem; border: 1px solid #e6d9e5; border-radius: .7rem; color: #5b4784; background: #ffffffbf; font-size: .76rem; font-weight: 750; overflow-wrap: anywhere; }
+.account-shortcuts { margin-top: 1.75rem; }
+.account-shortcuts h2 { color: #332d50; font-size: 1rem; font-weight: 800; }
+.member-account-page .member-account-nav { margin-top: .8rem; }
+.member-account-page .member-account-nav a { min-height: 4.25rem; border: 1px solid #e8deeb; border-radius: 1rem; color: #5b4784; background: #fff; font-size: .83rem; box-shadow: 0 13px 28px -24px #685175b3; }
+.member-account-page .member-account-nav a:first-child { border-color: #efd8cf; color: #a43e2e; background: #fff7f1; }
+.member-account-page .member-account-nav a:hover { border-color: #c9b7db; background: #f8f4ff; transform: translateY(-2px); }
+.member-account-page .member-account-nav a:first-child:hover { background: #ffefe6; }
+.account-panel, .account-support-card { border: 1px solid #e8deeb; border-radius: 1.5rem; background: #fff; box-shadow: 0 18px 36px -30px #6851759c; }
+.member-account-page .account-panel-heading { border-bottom: 1px solid #ece4ee; background: #f9f6ff; }
+.account-panel-icon { display: grid; width: 2.6rem; height: 2.6rem; flex-shrink: 0; place-items: center; border-radius: .8rem; color: #6e55a1; background: #ece5fa; }
+.account-panel-eyebrow { color: #755b9e; font-size: .7rem; font-weight: 800; letter-spacing: .08em; }
+.account-valid-badge { flex-shrink: 0; padding: .3rem .6rem; border-radius: 99px; color: #5b4784; background: #efe9fa; font-size: .7rem; font-weight: 750; }
+.account-section-intro { color: #665f70; font-size: .88rem; line-height: 1.75; }
+.account-plan-stats > div { border: 1px solid #ece1ec; border-radius: 1rem; background: #fbf8ff; }
+.account-plan-stats > div:last-child { border-color: #f2ded1; background: #fff6ef; }
+.account-plan-stats p { color: #776b80; font-size: .73rem; font-weight: 750; }
+.account-plan-stats strong { display: block; margin-top: .45rem; overflow-wrap: anywhere; color: #332d50; font-size: clamp(1.3rem, 2.6vw, 1.8rem); line-height: 1.3; }
+.account-plan-stats small { display: inline-flex; margin-top: .4rem; color: #a43e2e; font-size: .72rem; font-weight: 750; }
+.account-text-link { display: inline-flex; align-items: center; gap: .4rem; margin-top: 1.25rem; color: #5b4784; font-size: .82rem; font-weight: 750; }
+.account-text-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.account-email { border: 1px solid #e5d9ed; background: #f8f5ff; }
+.account-email-label { color: #5b4784; font-size: .72rem; font-weight: 750; }
+.account-email-save { color: #fff; background: #6e55a1; }
+.account-email-save:hover:not(:disabled) { background: #594383; }
+.account-email-add { border: 1px dashed #cbb7df; color: #5b4784; background: #faf7ff; }
+.account-email-add:hover { border-color: #9e82c0; background: #f1eafa; }
+.account-upgrade-benefits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1.25rem; }
+.account-upgrade-benefits > div { display: flex; align-items: center; gap: .7rem; min-width: 0; padding: 1rem; border: 1px solid #e8deeb; border-radius: 1rem; color: #332d50; background: #fcfaff; font-size: .8rem; font-weight: 750; }
+.account-upgrade-benefits svg { flex-shrink: 0; color: #6e55a1; }
+.account-upgrade-button { display: flex; min-height: 3.3rem; align-items: center; justify-content: center; gap: .65rem; margin-top: 1.4rem; padding: .8rem 1rem; border-radius: .85rem; color: #fff; background: #c74731; font-size: .9rem; font-weight: 800; }
+.account-upgrade-button:hover { background: #a93a28; }
+.account-history-count { flex-shrink: 0; color: #7b7084; font-size: .7rem; font-weight: 750; }
+.account-purchase { border: 1px solid #e9e1ec; box-shadow: 0 10px 25px -23px #6b517ca3; }
+.account-purchase:hover { border-color: #c9b7db; box-shadow: 0 14px 28px -23px #6b517ca3; }
+.account-line-identity { border: 1px solid #e9e1ec; background: #fbf9fe; }
+.account-line-avatar { color: #6e55a1; background: #eee7fa; }
+.account-security-note { color: #665b77; background: #f8f4ff; }
+.account-support-card { min-width: 0; }
+.account-support-icon { color: #6e55a1; background: #eee7fa; }
+.account-support-link { border: 1px solid #d9c9e9; color: #5b4784; background: #f8f4ff; }
+.account-support-link:hover { border-color: #a88dc9; background: #f0e8fa; }
+.account-policy-link { border: 1px solid #e9e1ec; }
+.account-policy-link:hover { border-color: #bfaad4; background: #f8f4ff; }
+
+/* 購買頁：從權益到付款與售後使用同一套層級。 */
+.membership-purchase-page .member-intro { margin-top: 1.25rem; }
+.membership-purchase-page .member-intro-summary > strong { color: #ad4231; }
+.membership-purchase-page .member-benefits { padding-bottom: 2.5rem; }
+.membership-purchase-page .member-eyebrow { color: #a44837; font-weight: 750; }
+.membership-purchase-page .member-benefit-grid { gap: .85rem; }
+.membership-purchase-page .member-benefit { min-height: 12rem; border: 1px solid #e9deeb; border-radius: 1.25rem; background: #fff; box-shadow: 0 14px 28px -27px #73547d99; }
+.membership-purchase-page .member-benefit:nth-child(2) { background: #fbf8ff; }
+.membership-purchase-page .member-benefit:nth-child(4) { background: #fff9f4; }
+.membership-purchase-page .member-benefit-top svg { width: 2.2rem; height: 2.2rem; padding: .5rem; border-radius: .65rem; color: #6e55a1; background: #eee8fa; }
+.membership-purchase-page .member-benefit:nth-child(4) .member-benefit-top svg { color: #ac4935; background: #ffebdf; }
+.membership-purchase-page .member-purchase-grid { gap: 1.25rem; padding-top: 2.5rem; border-top: 1px solid #e7dce9; }
+.member-purchase-panel { border: 1px solid #e8deeb; border-radius: 1.5rem; background: #fff; box-shadow: 0 18px 36px -30px #6851759c; }
+.member-plan-section { padding: clamp(1.25rem, 2.3vw, 1.75rem); }
+.member-payer-panel { border: 1px solid #e8deeb; }
+.member-step-number { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: .65rem; color: #624992; background: #eee7fa; font-size: .8rem; font-weight: 800; }
+.member-step-label { color: #765b9f; font-size: .7rem; font-weight: 800; letter-spacing: .1em; }
+.membership-purchase-page .member-plan-section h2, .membership-purchase-page .member-payer-panel h2 { color: #332d50; }
+.membership-purchase-page .member-comparison-link { color: #6e55a1; }
+.membership-purchase-page .member-comparison-link:hover { color: #ad4231; }
+.membership-purchase-page .member-plan { min-height: 19rem; border: 1px solid #e7ddea; border-radius: 1.25rem; background: #fff; box-shadow: none; }
+.membership-purchase-page .member-plan:hover { transform: translateY(-2px); border-color: #bca7d3; box-shadow: 0 15px 27px -24px #705779ab; }
+.membership-purchase-page .member-plan[aria-checked="true"] { border: 2px solid #c74731; background: #fff8f3; box-shadow: 0 15px 27px -24px #b55440a8; }
+.member-plan-ribbon { border: 1px solid #f0cbb9; border-top: 0; color: #873a2e; background: #ffe5d9; }
+.member-plan-icon { border: 1px solid #ded0e9; }
+.member-plan-picked { color: #873a2e; background: #ffe5d9; }
+.member-plan-price { color: #332d50; }
+.member-plan[aria-checked="true"] .member-plan-price { color: #a9412e; }
+.member-plan-perks { border-color: #eee7ef; color: #5b4784; }
+.member-payer-input { border-color: #e2d9e8; background: #fdfbff; }
+.member-payer-input:focus { border-color: #8e75ba; background: #fff; box-shadow: 0 0 0 3px #e9e0f4; }
+.member-payer-panel > p { max-width: 37rem; }
+.membership-purchase-page .member-order { border: 1px solid #e8deeb; border-radius: 1.5rem; background: #fff; box-shadow: 0 18px 36px -30px #6851759c; }
+.membership-purchase-page .member-order-heading { color: #a24837; font-weight: 800; }
+.membership-purchase-page .member-order h2 { color: #332d50; }
+.membership-purchase-page .member-login-status { border: 1px solid #e8deeb; background: #f9f6ff; }
+.membership-purchase-page .member-login-icon { color: #6e55a1; background: #ece5fa; }
+.membership-purchase-page .member-order-details { border-color: #eee5ed; }
+.membership-purchase-page .member-order-details .member-order-total { border-color: #eee5ed; }
+.membership-purchase-page .member-order-total dd { color: #ad4231; }
+.membership-purchase-page .member-pay-button { min-height: 3.3rem; border: 0; color: #fff; background: #c74731; font-weight: 800; box-shadow: none; }
+.membership-purchase-page .member-pay-button:hover:not(:disabled) { background: #a93a28; }
+.membership-purchase-page .member-pay-button:disabled { border: 0; color: #786f7b; background: #eee9ed; }
+.membership-purchase-page .member-payment-note { color: #756d78; }
+.member-faq { border: 1px solid #e8deeb; box-shadow: 0 18px 36px -30px #6851759c; }
+.member-faq > div:nth-child(2) { border-color: #ece3ee; }
+.member-faq-icon { display: grid; width: 3rem; height: 3rem; flex-shrink: 0; place-items: center; border-radius: .9rem; color: #6e55a1; background: #eee7fa; }
+.member-faq details { border-color: #e9e0ec; background: #fdfbff; }
+.member-faq details[open] { border-color: #cbb8df; background: #f9f5ff; }
+.member-faq details summary > span > span:first-child { color: #6e55a1; background: #eee7fa; box-shadow: none; }
+.member-faq details summary > span:last-child { border-color: #e2d8e9; color: #6e55a1; }
+.member-faq details[open] summary > span:last-child { border-color: #bca7d3; }
+.member-faq details > div { border-color: #e8deeb; }
+.member-faq details > div > div { border-color: #e9dfed; background: #fff; }
+.member-faq details > div > div > div { border-color: #e9dfed; box-shadow: none; }
+.member-support { border: 1px solid #e8deeb; box-shadow: 0 18px 36px -30px #6851759c; }
+.member-support > div > div:first-child > div > div:first-child { color: #6e55a1; background: #eee7fa; }
+.member-support-eyebrow { color: #765b9f; font-size: .7rem; font-weight: 800; letter-spacing: .1em; }
+.member-support-email { border: 1px solid #d9c9e9; color: #5b4784; background: #f8f4ff; }
+.member-support-email:hover { border-color: #a88dc9; background: #f0e8fa; }
+.member-support-policy { border-color: #e9dfed; background: #fcfaff; }
+.member-support-policy a { border-color: #e8deeb; box-shadow: none; }
+.member-support-policy a:hover { border-color: #bfaad4; background: #f8f4ff; box-shadow: none; }
+.member-support-policy a svg { color: #6e55a1; }
+.member-comparison-dialog { border: 1px solid #e8deeb; box-shadow: 0 24px 60px -24px #332d5080; }
+.member-comparison-premium { border: 1px solid #d8c4e6; color: #332d50; background: linear-gradient(145deg, #fbf8ff, #fff2e8); }
+.member-comparison-cta { color: #fff; background: #c74731; }
+.member-comparison-cta:hover { background: #a93a28; }
+.membership-page :is(button, a, summary, input):focus-visible { outline-color: #6e55a1; }
+.membership-purchase-page > section > nav > a:first-child { border: 1px solid #e2d8e9; color: #5b4784; box-shadow: none; }
+.membership-purchase-page > section > nav > a:first-child:hover { background: #f7f2ff; }
+
+@media (max-width: 767px) {
+  .membership-purchase-page .member-plan { min-height: auto; }
+  .membership-purchase-page .member-benefit { min-height: auto; }
+  .member-support > div { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 767px) {
   .member-intro { grid-template-columns: 1fr; }
   .member-intro h1 { max-width: none; }
   .member-intro-summary { padding: 1.2rem; }
-  .member-pass-details { grid-template-columns: 1fr; }
-  .member-pass-details > div { padding: 1.2rem 1.35rem; }
-  .member-pass-identity, .member-pass-start { border-right: 0; }
-  .member-pass-plan { border-top: 1px solid #e8e0ed; }
+  .member-active-layout { grid-template-columns: 1fr; }
+  .member-active-hero { padding: 1.5rem; }
+  .member-active-greeting { margin-top: 1.8rem; }
+  .member-active-actions { width: 100%; }
+  .member-active-actions a { width: 100%; }
+  .member-active-benefits ul { grid-template-columns: 1fr; }
   .member-account-snapshot { grid-template-columns: 1fr; padding: 1.2rem; }
   .member-account-snapshot-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .member-account-snapshot-details > div:first-child { padding-left: 0; border-left: 0; }
+  .account-upgrade-benefits { grid-template-columns: 1fr; }
 }
