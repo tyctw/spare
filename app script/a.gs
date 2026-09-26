@@ -614,7 +614,7 @@ function createScheduleFlexMessage_(data) {
             ].concat(checklist.map(function(item, index) {
               return {
                 type: 'box', layout: 'horizontal', spacing: 'sm',
-                alignItems: 'start', contents: [
+                alignItems: 'flex-start', contents: [
                   scheduleText_(String(index + 1).padStart(2, '0'), {
                     size: 'xs', color: theme.color, weight: 'bold', flex: 0,
                   }),

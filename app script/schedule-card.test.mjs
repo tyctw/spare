@@ -22,10 +22,23 @@ const cases = [
   ['升學說明會', '適用的對象'],
 ];
 
+function assertValidAlignment(value) {
+  if (!value || typeof value !== 'object') return;
+  if (Object.hasOwn(value, 'alignItems')) {
+    assert.ok(['flex-start', 'center', 'flex-end'].includes(value.alignItems),
+      `LINE Flex 不支援 alignItems=${value.alignItems}`);
+  }
+  for (const child of Object.values(value)) {
+    if (Array.isArray(child)) child.forEach(assertValidAlignment);
+    else assertValidAlignment(child);
+  }
+}
+
 for (const [title, expected] of cases) {
   for (const reminderType of ['提前2天', '今日']) {
     const data = { date: '2027/03/04', title, reminderType, message: '請查看活動說明。', url: 'https://example.com' };
     const card = vm.runInContext(`createScheduleFlexMessage_(${JSON.stringify(data)})`, context);
+    assertValidAlignment(card);
     const body = card.contents.body.contents;
     const checklist = body.find(item => item.type === 'box' && item.contents?.[0]?.text === '準備清單');
     assert.ok(checklist, `${title} 缺少準備清單`);
