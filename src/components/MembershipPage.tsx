@@ -339,21 +339,15 @@ export default function MembershipPage() {
 
   if (membership === null)
     return (
-      <main id="main-content" aria-busy="true" aria-labelledby="membership-check-title" className="membership-page member-check-page min-h-screen px-4 py-7 sm:px-6 sm:py-12">
-        <section className="member-check-shell mx-auto max-w-xl">
+      <main id="main-content" aria-labelledby="membership-check-title" className="membership-page member-check-page min-h-screen px-4 py-6 sm:px-6 sm:py-10">
+        <div className="mx-auto w-full max-w-6xl">
           <a href={withBasePath("/")} className="member-check-back"><ArrowRight aria-hidden="true" className="h-4 w-4 rotate-180" />回到落點分析</a>
-          <article className="member-check-card">
-            <div className="member-check-main">
-              <span className="member-check-kicker"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
-              <div className="member-check-visual" aria-hidden="true"><span><Shield className="h-10 w-10" strokeWidth={1.5} /></span></div>
-              <h1 id="membership-check-title">正在確認會員資格</h1>
-              <p>請稍候，我們正在讀取你的 LINE 身分與會員有效期限。</p>
-              <div className="member-check-progress" aria-hidden="true"><span /></div>
-              <div className="member-check-live" role="status" aria-live="polite"><span />確認中，完成後會自動顯示會員狀態</div>
-            </div>
-            <div className="member-check-details"><div><KeyRound aria-hidden="true" className="h-4 w-4" />確認 LINE 帳號</div><div><BadgeCheck aria-hidden="true" className="h-4 w-4" />讀取方案與期限</div></div>
-          </article>
-        </section>
+          <header className="member-check-header">
+            <span className="member-check-header-icon"><Crown aria-hidden="true" className="h-6 w-6" /></span>
+            <div><p>MEMBERSHIP</p><h1 id="membership-check-title">會員方案與資格</h1><span>查看會員方案、權益與目前的使用狀態。</span></div>
+          </header>
+          <section role="status" aria-live="polite" aria-busy="true" className="member-check-status">正在確認會員資格…</section>
+        </div>
       </main>
     );
 
