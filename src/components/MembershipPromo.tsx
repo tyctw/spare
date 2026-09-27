@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, Crown, KeyRound, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, Crown } from 'lucide-react';
 import { MEMBERSHIP_STATUS_EVENT, type MembershipStatus } from '../lib/membership';
 import { withBasePath } from '../lib/routes';
 
@@ -24,9 +24,27 @@ export default function MembershipPromo() {
 
   if (hasActiveMembership) return null;
 
-  return <section aria-labelledby="membership-promo-title" className="home-membership-promo">
-    <span className="home-promo-icon"><Crown aria-hidden="true" size={24} /></span>
-    <div className="home-promo-copy"><p>會員免廣告</p><h2 id="membership-promo-title">專心分析，不被廣告打斷。</h2><span>NT$49 起，免廣告、免輸入系統授權碼；LINE 登入可在其他裝置接續使用。</span><div><small><Sparkles aria-hidden="true" size={14} />查校不中斷</small><small><KeyRound aria-hidden="true" size={14} />免輸入授權碼</small></div></div>
-    <a href={withBasePath('/membership')}>查看會員方案<ArrowRight aria-hidden="true" size={17} /></a>
-  </section>;
+  return (
+    <section aria-labelledby="membership-promo-title" className="home-membership-promo">
+      <div className="home-promo-copy">
+        <div className="home-promo-heading">
+          <span className="home-promo-icon"><Crown aria-hidden="true" size={24} /></span>
+          <div>
+            <p>會員免廣告</p>
+            <h2 id="membership-promo-title">專心分析，不被廣告打斷。</h2>
+          </div>
+        </div>
+        <ul className="home-promo-benefits">
+          <li><Check aria-hidden="true" size={16} />免廣告</li>
+          <li><Check aria-hidden="true" size={16} />免輸入系統授權碼</li>
+          <li><Check aria-hidden="true" size={16} />跨裝置接續</li>
+        </ul>
+      </div>
+      <div className="home-promo-action">
+        <span>會員方案</span>
+        <strong>NT$49 <small>起</small></strong>
+        <a href={withBasePath('/membership')}>查看會員方案<ArrowRight aria-hidden="true" size={18} /></a>
+      </div>
+    </section>
+  );
 }

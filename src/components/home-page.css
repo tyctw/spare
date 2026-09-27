@@ -42,31 +42,33 @@
 }
 .home-hero-copy { position: relative; z-index: 1; }
 .home-hero-heading { text-align: center; }
-.home-membership-promo > a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 11px 18px;
-  border-radius: 13px;
-  font-size: 14px;
-  font-weight: 800;
-  text-decoration: none;
-  transition: transform .2s, background .2s, box-shadow .2s;
+.home-membership-promo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: stretch;
+  gap: 20px;
+  padding: 16px 20px;
+  border: 1px solid #e2d8ec;
+  border-radius: 24px;
+  background: linear-gradient(110deg, #f8f5ff 0%, #fffaf2 100%);
+  box-shadow: 0 14px 36px rgba(56, 46, 105, .07);
 }
-.home-membership-promo > a:hover { transform: translateY(-2px); }
-
-.home-membership-promo { display: flex; align-items: center; gap: 18px; padding: 18px 22px; border: 1px solid #eadfce; border-radius: 20px; background: #fffaf3; }
-.home-promo-icon { display: grid; width: 46px; height: 46px; flex: none; place-items: center; border-radius: 14px; background: #f7e8ce; color: #a46a23; }
-.home-promo-copy { flex: 1; min-width: 0; }
-.home-promo-copy > p { margin: 0 0 2px; color: #a76b22; font-size: 11px; font-weight: 900; letter-spacing: .08em; }
-.home-promo-copy h2 { margin: 0; color: #483b2e; font-size: 17px; font-weight: 850; }
-.home-promo-copy > span { display: block; margin-top: 3px; color: #736758; font-size: 12px; line-height: 1.6; }
-.home-promo-copy > div { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
-.home-promo-copy small { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 20px; background: #fff; color: #7e6750; font-size: 11px; font-weight: 700; }
-.home-membership-promo > a { flex: none; background: #293d78; color: #fff; }
-.home-membership-promo > a:hover { background: #203265; }
+.home-promo-copy { min-width: 0; align-self: center; }
+.home-promo-heading { display: flex; align-items: center; gap: 12px; }
+.home-promo-icon { display: grid; width: 44px; height: 44px; flex: none; place-items: center; border-radius: 14px; background: #e9ddff; color: #633ab3; }
+.home-promo-heading p { margin: 0 0 4px; color: #6841ab; font-size: 12px; font-weight: 850; letter-spacing: .04em; }
+.home-promo-heading h2 { margin: 0; color: #302753; font-size: clamp(19px, 1.6vw, 23px); font-weight: 850; line-height: 1.3; }
+.home-promo-benefits { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 9px 0 0; padding: 0; list-style: none; }
+.home-promo-benefits li { display: inline-flex; align-items: center; gap: 5px; color: #51466b; font-size: 13px; font-weight: 750; }
+.home-promo-benefits svg { color: #7050b6; }
+.home-promo-action { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; row-gap: 3px; padding: 12px 14px; border: 1px solid #e8e0f2; border-radius: 18px; background: #fff; }
+.home-promo-action > span { grid-column: 1; color: #777084; font-size: 12px; font-weight: 750; }
+.home-promo-action strong { grid-column: 1; color: #33265b; font-size: 24px; font-weight: 900; line-height: 1.1; }
+.home-promo-action strong small { color: #726886; font-size: 13px; font-weight: 750; }
+.home-promo-action a { display: inline-flex; grid-column: 2; grid-row: 1 / 3; min-height: 44px; align-items: center; justify-content: center; gap: 8px; padding: 9px 12px; border: 1px solid #4b358c; border-radius: 12px; background: #4b358c; color: #fff; font-size: 14px; font-weight: 800; text-decoration: none; transition: background .2s, box-shadow .2s, transform .2s; }
+.home-promo-action a:hover { background: #3d287d; box-shadow: 0 8px 18px rgba(64, 43, 124, .2); transform: translateY(-2px); }
+.home-promo-action a svg { transition: transform .2s ease; }
+.home-promo-action a:hover svg { transform: translateX(3px); }
 
 .home-analysis-grid { scroll-margin-top: 120px; }
 .home-analysis-grid .home-auth-panel,
@@ -101,15 +103,20 @@
 .home-analyze-button > div > span { font-size: clamp(23px, 2.6vw, 30px); }
 
 @media (max-width: 800px) {
-  .home-membership-promo { flex-wrap: wrap; }
-  .home-membership-promo > a { width: 100%; }
+  .home-membership-promo { grid-template-columns: 1fr; gap: 12px; }
 }
 @media (max-width: 560px) {
   .home-main { margin-top: 140px; }
   .home-hero { padding: 28px 22px; }
   .home-hero h1 { font-size: clamp(38px, 9.5vw, 48px); }
   .home-hero-description { line-height: 1.7; }
-  .home-membership-promo { padding: 17px; }
+  .home-membership-promo { padding: 14px; }
+  .home-promo-heading { align-items: flex-start; gap: 11px; }
+  .home-promo-icon { width: 44px; height: 44px; border-radius: 13px; }
+  .home-promo-heading h2 { font-size: 20px; }
+  .home-promo-action { column-gap: 8px; padding: 10px 11px; }
+  .home-promo-action strong { font-size: 22px; }
+  .home-promo-action a { gap: 5px; padding-inline: 9px; font-size: 13px; }
   .home-analyze-bar { bottom: 8px; padding: 0 12px; }
   .home-analyze-button { padding: 12px 18px; }
   .home-analyze-button > div > span { font-size: 24px; }
@@ -152,7 +159,6 @@
   .home-hero h1 span { margin-inline-start: .18em; white-space: nowrap; }
 }
 .home-hero-copy > p { color: #525767; }
-.home-membership-promo { border-color: #e5deca; background: #fffaf0; }
 .home-analysis-grid { gap: 24px; scroll-margin-top: 118px; }
 .home-analysis-grid .home-form-sidebar, .home-analysis-grid .home-form-primary { gap: 20px; }
 .home-analysis-grid .home-auth-panel,
@@ -245,16 +251,12 @@
 .home-next-grid a:focus-visible { outline: 3px solid #7584b4; outline-offset: 3px; }
 
 /* Make every homepage action read as a control before hover. */
-.home-membership-promo > a,
+.home-promo-action a,
 .home-free-code,
 .home-next-grid a,
 .home-analysis-grid button:not(:disabled) { cursor: pointer; }
-.home-membership-promo > a svg,
 .home-next-link-label svg { transition: transform .2s ease; }
-.home-membership-promo > a:hover svg,
 .home-next-grid a:hover .home-next-link-label svg { transform: translateX(3px); }
-.home-membership-promo > a { border: 1px solid #293d78; box-shadow: 0 8px 20px rgba(35, 52, 105, .18); }
-.home-membership-promo > a:hover { box-shadow: 0 10px 24px rgba(35, 52, 105, .22); }
 .home-free-code { box-shadow: 0 5px 16px rgba(49, 59, 103, .06); }
 .home-free-code:active { background: #f2f5fc; box-shadow: 0 2px 8px rgba(49, 59, 103, .06); }
 .home-analysis-grid #region-select-trigger { border: 1px solid #b7c5e2; background: #eef2fb; color: #253a70; box-shadow: 0 5px 16px rgba(37, 58, 110, .1); }
@@ -273,7 +275,6 @@
   outline-offset: 3px;
 }
 .home-next-grid small { color: #5d6577; }
-.home-promo-copy > p { color: #895414; }
 
 .home-floating-notice {
   position: fixed;
