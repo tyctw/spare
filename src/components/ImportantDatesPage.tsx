@@ -61,6 +61,9 @@ export default function ImportantDatesPage() {
             <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">重要日程</h1>
             <p className="mt-4 max-w-2xl text-base leading-8 text-indigo-50 sm:text-lg">會考、入學報名、志願選填與報到，依月份整理成一份清楚的升學時間表。</p>
             <p className="mt-5 max-w-2xl text-sm leading-6 text-indigo-200">以下日期皆為民國 116 年；跨月期間列於開始月份。實際時程仍以各管道簡章及最新公告為準。</p>
+            <a href={withBasePath(schedulePdf)} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-[#283468] transition hover:bg-indigo-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+              <FileText size={18} aria-hidden="true" />完整日程表 PDF<ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only">（另開新分頁）</span>
+            </a>
           </div>
           <CalendarDays size={260} strokeWidth={.7} aria-hidden="true" className="pointer-events-none absolute -bottom-20 -right-12 hidden rotate-[-12deg] text-white/10 md:block" />
         </header>
@@ -84,15 +87,8 @@ export default function ImportantDatesPage() {
         </section>
 
         <section aria-labelledby="pathway-heading" className="mt-9 rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_10px_32px_rgba(31,42,85,0.05)] sm:p-6">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h2 id="pathway-heading" className="flex items-center gap-2 text-lg font-black"><ListFilter size={20} aria-hidden="true" className="text-indigo-600" />選擇入學管道</h2>
-              <p className="mt-1 text-sm leading-6 text-slate-500">切換後只顯示該管道相關的日程。</p>
-            </div>
-            <a href={withBasePath(schedulePdf)} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2.5 text-sm font-extrabold text-indigo-800 transition hover:bg-indigo-100">
-              <FileText size={18} aria-hidden="true" />完整日程表 PDF<ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only">（另開新分頁）</span>
-            </a>
-          </div>
+          <h2 id="pathway-heading" className="flex items-center gap-2 text-lg font-black"><ListFilter size={20} aria-hidden="true" className="text-indigo-600" />選擇入學管道</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-500">切換後只顯示該管道相關的日程。</p>
           <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="relative w-full max-w-lg">
               <label htmlFor="schedule-pathway" className="sr-only">入學管道</label>
