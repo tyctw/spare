@@ -125,6 +125,12 @@
 .results-page .results-strategy-text { max-width: 72ch; margin: 15px 0 0; color: #394361; font-size: 15px; font-weight: 650; line-height: 1.75; overflow-wrap: anywhere; }
 .results-page .results-strategy-link { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border: 1px solid #a9aed8; border-radius: 11px; background: #fff; color: #3f4989; font-size: 13px; font-weight: 850; white-space: nowrap; }
 .results-page .results-strategy-link:hover { border-color: #7d85c2; background: #ebebfb; }
+.results-page .results-guidance > .results-strategy,
+.results-page .results-guidance > .results-score-change { height: 100%; margin-top: 0; }
+.results-page .results-guidance .results-strategy { grid-template-columns: minmax(0, 1fr); align-content: space-between; gap: 18px; }
+.results-page .results-guidance .results-strategy-link { width: max-content; max-width: 100%; }
+.results-page .results-guidance .results-score-change { flex-direction: column; align-items: stretch; justify-content: space-between; }
+.results-page .results-guidance .results-score-change-action { align-self: flex-start; }
 
 .results-page .results-score-change {
   margin-top: 20px;
@@ -264,7 +270,8 @@
   .results-page .results-list-panel { padding: 20px 16px; }
   .results-page .results-filter-panel { padding: 12px; }
   .results-page .results-strategy { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 21px 20px; }
-  .results-page .results-strategy-link { width: 100%; }
+  .results-page .results-guidance .results-strategy-link,
+  .results-page .results-guidance .results-score-change-action { width: 100%; }
 }
 
 @media (max-width: 420px) {
