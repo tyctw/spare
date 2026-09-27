@@ -206,7 +206,10 @@
 .results-page .results-school-zone-badge[data-zone='safe'] { border-color: #d4e8df; background: #f2faf6; color: #34745d; }
 .results-page .results-school-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 6px 12px; padding-bottom: 12px; border-bottom: 1px solid #e9edf4; line-height: 1.5; }
 .results-page .results-school-meta-tags { display: flex; min-width: 0; flex-wrap: wrap; gap: 6px; }
-.results-page .results-school-meta-tags span { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 9px; border: 1px solid #e2e7f1; border-radius: 7px; background: #f6f8fc; color: #51617d; font-size: 12px; font-weight: 800; }
+.results-page .results-school-meta-tags :is(span, a) { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 9px; border: 1px solid #e2e7f1; border-radius: 7px; background: #f6f8fc; color: #51617d; font-size: 12px; font-weight: 800; }
+.results-page .results-school-group-tag { text-decoration: none; transition: border-color .2s, background .2s, color .2s; }
+.results-page .results-school-group-tag:hover { border-color: #c5b8e9; background: #f0ecfc; color: #5c4398; }
+.results-page .results-school-group-tag:focus-visible { outline: 3px solid #8ca5df; outline-offset: 2px; }
 .results-page .results-school-district-tag { display: inline-flex; min-height: 28px; align-items: center; gap: 4px; margin-left: 0; padding: 3px 9px; border: 1px solid #cbd8f0; border-radius: 7px; background: #f1f5fd; color: #405d9e; font-size: 12px; font-weight: 850; white-space: nowrap; transition: border-color .2s, background .2s, color .2s, transform .2s; }
 .results-page .results-school-district-tag svg { flex: 0 0 auto; }
 .results-page .results-school-district-tag:hover { border-color: #8ea6d6; background: #e5edfc; color: #263d77; transform: translateY(-1px); }
