@@ -278,14 +278,14 @@ export default function ResultsPage() {
         <section className="results-score-change" aria-labelledby="results-score-change-title">
           <div className="results-score-change-copy">
             <div className="results-score-change-eyebrow"><Sparkles aria-hidden="true" className="h-4 w-4" /><span>進階志願工具</span></div>
-            <h2 id="results-score-change-title">差一級，志願清單會怎麼變？</h2>
-            <p className="results-score-change-description">用本次成績比較多一級、少一級的結果，看見哪些校科進入、離開或改變落點區間。</p>
+            <h2 id="results-score-change-title"><span>差一級，</span>志願清單會怎麼變？</h2>
+            <p className="results-score-change-description">用你的成績試算，快速找出新增、離開及跨落點區的校科。</p>
             <div className="results-score-change-preview" aria-label="比較成績增減一級後的志願變化">
-              <div><strong>＋1 級</strong><span>發現新增選擇</span></div>
-              <div><strong>－1 級</strong><span>提早調整志願</span></div>
+              <div><strong>＋1 級</strong><span>能多選哪些校科？</span></div>
+              <div><strong>－1 級</strong><span>哪些志願要調整？</span></div>
             </div>
           </div>
-          <a href={withBasePath('/score-change')} className="results-score-change-action">查看一級變化 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-45" /></a>
+          <a href={withBasePath('/score-change')} className="results-score-change-action">立即試算志願變化 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-45" /></a>
         </section>
         </div>
 
@@ -462,6 +462,7 @@ export default function ResultsPage() {
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
                   const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === (school.region || scores?.region))?.name || school.region || regionName;
                   const groupLabel = school.group || school.type || '普通科';
+                  const schoolMapQuery = [school.name, groupLabel].filter(Boolean).join(' ');
                   const analysisAccent = getAnalysisAccent(school.zone);
 
                   return (
@@ -486,7 +487,7 @@ export default function ResultsPage() {
                           <span>{ownership}</span>
                           <span>{groupLabel}</span>
                         </div>
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`} target="_blank" rel="noreferrer" aria-label={`在地圖查看 ${school.name}，${schoolDistrictName}`} className="results-school-map-link"><MapPin aria-hidden="true" className="h-4 w-4" /><span>{schoolDistrictName}・查看地圖</span></a>
+                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoolMapQuery)}`} target="_blank" rel="noreferrer" aria-label={`在地圖搜尋學校 ${school.name}`} title={`在地圖搜尋 ${school.name}`} className="results-school-district-tag"><MapPin aria-hidden="true" className="h-3.5 w-3.5" /><span>{schoolDistrictName}</span></a>
                       </div>
 
                       <div
