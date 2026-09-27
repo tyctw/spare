@@ -189,7 +189,6 @@ export default function ScoreRecordsPage() {
           </section>
         ) : (
           <>
-            <ScoreRecordsAnalytics records={records} />
             <section id="score-new-record" className="score-records-entry">
               <div className="score-section-heading">
                 <div><span className="score-eyebrow"><ClipboardPlus size={16} /> 新增紀錄</span><h2>記下這次的成績</h2><p>填入五科等級與寫作級分，讓之後的比較有完整依據。</p></div>
@@ -302,6 +301,7 @@ export default function ScoreRecordsPage() {
               <div className="score-records-save-row"><p>儲存後可在下方查看或刪除這筆紀錄。</p><button type="button" onClick={save} disabled={saving} className="score-records-primary-button"><Save size={18} />{saving ? "儲存中…" : "儲存這筆成績"}</button></div>
             </section>
             <ScoreHistory records={records} onRemove={remove} />
+            <ScoreRecordsAnalytics records={records} />
           </>
         )}
         {notice && (
