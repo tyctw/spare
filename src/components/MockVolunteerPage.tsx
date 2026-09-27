@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   ArrowUp,
   Building2,
-  CheckCircle2,
   Filter,
   Loader2,
   Plus,
@@ -20,6 +19,7 @@ import { withBasePath } from '../lib/routes';
 import ShareReportDialog from './ShareReportDialog';
 import LocalVolunteerVersions from './LocalVolunteerVersions';
 import type { VersionChoice } from '../lib/volunteerVersions';
+import './mock-volunteer-page.css';
 
 interface SchoolItem {
   id: string;
@@ -546,36 +546,39 @@ export default function MockVolunteerPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="border-b-4 border-slate-900 bg-gradient-to-br from-sky-100 via-white to-indigo-100">
-        <div className="mx-auto max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
+    <main className="mock-volunteer-page min-h-screen text-slate-900">
+      <section className="mock-volunteer-hero">
+        <div className="mock-volunteer-container">
           <a
             href={withBasePath('/')}
             onClick={requestLeavePage}
-            className="mb-5 inline-flex items-center gap-2 rounded-lg border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+            className="mock-volunteer-back"
           >
             <ArrowLeft className="h-4 w-4" />
             回到落點分析
           </a>
 
-          <div className="grid gap-5 lg:grid-cols-[1fr_340px] lg:items-end">
-            <div>
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1 text-xs font-black text-sky-700">
+          <div className="mock-volunteer-hero-grid">
+            <div className="mock-volunteer-hero-copy">
+              <div className="mock-volunteer-eyebrow">
                 <Target className="h-4 w-4" />
-                獨立頁面工具
+                升學規劃工具
               </div>
-              <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">模擬志願選填</h1>
-              <p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-slate-600 sm:text-base">
-                先選就學區，再搜尋校科並加入右側清單。這裡適合用來反覆調整排序、比較科別與列印草稿，不會影響正式志願資料。
+              <h1>模擬志願選填</h1>
+              <p>
+                搜尋想讀的校科、安排志願順序，做出一份可以反覆討論的升學草稿。
               </p>
+              <span className="mock-volunteer-hero-note">此處為模擬規劃，正式選填仍請以各就學區公告為準。</span>
             </div>
 
-            <div className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-              <label className="mb-2 block text-xs font-black text-slate-500">就學區</label>
+            <div className="mock-volunteer-region-card">
+              <label htmlFor="mock-volunteer-region">先選擇就學區</label>
+              <p>校科範圍與志願序規則會依你選擇的區域更新。</p>
               <select
+                id="mock-volunteer-region"
                 value={region}
                 onChange={(event) => setRegion(event.target.value)}
-                className="w-full rounded-xl border-2 border-slate-900 bg-slate-50 px-3 py-3 text-sm font-black outline-none transition focus:bg-white focus:ring-4 focus:ring-sky-300/40"
+                className="mock-volunteer-select"
               >
                 {MOCK_VOLUNTEER_REGIONS.map((item) => (
                   <option key={item.id} value={item.id}>
@@ -588,69 +591,75 @@ export default function MockVolunteerPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
-        <div className="mb-5 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-            <div className="text-xs font-black text-slate-500">目前區域</div>
-            <div className="mt-1 text-2xl font-black text-slate-900">{activeRegionName}</div>
+      <section className="mock-volunteer-container mock-volunteer-body">
+        <div className="mock-volunteer-overview" aria-label="目前選填概況">
+          <div className="mock-volunteer-overview-item">
+            <div>目前就學區</div>
+            <strong>{activeRegionName}</strong>
           </div>
-          <div className="rounded-2xl border-2 border-slate-900 bg-sky-50 p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-            <div className="text-xs font-black text-slate-500">搜尋結果</div>
-            <div className="mt-1 text-2xl font-black text-slate-900">{filteredSchools.length}</div>
+          <div className="mock-volunteer-overview-item">
+            <div>符合條件校科</div>
+            <strong>{filteredSchools.length}<small> 筆</small></strong>
           </div>
-          <div className="rounded-2xl border-2 border-slate-900 bg-amber-50 p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-            <div className="text-xs font-black text-slate-500">已選志願</div>
-            <div className="mt-1 text-2xl font-black text-slate-900">{selectedChoices.length} / 30</div>
+          <div className="mock-volunteer-overview-item">
+            <div>已加入志願</div>
+            <strong>{selectedChoices.length}<small> / 30</small></strong>
           </div>
         </div>
 
-        <section className={`mb-6 rounded-2xl border-2 p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] ${preferenceRule ? 'border-indigo-200 bg-indigo-50' : 'border-amber-300 bg-amber-50'}`}>
-          <div className="flex items-center gap-2 text-sm font-black text-slate-900">
-            <Target className={`h-5 w-5 ${preferenceRule ? 'text-indigo-700' : 'text-amber-700'}`} />
+        <section className={`mock-volunteer-rule ${preferenceRule ? '' : 'mock-volunteer-rule--pending'}`}>
+          <div className="mock-volunteer-rule-heading">
+            <Target className="h-5 w-5" />
             {activeRegionName}志願序規則
           </div>
-          <p className="mt-2 text-sm font-bold leading-6 text-slate-700">{preferenceRule || '此區志願序規則尚未完成 115 學年度官方簡章核對，暫不提供積分試算。'}</p>
-          <p className="mt-2 text-xs font-bold leading-5 text-slate-500">此為志願序項目說明；資格、會考、多元表現與其他超額比序項目，請以當年度官方系統與簡章為準。</p>
+          <p>{preferenceRule || '此區志願序規則尚未完成 115 學年度官方簡章核對，暫不提供積分試算。'}</p>
+          <small>此處僅說明志願序項目；資格、會考與其他比序項目，請以當年度官方簡章為準。</small>
         </section>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(460px,520px)] lg:items-start">
-          <section className="min-h-[620px] overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
-            <div className="border-b-4 border-slate-900 bg-sky-50/70 p-4 sm:p-5">
-              <div className="flex items-center gap-2 text-lg font-black">
-                <Search className="h-5 w-5 text-sky-600" />
-                搜尋校科
+        <nav className="mock-volunteer-mobile-nav" aria-label="選填區塊">
+          <a href="#mock-volunteer-search">搜尋校科</a>
+          <a href="#mock-volunteer-list">我的志願（{selectedChoices.length}）</a>
+        </nav>
+
+        <div className="mock-volunteer-workspace">
+          <section id="mock-volunteer-search" className="mock-volunteer-search-panel" aria-labelledby="mock-volunteer-search-title">
+            <div className="mock-volunteer-search-head">
+              <div className="mock-volunteer-panel-title">
+                <span className="mock-volunteer-panel-icon"><Search className="h-5 w-5" /></span>
+                <div><small>STEP 01</small><h2 id="mock-volunteer-search-title">找尋理想校科</h2></div>
               </div>
-              <div className="mt-4 space-y-3">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <p>搜尋學校與科別，將喜歡的選項加入志願清單。</p>
+              <div className="mock-volunteer-filters">
+                <div className="mock-volunteer-search-input-wrap">
+                  <Search className="h-4 w-4" aria-hidden="true" />
                   <input
+                    aria-label="搜尋學校、科別、群科或代碼"
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
                     placeholder="輸入學校、科別、群科或代碼"
-                    className="w-full rounded-xl border-2 border-slate-900 bg-white py-3 pl-9 pr-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                <select value={filterCounty} onChange={(event) => setFilterCounty(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
+                <div className="mock-volunteer-filter-grid">
+                <select aria-label="篩選縣市" value={filterCounty} onChange={(event) => setFilterCounty(event.target.value)}>
                   <option value="region">本區全部縣市{activeRegionCountyText ? `（${activeRegionCountyText}）` : ''}</option>
                   <option value="all">全部縣市</option>
                   {filterOptions.counties.map((county) => (
                     <option key={county} value={county}>{county}</option>
                   ))}
                 </select>
-                <select value={filterType} onChange={(event) => setFilterType(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
+                <select aria-label="篩選學校類型" value={filterType} onChange={(event) => setFilterType(event.target.value)}>
                   <option value="all">全部類型</option>
                   {filterOptions.types.map((type) => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
-                <select value={filterGroup} onChange={(event) => setFilterGroup(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
+                <select aria-label="篩選群科" value={filterGroup} onChange={(event) => setFilterGroup(event.target.value)}>
                   <option value="all">全部群科</option>
                   {filterOptions.groups.map((group) => (
                     <option key={group} value={group}>{group}</option>
                   ))}
                 </select>
-                <select value={filterDepartment} onChange={(event) => setFilterDepartment(event.target.value)} className="rounded-xl border-2 border-slate-900 bg-white px-3 py-3 text-sm font-bold outline-none transition focus:ring-4 focus:ring-sky-300/40">
+                <select aria-label="篩選科別" value={filterDepartment} onChange={(event) => setFilterDepartment(event.target.value)}>
                   <option value="all">全部科系</option>
                   {filterOptions.departments.map((department) => (
                     <option key={department} value={department}>{department}</option>
@@ -660,7 +669,7 @@ export default function MockVolunteerPage() {
               </div>
             </div>
 
-            <div className="max-h-[720px] overflow-y-auto p-3 custom-scrollbar">
+            <div className="mock-volunteer-results custom-scrollbar">
               {isLoading ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center gap-3 text-slate-500">
                   <Loader2 className="h-9 w-9 animate-spin text-sky-500" />
@@ -677,31 +686,27 @@ export default function MockVolunteerPage() {
                   <div className="font-black">沒有符合條件的校科</div>
                 </div>
               ) : (
-                <div className="grid gap-3 xl:grid-cols-2">
+                <div className="mock-volunteer-result-grid">
                   {filteredSchools.map((school, index) => {
                     const isSelected = selectedChoices.some((choice) => isSameVolunteerOption(choice, school));
                     return (
-                      <article key={`${school.code}-${school.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-sky-50 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+                      <article key={`${school.code}-${school.deptCode}-${index}`} className={`mock-volunteer-school-card ${isSelected ? 'mock-volunteer-school-card--selected' : ''}`}>
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="mb-2 flex flex-wrap gap-1.5 text-[11px] font-black">
-                              {school.county && <span className="rounded-md border border-slate-300 bg-slate-50 px-2 py-0.5 text-slate-600">{school.county}</span>}
-                              {school.levelInfo && <span className="rounded-md border border-amber-200 bg-amber-100 px-2 py-0.5 text-amber-900">類型：{school.levelInfo}</span>}
+                            <div className="mock-volunteer-school-tags">
+                              {school.county && <span>{school.county}</span>}
+                              {school.levelInfo && <span>{school.levelInfo}</span>}
                             </div>
-                            <h2 className="line-clamp-2 text-base font-black leading-snug text-slate-950">{school.name}</h2>
-                            <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-slate-600">
-                              <Building2 className="h-4 w-4 shrink-0 text-slate-400" />
+                            <h3 className="mock-volunteer-school-name">{school.name}</h3>
+                            <p className="mock-volunteer-school-dept">
+                              <Building2 className="h-4 w-4 shrink-0" />
                               <span className="line-clamp-1">{school.deptName}{school.shift ? ` (${school.shift})` : ''}</span>
                             </p>
-                            {school.groupName && <div className="mt-1.5"><span className="inline-flex rounded-md border border-sky-200 bg-sky-100 px-2 py-0.5 text-[11px] font-black text-sky-800">群別：{school.groupName}</span></div>}
+                            {school.groupName && <div className="mock-volunteer-school-group">{school.groupName}</div>}
                           </div>
                           <button
                             onClick={() => addChoice(school)}
-                            className={`flex h-10 shrink-0 items-center justify-center gap-1 rounded-xl border-2 border-slate-900 px-2 text-xs font-black transition-all ${
-                              isSelected
-                                ? 'bg-emerald-100 text-emerald-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:bg-rose-100 hover:text-rose-800 active:translate-y-0 active:shadow-none'
-                                : 'bg-white text-slate-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:bg-sky-300 active:translate-y-0 active:shadow-none'
-                            }`}
+                            className={`mock-volunteer-add-button ${isSelected ? 'mock-volunteer-add-button--selected' : ''}`}
                             aria-label={isSelected ? `從志願清單移除：${school.name} ${school.deptName}` : `加入志願：${school.name} ${school.deptName}`}
                           >
                             {isSelected ? <><Trash2 className="h-4 w-4" />移除</> : <><Plus className="h-4 w-4" />加入</>}
@@ -715,39 +720,30 @@ export default function MockVolunteerPage() {
             </div>
           </section>
 
-          <aside className="min-w-0 overflow-hidden rounded-2xl border-4 border-slate-900 bg-white shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:self-start lg:overflow-y-auto lg:overscroll-contain">
-            <div className="relative overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-amber-200 via-amber-50 to-white p-5">
-              <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full border-4 border-amber-300/60 bg-amber-100/70" />
-              <div className="relative flex items-start justify-between gap-3">
+          <aside id="mock-volunteer-list" className="mock-volunteer-list-panel" aria-labelledby="mock-volunteer-list-title">
+            <div className="mock-volunteer-list-head">
+              <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 text-xl font-black tracking-tight">
-                    <Target className="h-5 w-5 text-amber-700" />
-                    我的志願順序
+                  <div className="mock-volunteer-panel-title">
+                    <span className="mock-volunteer-panel-icon"><Target className="h-5 w-5" /></span>
+                    <div><small>STEP 02</small><h2 id="mock-volunteer-list-title">我的志願順序</h2></div>
                   </div>
-                  <p className="mt-1 text-xs font-bold text-slate-500">用上下鍵調整排序，第一志願放最上面。</p>
+                  <p className="mock-volunteer-list-help">點選序號或上下鍵調整順序，第一志願放最上面。</p>
                 </div>
-                <div className="shrink-0 rounded-xl border-2 border-slate-900 bg-slate-900 px-3 py-2 text-center text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                  <div className="text-lg leading-none">{selectedChoices.length}</div>
-                  <div className="mt-0.5 text-[10px] tracking-wide text-amber-200">/ 30</div>
-                </div>
+                <div className="mock-volunteer-list-count">{selectedChoices.length}<span> / 30</span></div>
               </div>
-              <div className="relative mt-4 rounded-2xl border-2 border-indigo-300 bg-indigo-50 p-4 text-left shadow-[3px_3px_0px_0px_rgba(67,56,202,0.18)]">
-                <div className="flex items-center gap-2 text-[11px] font-black tracking-wider text-indigo-700"><Share2 className="h-4 w-4" />一起討論志願</div>
-                <div className="mt-1 text-base font-black text-indigo-950">分享志願清單</div>
-                <p className="mt-1 text-xs font-bold leading-5 text-slate-600">可建立唯讀連結；會員也能開啟協作，讓家長留言、共同調整順序並確認版本。</p>
-              </div>
-              <div className="relative mt-3 grid grid-cols-2 gap-2">
+              <div className="mock-volunteer-list-actions">
                 <button
                   onClick={() => setIsShareOpen(true)}
                   disabled={selectedChoices.length === 0}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-40"
+                  className="mock-volunteer-action mock-volunteer-action--primary"
                 >
                   <Share2 className="h-4 w-4" />
                   {'\u5206\u4eab'}
                 </button>
                 <button
                   onClick={() => setShowPrintDialog(true)}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-300 px-3 py-3 text-sm font-black text-slate-900 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-sky-400 active:translate-y-0 active:shadow-none"
+                  className="mock-volunteer-action"
                 >
                   <Printer className="h-4 w-4" />
                   列印
@@ -755,38 +751,40 @@ export default function MockVolunteerPage() {
                 <button
                   onClick={() => setShowClearConfirm(true)}
                   disabled={selectedChoices.length === 0}
-                  className="col-span-2 inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-3 py-2.5 text-sm font-black text-rose-700 transition hover:border-rose-300 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="mock-volunteer-action mock-volunteer-action--clear"
                 >
                   <Trash2 className="h-4 w-4" />
                   清空
                 </button>
               </div>
-              <a href={withBasePath('/strategy')} onClick={requestLeavePage} className="relative mt-4 inline-flex w-full items-center justify-center gap-1.5 text-xs font-black text-slate-600 underline decoration-amber-400 decoration-2 underline-offset-4 transition hover:text-slate-950">
-                <Target className="h-3.5 w-3.5 text-amber-700" />需要排序建議？查看志願選填攻略
+              <p className="mock-volunteer-share-note">分享可建立唯讀連結；會員可邀請家長共同討論與調整。</p>
+              <a href={withBasePath('/strategy')} onClick={requestLeavePage} className="mock-volunteer-strategy-link">
+                需要排序建議？查看志願選填攻略
               </a>
             </div>
 
-            <div className="min-h-[560px] max-h-[840px] overflow-y-auto p-4 custom-scrollbar">
+            <div className="mock-volunteer-choice-list custom-scrollbar">
               {selectedChoices.length === 0 ? (
-                <div className="flex min-h-[420px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-400">
-                  <Target className="mb-3 h-12 w-12 stroke-1" />
-                  <div className="font-black">尚未加入志願</div>
-                  <p className="mt-1 text-sm font-bold">從左側搜尋結果加入校科後，這裡會顯示你的排序清單。</p>
+                <div className="mock-volunteer-empty-list">
+                  <Target className="h-9 w-9" strokeWidth={1.5} />
+                  <strong>從第一個選擇開始</strong>
+                  <p>找到想讀的校科，點選「加入」後就能開始排序。</p>
+                  <a href="#mock-volunteer-search">前往搜尋校科</a>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="mock-volunteer-choice-stack">
                   {selectedChoices.map((choice, index) => (
-                    <article key={choice.id} className="relative rounded-xl border-2 border-slate-900 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:bg-amber-50">
-                      <div className="absolute right-3 top-3 flex items-center gap-1">
-                        <div className="flex overflow-hidden rounded-md border border-slate-300 bg-white">
-                          <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} className="border-r border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300" aria-label="上移志願">
+                    <article key={choice.id} className="mock-volunteer-choice-card">
+                      <div className="mock-volunteer-choice-controls">
+                        <div className="mock-volunteer-move-buttons">
+                          <button onClick={() => moveChoice(index, index - 1)} disabled={index === 0} aria-label="上移志願">
                             <ArrowUp className="h-3.5 w-3.5" />
                           </button>
-                          <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} className="p-1.5 text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-300" aria-label="下移志願">
+                          <button onClick={() => moveChoice(index, index + 1)} disabled={index === selectedChoices.length - 1} aria-label="下移志願">
                             <ArrowDown className="h-3.5 w-3.5" />
                           </button>
                         </div>
-                        <button onClick={() => setChoicePendingRemoval(choice)} className="rounded-md border border-rose-200 bg-rose-50 p-1.5 text-rose-600 transition hover:bg-rose-500 hover:text-white" aria-label="刪除志願">
+                        <button onClick={() => setChoicePendingRemoval(choice)} className="mock-volunteer-remove-button" aria-label="刪除志願">
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </div>
@@ -800,7 +798,7 @@ export default function MockVolunteerPage() {
                               setRankPickerChoiceId(null);
                             }}
                             onBlur={() => setRankPickerChoiceId(null)}
-                            className="h-10 w-10 shrink-0 rounded-lg border-2 border-slate-900 bg-amber-300 text-center text-sm font-black outline-none"
+                            className="mock-volunteer-rank-picker"
                             aria-label="選擇目標志願序"
                           >
                             {selectedChoices.map((_, rankIndex) => <option key={rankIndex} value={rankIndex}>{rankIndex + 1}</option>)}
@@ -808,7 +806,7 @@ export default function MockVolunteerPage() {
                         ) : (
                           <button
                             onClick={() => setRankPickerChoiceId(choice.id)}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black transition hover:bg-amber-400"
+                            className="mock-volunteer-rank-button"
                             aria-label={`調整第 ${index + 1} 志願`}
                             title="點擊選擇目標志願序"
                           >
@@ -816,14 +814,12 @@ export default function MockVolunteerPage() {
                           </button>
                         )}
                         <div className="min-w-0 flex-1">
-                          <h3 className="truncate pr-[78px] text-sm font-black leading-5 text-slate-950">{choice.name}</h3>
-                          <p className="truncate text-sm font-bold text-sky-700">{choice.deptName}{choice.shift ? ` (${choice.shift})` : ''}</p>
-                          <div className="mt-1.5 space-y-0.5 border-t border-slate-100 pt-1.5 text-[11px] font-black leading-4 text-[#4f76a4]">
-                            <div><span className="inline-flex max-w-full rounded-md border border-amber-200 bg-amber-100 px-1.5 py-0.5 text-amber-900"><span className="truncate">類型：{choice.levelInfo || '未提供'}</span></span></div>
-                            <div className="flex min-w-0 items-center justify-between gap-2">
-                              <span className="inline-flex min-w-0 max-w-[58%] rounded-md border border-sky-200 bg-sky-100 px-1.5 py-0.5 text-sky-800"><span className="truncate">群別：{choice.groupName || '未提供'}</span></span>
-                              {preferenceRule && choicePreferenceScores[index] && <span className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-indigo-800">第 {choicePreferenceScores[index].rank} 志願・{choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? '・同序' : ''}</span>}
-                            </div>
+                          <h3 className="mock-volunteer-choice-name">{choice.name}</h3>
+                          <p className="mock-volunteer-choice-dept">{choice.deptName}{choice.shift ? ` (${choice.shift})` : ''}</p>
+                          <div className="mock-volunteer-choice-meta">
+                            <span>{choice.levelInfo || '類型未提供'}</span>
+                            <span>{choice.groupName || '群別未提供'}</span>
+                            {preferenceRule && choicePreferenceScores[index] && <span className="mock-volunteer-choice-score">第 {choicePreferenceScores[index].rank} 志願 · {choicePreferenceScores[index].score === null ? '不計分' : `${choicePreferenceScores[index].score} 分`}{choicePreferenceScores[index].samePreference ? ' · 同序' : ''}</span>}
                           </div>
                         </div>
                       </div>
@@ -996,14 +992,14 @@ export default function MockVolunteerPage() {
       )}
 
       {notice && (
-        <div className={`fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-between gap-3 rounded-xl border-4 p-4 ${notice.startsWith('已從志願清單移除') ? '' : 'shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'} ${notice === '最多可加入 30 個志願。' ? 'border-amber-500 bg-amber-50' : 'border-slate-900 bg-white'}`}>
-          <div className="text-sm font-black text-slate-800">{notice}</div>
-          {!notice.startsWith('已從志願清單移除') && <button onClick={() => setNotice('')} className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-black text-white">
+        <div role="status" className={`mock-volunteer-notice ${notice === '最多可加入 30 個志願。' ? 'mock-volunteer-notice--warning' : ''}`}>
+          <div>{notice}</div>
+          {!notice.startsWith('已從志願清單移除') && <button onClick={() => setNotice('')}>
             知道了
           </button>}
         </div>
       )}
-      <div className="mx-auto max-w-6xl px-4"><LocalVolunteerVersions key={region} region={region} choices={selectedChoices as unknown as VersionChoice[]} onRestore={items => setSelectedChoices(items.map(item => ({ ...item, id: createChoiceId(item as unknown as SchoolItem) })) as unknown as SchoolItem[])} /></div>
+      <section className="mock-volunteer-container mock-volunteer-versions" aria-label="志願版本紀錄"><LocalVolunteerVersions key={region} region={region} choices={selectedChoices as unknown as VersionChoice[]} onRestore={items => setSelectedChoices(items.map(item => ({ ...item, id: createChoiceId(item as unknown as SchoolItem) })) as unknown as SchoolItem[])} /></section>
       <ShareReportDialog
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
