@@ -460,6 +460,7 @@ export default function ResultsPage() {
                   const latestHistoricalScore = historicalScores[0];
                   const historicalTrend = getHistoricalTrend(historicalScores);
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
+                  const schoolDistrictName = school.district || ALL_REGIONS.find((region) => region.id === (school.region || scores?.region))?.name || school.region || regionName;
                   const groupLabel = school.group || school.type || '普通科';
                   const schoolMapQuery = school.name;
                   const analysisAccent = getAnalysisAccent(school.zone);
@@ -486,7 +487,7 @@ export default function ResultsPage() {
                           <span>{ownership}</span>
                           <a href={withBasePath(`/vocational-encyclopedia?group=${encodeURIComponent(groupLabel)}`)} className="results-school-group-tag" aria-label={`查看${groupLabel}介紹`}>{groupLabel}</a>
                         </div>
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoolMapQuery)}`} target="_blank" rel="noreferrer" aria-label={`在地圖搜尋學校 ${school.name}`} title={`在地圖搜尋 ${school.name}`} className="results-school-district-tag"><MapPin aria-hidden="true" className="h-3.5 w-3.5" /><span>{school.name}</span></a>
+                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoolMapQuery)}`} target="_blank" rel="noreferrer" aria-label={`在地圖搜尋學校 ${school.name}`} title={`在地圖搜尋 ${school.name}`} className="results-school-district-tag"><MapPin aria-hidden="true" className="h-3.5 w-3.5" /><span>{schoolDistrictName}</span></a>
                       </div>
 
                       <div
