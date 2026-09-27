@@ -1,0 +1,93 @@
+.app-error-page {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  padding: 28px 18px;
+  background: radial-gradient(circle at 15% 10%, #ecebff 0, transparent 34%), linear-gradient(145deg, #f7f8fd, #eef2fa);
+  color: #222b45;
+}
+
+.app-error-card {
+  width: min(100%, 560px);
+  padding: clamp(28px, 5vw, 46px);
+  border: 1px solid #dfe4f1;
+  border-radius: 25px;
+  background: #fff;
+  box-shadow: 0 22px 65px rgba(35, 45, 80, .12);
+  text-align: center;
+}
+
+.app-error-icon {
+  display: grid;
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 20px;
+  place-items: center;
+  border-radius: 19px;
+  background: #ebeafd;
+  color: #5554aa;
+}
+
+.app-error-eyebrow {
+  margin: 0 0 7px;
+  color: #6665aa;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.app-error-card h1 {
+  margin: 0;
+  color: #202949;
+  font-size: clamp(25px, 5vw, 33px);
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.app-error-description {
+  max-width: 38ch;
+  margin: 16px auto 0;
+  color: #56637d;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+
+.app-error-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.app-error-actions :is(button, a) {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 15px;
+  border: 1px solid #cdd5e8;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background .2s, border-color .2s;
+  cursor: pointer;
+}
+
+.app-error-actions :is(button, a):focus-visible { outline: 3px solid #596fc1; outline-offset: 3px; }
+.app-error-actions .app-error-reload { border-color: #303f80; background: #303f80; color: #fff; }
+.app-error-actions .app-error-reload:hover { background: #25336c; }
+.app-error-home { background: #fff; color: #354780; }
+.app-error-home:hover { border-color: #92a3cb; background: #f2f5fb; }
+.app-error-note { margin: 20px 0 0; color: #7a859a; font-size: 12px; font-weight: 600; line-height: 1.5; }
+
+@media (max-width: 460px) {
+  .app-error-card { padding: 30px 22px; }
+  .app-error-actions { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-error-actions :is(button, a) { transition: none; }
+}
