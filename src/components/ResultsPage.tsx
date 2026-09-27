@@ -275,9 +275,17 @@ export default function ResultsPage() {
           </section>
         )}
 
-        <section className="results-score-change mt-6 flex flex-col gap-4 rounded-2xl border-2 border-slate-900 bg-violet-50 p-5 shadow-[4px_4px_0_#0f172a] sm:flex-row sm:items-center sm:justify-between">
-          <div><p className="text-xs font-black tracking-[.14em] text-violet-700">進階志願工具</p><h2 className="mt-1 text-xl font-black">差一級，志願清單會怎麼變？</h2><p className="mt-1 text-sm font-bold text-slate-600">多一級能多哪些選擇？少一級又該怎麼調整？用你的成績直接找出進入、離開或跨落點區的校科。</p></div>
-          <a href={withBasePath('/score-change')} className="results-score-change-action inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[2px_2px_0_#0f172a] transition hover:bg-violet-100"><Sparkles className="h-4 w-4 text-violet-700" />看看我的差異</a>
+        <section className="results-score-change" aria-labelledby="results-score-change-title">
+          <div className="results-score-change-copy">
+            <div className="results-score-change-eyebrow"><Sparkles aria-hidden="true" className="h-4 w-4" /><span>進階志願工具</span></div>
+            <h2 id="results-score-change-title">差一級，志願清單會怎麼變？</h2>
+            <p className="results-score-change-description">用本次成績比較多一級、少一級的結果，看見哪些校科進入、離開或改變落點區間。</p>
+            <div className="results-score-change-preview" aria-label="比較成績增減一級後的志願變化">
+              <div><strong>＋1 級</strong><span>發現新增選擇</span></div>
+              <div><strong>－1 級</strong><span>提早調整志願</span></div>
+            </div>
+          </div>
+          <a href={withBasePath('/score-change')} className="results-score-change-action">查看一級變化 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-45" /></a>
         </section>
         </div>
 
