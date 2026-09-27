@@ -221,15 +221,6 @@ export default function ResultsPage() {
               <p className="results-hero-description mt-4 max-w-2xl text-base font-bold leading-relaxed text-slate-200">
                 {results.analysisReport?.analysisSummary || '系統已完成本次落點分析，請依下方摘要與學校清單進行檢視。'}
               </p>
-              {results.analysisReport?.suggestion && (
-                <div className="results-suggestion mt-8 rounded-2xl border border-white/20 bg-white/10 p-5">
-                  <div className="mb-2 flex items-center gap-2 text-sm font-black text-amber-200">
-                    <Lightbulb className="h-5 w-5" />
-                    策略建議
-                  </div>
-                  <p className="text-sm font-bold leading-relaxed text-white">{results.analysisReport.suggestion}</p>
-                </div>
-              )}
             </div>
 
             <div className="results-hero-stats bg-amber-50 p-6 sm:p-8 lg:p-10">
@@ -269,6 +260,19 @@ export default function ResultsPage() {
             </div>
           </div>
         </section>
+
+        {results.analysisReport?.suggestion && (
+          <section className="results-strategy" aria-labelledby="results-strategy-title">
+            <div className="results-strategy-copy">
+              <div className="results-strategy-heading">
+                <span className="results-strategy-icon"><Lightbulb aria-hidden="true" className="h-5 w-5" /></span>
+                <div><p>依本次分析</p><h2 id="results-strategy-title">策略建議</h2></div>
+              </div>
+              <p className="results-strategy-text">{results.analysisReport.suggestion}</p>
+            </div>
+            <a className="results-strategy-link" href="#recommended-schools">查看推薦清單 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-180" /></a>
+          </section>
+        )}
 
         <section className="results-score-change mt-6 flex flex-col gap-4 rounded-2xl border-2 border-slate-900 bg-violet-50 p-5 shadow-[4px_4px_0_#0f172a] sm:flex-row sm:items-center sm:justify-between">
           <div><p className="text-xs font-black tracking-[.14em] text-violet-700">進階志願工具</p><h2 className="mt-1 text-xl font-black">差一級，志願清單會怎麼變？</h2><p className="mt-1 text-sm font-bold text-slate-600">多一級能多哪些選擇？少一級又該怎麼調整？用你的成績直接找出進入、離開或跨落點區的校科。</p></div>
@@ -341,7 +345,7 @@ export default function ResultsPage() {
             )}
           </aside>
 
-          <section className="results-list-panel rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
+          <section id="recommended-schools" className="results-list-panel rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
             <div className="results-list-header mb-5 space-y-4">
               <div>
                 <h2 className="flex items-center gap-2 text-2xl font-black">
