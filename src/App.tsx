@@ -415,13 +415,16 @@ export default function App() {
   const [isScoreAccountLoggedIn, setIsScoreAccountLoggedIn] = useState<
     boolean | null
   >(null);
-  const [scoreImportNotice, setScoreImportNotice] = useState("");
+  const [scoreImportNotice, setScoreImportNotice] = useState<{
+    message: string;
+    tone: "success" | "error";
+  } | null>(null);
 
   useEffect(() => {
     const imported = parseLineGuideImport(window.location.hash);
     if (!imported) return;
     setFormData((current) => ({ ...current, ...imported }));
-    setScoreImportNotice("已帶入 LINE 逐步操作的就學區與成績，請確認後再開始分析。");
+    setScoreImportNotice({ message: "已帶入 LINE 逐步操作的就學區與成績，請確認後再開始分析。", tone: "success" });
     window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
   }, []);
 
@@ -566,13 +569,13 @@ export default function App() {
       social: record.scores.social,
       composition: String(record.scores.composition),
     }));
-    setScoreImportNotice(`已帶入「${record.title}」的成績。`);
+    setScoreImportNotice({ message: `已帶入「${record.title}」的成績。`, tone: "success" });
     setActiveModal(null);
   };
 
   const loginForSavedScores = () => {
     if (!import.meta.env.VITE_SUPABASE_URL) {
-      setScoreImportNotice("登入服務尚未設定，請稍後再試。");
+      setScoreImportNotice({ message: "登入服務尚未設定，請稍後再試。", tone: "error" });
       return;
     }
     startLineLogin('/');
@@ -580,7 +583,7 @@ export default function App() {
 
   useEffect(() => {
     if (!scoreImportNotice) return;
-    const timer = window.setTimeout(() => setScoreImportNotice(""), 3_000);
+    const timer = window.setTimeout(() => setScoreImportNotice(null), scoreImportNotice.tone === "error" ? 6_000 : 4_000);
     return () => window.clearTimeout(timer);
   }, [scoreImportNotice]);
 
@@ -829,11 +832,24 @@ export default function App() {
       </a>
       {scoreImportNotice && (
         <div
-          role="status"
-          className="fixed bottom-5 left-1/2 z-[200] flex w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 items-start gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black text-slate-950 shadow-[4px_4px_0_#0f172a]"
+          role={scoreImportNotice.tone === "error" ? "alert" : "status"}
+          className={`home-floating-notice home-floating-notice--${scoreImportNotice.tone}`}
         >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-400 text-slate-950"><Check className="h-5 w-5" /></span>
-          <span className="pt-1 leading-5">{scoreImportNotice}</span>
+          <span className="home-floating-notice__icon" aria-hidden="true">
+            {scoreImportNotice.tone === "error" ? <AlertCircle size={21} strokeWidth={2.2} /> : <Check size={21} strokeWidth={2.2} />}
+          </span>
+          <span className="home-floating-notice__content">
+            <strong>{scoreImportNotice.tone === "error" ? "登入提醒" : "已完成"}</strong>
+            <span>{scoreImportNotice.message}</span>
+          </span>
+          <button
+            type="button"
+            className="home-floating-notice__close"
+            aria-label="關閉通知"
+            onClick={() => setScoreImportNotice(null)}
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
         </div>
       )}
 

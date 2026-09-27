@@ -275,6 +275,62 @@
 .home-next-grid small { color: #5d6577; }
 .home-promo-copy > p { color: #895414; }
 
+.home-floating-notice {
+  position: fixed;
+  z-index: 200;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  width: min(460px, calc(100% - 32px));
+  padding: 15px 14px 15px 16px;
+  border: 1px solid #dce2ef;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(32, 42, 77, .18), 0 3px 10px rgba(32, 42, 77, .06);
+  transform: translateX(-50%);
+  animation: home-notice-enter .22s ease-out both;
+}
+.home-floating-notice--error { border-color: #f1d4d2; }
+.home-floating-notice__icon {
+  display: grid;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 12px;
+  background: #edf0fb;
+  color: #3d51a1;
+}
+.home-floating-notice--error .home-floating-notice__icon { background: #fff0ee; color: #b34e49; }
+.home-floating-notice__content { display: grid; flex: 1; min-width: 0; gap: 3px; padding-top: 1px; }
+.home-floating-notice__content strong { color: #26305a; font-size: 14px; font-weight: 850; line-height: 1.35; }
+.home-floating-notice--error .home-floating-notice__content strong { color: #973b38; }
+.home-floating-notice__content > span { color: #4e566a; font-size: 14px; font-weight: 550; line-height: 1.55; overflow-wrap: anywhere; }
+.home-floating-notice__close {
+  display: grid;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  margin: 0 -5px -4px 0;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #667087;
+  cursor: pointer;
+}
+.home-floating-notice__close:hover { background: #f0f2f7; color: #303a56; }
+.home-floating-notice__close:focus-visible { outline: 3px solid #243b92; outline-offset: 2px; }
+@keyframes home-notice-enter {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (max-width: 560px) {
+  .home-floating-notice { bottom: calc(88px + env(safe-area-inset-bottom, 0px)); padding: 13px 11px 13px 13px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-page *,
   .home-page *::before,
