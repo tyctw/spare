@@ -476,10 +476,10 @@ export default function ResultsPage() {
 
                       <div
                         data-zone={school.zone}
-                        className={`results-analysis-preview w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-3.5 py-2.5 text-left ${analysisAccent.split(' ')[0]}`}
+                        className="results-analysis-preview w-full text-left"
                       >
-                        <div className="mb-1 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
-                        <p className="results-analysis-excerpt text-sm font-black leading-6 text-slate-900">
+                        <div className="results-analysis-heading"><span className="results-analysis-icon"><Lightbulb aria-hidden="true" className="h-4 w-4" /></span><span>落點判讀</span></div>
+                        <p className="results-analysis-excerpt">
                           <EmphasizedAnalysisText text={school.analysisNote || '目前未提供落點判讀。'} tone={analysisAccent.split(' ')[1]} />
                         </p>
                       </div>
