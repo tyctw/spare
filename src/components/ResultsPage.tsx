@@ -461,7 +461,7 @@ export default function ResultsPage() {
                   const historicalTrend = getHistoricalTrend(historicalScores);
                   const isCompared = comparisonSchools.some((item) => item.name === school.name);
                   const groupLabel = school.group || school.type || '普通科';
-                  const schoolMapQuery = [school.name, groupLabel].filter(Boolean).join(' ');
+                  const schoolMapQuery = school.name;
                   const analysisAccent = getAnalysisAccent(school.zone);
 
                   return (
