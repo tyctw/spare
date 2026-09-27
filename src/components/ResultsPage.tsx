@@ -485,9 +485,9 @@ export default function ResultsPage() {
                       <div className="results-school-meta text-sm font-bold text-slate-600">
                         <div className="results-school-meta-tags">
                           <span>{ownership}</span>
-                          <a href={withBasePath(`/vocational-encyclopedia?group=${encodeURIComponent(groupLabel)}`)} className="results-school-group-tag" aria-label={`查看${groupLabel}介紹`}>{groupLabel}</a>
+                          <a href={withBasePath(`/vocational-encyclopedia?group=${encodeURIComponent(groupLabel)}`)} className="results-school-group-tag" aria-label={`查看${groupLabel}介紹`} title={`查看${groupLabel}介紹`}><Layers aria-hidden="true" className="h-3.5 w-3.5" /><span>{groupLabel}</span><ExternalLink aria-hidden="true" className="h-3 w-3" /></a>
+                          <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoolMapQuery)}`} target="_blank" rel="noreferrer" aria-label={`在地圖搜尋學校 ${school.name}`} title={`在地圖搜尋 ${school.name}`} className="results-school-district-tag"><MapPin aria-hidden="true" className="h-3.5 w-3.5" /><span>{schoolDistrictName}</span></a>
                         </div>
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schoolMapQuery)}`} target="_blank" rel="noreferrer" aria-label={`在地圖搜尋學校 ${school.name}`} title={`在地圖搜尋 ${school.name}`} className="results-school-district-tag"><MapPin aria-hidden="true" className="h-3.5 w-3.5" /><span>{schoolDistrictName}</span></a>
                       </div>
 
                       <div
