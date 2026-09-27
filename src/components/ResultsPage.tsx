@@ -482,10 +482,11 @@ export default function ResultsPage() {
                         <h4 className="font-black text-xl text-slate-900 leading-tight">{school.name}</h4>
                       </div>
                       <div className="results-school-meta text-sm font-bold text-slate-600">
-                        <span>{ownership}</span><span aria-hidden="true">·</span>
-                        <span>{groupLabel}</span><span aria-hidden="true">·</span>
-                        <span>{schoolDistrictName}</span>
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`} target="_blank" rel="noreferrer" aria-label={`在地圖查看 ${school.name}`} className="results-school-map-link"><MapPin aria-hidden="true" className="h-3.5 w-3.5" />地圖</a>
+                        <div className="results-school-meta-tags">
+                          <span>{ownership}</span>
+                          <span>{groupLabel}</span>
+                        </div>
+                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`} target="_blank" rel="noreferrer" aria-label={`在地圖查看 ${school.name}，${schoolDistrictName}`} className="results-school-map-link"><MapPin aria-hidden="true" className="h-4 w-4" /><span>{schoolDistrictName}・查看地圖</span></a>
                       </div>
 
                       <div

@@ -125,8 +125,8 @@
 .results-page .results-strategy-text { max-width: 72ch; margin: 15px 0 0; color: #394361; font-size: 15px; font-weight: 650; line-height: 1.75; overflow-wrap: anywhere; }
 .results-page .results-strategy-link { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border: 1px solid #a9aed8; border-radius: 11px; background: #fff; color: #3f4989; font-size: 13px; font-weight: 850; white-space: nowrap; }
 .results-page .results-strategy-link:hover { border-color: #7d85c2; background: #ebebfb; }
-.results-page .results-guidance > .results-strategy,
-.results-page .results-guidance > .results-score-change { height: 100%; margin-top: 0; }
+.results-page .results-guidance > .results-strategy { height: 100%; margin-top: 0; }
+.results-page .results-guidance > .results-score-change { align-self: start; margin-top: 0; }
 .results-page .results-guidance .results-strategy { grid-template-columns: minmax(0, 1fr); align-content: space-between; gap: 18px; }
 .results-page .results-guidance .results-strategy-link { width: max-content; max-width: 100%; }
 .results-page .results-score-change {
@@ -134,8 +134,8 @@
   min-width: 0;
   flex-direction: column;
   justify-content: space-between;
-  gap: 24px;
-  padding: 25px 28px;
+  gap: 15px;
+  padding: 20px 23px;
   border: 1px solid #d7d2ec;
   border-radius: 21px;
   background: linear-gradient(145deg, #f2effc 0%, #faf9ff 75%);
@@ -143,10 +143,10 @@
 }
 .results-page .results-score-change-eyebrow { display: inline-flex; align-items: center; gap: 7px; color: #644f9b; font-size: 12px; font-weight: 850; letter-spacing: .06em; }
 .results-page .results-score-change-eyebrow svg { color: #765cc1; }
-.results-page .results-score-change h2 { max-width: 15ch; margin-top: 12px; color: #28244f; font-size: clamp(21px, 2vw, 25px); font-weight: 850; line-height: 1.3; }
-.results-page .results-score-change-description { margin-top: 12px; color: #53516d; font-size: 14px; font-weight: 600; line-height: 1.7; }
-.results-page .results-score-change-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 20px; }
-.results-page .results-score-change-preview > div { min-width: 0; padding: 12px 13px; border: 1px solid #e1dcf3; border-radius: 13px; background: rgba(255, 255, 255, .78); }
+.results-page .results-score-change h2 { max-width: 15ch; margin-top: 8px; color: #28244f; font-size: clamp(21px, 2vw, 25px); font-weight: 850; line-height: 1.3; }
+.results-page .results-score-change-description { margin-top: 8px; color: #53516d; font-size: 14px; font-weight: 600; line-height: 1.6; }
+.results-page .results-score-change-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.results-page .results-score-change-preview > div { min-width: 0; padding: 9px 11px; border: 1px solid #e1dcf3; border-radius: 11px; background: rgba(255, 255, 255, .78); }
 .results-page .results-score-change-preview strong { display: block; color: #5e4aa0; font-size: 15px; line-height: 1.2; }
 .results-page .results-score-change-preview span { display: block; margin-top: 5px; color: #5d5b74; font-size: 12px; font-weight: 700; line-height: 1.35; }
 .results-page .results-score-change-action { display: inline-flex; min-height: 46px; width: fit-content; max-width: 100%; align-items: center; justify-content: center; gap: 10px; padding: 11px 17px; border: 1px solid #51428d; border-radius: 11px; background: #51428d; color: #fff; font-size: 14px; font-weight: 850; transition: background .2s, border-color .2s, transform .2s; }
@@ -203,9 +203,11 @@
 .results-page .results-school-zone-badge { display: inline-flex; align-items: center; gap: 4px; width: fit-content; flex: 0 0 auto; padding: 5px 8px; border: 1px solid #d8e2f5; border-radius: 999px; background: #f2f6ff; color: #345c9b; font-size: 12px; font-weight: 850; line-height: 1; white-space: nowrap; }
 .results-page .results-school-zone-badge[data-zone='reach'] { border-color: #efd7dc; background: #fff5f6; color: #9d4b60; }
 .results-page .results-school-zone-badge[data-zone='safe'] { border-color: #d4e8df; background: #f2faf6; color: #34745d; }
-.results-page .results-school-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 7px; padding-bottom: 12px; border-bottom: 1px solid #e9edf4; color: #60708b; line-height: 1.5; }
-.results-page .results-school-meta > span:nth-child(even) { color: #b0bad0; }
-.results-page .results-school-map-link { display: inline-flex; align-items: center; gap: 3px; margin-left: auto; color: #405d9e; font-size: 12px; font-weight: 850; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.results-page .results-school-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; padding-bottom: 12px; border-bottom: 1px solid #e9edf4; line-height: 1.5; }
+.results-page .results-school-meta-tags { display: flex; min-width: 0; flex-wrap: wrap; gap: 6px; }
+.results-page .results-school-meta-tags span { display: inline-flex; align-items: center; min-height: 28px; padding: 3px 9px; border: 1px solid #e2e7f1; border-radius: 7px; background: #f6f8fc; color: #51617d; font-size: 12px; font-weight: 800; }
+.results-page .results-school-map-link { display: inline-flex; min-height: 32px; align-items: center; gap: 4px; margin-left: auto; color: #405d9e; font-size: 12px; font-weight: 850; text-decoration: underline; text-underline-offset: 3px; }
+.results-page .results-school-map-link svg { flex: 0 0 auto; }
 .results-page .results-school-map-link:hover { color: #263d77; }
 .results-page .results-analysis-preview { padding: 15px 16px 16px; border: 1px solid #dce4f2; border-radius: 15px; background: #f7f9fe; box-shadow: none; }
 .results-page .results-analysis-heading { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #405b9d; font-size: 13px; font-weight: 850; }
@@ -277,8 +279,10 @@
   .results-page .results-sidebar > :last-child:nth-child(odd) { grid-column: auto; }
   .results-page .results-list-panel { padding: 20px 16px; }
   .results-page .results-filter-panel { padding: 12px; }
+  .results-page .results-school-map-link { width: fit-content; margin-left: 0; }
+  .results-page .results-school-meta { flex-direction: column; align-items: flex-start; gap: 6px; }
   .results-page .results-strategy { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 21px 20px; }
-  .results-page .results-score-change { padding: 21px 20px; }
+  .results-page .results-score-change { padding: 19px 20px; }
   .results-page .results-guidance .results-strategy-link,
   .results-page .results-guidance .results-score-change-action { width: 100%; }
 }
