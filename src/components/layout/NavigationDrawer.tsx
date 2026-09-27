@@ -446,7 +446,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                       window.dispatchEvent(new Event('open-site-search'));
                       closeDrawer();
                     }}
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition hover:bg-slate-100"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition hover:bg-indigo-100 hover:text-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     aria-label="搜尋全站功能"
                   >
                     <Search className="h-6 w-6" />
@@ -458,7 +458,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                 type="button"
                 onClick={closeDrawer}
                 className={isCompactNavigation
-                  ? 'flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.6rem] border-2 border-blue-700 bg-blue-600 text-white transition hover:bg-blue-500 active:scale-95'
+                  ? 'flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.6rem] border-2 border-blue-700 bg-blue-600 text-white transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95'
                   : 'flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-white text-slate-900 transition hover:bg-slate-100 active:scale-95'}
                 aria-label="關閉主選單"
               >
@@ -473,7 +473,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               {mobileCategory ? (
                 <section>
                   <div className="sticky top-[-1rem] z-10 -mx-4 -mt-4 mb-5 flex items-center gap-3 rounded-t-[2rem] bg-white px-5 py-3 shadow-[0_3px_8px_rgba(15,23,42,0.06)]">
-                    <button type="button" onClick={returnToMainMenu} className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-slate-900 transition hover:bg-slate-300" aria-label="返回主選單">
+                    <button type="button" onClick={returnToMainMenu} className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-slate-900 transition hover:bg-indigo-100 hover:text-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" aria-label="返回主選單">
                       <ChevronRight className="h-6 w-6 rotate-180" />
                     </button>
                     <div>
@@ -485,7 +485,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                     {mobileCategory.items.map((item) => {
                       const ItemIcon = item.icon;
                       return (
-                        <button key={item.id} type="button" onClick={() => runAction(item.action)} className="group flex w-full items-stretch justify-between overflow-hidden rounded-[1.8rem] bg-slate-100 text-left outline-none transition-colors hover:bg-slate-200">
+                        <button key={item.id} type="button" onClick={() => runAction(item.action)} className="group flex w-full items-stretch justify-between overflow-hidden rounded-[1.8rem] border-2 border-transparent bg-slate-100 text-left transition-colors hover:border-indigo-300 hover:bg-indigo-50 focus-visible:border-indigo-600 focus-visible:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-indigo-100">
                           <div className="flex min-w-0 items-center">
                             <div className={`flex w-16 shrink-0 items-center justify-center self-stretch transition-colors group-hover:brightness-95 ${item.bg} ${item.color}`}>
                               <ItemIcon className="h-6 w-6" />
@@ -496,7 +496,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                             </span>
                           </div>
                           <div className="flex items-center pr-4">
-                             <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 transition-all group-hover:translate-x-1" />
+                             <ChevronRight className="h-5 w-5 shrink-0 text-slate-400 transition-all group-hover:translate-x-1 group-hover:text-indigo-600 group-focus-visible:translate-x-1 group-focus-visible:text-indigo-600" />
                           </div>
                         </button>
                       );
@@ -510,7 +510,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                   <button
                     type="button"
                     onClick={() => setSearchTerm('')}
-                    className="mt-4 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-2 text-sm font-black text-white transition hover:bg-slate-700"
+                    className="mt-4 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-2 text-sm font-black text-white transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     清除搜尋
                   </button>
@@ -540,7 +540,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                         aria-expanded={isExpanded}
                         aria-controls={`nav-category-${category.id}`}
                         className={isMobileViewport
-                          ? 'group flex min-h-[104px] w-full items-stretch justify-between overflow-hidden rounded-[1.8rem] bg-slate-100 text-left outline-none transition-colors hover:bg-slate-200'
+                          ? 'group flex min-h-[104px] w-full items-stretch justify-between overflow-hidden rounded-[1.8rem] bg-slate-100 text-left transition-colors hover:bg-indigo-50 focus-visible:bg-indigo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-600 active:bg-indigo-100'
                           : `flex min-h-0 w-full items-center justify-between border-l-8 p-4 ${category.bg} ${category.accent} outline-none transition-colors hover:bg-opacity-80`}
                       >
                         <div className={`flex min-w-0 items-center ${isMobileViewport ? 'flex-1 py-4 pl-7 pr-3' : 'gap-3'}`}>
@@ -611,7 +611,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
               )}
 
               <div className="grid grid-cols-2 gap-3">
-                <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.8rem] bg-slate-100 outline-none transition hover:bg-slate-200">
+                <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.8rem] bg-slate-100 transition hover:bg-indigo-50 focus-visible:bg-indigo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-600">
                   <div className="flex w-14 shrink-0 items-center justify-center bg-pink-100 text-pink-600 transition-colors group-hover:brightness-95">
                     <Instagram className="h-5 w-5 transition-transform group-hover:scale-110" />
                   </div>
@@ -619,7 +619,7 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
                     <span className="text-[15px] font-black text-slate-700">Instagram</span>
                   </div>
                 </a>
-                <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.8rem] bg-slate-100 outline-none transition hover:bg-slate-200">
+                <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-stretch overflow-hidden rounded-[1.8rem] bg-slate-100 transition hover:bg-indigo-50 focus-visible:bg-indigo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-600">
                   <div className="flex w-14 shrink-0 items-center justify-center bg-slate-200 text-slate-700 transition-colors group-hover:brightness-95">
                     <ThreadsIcon className="h-5 w-5 transition-transform group-hover:scale-110" />
                   </div>
