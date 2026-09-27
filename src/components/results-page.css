@@ -177,38 +177,31 @@
 .results-page .results-school-card[data-compared='true'] { border-color: #879ad2; background: #f5f7ff; }
 .results-page .results-school-card > div:first-child { display: none; }
 .results-page .results-school-rank { width: 42px; height: 42px; border: 0; border-radius: 12px; background: #e9eefb; color: #344b91; box-shadow: none; }
-.results-page .results-school-heading h4 { color: #1d2848; font-size: 19px; line-height: 1.35; }
-.results-page .results-school-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-.results-page .results-school-fact {
-  min-height: 58px;
-  align-items: flex-start;
-  padding: 9px 11px;
-  border: 1px solid #e5e9f1;
-  border-radius: 11px;
-  background: #f8f9fc;
-  color: #34415d;
-  text-align: left;
-}
-.results-page .results-school-fact > span:first-child { opacity: 1; color: #79849b; }
-.results-page .results-school-fact > div,
-.results-page .results-school-fact > span:last-child { width: 100%; text-align: left; }
-.results-page .results-zone-fact[data-zone='reach'] { border-color: #efd7dc; background: #fff5f6; color: #9d4b60; }
-.results-page .results-zone-fact[data-zone='target'] { border-color: #d8e2f5; background: #f2f6ff; color: #345c9b; }
-.results-page .results-zone-fact[data-zone='safe'] { border-color: #d4e8df; background: #f2faf6; color: #34745d; }
+.results-page .results-school-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 10px; }
+.results-page .results-school-heading h4 { flex: 1 1 150px; min-width: 0; color: #1d2848; font-size: 19px; line-height: 1.35; }
+.results-page .results-school-zone-badge { display: inline-flex; align-items: center; gap: 4px; width: fit-content; flex: 0 0 auto; padding: 5px 8px; border: 1px solid #d8e2f5; border-radius: 999px; background: #f2f6ff; color: #345c9b; font-size: 12px; font-weight: 850; line-height: 1; white-space: nowrap; }
+.results-page .results-school-zone-badge[data-zone='reach'] { border-color: #efd7dc; background: #fff5f6; color: #9d4b60; }
+.results-page .results-school-zone-badge[data-zone='safe'] { border-color: #d4e8df; background: #f2faf6; color: #34745d; }
+.results-page .results-school-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 7px; padding-bottom: 12px; border-bottom: 1px solid #e9edf4; color: #60708b; line-height: 1.5; }
+.results-page .results-school-meta > span:nth-child(even) { color: #b0bad0; }
+.results-page .results-school-map-link { display: inline-flex; align-items: center; gap: 3px; margin-left: auto; color: #405d9e; font-size: 12px; font-weight: 850; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.results-page .results-school-map-link:hover { color: #263d77; }
 .results-page .results-analysis-preview { border: 1px solid #dce4f2; border-left: 4px solid #879ad2; border-radius: 13px; background: #f8faff; box-shadow: none; }
 .results-page .results-analysis-preview[data-zone='reach'] { border-left-color: #cf8294; }
 .results-page .results-analysis-preview[data-zone='target'] { border-left-color: #7896ce; }
 .results-page .results-analysis-preview[data-zone='safe'] { border-left-color: #7cbaa1; }
-.results-page .results-analysis-preview:hover { transform: none; border-color: #b9c9e8; box-shadow: 0 5px 13px rgba(35,45,77,.08); }
+.results-page .results-analysis-excerpt { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 .results-page .results-history-preview { border: 1px solid #e0e5ef; border-radius: 13px; background: #fff; box-shadow: none; }
 .results-page .results-history-preview:hover { transform: none; border-color: #b9c6df; box-shadow: 0 5px 13px rgba(35,45,77,.07); }
 .results-page .results-history-preview .border-slate-900 { border: 0; background: #edf1fb; box-shadow: none; }
 .results-page .results-history-preview .text-amber-700 { color: #405b9d; }
 .results-page .results-history-preview .truncate { overflow: visible; white-space: normal; text-overflow: clip; line-height: 1.4; }
-.results-page .results-school-actions { margin-top: auto; }
-.results-page .results-map-action,
-.results-page .results-compare-action { min-height: 44px; border: 1px solid #cbd4e6; border-radius: 11px; background: #fff; color: #30447d; box-shadow: none; }
-.results-page .results-map-action:hover,
+.results-page .results-school-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: auto; }
+.results-page .results-analysis-action,
+.results-page .results-compare-action { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; min-height: 44px; border: 1px solid #cbd4e6; border-radius: 11px; background: #fff; color: #30447d; box-shadow: none; }
+.results-page .results-analysis-action { border-color: #293d78; background: #293d78; color: #fff; }
+.results-page .results-analysis-action:hover { background: #203265; }
+.results-page .results-analysis-action > span { font-size: 18px; line-height: 1; }
 .results-page .results-compare-action:hover { transform: none; border-color: #92a4d1; background: #eef2fc; box-shadow: none; }
 .results-page .results-compare-action[aria-pressed='true'] { border-color: #293d78; background: #293d78; color: #fff; }
 .results-page .results-compare-action[aria-pressed='true']:hover { background: #203265; }
@@ -269,11 +262,9 @@
   .results-page .results-zone-label { gap: 4px; font-size: 11px; }
   .results-page .results-zone-label svg { width: 13px; height: 13px; }
   .results-page .results-school-card { padding: 16px; }
-  .results-page .results-school-facts { gap: 5px; }
-  .results-page .results-school-fact { padding: 8px 4px; }
-  .results-page .results-school-fact > div { font-size: 12px; }
-  .results-page .results-school-actions { flex-wrap: wrap; }
-  .results-page .results-school-actions > * { flex: 1 1 100%; }
+  .results-page .results-school-heading h4 { flex-basis: 135px; font-size: 18px; }
+  .results-page .results-school-actions { gap: 8px; }
+  .results-page .results-school-actions > * { padding-inline: 5px; font-size: 12px; }
   .results-page .results-tools { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
   .results-page .results-tools-trigger { width: 44px; height: 44px; border-radius: 12px; }
 }

@@ -37,7 +37,6 @@ import { getCreditsGap, getPointsGap } from '../lib/admissionComparison';
 import './results-page.css';
 import {
   AdmissionAnalysisDialog,
-  AutoFitSingleLine,
   EmphasizedAnalysisText,
   formatHistoricalCredits,
   getAnalysisAccent,
@@ -454,59 +453,36 @@ export default function ResultsPage() {
                   return (
                     <article key={`${school.name}-${index}`} data-compared={isCompared} className={`results-school-card relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
                       <div className={`absolute -right-2 -bottom-4 text-8xl font-black opacity-[0.03] select-none pointer-events-none transition-opacity group-hover:opacity-10 ${index < 3 ? 'text-amber-600' : 'text-slate-900'}`}>{index + 1}</div>
-                      <div className="results-school-heading flex items-start gap-4">
+                      <div className="results-school-heading flex items-start gap-3">
                         <div className={`results-school-rank w-12 h-12 shrink-0 rounded-2xl border-2 border-slate-900 flex items-center justify-center font-black text-lg shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${index < 3 ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900' : 'bg-slate-100 text-slate-700'}`}>
                           {index + 1}
                         </div>
-                        <div className="min-w-0 flex-1">
+                        <div className="results-school-title-row min-w-0 flex-1">
                           <h4 className="font-black text-xl text-slate-900 leading-tight">{school.name}</h4>
+                          {school.zone && (
+                            <span data-zone={school.zone} className="results-school-zone-badge">
+                              <ZoneIcon aria-hidden="true" className="h-3.5 w-3.5" />
+                              {meta.label}
+                            </span>
+                          )}
                         </div>
                       </div>
-                      <div className="results-school-facts grid grid-cols-4 items-stretch gap-2">
-                        {school.zone && (
-                          <div data-zone={school.zone} className={`results-school-fact results-zone-fact flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 ${school.zone === 'reach' ? 'bg-rose-100 text-rose-800 border-rose-300' : school.zone === 'target' ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-emerald-100 text-emerald-800 border-emerald-300'}`}>
-                            <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">落點區間</span>
-                            <div className="text-center text-sm font-black leading-tight">
-                              {school.zone === 'reach' ? '夢幻區' : school.zone === 'target' ? '實際區' : '保守區'}
-                            </div>
-                          </div>
-                        )}
-                        <div className="results-school-fact flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
-                          <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">屬性</span>
-                          <div className="text-center text-sm font-black leading-tight">
-                            {ownership}
-                          </div>
-                        </div>
-                        <div className="results-school-fact flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
-                          <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">群別</span>
-                          <AutoFitSingleLine text={groupLabel} />
-                        </div>
-                        <div className="results-school-fact flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
-                          <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">地區</span>
-                          <div className="text-center text-sm font-black leading-tight">
-                            <span>{schoolDistrictName}</span>
-                          </div>
-                        </div>
+                      <div className="results-school-meta text-sm font-bold text-slate-600">
+                        <span>{ownership}</span><span aria-hidden="true">·</span>
+                        <span>{groupLabel}</span><span aria-hidden="true">·</span>
+                        <span>{schoolDistrictName}</span>
+                        <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`} target="_blank" rel="noreferrer" aria-label={`在地圖查看 ${school.name}`} className="results-school-map-link"><MapPin aria-hidden="true" className="h-3.5 w-3.5" />地圖</a>
                       </div>
 
-
-                      <button
-                        type="button"
+                      <div
                         data-zone={school.zone}
-                        onClick={() => setAnalysisSchool(school)}
-                        className={`results-analysis-preview group w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-3.5 py-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 ${analysisAccent.split(' ')[0]}`}
-                        aria-label={`查看 ${school.name} 的完整落點判讀`}
+                        className={`results-analysis-preview w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-3.5 py-2.5 text-left ${analysisAccent.split(' ')[0]}`}
                       >
-                        <div>
-                          <div className="mb-0.5 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
-                          <p className="text-sm font-black leading-6 text-slate-900">
-                            <EmphasizedAnalysisText text={school.analysisNote || '目前未提供落點判讀。'} tone={analysisAccent.split(' ')[1]} />
-                          </p>
-                          <div className="mt-1.5 flex items-center justify-end border-t border-slate-100 pt-1.5">
-                            <span className="text-xs font-black text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-slate-950">查看完整判讀 <span className="ml-1.5 text-base leading-none">→</span></span>
-                          </div>
-                        </div>
-                      </button>
+                        <div className="mb-1 text-[11px] font-black tracking-[0.14em] text-slate-500">落點判讀</div>
+                        <p className="results-analysis-excerpt text-sm font-black leading-6 text-slate-900">
+                          <EmphasizedAnalysisText text={school.analysisNote || '目前未提供落點判讀。'} tone={analysisAccent.split(' ')[1]} />
+                        </p>
+                      </div>
 
                       <button
                         type="button"
@@ -552,15 +528,7 @@ export default function ResultsPage() {
                       </button>
 
                       <div className="results-school-actions flex gap-2.5">
-                        <a
-                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={(event) => event.stopPropagation()}
-                          className="results-map-action flex-[2] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-1.5 transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
-                        >
-                          <MapPin className="w-4 h-4" /> 學校地圖
-                        </a>
+                        <button type="button" onClick={() => setAnalysisSchool(school)} aria-label={`查看 ${school.name} 的完整落點分析`} className="results-analysis-action flex-1 rounded-xl px-3 py-2.5 text-sm font-black">查看完整分析 <span aria-hidden="true">→</span></button>
                         <button
                           onClick={(event) => {
                             event.stopPropagation();
@@ -568,7 +536,7 @@ export default function ResultsPage() {
                           }}
                           aria-pressed={isCompared}
                           aria-label={`${isCompared ? '從比較清單移除' : '加入比較清單'}：${school.name}`}
-                          className={`results-compare-action flex-[3] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+                          className={`results-compare-action flex-1 py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-2 transition-all ${
                             isCompared
                               ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-indigo-500'
                               : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'
