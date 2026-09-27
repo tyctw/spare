@@ -631,7 +631,6 @@ export default function NavigationDrawer({ isOpen, onClose, setActiveModal }: Na
 
             </div>
 
-            <div className="shrink-0 border-t-2 border-slate-900 bg-slate-900 p-1.5"><a href={withBasePath('/support')} className="flex items-center justify-center gap-1.5 rounded-xl border-2 border-slate-900 bg-rose-400 px-4 py-1.5 text-xs font-black text-slate-900 shadow-[2px_2px_0_#fbbf24] transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-[3px_3px_0_#fbbf24] active:translate-y-0 active:shadow-none"><Heart className="h-3.5 w-3.5 fill-current" />前往小額支持<ArrowRight className="h-3.5 w-3.5" /></a></div>
           </motion.div>
         </>
       )}

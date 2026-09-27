@@ -98,16 +98,16 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
   const selectedMenu = navigationLinks.find((menu) => menu.id === activeMenu);
   const selectedItems = selectedMenu?.categories.flatMap((category) => category.items.map((item) => ({ ...item, categoryLabel: category.label }))) ?? [];
   const currentMonth = new Date().getMonth() + 1;
-  const seasonalRecommendation = currentMonth <= 3
-    ? { label: '準備期', ids: ['home', 'search', 'importantDates', 'instructions'] }
+  const recommendedIds = currentMonth <= 3
+    ? ['home', 'search', 'importantDates', 'instructions']
     : currentMonth <= 5
-      ? { label: '考前準備', ids: ['importantDates', 'instructions', 'holland', 'schoolTypes'] }
+      ? ['importantDates', 'instructions', 'holland', 'schoolTypes']
       : currentMonth <= 7
-        ? { label: '成績與選填', ids: ['scoreInquiry', 'home', 'mockVolunteer', 'strategy'] }
+        ? ['scoreInquiry', 'home', 'mockVolunteer', 'strategy']
         : currentMonth <= 8
-          ? { label: '放榜與報到', ids: ['importantDates', 'schoolTypes', 'vocational', 'holland'] }
-          : { label: '探索規劃', ids: ['holland', 'vocational', 'schoolTypes', 'search'] };
-  const shortcutItems = seasonalRecommendation.ids
+          ? ['importantDates', 'schoolTypes', 'vocational', 'holland']
+          : ['holland', 'vocational', 'schoolTypes', 'search'];
+  const shortcutItems = recommendedIds
     .map((id) => menuCategories.flatMap((category) => category.items).find((item) => item.id === id))
     .filter(Boolean) as MenuItem[];
   const runAction = (item: MenuItem) => {
@@ -168,7 +168,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
             </div>
           </a>
 
-          <nav aria-label="主要導覽" className={`${isCompactNavigation ? 'hidden' : 'flex'} shrink-0 items-center gap-0.5 rounded-2xl bg-slate-100/80 p-1 xl:gap-1 xl:p-1.5`}>
+          <nav aria-label="主要導覽" className={`${isCompactNavigation ? 'hidden' : 'flex'} shrink-0 items-center gap-0.5 rounded-2xl border border-slate-200 bg-slate-50 p-1 xl:gap-1`}>
             {navigationLinks.map(({ id, label, icon: Icon, iconColor }) => (
               <button
                 type="button"
@@ -179,9 +179,9 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                 aria-haspopup="true"
                 aria-expanded={activeMenu === id}
                 aria-controls="desktop-mega-menu"
-                className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-2 py-2 text-sm font-black text-slate-700 transition hover:bg-white hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 xl:px-3 ${activeMenu === id ? 'bg-amber-200/80 text-slate-900 shadow-sm' : ''}`}
+                className={`flex items-center gap-2 whitespace-nowrap rounded-xl border-2 px-2 py-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 xl:px-3 ${activeMenu === id ? 'border-indigo-500 bg-indigo-200 text-indigo-950 shadow-[0_2px_0_0_#818cf8] hover:bg-indigo-300 hover:text-indigo-950' : 'border-transparent text-slate-700 hover:bg-indigo-100 hover:text-indigo-800'}`}
               >
-                <Icon className={`hidden h-4 w-4 shrink-0 xl:block ${iconColor}`} />
+                <Icon className={`hidden h-4 w-4 shrink-0 xl:block ${activeMenu === id ? 'text-indigo-800' : iconColor}`} />
                 {label}
               </button>
             ))}
@@ -193,43 +193,43 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
               onMouseEnter={keepMenuOpen}
               onMouseLeave={closeMenuWithDelay}
               aria-label={`${selectedMenu.title}次選單`}
-              className="absolute left-0 right-0 z-20 top-[calc(100%+8px)] hidden overflow-visible rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] lg:block"
+              className="absolute left-0 right-0 z-20 top-[calc(100%+8px)] hidden overflow-visible rounded-[2rem] border-2 border-indigo-100 bg-white p-5 shadow-[0_18px_40px_-18px_rgba(49,46,129,0.38)] lg:block"
             >
               <div className="grid grid-cols-[2fr_0.9fr] gap-5">
-                <div className="order-2 rounded-[2rem] bg-slate-100 p-4">
+                <div className="order-2 rounded-[2rem] bg-indigo-50/70 p-4">
                   <p className="px-2 text-sm font-black text-slate-700">猜你可能在找</p>
                   <div className="mt-3 divide-y-4 divide-slate-100 overflow-hidden rounded-[1.7rem] bg-white/75">
                     {shortcutItems.map((item) => {
                       const ItemIcon = item.icon;
                       return (
-                        <button key={item.id} type="button" onClick={() => runAction(item)} className="group flex w-full items-center justify-between bg-transparent px-4 py-4 text-left text-sm font-black text-slate-800 transition hover:bg-white">
+                        <button key={item.id} type="button" onClick={() => runAction(item)} className="group flex w-full items-center justify-between bg-transparent px-4 py-4 text-left text-sm font-black text-slate-800 transition hover:bg-indigo-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">
                           <span className="flex min-w-0 items-center gap-2.5">
                             <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${item.bg} ${item.color}`}><ItemIcon className="h-4 w-4" /></span>
                             <span className="truncate">{item.label}</span>
                           </span>
-                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-slate-500 transition-colors group-hover:bg-indigo-600 group-hover:text-white">
                             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                           </span>
                         </button>
                       );
                     })}
                     <div className="grid grid-cols-2 divide-x-2 divide-slate-100 bg-slate-50/70">
-                      <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-slate-600 transition hover:bg-white hover:text-pink-600" aria-label="前往 Instagram，新分頁開啟"><span className="flex min-w-0 items-center gap-2"><Instagram className="h-4 w-4 shrink-0" />Instagram</span><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></a>
-                      <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-slate-600 transition hover:bg-white hover:text-slate-900" aria-label="前往 Threads，新分頁開啟"><span className="flex min-w-0 items-center gap-2"><ThreadsIcon className="h-4 w-4 shrink-0" />Threads</span><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></a>
+                      <a href="https://www.instagram.com/exam.tw/" target="_blank" rel="noreferrer" className="group flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-slate-600 transition hover:bg-indigo-100 hover:text-pink-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600" aria-label="前往 Instagram，新分頁開啟"><span className="flex min-w-0 items-center gap-2"><Instagram className="h-4 w-4 shrink-0" />Instagram</span><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-slate-500 transition-colors group-hover:bg-indigo-600 group-hover:text-white"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></a>
+                      <a href="https://www.threads.com/@exam.tw" target="_blank" rel="noreferrer" className="group flex items-center justify-between gap-2 px-4 py-3 text-xs font-black text-slate-600 transition hover:bg-indigo-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600" aria-label="前往 Threads，新分頁開啟"><span className="flex min-w-0 items-center gap-2"><ThreadsIcon className="h-4 w-4 shrink-0" />Threads</span><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-slate-500 transition-colors group-hover:bg-indigo-600 group-hover:text-white"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></a>
                     </div>
-                    <a href={withBasePath('/support')} className="group flex items-center justify-between gap-3 bg-rose-200 px-4 py-4 text-left text-slate-900 transition hover:bg-rose-300">
+                    <a href={withBasePath('/support')} className="group flex items-center justify-between gap-3 bg-indigo-100 px-4 py-4 text-left text-slate-900 transition hover:bg-indigo-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">
                       <span className="flex min-w-0 items-start gap-2.5"><Heart className="mt-0.5 h-5 w-5 shrink-0 fill-rose-500 text-rose-600 transition-transform group-hover:scale-110" aria-hidden="true" /><span className="min-w-0"><span className="block text-sm font-black">小額支持，升學資訊持續免費</span><span className="mt-0.5 block text-[11px] font-bold text-rose-950/70">陪更多學生安心找到方向</span></span></span>
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span>
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-indigo-700 transition-colors group-hover:bg-indigo-600 group-hover:text-white"><ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span>
                     </a>
                   </div>
                 </div>
                 <div className="order-1">
-                  <p className="mb-3 px-1 text-sm font-black text-slate-500">探索更多</p>
+                  <p className="mb-3 px-1 text-sm font-black text-indigo-700">{selectedMenu.label}</p>
                   <div className="-m-1 grid max-h-[calc(100vh-12rem)] grid-cols-2 gap-3 overflow-y-auto p-1 pr-2">
-                    {selectedItems.map((item, itemIndex) => {
+                    {selectedItems.map((item) => {
                       const ItemIcon = item.icon;
                       return (
-                        <button key={item.id} type="button" onClick={() => runAction(item)} className={`group relative z-0 flex items-stretch overflow-hidden rounded-[1.35rem] border-2 border-slate-100 text-left transition hover:z-10 hover:-translate-y-0.5 hover:border-slate-900 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${itemIndex === 0 ? 'bg-amber-50' : 'bg-slate-50'}`}>
+                        <button key={item.id} type="button" onClick={() => runAction(item)} className="group relative z-0 flex items-stretch overflow-hidden rounded-[1.35rem] border-2 border-slate-100 bg-slate-50 text-left transition hover:z-10 hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-[0_8px_20px_-12px_rgba(79,70,229,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">
                           <span className={`flex w-14 shrink-0 items-center justify-center transition-colors group-hover:brightness-95 ${item.bg} ${item.color}`}>
                             <ItemIcon className="h-6 w-6" />
                           </span>
@@ -239,7 +239,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                               <span className="mt-0.5 block text-[15px] font-black leading-snug text-slate-900">{item.label}</span>
                               <span className="mt-1 block text-xs font-bold leading-snug text-slate-500">{item.description}</span>
                             </span>
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-amber-300 group-hover:text-slate-900">
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-slate-500 transition-colors group-hover:bg-indigo-600 group-hover:text-white">
                               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                             </span>
                           </span>
@@ -286,7 +286,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                 <p id="global-search-help" className="sr-only">輸入關鍵字搜尋全站功能。按 Escape 可關閉搜尋視窗。</p>
                 <div className="flex items-center gap-3 lg:gap-6">
                   <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-indigo-600 text-2xl font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] lg:flex lg:h-10 lg:w-10 lg:text-xl">會</div>
-                  <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[2rem] bg-slate-100 px-5 py-4 sm:px-7 lg:mx-auto lg:max-w-5xl lg:py-3 focus-within:ring-2 focus-within:ring-sky-600 focus-within:ring-offset-2">
+                  <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[2rem] bg-slate-100 px-5 py-4 sm:px-7 lg:mx-auto lg:max-w-5xl lg:py-3 focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2">
                     <Search className="h-6 w-6 shrink-0 text-slate-600" />
                     <input
                       ref={globalSearchInputRef}
@@ -296,7 +296,7 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                       className="min-w-0 flex-1 bg-transparent text-lg font-bold text-slate-900 outline-none placeholder:text-slate-500 sm:text-xl"
                       aria-describedby="global-search-help"
                     />
-                    <button type="button" onClick={closeGlobalSearch} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 lg:h-9 lg:w-9" aria-label="關閉搜尋">
+                    <button type="button" onClick={closeGlobalSearch} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 lg:h-9 lg:w-9" aria-label="關閉搜尋">
                       <X className="h-7 w-7" />
                     </button>
                   </div>
@@ -313,10 +313,10 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
                           {globalSearchResults.map((item) => {
                             const ItemIcon = item.icon;
                             return (
-                              <button key={item.id} type="button" onClick={() => { setIsGlobalSearchOpen(false); setGlobalSearchTerm(''); runAction(item); }} className="group flex min-h-[118px] items-center gap-4 rounded-[1.4rem] border-2 border-slate-200 bg-white p-4 text-left shadow-[2px_2px_0_rgba(15,23,42,0.08)] transition-all hover:-translate-y-0.5 hover:border-slate-900 hover:shadow-[4px_4px_0_#0f172a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2">
+                              <button key={item.id} type="button" onClick={() => { setIsGlobalSearchOpen(false); setGlobalSearchTerm(''); runAction(item); }} className="group flex min-h-[118px] items-center gap-4 rounded-[1.4rem] border-2 border-slate-200 bg-white p-4 text-left shadow-sm transition-[background-color,border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50/70 hover:shadow-[0_10px_24px_-14px_rgba(79,70,229,0.65)] focus-visible:border-indigo-500 focus-visible:bg-indigo-50/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2">
                                 <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 ${item.bg} ${item.color}`}><ItemIcon className="h-6 w-6" /></span>
                                 <span className="min-w-0 flex-1"><span className="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-500">{item.categoryLabel}</span><span className="mt-1.5 block font-black leading-tight text-slate-900">{item.label}</span><span className="mt-1 block line-clamp-2 text-xs font-bold leading-5 text-slate-500">{item.description}</span></span>
-                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all group-hover:bg-amber-300 group-hover:text-slate-900"><ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></span>
+                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-indigo-600 group-hover:text-white group-focus-visible:bg-indigo-600 group-focus-visible:text-white"><ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5" /></span>
                               </button>
                             );
                           })}
