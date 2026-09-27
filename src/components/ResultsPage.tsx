@@ -453,12 +453,11 @@ export default function ResultsPage() {
                   return (
                     <article key={`${school.name}-${index}`} data-compared={isCompared} className={`results-school-card relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
                       <div className={`absolute -right-2 -bottom-4 text-8xl font-black opacity-[0.03] select-none pointer-events-none transition-opacity group-hover:opacity-10 ${index < 3 ? 'text-amber-600' : 'text-slate-900'}`}>{index + 1}</div>
-                      <div className="results-school-heading flex items-start gap-3">
-                        <div className={`results-school-rank w-12 h-12 shrink-0 rounded-2xl border-2 border-slate-900 flex items-center justify-center font-black text-lg shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${index < 3 ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900' : 'bg-slate-100 text-slate-700'}`}>
-                          {index + 1}
-                        </div>
-                        <div className="results-school-title-row min-w-0 flex-1">
-                          <h4 className="font-black text-xl text-slate-900 leading-tight">{school.name}</h4>
+                      <div className="results-school-heading">
+                        <div className="results-school-heading-top">
+                          <div className={`results-school-rank w-12 h-12 shrink-0 rounded-2xl border-2 border-slate-900 flex items-center justify-center font-black text-lg shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${index < 3 ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900' : 'bg-slate-100 text-slate-700'}`}>
+                            {index + 1}
+                          </div>
                           {school.zone && (
                             <span data-zone={school.zone} className="results-school-zone-badge">
                               <ZoneIcon aria-hidden="true" className="h-3.5 w-3.5" />
@@ -466,6 +465,7 @@ export default function ResultsPage() {
                             </span>
                           )}
                         </div>
+                        <h4 className="font-black text-xl text-slate-900 leading-tight">{school.name}</h4>
                       </div>
                       <div className="results-school-meta text-sm font-bold text-slate-600">
                         <span>{ownership}</span><span aria-hidden="true">·</span>
@@ -528,7 +528,6 @@ export default function ResultsPage() {
                       </button>
 
                       <div className="results-school-actions flex gap-2.5">
-                        <button type="button" onClick={() => setAnalysisSchool(school)} aria-label={`查看 ${school.name} 的完整落點分析`} className="results-analysis-action flex-1 rounded-xl px-3 py-2.5 text-sm font-black">查看完整分析 <span aria-hidden="true">→</span></button>
                         <button
                           onClick={(event) => {
                             event.stopPropagation();
@@ -545,6 +544,7 @@ export default function ResultsPage() {
                           {isCompared ? <Check className="w-4 h-4" /> : <List className="w-4 h-4" />}
                           {isCompared ? '已加入比較' : '加入比較'}
                         </button>
+                        <button type="button" onClick={() => setAnalysisSchool(school)} aria-label={`查看 ${school.name} 的完整落點分析`} className="results-analysis-action flex-1 rounded-xl px-3 py-2.5 text-sm font-black">查看完整分析 <span aria-hidden="true">→</span></button>
                       </div>
                     </article>
                   );

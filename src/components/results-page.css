@@ -177,8 +177,9 @@
 .results-page .results-school-card[data-compared='true'] { border-color: #879ad2; background: #f5f7ff; }
 .results-page .results-school-card > div:first-child { display: none; }
 .results-page .results-school-rank { width: 42px; height: 42px; border: 0; border-radius: 12px; background: #e9eefb; color: #344b91; box-shadow: none; }
-.results-page .results-school-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 10px; }
-.results-page .results-school-heading h4 { flex: 1 1 150px; min-width: 0; color: #1d2848; font-size: 19px; line-height: 1.35; }
+.results-page .results-school-heading { display: grid; gap: 10px; }
+.results-page .results-school-heading-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.results-page .results-school-heading h4 { min-width: 0; color: #1d2848; font-size: 19px; line-height: 1.35; overflow-wrap: anywhere; }
 .results-page .results-school-zone-badge { display: inline-flex; align-items: center; gap: 4px; width: fit-content; flex: 0 0 auto; padding: 5px 8px; border: 1px solid #d8e2f5; border-radius: 999px; background: #f2f6ff; color: #345c9b; font-size: 12px; font-weight: 850; line-height: 1; white-space: nowrap; }
 .results-page .results-school-zone-badge[data-zone='reach'] { border-color: #efd7dc; background: #fff5f6; color: #9d4b60; }
 .results-page .results-school-zone-badge[data-zone='safe'] { border-color: #d4e8df; background: #f2faf6; color: #34745d; }
@@ -262,7 +263,7 @@
   .results-page .results-zone-label { gap: 4px; font-size: 11px; }
   .results-page .results-zone-label svg { width: 13px; height: 13px; }
   .results-page .results-school-card { padding: 16px; }
-  .results-page .results-school-heading h4 { flex-basis: 135px; font-size: 18px; }
+  .results-page .results-school-heading h4 { font-size: 18px; }
   .results-page .results-school-actions { gap: 8px; }
   .results-page .results-school-actions > * { padding-inline: 5px; font-size: 12px; }
   .results-page .results-tools { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
