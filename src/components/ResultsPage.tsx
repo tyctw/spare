@@ -233,37 +233,35 @@ export default function ResultsPage() {
               )}
             </div>
 
-            <div className="results-hero-stats grid content-between gap-5 bg-amber-50 p-6 sm:p-8 lg:p-10">
-              <div className="results-stat-grid grid grid-cols-2 gap-3">
-                <div className="results-stat rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+            <div className="results-hero-stats bg-amber-50 p-6 sm:p-8 lg:p-10">
+              <div className="results-summary-heading">本次分析摘要</div>
+              <div className="results-stat-grid results-context-grid grid grid-cols-2 gap-3">
+                <div className="results-stat results-context-stat rounded-2xl border-2 border-slate-900 bg-white p-4">
                   <div className="text-xs font-black text-slate-500">分析區域</div>
                   <div className="mt-1 text-xl font-black">{regionName}</div>
                 </div>
-                <div className="results-stat rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                <div className="results-stat results-context-stat rounded-2xl border-2 border-slate-900 bg-white p-4">
                   <div className="text-xs font-black text-slate-500">推薦學校</div>
-                  <div className="mt-1 text-xl font-black">{results.eligibleSchools?.length || 0} 所</div>
+                  <div className="mt-1 text-xl font-black">{results.eligibleSchools?.length || 0}<span className="results-stat-unit">所</span></div>
                 </div>
               </div>
-              <div className="results-stat-grid grid grid-cols-2 gap-3">
-                <div className="results-stat results-stat-points rounded-2xl border-2 border-slate-900 bg-indigo-600 p-5 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-                  <Calculator className="mb-3 h-6 w-6" />
-                  <div className="text-xs font-black text-indigo-100">總積分</div>
+              <div className="results-stat-grid results-score-stat-grid grid grid-cols-2 gap-3">
+                <div className="results-stat results-stat-points rounded-2xl border-2 border-slate-900 bg-indigo-600 p-5 text-white">
+                  <div className="results-score-stat-label"><Calculator aria-hidden="true" className="h-5 w-5" /><span>總積分</span></div>
                   <div className="mt-1 text-4xl font-black">{results.totalPoints ?? '無'}</div>
                 </div>
-                <div className="results-stat results-stat-credits rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-                  <Award className="mb-3 h-6 w-6 text-emerald-600" />
-                  <div className="text-xs font-black text-slate-500">總積點</div>
-                  <div className="mt-1 text-4xl font-black text-emerald-600">{results.totalCredits ?? '無'}</div>
+                <div className="results-stat results-stat-credits rounded-2xl border-2 border-slate-900 bg-white p-5">
+                  <div className="results-score-stat-label"><Award aria-hidden="true" className="h-5 w-5" /><span>總積點</span></div>
+                  <div className="mt-1 text-4xl font-black">{results.totalCredits ?? '無'}</div>
                 </div>
               </div>
-              <div className="results-zone-grid grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="results-zone-grid grid grid-cols-3 gap-2 sm:gap-3" aria-label="落點區間分布">
                 {(['reach', 'target', 'safe'] as const).map((zone) => {
                   const meta = zoneMeta[zone];
                   const Icon = meta.icon;
                   return (
                     <div key={zone} data-zone={zone} className={`results-zone rounded-2xl border-2 p-3 sm:p-4 ${meta.tone}`}>
-                      <Icon className="mb-2 h-4 w-4 sm:h-5 sm:w-5" />
-                      <div className="text-[11px] font-black sm:text-xs">{meta.label}</div>
+                      <div className="results-zone-label"><Icon aria-hidden="true" className="h-4 w-4" /><span>{meta.label}</span></div>
                       <div className="text-2xl font-black sm:text-3xl">{results.analysisReport?.zoneCounts?.[zone] || 0}</div>
                     </div>
                   );
