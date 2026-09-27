@@ -34,6 +34,7 @@ import { withBasePath } from '../lib/routes';
 import { getComparisonSchools, saveComparisonSchools } from '../lib/comparisonStorage';
 import { formatSchoolOwnership, getSchoolOwnershipKey } from '../lib/schoolDisplay';
 import { getCreditsGap, getPointsGap } from '../lib/admissionComparison';
+import './results-page.css';
 import {
   AdmissionAnalysisDialog,
   AutoFitSingleLine,
@@ -88,9 +89,9 @@ export default function ResultsPage() {
 
   if (!stored?.results) {
     return (
-      <main className="min-h-screen bg-slate-50 px-4 py-10 text-slate-900">
+      <main className="results-empty-page min-h-screen bg-slate-50 px-4 py-10 text-slate-900">
         <div className="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center text-center">
-          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-slate-900 bg-amber-300 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+          <div className="results-empty-icon mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-slate-900 bg-amber-300 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
             <FileText className="h-8 w-8" />
           </div>
           <h1 className="text-3xl font-black">尚未產生分析結果</h1>
@@ -99,7 +100,7 @@ export default function ResultsPage() {
           </p>
           <a
             href={withBasePath('/')}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"
+            className="results-empty-back mt-6 inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"
           >
             <ArrowLeft className="h-4 w-4" />
             回到落點分析
@@ -187,19 +188,19 @@ export default function ResultsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-start justify-between gap-2">
+    <div className="results-page min-h-screen bg-slate-50 text-slate-900">
+      <main className="results-main mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="results-toolbar mb-6 flex items-start justify-between gap-2">
           <div className="flex flex-wrap items-center gap-3">
-            <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-700 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-slate-50 hover:text-slate-950 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none">
+            <a href={withBasePath('/')} className="results-back inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-700 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-slate-50 hover:text-slate-950 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none">
               <ArrowLeft className="h-4 w-4" />
               回到落點分析
             </a>
           </div>
-          <button type="button" onClick={() => setIsExportOpen(true)} className="inline-flex w-fit shrink-0 items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-100 px-4 py-2.5 text-sm font-black text-emerald-800 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-emerald-200 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none"><Download className="h-4 w-4" />匯出結果</button>
-          <div className="fixed bottom-5 right-5 z-40">
-            <button type="button" onClick={() => setIsToolsOpen((open) => !open)} aria-expanded={isToolsOpen} aria-controls="results-tools-menu" aria-label={comparisonSchools.length ? `開啟更多工具，目前有 ${comparisonSchools.length} 所加入比較清單` : '開啟更多工具'} title="更多工具" className="relative grid h-12 w-12 place-items-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 transition hover:-translate-y-0.5 hover:bg-amber-200 active:translate-y-0"><Layers className="h-5 w-5" />{comparisonSchools.length > 0 && <span className="absolute -right-2 -top-2 grid min-h-5 min-w-5 place-items-center rounded-full border-2 border-slate-900 bg-rose-500 px-1 text-[10px] font-black text-white">{comparisonSchools.length > 99 ? '99+' : comparisonSchools.length}</span>}</button>
-            {isToolsOpen && <div id="results-tools-menu" className="absolute bottom-full right-0 mb-3 w-60 rounded-2xl border-2 border-slate-900 bg-white p-2.5"><div className="grid grid-cols-3 gap-2">
+          <button type="button" onClick={() => setIsExportOpen(true)} className="results-export inline-flex w-fit shrink-0 items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-100 px-4 py-2.5 text-sm font-black text-emerald-800 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-emerald-200 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none"><Download className="h-4 w-4" />匯出結果</button>
+          <div className="results-tools fixed bottom-5 right-5 z-40">
+            <button type="button" onClick={() => setIsToolsOpen((open) => !open)} aria-expanded={isToolsOpen} aria-controls="results-tools-menu" aria-label={comparisonSchools.length ? `開啟更多工具，目前有 ${comparisonSchools.length} 所加入比較清單` : '開啟更多工具'} title="更多工具" className="results-tools-trigger relative grid h-12 w-12 place-items-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900 transition hover:-translate-y-0.5 hover:bg-amber-200 active:translate-y-0"><Layers className="h-5 w-5" />{comparisonSchools.length > 0 && <span className="absolute -right-2 -top-2 grid min-h-5 min-w-5 place-items-center rounded-full border-2 border-slate-900 bg-rose-500 px-1 text-[10px] font-black text-white">{comparisonSchools.length > 99 ? '99+' : comparisonSchools.length}</span>}</button>
+            {isToolsOpen && <div id="results-tools-menu" className="results-tools-menu absolute bottom-full right-0 mb-3 w-60 rounded-2xl border-2 border-slate-900 bg-white p-2.5"><div className="grid grid-cols-3 gap-2">
               <a href={withBasePath('/compare')} className="relative flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border border-violet-200 bg-violet-50 p-2 text-center text-[11px] font-black leading-4 text-violet-900 transition hover:-translate-y-0.5 hover:bg-violet-100"><List className="h-5 w-5 text-violet-700" />比較清單{comparisonSchools.length > 0 && <span className="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-rose-500 px-1 text-[9px] text-white">{comparisonSchools.length > 99 ? '99+' : comparisonSchools.length}</span>}</a>
               <button type="button" onClick={() => { setIsToolsOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border border-amber-200 bg-amber-50 p-2 text-center text-[11px] font-black leading-4 text-amber-900 transition hover:-translate-y-0.5 hover:bg-amber-100"><ArrowUp className="h-5 w-5 text-amber-700" />回到上方</button>
               <button type="button" onClick={() => { setIsToolsOpen(false); setIsExportOpen(true); }} className="flex min-h-20 flex-col items-center justify-center gap-1 rounded-xl border border-emerald-200 bg-emerald-50 p-2 text-center text-[11px] font-black leading-4 text-emerald-900 transition hover:-translate-y-0.5 hover:bg-emerald-100"><Download className="h-5 w-5 text-emerald-700" />匯出結果</button>
@@ -210,19 +211,19 @@ export default function ResultsPage() {
           </div>
         </div>
 
-        <section className="overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+        <section className="results-hero overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
           <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="bg-slate-900 p-6 text-white sm:p-8 lg:p-10">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-black">
+            <div className="results-hero-copy bg-slate-900 p-6 text-white sm:p-8 lg:p-10">
+              <div className="results-hero-eyebrow mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-black">
                 <Sparkles className="h-4 w-4 text-amber-300" />
                 智能落點分析
               </div>
-              <h1 className="text-3xl font-black leading-tight sm:text-5xl">分析結果報告</h1>
-              <p className="mt-4 max-w-2xl text-base font-bold leading-relaxed text-slate-200">
+              <h1 className="results-hero-title text-3xl font-black leading-tight sm:text-5xl">分析結果報告</h1>
+              <p className="results-hero-description mt-4 max-w-2xl text-base font-bold leading-relaxed text-slate-200">
                 {results.analysisReport?.analysisSummary || '系統已完成本次落點分析，請依下方摘要與學校清單進行檢視。'}
               </p>
               {results.analysisReport?.suggestion && (
-                <div className="mt-8 rounded-2xl border border-white/20 bg-white/10 p-5">
+                <div className="results-suggestion mt-8 rounded-2xl border border-white/20 bg-white/10 p-5">
                   <div className="mb-2 flex items-center gap-2 text-sm font-black text-amber-200">
                     <Lightbulb className="h-5 w-5" />
                     策略建議
@@ -232,35 +233,35 @@ export default function ResultsPage() {
               )}
             </div>
 
-            <div className="grid content-between gap-5 bg-amber-50 p-6 sm:p-8 lg:p-10">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+            <div className="results-hero-stats grid content-between gap-5 bg-amber-50 p-6 sm:p-8 lg:p-10">
+              <div className="results-stat-grid grid grid-cols-2 gap-3">
+                <div className="results-stat rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
                   <div className="text-xs font-black text-slate-500">分析區域</div>
                   <div className="mt-1 text-xl font-black">{regionName}</div>
                 </div>
-                <div className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                <div className="results-stat rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
                   <div className="text-xs font-black text-slate-500">推薦學校</div>
                   <div className="mt-1 text-xl font-black">{results.eligibleSchools?.length || 0} 所</div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-2xl border-2 border-slate-900 bg-indigo-600 p-5 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+              <div className="results-stat-grid grid grid-cols-2 gap-3">
+                <div className="results-stat results-stat-points rounded-2xl border-2 border-slate-900 bg-indigo-600 p-5 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
                   <Calculator className="mb-3 h-6 w-6" />
                   <div className="text-xs font-black text-indigo-100">總積分</div>
-                  <div className="mt-1 text-4xl font-black">{results.totalPoints || '無'}</div>
+                  <div className="mt-1 text-4xl font-black">{results.totalPoints ?? '無'}</div>
                 </div>
-                <div className="rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                <div className="results-stat results-stat-credits rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
                   <Award className="mb-3 h-6 w-6 text-emerald-600" />
                   <div className="text-xs font-black text-slate-500">總積點</div>
-                  <div className="mt-1 text-4xl font-black text-emerald-600">{results.totalCredits || '無'}</div>
+                  <div className="mt-1 text-4xl font-black text-emerald-600">{results.totalCredits ?? '無'}</div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="results-zone-grid grid grid-cols-3 gap-2 sm:gap-3">
                 {(['reach', 'target', 'safe'] as const).map((zone) => {
                   const meta = zoneMeta[zone];
                   const Icon = meta.icon;
                   return (
-                    <div key={zone} className={`rounded-2xl border-2 p-3 sm:p-4 ${meta.tone}`}>
+                    <div key={zone} data-zone={zone} className={`results-zone rounded-2xl border-2 p-3 sm:p-4 ${meta.tone}`}>
                       <Icon className="mb-2 h-4 w-4 sm:h-5 sm:w-5" />
                       <div className="text-[11px] font-black sm:text-xs">{meta.label}</div>
                       <div className="text-2xl font-black sm:text-3xl">{results.analysisReport?.zoneCounts?.[zone] || 0}</div>
@@ -272,21 +273,21 @@ export default function ResultsPage() {
           </div>
         </section>
 
-        <section className="mt-6 flex flex-col gap-4 rounded-2xl border-2 border-slate-900 bg-violet-50 p-5 shadow-[4px_4px_0_#0f172a] sm:flex-row sm:items-center sm:justify-between">
-          <div><p className="text-xs font-black tracking-[.14em] text-violet-700">MEMBER DECISION TOOL</p><h2 className="mt-1 text-xl font-black">差一級，志願清單會怎麼變？</h2><p className="mt-1 text-sm font-bold text-slate-600">多一級能多哪些選擇？少一級又該怎麼調整？用你的成績直接找出進入、離開或跨落點區的校科。</p></div>
-          <a href={withBasePath('/score-change')} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[2px_2px_0_#0f172a] transition hover:bg-violet-100"><Sparkles className="h-4 w-4 text-violet-700" />看看我的差異</a>
+        <section className="results-score-change mt-6 flex flex-col gap-4 rounded-2xl border-2 border-slate-900 bg-violet-50 p-5 shadow-[4px_4px_0_#0f172a] sm:flex-row sm:items-center sm:justify-between">
+          <div><p className="text-xs font-black tracking-[.14em] text-violet-700">進階志願工具</p><h2 className="mt-1 text-xl font-black">差一級，志願清單會怎麼變？</h2><p className="mt-1 text-sm font-bold text-slate-600">多一級能多哪些選擇？少一級又該怎麼調整？用你的成績直接找出進入、離開或跨落點區的校科。</p></div>
+          <a href={withBasePath('/score-change')} className="results-score-change-action inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[2px_2px_0_#0f172a] transition hover:bg-violet-100"><Sparkles className="h-4 w-4 text-violet-700" />看看我的差異</a>
         </section>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
-          <aside className="space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-2 custom-scrollbar">
-            <div className="rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+        <section className="results-content mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
+          <aside className="results-sidebar space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-2 custom-scrollbar">
+            <div className="results-side-panel rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
               <div className="mb-4 flex items-center gap-2 text-sm font-black text-slate-500">
                 <Award className="h-4 w-4" />
                 本次成績
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="results-score-grid grid grid-cols-3 gap-2">
                 {scoreItems.map((item) => (
-                  <div key={item.key} className="rounded-xl border-2 border-slate-200 bg-slate-50 px-3 py-2.5">
+                  <div key={item.key} className="results-score-cell rounded-xl border-2 border-slate-200 bg-slate-50 px-3 py-2.5">
                     <div className="text-[11px] font-black text-slate-500">{item.label}</div>
                     <div className="mt-1 text-lg font-black text-slate-900">{scores?.[item.key] || '未填'}</div>
                   </div>
@@ -294,7 +295,7 @@ export default function ResultsPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+            <div className="results-side-panel rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
               <div className="mb-4 flex items-center gap-2 text-sm font-black text-slate-500">
                 <Filter className="h-4 w-4" />
                 本次條件
@@ -331,7 +332,7 @@ export default function ResultsPage() {
             </div>
 
             {(results.scoringMethod || results.analysisReport?.scoringExplanation) && (
-              <div className="rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
+              <div className="results-side-panel rounded-2xl border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
                 <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500">
                   <Layers className="h-4 w-4" />
                   計分方式
@@ -343,16 +344,16 @@ export default function ResultsPage() {
             )}
           </aside>
 
-          <section className="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
-            <div className="mb-5 space-y-4">
+          <section className="results-list-panel rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
+            <div className="results-list-header mb-5 space-y-4">
               <div>
                 <h2 className="flex items-center gap-2 text-2xl font-black">
                   <Building2 className="h-6 w-6 text-indigo-600" />
                   學校推薦清單
                 </h2>
-                <p className="mt-1 text-sm font-bold text-slate-500">依照落點區間與條件篩選後顯示。</p>
+                <p className="mt-1 text-sm font-bold text-slate-500">依照落點區間與條件篩選後顯示，共有 {filteredSchools.length} 所學校。</p>
               </div>
-              <div className="w-full">
+              <div className="results-filter-panel w-full">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <input
@@ -361,7 +362,7 @@ export default function ResultsPage() {
                     value={filterText}
                     onChange={(event) => setFilterText(event.target.value)}
                     placeholder="搜尋學校、類科或群別"
-                    className={`w-full rounded-xl border-2 border-slate-200 bg-white py-2 pl-9 text-sm font-bold outline-none focus:border-slate-900 ${hasActiveFilters ? 'pr-12 sm:pr-28' : 'pr-3'}`}
+                    className={`results-search w-full rounded-xl border-2 border-slate-200 bg-white py-2 pl-9 text-sm font-bold outline-none focus:border-slate-900 ${hasActiveFilters ? 'pr-12 sm:pr-28' : 'pr-3'}`}
                   />
                   {hasActiveFilters && (
                     <button
@@ -376,31 +377,31 @@ export default function ResultsPage() {
                     </button>
                   )}
                 </div>
-                <div className="mt-2 grid grid-cols-2 gap-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
-                <select aria-label="依落點區間篩選" value={filterZone} onChange={(event) => setFilterZone(event.target.value)} className="col-span-2 min-w-0 rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-slate-900 xl:col-span-1">
+                <div className="results-filters mt-2 grid grid-cols-2 gap-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
+                <select aria-label="依落點區間篩選" value={filterZone} onChange={(event) => setFilterZone(event.target.value)} className="results-filter-select col-span-2 min-w-0 rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-slate-900 xl:col-span-1">
                   <option value="all">全部區間</option>
                   <option value="reach">夢幻區</option>
                   <option value="target">實際區</option>
                   <option value="safe">保守區</option>
                 </select>
-                <select aria-label="依學校屬性篩選" value={filterOwnership} onChange={(event) => setFilterOwnership(event.target.value)} className="min-w-0 rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-slate-900">
+                <select aria-label="依學校屬性篩選" value={filterOwnership} onChange={(event) => setFilterOwnership(event.target.value)} className="results-filter-select min-w-0 rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-slate-900">
                   <option value="all">公/私立不拘</option>
                   <option value="public">公立</option>
                   <option value="private">私立</option>
                 </select>
-                <select aria-label="依學校類型篩選" value={filterType} onChange={(event) => setFilterType(event.target.value)} className="min-w-0 rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-slate-900">
+                <select aria-label="依學校類型篩選" value={filterType} onChange={(event) => setFilterType(event.target.value)} className="results-filter-select min-w-0 rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-slate-900">
                   <option value="all">全部類型</option>
                   <option value="general">普通科</option>
                   <option value="vocational">職業類科</option>
                 </select>
-                <div className="col-span-2 grid w-full grid-cols-2 gap-1 rounded-xl border-2 border-slate-200 bg-white p-1 xl:col-span-1" role="group" aria-label="推薦清單顯示方式">
+                <div className="results-view-toggle col-span-2 grid w-full grid-cols-2 gap-1 rounded-xl border-2 border-slate-200 bg-white p-1 xl:col-span-1" role="group" aria-label="推薦清單顯示方式">
                   <button
                     type="button"
                     onClick={() => setSchoolView('cards')}
                     aria-pressed={schoolView === 'cards'}
                     aria-label="切換為卡片顯示"
                     title="卡片顯示"
-                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-black transition-colors ${schoolView === 'cards' ? 'border-indigo-200 bg-indigo-50 text-indigo-700' : 'border-transparent bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+                    className={`results-view-button inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-black transition-colors ${schoolView === 'cards' ? 'border-indigo-200 bg-indigo-50 text-indigo-700' : 'border-transparent bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
                   >
                     <LayoutGrid className="h-4 w-4" />
                     <span>卡片</span>
@@ -411,7 +412,7 @@ export default function ResultsPage() {
                     aria-pressed={schoolView === 'table'}
                     aria-label="切換為表格顯示"
                     title="表格顯示"
-                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-black transition-colors ${schoolView === 'table' ? 'border-indigo-200 bg-indigo-50 text-indigo-700' : 'border-transparent bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
+                    className={`results-view-button inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-black transition-colors ${schoolView === 'table' ? 'border-indigo-200 bg-indigo-50 text-indigo-700' : 'border-transparent bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
                   >
                     <Table2 className="h-4 w-4" />
                     <span>表格</span>
@@ -425,13 +426,13 @@ export default function ResultsPage() {
               目前共有 {filteredSchools.length} 所符合篩選條件的學校。
             </p>
             {filteredSchools.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-10 text-center font-black text-slate-500">
+              <div className="results-empty-filter rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-10 text-center font-black text-slate-500">
                 <p>目前篩選條件下沒有符合的學校。</p>
                 {hasActiveFilters && (
                   <button
                     type="button"
                     onClick={clearFilters}
-                    className="mt-5 inline-flex items-center gap-2 rounded-xl border-2 border-rose-300 bg-rose-50 px-5 py-3 text-sm font-black text-rose-700 shadow-[3px_3px_0px_0px_rgba(251,113,133,0.45)] transition-all hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-[5px_5px_0px_0px_rgba(251,113,133,0.45)] active:translate-y-0 active:shadow-none"
+                    className="results-clear mt-5 inline-flex items-center gap-2 rounded-xl border-2 border-rose-300 bg-rose-50 px-5 py-3 text-sm font-black text-rose-700 shadow-[3px_3px_0px_0px_rgba(251,113,133,0.45)] transition-all hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-[5px_5px_0px_0px_rgba(251,113,133,0.45)] active:translate-y-0 active:shadow-none"
                   >
                     <FilterX className="h-4 w-4" strokeWidth={3} />
                     清除篩選
@@ -439,7 +440,7 @@ export default function ResultsPage() {
                 )}
               </div>
             ) : schoolView === 'cards' ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4">
+              <div className="results-cards grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4">
                 {filteredSchools.map((school: any, index: number) => {
                   const meta = zoneMeta[school.zone] || zoneMeta.target;
                   const ZoneIcon = meta.icon;
@@ -453,36 +454,36 @@ export default function ResultsPage() {
                   const analysisAccent = getAnalysisAccent(school.zone);
 
                   return (
-                    <article key={`${school.name}-${index}`} className={`relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
+                    <article key={`${school.name}-${index}`} data-compared={isCompared} className={`results-school-card relative p-5 rounded-2xl border-2 transition-all group overflow-hidden flex flex-col gap-4 h-full ${isCompared ? 'bg-indigo-50 border-indigo-500 shadow-[4px_4px_0px_0px_rgba(99,102,241,1)]' : 'bg-white border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]'}`}>
                       <div className={`absolute -right-2 -bottom-4 text-8xl font-black opacity-[0.03] select-none pointer-events-none transition-opacity group-hover:opacity-10 ${index < 3 ? 'text-amber-600' : 'text-slate-900'}`}>{index + 1}</div>
-                      <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 shrink-0 rounded-2xl border-2 border-slate-900 flex items-center justify-center font-black text-lg shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${index < 3 ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900' : 'bg-slate-100 text-slate-700'}`}>
+                      <div className="results-school-heading flex items-start gap-4">
+                        <div className={`results-school-rank w-12 h-12 shrink-0 rounded-2xl border-2 border-slate-900 flex items-center justify-center font-black text-lg shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] ${index < 3 ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900' : 'bg-slate-100 text-slate-700'}`}>
                           {index + 1}
                         </div>
                         <div className="min-w-0 flex-1">
                           <h4 className="font-black text-xl text-slate-900 leading-tight">{school.name}</h4>
                         </div>
                       </div>
-                      <div className="grid grid-cols-4 items-stretch gap-2">
+                      <div className="results-school-facts grid grid-cols-4 items-stretch gap-2">
                         {school.zone && (
-                          <div className={`flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 ${school.zone === 'reach' ? 'bg-rose-100 text-rose-800 border-rose-300' : school.zone === 'target' ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-emerald-100 text-emerald-800 border-emerald-300'}`}>
+                          <div data-zone={school.zone} className={`results-school-fact results-zone-fact flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 ${school.zone === 'reach' ? 'bg-rose-100 text-rose-800 border-rose-300' : school.zone === 'target' ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-emerald-100 text-emerald-800 border-emerald-300'}`}>
                             <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">落點區間</span>
                             <div className="text-center text-sm font-black leading-tight">
                               {school.zone === 'reach' ? '夢幻區' : school.zone === 'target' ? '實際區' : '保守區'}
                             </div>
                           </div>
                         )}
-                        <div className="flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
+                        <div className="results-school-fact flex min-w-0 flex-col items-center justify-center px-2.5 py-2.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
                           <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">屬性</span>
                           <div className="text-center text-sm font-black leading-tight">
                             {ownership}
                           </div>
                         </div>
-                        <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
+                        <div className="results-school-fact flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
                           <span className="text-[10px] font-black uppercase opacity-70 mb-0.5 whitespace-nowrap">群別</span>
                           <AutoFitSingleLine text={groupLabel} />
                         </div>
-                        <div className="flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
+                        <div className="results-school-fact flex min-w-0 flex-col items-center justify-center rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-700">
                           <span className="mb-0.5 whitespace-nowrap text-[10px] font-black uppercase opacity-70">地區</span>
                           <div className="text-center text-sm font-black leading-tight">
                             <span>{schoolDistrictName}</span>
@@ -493,8 +494,9 @@ export default function ResultsPage() {
 
                       <button
                         type="button"
+                        data-zone={school.zone}
                         onClick={() => setAnalysisSchool(school)}
-                        className={`group w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-3.5 py-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 ${analysisAccent.split(' ')[0]}`}
+                        className={`results-analysis-preview group w-full rounded-2xl border-2 border-slate-200 border-l-[6px] bg-white px-3.5 py-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:translate-y-0 ${analysisAccent.split(' ')[0]}`}
                         aria-label={`查看 ${school.name} 的完整落點判讀`}
                       >
                         <div>
@@ -511,7 +513,7 @@ export default function ResultsPage() {
                       <button
                         type="button"
                         onClick={() => setHistoricalScoreSchool(school)}
-                        className={`rounded-2xl border-2 border-slate-900 px-3.5 py-3.5 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all ${historicalScores.length > 0 ? 'bg-amber-50' : 'bg-slate-50'}`}
+                        className={`results-history-preview rounded-2xl border-2 border-slate-900 px-3.5 py-3.5 text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:translate-y-0 active:shadow-none transition-all ${historicalScores.length > 0 ? 'bg-amber-50' : 'bg-slate-50'}`}
                       >
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2 min-w-0">
@@ -551,13 +553,13 @@ export default function ResultsPage() {
                         </div>
                       </button>
 
-                      <div className="flex gap-2.5">
+                      <div className="results-school-actions flex gap-2.5">
                         <a
                           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(school.name)}`}
                           target="_blank"
                           rel="noreferrer"
                           onClick={(event) => event.stopPropagation()}
-                          className="flex-[2] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-1.5 transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+                          className="results-map-action flex-[2] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-1.5 transition-all bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
                         >
                           <MapPin className="w-4 h-4" /> 學校地圖
                         </a>
@@ -568,7 +570,7 @@ export default function ResultsPage() {
                           }}
                           aria-pressed={isCompared}
                           aria-label={`${isCompared ? '從比較清單移除' : '加入比較清單'}：${school.name}`}
-                          className={`flex-[3] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+                          className={`results-compare-action flex-[3] py-2.5 px-2 rounded-xl border-2 border-slate-900 font-bold text-sm flex items-center justify-center gap-2 transition-all ${
                             isCompared
                               ? 'bg-indigo-600 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-indigo-500'
                               : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none'
@@ -583,13 +585,13 @@ export default function ResultsPage() {
                 })}
               </div>
             ) : (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 rounded-xl border-2 border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-800">
+              <div className="results-table-section space-y-3">
+                <div className="results-table-hint flex items-center gap-2 rounded-xl border-2 border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-800">
                   <Lightbulb className="h-4 w-4 shrink-0" />
                   點擊整列，即可查看完整資訊與歷年錄取成績。
                 </div>
-                <div className="overflow-hidden rounded-xl border-2 border-slate-200">
-                <table className="w-full table-fixed border-collapse text-left">
+                <div className="results-table-wrap overflow-hidden rounded-xl border-2 border-slate-200">
+                <table className="results-table w-full table-fixed border-collapse text-left">
                   <caption className="sr-only">依篩選條件顯示的學校推薦清單</caption>
                   <thead className="bg-slate-100 text-[11px] font-black text-slate-600 sm:text-xs">
                     <tr className="border-b-2 border-slate-200">
@@ -616,7 +618,7 @@ export default function ResultsPage() {
                               setDetailSchool(school);
                             }
                           }}
-                          className={`cursor-pointer transition-colors focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-indigo-600 ${isCompared ? 'bg-indigo-50' : 'bg-white hover:bg-indigo-50/60'}`}
+                          className={`results-table-row cursor-pointer transition-colors focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-indigo-600 ${isCompared ? 'bg-indigo-50' : 'bg-white hover:bg-indigo-50/60'}`}
                         >
                           <td className="px-2 py-3 text-center align-middle text-sm font-black text-slate-500 sm:px-3">{index + 1}</td>
                           <td className="p-0 align-middle">
@@ -624,7 +626,7 @@ export default function ResultsPage() {
                           </td>
                           <td className="px-2 py-3 text-center align-middle sm:px-3"><span className={`inline-flex rounded-lg border px-1.5 py-1 text-[11px] font-black sm:px-2 sm:text-xs ${zoneTone}`}>{zoneLabel}</span></td>
                           <td className="px-2 py-3 align-middle sm:px-3">
-                            <div className="flex justify-end"><button type="button" onClick={(event) => { event.stopPropagation(); toggleComparison(school); }} aria-pressed={isCompared} aria-label={`${isCompared ? '從比較清單移除' : '加入比較清單'}：${school.name}`} className={`whitespace-nowrap rounded-lg border-2 border-slate-900 px-2 py-1.5 text-[11px] font-black sm:px-2.5 sm:text-xs ${isCompared ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 hover:bg-slate-100'}`}>{isCompared ? '已加入比較' : '加入比較'}</button></div>
+                            <div className="flex justify-end"><button type="button" onClick={(event) => { event.stopPropagation(); toggleComparison(school); }} aria-pressed={isCompared} aria-label={`${isCompared ? '從比較清單移除' : '加入比較清單'}：${school.name}`} className={`results-table-compare whitespace-nowrap rounded-lg border-2 border-slate-900 px-2 py-1.5 text-[11px] font-black sm:px-2.5 sm:text-xs ${isCompared ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 hover:bg-slate-100'}`}>{isCompared ? '已加入比較' : '加入比較'}</button></div>
                           </td>
                         </tr>
                       );
