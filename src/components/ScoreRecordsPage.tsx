@@ -5,7 +5,6 @@ import {
   CalendarDays,
   Check,
   ClipboardPlus,
-  Crown,
   LogIn,
   Save,
   Trash2,
@@ -14,6 +13,8 @@ import { callBackend } from "../lib/api";
 import { startLineLogin } from "../lib/lineLogin";
 import { consumeLineLoginCodeFromFragment } from "../lib/membership";
 import { withBasePath } from "../lib/routes";
+import ScoreRecordsAnalytics from "./ScoreRecordsAnalytics";
+import "./score-records-page.css";
 
 type Scores = {
   chinese: string;
@@ -48,9 +49,6 @@ const subjects: Array<[keyof Omit<Scores, "composition">, string]> = [
   ["science", "自然"],
   ["social", "社會"],
 ];
-const gradeOrder = ["C", "B", "B+", "B++", "A", "A+", "A++"];
-const gradePosition = (grade: string) => gradeOrder.indexOf(grade);
-
 export default function ScoreRecordsPage() {
   const [isLoadingAccount, setIsLoadingAccount] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -149,52 +147,41 @@ export default function ScoreRecordsPage() {
     }
   };
   return (
-    <main className="min-h-screen bg-[#f5f6ff] px-4 py-6 text-slate-900 sm:px-6 sm:py-10">
-      <div className="mx-auto w-full max-w-[110rem]">
+    <main className="score-records-page min-h-screen text-slate-900">
+      <div className="score-records-shell">
         <a
           href={withBasePath("/")}
-          className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[2px_2px_0_#161b35]"
+          className="score-records-back"
         >
           <ArrowLeft className="h-4 w-4" />
           回到落點分析
         </a>
-        <header className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-sky-100 p-5 shadow-[5px_5px_0_#161b35] sm:p-7">
-          <div className="flex items-start gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-slate-900 bg-white text-sky-700">
-              <ClipboardPlus className="h-6 w-6" />
-            </span>
-            <div>
-              <p className="text-xs font-black tracking-[.15em] text-sky-700">
-                MY SCORE RECORDS
-              </p>
-              <h1 className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">
-                我的成績紀錄
-              </h1>
-              <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-slate-600">
-                登入後可保存模擬考與正式會考成績，方便比較自己的準備趨勢。請勿輸入准考證號、姓名或其他不必要個資。
-              </p>
-            </div>
+        <header className="score-records-hero">
+          <div className="score-records-hero-copy">
+            <span className="score-eyebrow"><ClipboardPlus size={17} /> 個人學習儀表板</span>
+            <h1>我的成績紀錄</h1>
+            <p>把每次模擬考與會考成績整理在一起，從等級變化找到下一步的練習方向。</p>
+            <small>請勿在名稱或備註輸入准考證號、姓名等不必要個資。</small>
           </div>
+          {loggedIn && <div className="score-records-account"><span><Check size={16} /> 已登入</span><strong>{name || '我的帳號'}</strong><small>紀錄會保存在你的帳號中</small></div>}
         </header>
         {isLoadingAccount ? (
           <section
             role="status"
             aria-live="polite"
-            className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-6 text-center text-sm font-black text-slate-600 shadow-[4px_4px_0_#161b35]"
+            className="score-records-loading"
           >
             正在確認登入狀態…
           </section>
         ) : !loggedIn ? (
-          <section className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-6 text-center shadow-[4px_4px_0_#161b35]">
-            <Crown className="mx-auto h-8 w-8 text-amber-600" />
-            <h2 className="mt-3 text-xl font-black">登入帳號，保存你的成績</h2>
-            <p className="mt-2 text-sm font-bold leading-6 text-slate-600">
-              使用 LINE 登入即可建立個人紀錄，不需要另設密碼，也不必是付費會員。
-            </p>
+          <section className="score-records-login">
+            <span className="score-records-login-icon"><LogIn size={27} /></span>
+            <h2>登入後，開始整理你的成績</h2>
+            <p>使用 LINE 登入即可保存模擬考與正式會考紀錄，查看個人趨勢；不需要另設密碼，也不必是付費會員。</p>
             <button
               type="button"
               onClick={login}
-              className="mt-5 inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-400 px-5 py-3 font-black shadow-[3px_3px_0_#161b35]"
+              className="score-records-primary-button"
             >
               <LogIn className="h-4 w-4" />
               使用 LINE 登入
@@ -202,22 +189,12 @@ export default function ScoreRecordsPage() {
           </section>
         ) : (
           <>
-            <section className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0_#161b35] sm:p-6">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-black tracking-[.14em] text-sky-700">
-                    ACCOUNT READY
-                  </p>
-                  <h2 className="mt-1 text-xl font-black">
-                    {name || "你的"}成績紀錄
-                  </h2>
-                </div>
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-black text-emerald-800">
-                  <Check className="h-3.5 w-3.5" />
-                  已登入
-                </span>
+            <ScoreRecordsAnalytics records={records} />
+            <section id="score-new-record" className="score-records-entry">
+              <div className="score-section-heading">
+                <div><span className="score-eyebrow"><ClipboardPlus size={16} /> 新增紀錄</span><h2>記下這次的成績</h2><p>填入五科等級與寫作級分，讓之後的比較有完整依據。</p></div>
               </div>
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
+              <div className="score-records-fields">
                 <label className="text-sm font-black">
                   成績類型
                   <select
@@ -228,7 +205,7 @@ export default function ScoreRecordsPage() {
                       if (!title)
                         setTitle(type === "mock" ? "模擬考" : "正式會考");
                     }}
-                    className="mt-2 w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-3 py-2.5 font-bold"
+                    className="score-records-input"
                   >
                     <option value="mock">模擬考成績</option>
                     <option value="official">正式會考成績</option>
@@ -243,7 +220,7 @@ export default function ScoreRecordsPage() {
                       setTitle(event.target.value.slice(0, 60))
                     }
                     placeholder="例如：第一次模擬考"
-                    className="mt-2 w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-3 py-2.5 font-bold"
+                    className="score-records-input"
                   />
                   <datalist id="score-record-title-options">
                     {Array.from({ length: 6 }, (_, index) => (
@@ -257,7 +234,7 @@ export default function ScoreRecordsPage() {
                     type="date"
                     value={examDate}
                     onChange={(event) => setExamDate(event.target.value)}
-                    className="mt-2 w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-3 py-2.5 font-bold"
+                    className="score-records-input"
                   />
                 </label>
                 <label className="text-sm font-black">
@@ -268,15 +245,15 @@ export default function ScoreRecordsPage() {
                       setNote(event.target.value.slice(0, 80))
                     }
                     placeholder="例如：第二次模擬考前"
-                    className="mt-2 w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-3 py-2.5 font-bold"
+                    className="score-records-input"
                   />
                 </label>
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="score-records-subject-grid">
                 {subjects.map(([key, label]) => (
                   <label
                     key={key}
-                    className="rounded-xl border-2 border-slate-200 bg-slate-50 p-3 text-sm font-black"
+                    className="score-records-subject"
                   >
                     {label}
                     <select
@@ -287,7 +264,7 @@ export default function ScoreRecordsPage() {
                           [key]: event.target.value,
                         }))
                       }
-                      className="mt-2 w-full rounded-lg border-2 border-slate-300 bg-white px-2 py-2 font-bold"
+                      className="score-records-input"
                     >
                       <option value="">選擇等級</option>
                       {gradeOptions.map((grade) => (
@@ -296,7 +273,7 @@ export default function ScoreRecordsPage() {
                     </select>
                   </label>
                 ))}
-                <label className="rounded-xl border-2 border-slate-200 bg-slate-50 p-3 text-sm font-black">
+                <label className="score-records-subject">
                   寫作
                   <select
                     value={scores.composition}
@@ -309,7 +286,7 @@ export default function ScoreRecordsPage() {
                             : Number(event.target.value),
                       }))
                     }
-                    className="mt-2 w-full rounded-lg border-2 border-slate-300 bg-white px-2 py-2 font-bold"
+                    className="score-records-input"
                   >
                     <option value="" disabled>
                       請選擇級分
@@ -322,23 +299,14 @@ export default function ScoreRecordsPage() {
                   </select>
                 </label>
               </div>
-              <button
-                type="button"
-                onClick={save}
-                disabled={saving}
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-sky-400 px-4 py-3.5 font-black shadow-[3px_3px_0_#161b35] disabled:opacity-50"
-              >
-                <Save className="h-4 w-4" />
-                {saving ? "儲存中…" : "儲存這筆成績"}
-              </button>
+              <div className="score-records-save-row"><p>儲存後可在下方查看或刪除這筆紀錄。</p><button type="button" onClick={save} disabled={saving} className="score-records-primary-button"><Save size={18} />{saving ? "儲存中…" : "儲存這筆成績"}</button></div>
             </section>
             <ScoreHistory records={records} onRemove={remove} />
-            {records.length > 0 && <ScoreInsights records={records} />}
           </>
         )}
         {notice && (
           <div
-            className="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-md items-center gap-3 rounded-xl border-2 border-slate-900 bg-amber-50 p-4 text-sm font-bold text-slate-800 shadow-[4px_4px_0_#161b35]"
+            className="score-records-notice"
           >
             <p role="status" aria-live="polite" className="min-w-0 flex-1 break-words">
               {notice}
@@ -357,43 +325,43 @@ function ScoreHistory({
   records: RecordItem[];
   onRemove: (id: string) => void;
 }) {
+  const [filter, setFilter] = useState<'all' | 'mock' | 'official'>('all');
+  const visibleRecords = filter === 'all' ? records : records.filter((record) => record.record_type === filter);
   return (
-    <section className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0_#161b35] sm:p-6">
-      <h2 className="flex items-center gap-2 text-xl font-black">
-        <BookOpen className="h-5 w-5 text-sky-700" />
-        已儲存的成績
-      </h2>
+    <section className="score-records-history" aria-labelledby="score-records-history-title">
+      <div className="score-section-heading"><div><span className="score-eyebrow"><BookOpen size={16} /> 全部資料</span><h2 id="score-records-history-title">已儲存的成績</h2><p>保留每一次的原始等級，方便回頭比對與整理。</p></div><span className="score-history-total">共 {records.length} 筆</span></div>
+      <div className="score-history-filters" role="group" aria-label="篩選紀錄類型">
+        {([['all', '全部'], ['mock', '模擬考'], ['official', '正式會考']] as const).map(([value, label]) => <button key={value} type="button" aria-pressed={filter === value} onClick={() => setFilter(value)}>{label}</button>)}
+      </div>
       {records.length ? (
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          {records.map((record) => (
+        visibleRecords.length ? <div className="score-history-grid">
+          {visibleRecords.map((record) => (
             <article
               key={record.id}
-              className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-4"
+              className="score-history-card"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <span
-                    className={`rounded-full px-2 py-1 text-xs font-black ${record.record_type === "official" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}
-                  >
+                  <span className={`score-history-type ${record.record_type === 'official' ? 'score-history-type--official' : ''}`}>
                     {record.record_type === "official" ? "正式會考" : "模擬考"}
                   </span>
-                  <h3 className="mt-2 font-black">{record.title}</h3>
-                  <p className="mt-1 flex items-center gap-1 text-xs font-bold text-slate-500">
+                  <h3>{record.title}</h3>
+                  <p className="score-history-date">
                     <CalendarDays className="h-3.5 w-3.5" />
-                    {record.exam_date ||
-                      new Date(record.created_at).toLocaleDateString("zh-TW")}
+                    {record.exam_date || new Date(record.created_at).toLocaleDateString("zh-TW")}
                     {record.note ? ` · 備註：${record.note}` : ""}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => onRemove(record.id)}
-                  className="rounded-lg border border-rose-200 bg-white p-2 text-rose-700"
+                  className="score-history-delete"
+                  aria-label={`刪除${record.title}成績紀錄`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
-              <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border-2 border-slate-900 bg-white text-sm font-black text-slate-700 sm:grid-cols-6">
+              <div className="score-history-scores">
                 {[
                   ["國", record.scores.chinese],
                   ["英", record.scores.english],
@@ -401,261 +369,23 @@ function ScoreHistory({
                   ["自", record.scores.science],
                   ["社", record.scores.social],
                   ["寫", record.scores.composition],
-                ].map(([label, score], index) => (
+                ].map(([label, score]) => (
                   <span
                     key={String(label)}
-                    className={`px-2 py-2 text-center ${index % 3 !== 0 ? "border-l-2 border-slate-400" : ""} ${index >= 3 ? "border-t-2 border-slate-400 sm:border-t-0" : ""} ${index > 0 ? "sm:border-l-2 sm:border-slate-400" : ""}`}
+                    className="score-history-score"
                   >
-                    {label} {score}
+                    <small>{label}</small><strong>{score}</strong>
                   </span>
                 ))}
               </div>
             </article>
           ))}
-        </div>
+        </div> : <p className="score-history-empty">目前沒有這一類成績紀錄。</p>
       ) : (
-        <p className="mt-4 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm font-bold text-slate-500">
+        <p className="score-history-empty">
           尚未儲存成績；新增第一筆模擬考或會考成績吧。
         </p>
       )}
     </section>
-  );
-}
-
-function ScoreInsights({ records }: { records: RecordItem[] }) {
-  const chronological = [...records].reverse();
-  const latest = chronological.at(-1)!;
-  const previous = chronological.at(-2);
-  const recentRecords = chronological.slice(-6);
-  const grades = subjects.map(([key]) => latest.scores[key]);
-  const a = grades.filter((grade) => grade.startsWith("A")).length;
-  const b = grades.filter((grade) => grade.startsWith("B")).length;
-  const c = grades.filter((grade) => grade === "C").length;
-  const changes = previous
-    ? subjects
-        .map(([key, label]) => ({
-          label,
-          before: previous.scores[key],
-          after: latest.scores[key],
-          direction:
-            gradePosition(latest.scores[key]) -
-            gradePosition(previous.scores[key]),
-        }))
-        .filter((item) => item.direction !== 0)
-    : [];
-  const improvements = changes.filter((item) => item.direction > 0);
-  const adjustments = changes.filter((item) => item.direction < 0);
-  const writingChange = previous
-    ? Number(latest.scores.composition) - Number(previous.scores.composition)
-    : 0;
-  const strengths = subjects
-    .filter(([key]) => latest.scores[key].startsWith("A"))
-    .map(([, label]) => label);
-  const priorities = subjects
-    .filter(([key]) => !latest.scores[key].startsWith("A"))
-    .map(([, label]) => label);
-  return (
-    <section className="mt-5 rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[4px_4px_0_#161b35] sm:p-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-black tracking-[.15em] text-indigo-700">
-            SCORE INSIGHTS
-          </p>
-          <h2 className="mt-1 text-2xl font-black">成績趨勢與分析</h2>
-          <p className="mt-1 text-sm font-bold leading-6 text-slate-600">
-            模擬考難度不同，請把變化當作調整方向，而非錄取預測。
-          </p>
-        </div>
-        <span className="rounded-xl bg-indigo-100 px-3 py-2 text-sm font-black text-indigo-900">
-          最新：{latest.title}
-        </span>
-      </div>
-      <div className="mt-5 grid gap-4 lg:grid-cols-[1.2fr_.8fr]">
-        <div className="overflow-hidden rounded-2xl border-2 border-slate-900 bg-slate-50 p-4">
-          <h3 className="font-black">五科原始等級趨勢</h3>
-          <p className="mt-1 text-xs font-bold text-slate-500">
-            直接顯示每次考試的原始等級，不做總分或積分換算。
-          </p>
-          <div className="mt-4 overflow-x-auto">
-            <div
-              className="min-w-[500px]"
-              style={{
-                gridTemplateColumns: `72px repeat(${recentRecords.length}, minmax(72px, 1fr))`,
-              }}
-            >
-              <div
-                className="grid gap-1"
-                style={{
-                  gridTemplateColumns: `72px repeat(${recentRecords.length}, minmax(72px, 1fr))`,
-                }}
-              >
-                <span className="p-2 text-xs font-black text-slate-500">
-                  科目
-                </span>
-                {recentRecords.map((record) => (
-                  <span
-                    key={record.id}
-                    title={record.title}
-                    className="truncate p-2 text-center text-[11px] font-black text-slate-700"
-                  >
-                    {record.title}
-                  </span>
-                ))}
-              </div>
-              {subjects.map(([key, label]) => (
-                <div
-                  key={key}
-                  className="mt-1 grid gap-1"
-                  style={{
-                    gridTemplateColumns: `72px repeat(${recentRecords.length}, minmax(72px, 1fr))`,
-                  }}
-                >
-                  <span className="rounded-lg bg-white p-2 text-sm font-black text-slate-800">
-                    {label}
-                  </span>
-                  {recentRecords.map((record) => (
-                    <span
-                      key={record.id}
-                      className={`rounded-lg p-2 text-center text-sm font-black ${record.scores[key].startsWith("A") ? "bg-emerald-100 text-emerald-800" : record.scores[key].startsWith("B") ? "bg-amber-100 text-amber-800" : "bg-rose-100 text-rose-800"}`}
-                    >
-                      {record.scores[key]}
-                    </span>
-                  ))}
-                </div>
-              ))}
-              <div
-                className="mt-1 grid gap-1"
-                style={{
-                  gridTemplateColumns: `72px repeat(${recentRecords.length}, minmax(72px, 1fr))`,
-                }}
-              >
-                <span className="rounded-lg bg-white p-2 text-sm font-black text-slate-800">
-                  寫作
-                </span>
-                {recentRecords.map((record) => (
-                  <span
-                    key={record.id}
-                    className="rounded-lg bg-indigo-100 p-2 text-center text-sm font-black text-indigo-800"
-                  >
-                    {record.scores.composition} 級
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-          {chronological.length > recentRecords.length && (
-            <p className="mt-3 text-xs font-bold text-slate-500">
-              為方便閱讀，圖表顯示最近 {recentRecords.length}{" "}
-              筆；完整紀錄仍保留在上方。
-            </p>
-          )}
-        </div>
-        <div className="rounded-2xl border-2 border-slate-900 bg-amber-50 p-4">
-          <h3 className="font-black">最新成績輪廓</h3>
-          <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-            <Stat count={a} label="A 類科目" tone="emerald" />
-            <Stat count={b} label="B 類科目" tone="amber" />
-            <Stat count={c} label="C 類科目" tone="rose" />
-          </div>
-          <p className="mt-4 text-sm font-bold leading-6 text-slate-700">
-            {c
-              ? "先從 C 類科目的基礎題與常錯單元開始規劃。"
-              : a >= 3
-                ? "強項已形成優勢；維持 A 類科目，也找出 B 類科目最常失分的題型。"
-                : "從一個最常失分的科目或單元開始調整，比一次全面加量更容易持續。"}
-          </p>
-          <div className="mt-4 space-y-2 border-t-2 border-amber-200 pt-3 text-sm font-bold leading-6 text-slate-700">
-            <p>
-              <span className="font-black text-slate-950">優勢科目：</span>
-              {strengths.length
-                ? strengths.join("、")
-                : "尚未出現 A 類科目；可先把一科穩定拉到 B++ 以上。"}
-            </p>
-            <p>
-              <span className="font-black text-slate-950">優先調整：</span>
-              {priorities.length
-                ? priorities.join("、")
-                : "五科皆為 A 類，可改以錯題、閱讀速度與寫作結構做精進。"}
-            </p>
-            <p>
-              <span className="font-black text-slate-950">寫作：</span>
-              {latest.scores.composition}{" "}
-              級分；建議每次練習保留題目、提綱與教師回饋，才能看出進步原因。
-            </p>
-          </div>
-        </div>
-      </div>
-      {previous && (
-        <div className="mt-4 rounded-2xl border-2 border-slate-900 bg-emerald-50 p-4">
-          <h3 className="font-black">這次進步的地方</h3>
-          {improvements.length || writingChange > 0 ? (
-            <>
-              <p className="mt-2 text-sm font-bold leading-6 text-emerald-950">
-                做得很好，你已經在以下科目留下可看見的進步；把這次有效的讀法保留下來，下一次會更有底氣。
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {improvements.map((change) => (
-                  <span
-                    key={change.label}
-                    className="rounded-lg bg-emerald-200 px-3 py-2 text-sm font-black text-emerald-900"
-                  >
-                    {change.label}：{change.before} → {change.after}
-                  </span>
-                ))}
-                {writingChange > 0 && (
-                  <span className="rounded-lg bg-emerald-200 px-3 py-2 text-sm font-black text-emerald-900">
-                    寫作：{previous.scores.composition} 級 →{" "}
-                    {latest.scores.composition} 級
-                  </span>
-                )}
-              </div>
-            </>
-          ) : (
-            <p className="mt-2 text-sm font-bold leading-6 text-emerald-950">
-              這次沒有反映在等級上的上升，也不代表努力白費。等級相同仍可能是答題更穩、錯題變少；持續整理錯題與熟練度，下次就更有機會跨過門檻。
-            </p>
-          )}
-          {adjustments.length > 0 && (
-            <p className="mt-4 rounded-xl border border-amber-200 bg-white/70 p-3 text-sm font-bold leading-6 text-slate-700">
-              下一步可以多照顧：
-              {adjustments.map((item) => item.label).join("、")}
-              。一次考試的起伏很常見，先找出一個最常錯的單元或題型，做小而持續的調整就很好。
-            </p>
-          )}
-          {writingChange < 0 && (
-            <p className="mt-3 text-sm font-bold leading-6 text-slate-700">
-              寫作這次是 {previous.scores.composition} 級到{" "}
-              {latest.scores.composition}{" "}
-              級；可回看題意、結構與例子是否完整，下一次先設定一個可做到的改善目標。
-            </p>
-          )}
-          <p className="mt-3 text-xs font-bold text-slate-500">
-            顯示的是原始等級的變化，不是換算後的分數；不同模擬考的範圍與難度仍可能不同。
-          </p>
-        </div>
-      )}
-    </section>
-  );
-}
-
-function Stat({
-  count,
-  label,
-  tone,
-}: {
-  count: number;
-  label: string;
-  tone: "emerald" | "amber" | "rose";
-}) {
-  const styles = {
-    emerald: "bg-emerald-100 text-emerald-800",
-    amber: "bg-amber-100 text-amber-800",
-    rose: "bg-rose-100 text-rose-800",
-  };
-  return (
-    <div className={`rounded-xl p-3 ${styles[tone]}`}>
-      <strong className="block text-2xl font-black">{count}</strong>
-      <span className="text-xs font-black">{label}</span>
-    </div>
   );
 }
