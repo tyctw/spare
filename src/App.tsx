@@ -905,13 +905,8 @@ export default function App() {
               </p>
 
               <div className={`home-free-access relative z-10 mb-5${memberAccess ? " hidden" : ""}`}>
-                <div className="home-free-access-top">
-                  <span><Sparkles aria-hidden="true" size={15} />限時公告</span>
-                  <span className="home-free-access-status">免費開放中</span>
-                </div>
                 <h3>進階功能，限時免費體驗</h3>
                 <p className="home-free-access-date"><CalendarDays aria-hidden="true" size={16} /><span>免費使用至 <time dateTime="2026-12-30">2026/12/30</time></span></p>
-                <p id="invitation-code-help" className="home-free-access-help">點擊下方邀請碼，一鍵填入並解鎖所有進階功能。</p>
                 <button type="button" onClick={() => updateForm("invitationCode", "TYCTW")} aria-label={formData.invitationCode === "TYCTW" ? "免費邀請碼 TYCTW 已填入" : "填入免費邀請碼 TYCTW"} className="home-free-code">
                   <span className="home-free-code-value"><small>免費邀請碼</small><strong>TYCTW</strong></span>
                   <span aria-live="polite" className={`home-free-code-action${formData.invitationCode === "TYCTW" ? " is-applied" : ""}`}>{formData.invitationCode === "TYCTW" ? <><Check aria-hidden="true" size={17} />已填入</> : <>一鍵填入<ArrowRight aria-hidden="true" size={17} /></>}</span>
