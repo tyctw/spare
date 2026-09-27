@@ -183,7 +183,7 @@
 .home-free-access-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid #ebce78; border-radius: 999px; background: #fff1c3; color: #674b0f; font-size: 11px; font-weight: 850; }
 .home-free-access-status::before { width: 6px; height: 6px; border-radius: 50%; background: #bb8316; content: ''; }
 .home-free-access h3 { margin: 13px 17px 0; color: #242c4b; font-size: clamp(19px,1.6vw,22px); font-weight: 900; letter-spacing: -.03em; line-height: 1.35; }
-.home-free-access-date { display: flex; align-items: center; gap: 6px; width: fit-content; max-width: calc(100% - 34px); margin: 12px 17px 0; padding: 7px 9px; border-radius: 9px; background: #fff0c8; color: #715318; font-size: 12px; font-weight: 650; line-height: 1.45; }
+.home-free-access-date { display: flex; align-items: center; gap: 6px; width: fit-content; max-width: calc(100% - 34px); margin: 12px 17px 14px; color: #715318; font-size: 12px; font-weight: 650; line-height: 1.45; }
 .home-free-access-date svg { flex: none; margin-right: 2px; }
 .home-free-access-date time { color: #3f3c32; font-weight: 900; white-space: nowrap; }
 .home-free-access-help { margin: 15px 17px 12px; color: #5f6477; font-size: 12px; font-weight: 650; line-height: 1.7; }
