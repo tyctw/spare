@@ -1071,33 +1071,36 @@ export default function App() {
                 </div>
                 {formData.schoolType === "職業類科" && (
                   <div>
-                    <div className="flex items-center justify-between mt-4 mb-3">
-                      <label className="text-sm font-black text-slate-900 flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 border border-slate-900 inline-block"></span>
+                    <div className="home-vocational-heading">
+                      <span className="home-vocational-label">
+                        <span className="home-vocational-dot" aria-hidden="true" />
                         職業群別選擇
-                      </label>
+                      </span>
                       <button
+                        type="button"
                         onClick={() => {
                           window.location.href = withBasePath(
                             "/vocational-encyclopedia",
                           );
                         }}
-                        className="flex items-center gap-1 text-xs font-bold text-emerald-600 underline decoration-2 decoration-emerald-400 underline-offset-2 transition-transform hover:text-emerald-700 active:scale-95"
+                        className="home-vocational-help"
                       >
                         <BookOpen className="w-3 h-3" />
                         職群/科系深入介紹百科
                       </button>
                     </div>
                     <button
+                      type="button"
                       onClick={() => setIsVocationalOpen(true)}
-                      className="w-full px-4 py-3 rounded-xl bg-white border-2 border-slate-900 focus:outline-none transition-all font-bold text-left shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:bg-emerald-50 active:translate-y-1 active:shadow-none flex justify-between items-center"
+                      className="home-vocational-trigger"
+                      aria-haspopup="dialog"
                     >
-                      <span className="text-slate-900">
+                      <span>
                         {vocationalGroups.includes("all")
-                          ? "全部選擇"
+                          ? "不限職業群別"
                           : `已選擇 ${vocationalGroups.length} 項群別`}
                       </span>
-                      <ChevronRight className="w-4 h-4 text-slate-500" />
+                      <ChevronRight className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                 )}
@@ -1135,7 +1138,7 @@ export default function App() {
                     aria-haspopup="dialog"
                     aria-expanded={isRegionOpen}
                     aria-label={formData.region ? `目前就學區：${ALL_REGIONS.find((r) => r.id === formData.region)?.name || "未知區域"}，按下以重新選擇` : "選擇就學區"}
-                    className="group flex-1 px-4 sm:px-6 py-4 rounded-2xl border-2 border-slate-900 flex items-center justify-between gap-2 sm:gap-4 font-black transition-all bg-amber-100 text-amber-900 hover:bg-amber-200 active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
+                    className="group flex-1 px-4 sm:px-6 py-4 rounded-2xl flex items-center justify-between gap-2 sm:gap-4 font-black transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       {formData.region ? (
@@ -1149,7 +1152,7 @@ export default function App() {
                         <span className="text-lg sm:text-xl">選擇就學區</span>
                       )}
                     </div>
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-amber-700 transition-colors group-hover:bg-slate-900 group-hover:text-white">
+                    <span className="home-region-arrow flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors">
                       <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                     </span>
                   </button>
@@ -1194,7 +1197,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setActiveModal("savedScoreImport")}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-2.5 text-sm font-black text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-indigo-500 active:translate-y-0 active:shadow-none sm:w-auto"
+                      className="home-score-action home-score-action-primary"
                     >
                       <History className="h-4 w-4" />
                       帶入已儲存成績
@@ -1205,7 +1208,7 @@ export default function App() {
                       <button
                         type="button"
                         onClick={loginForSavedScores}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-indigo-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-indigo-50 active:translate-y-0 active:shadow-none sm:w-auto"
+                        className="home-score-action"
                       >
                         <User className="h-4 w-4" />
                         登入後儲存、帶入成績
@@ -1220,7 +1223,7 @@ export default function App() {
                             withBasePath("/score-records"),
                           );
                         }}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-indigo-800 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 hover:bg-indigo-50 active:translate-y-0 active:shadow-none sm:w-auto"
+                        className="home-score-action"
                       >
                         <History className="h-4 w-4" />
                         前往儲存成績
@@ -1454,7 +1457,7 @@ export default function App() {
               disabled={status === "auth" || status === "quantum"}
               aria-busy={status === "auth" || status === "quantum"}
               aria-label={status === "auth" || status === "quantum" ? "正在分析，請稍候" : "立即落點分析"}
-              className="home-analyze-button w-full relative flex items-center justify-center bg-amber-400 border-4 border-slate-950 text-slate-950 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rounded-2xl py-4 sm:py-5 px-6 transition-all hover:-translate-y-1.5 hover:bg-amber-300 hover:shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] sm:hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] disabled:bg-slate-400 disabled:shadow-none disabled:translate-y-2 overflow-visible"
+              className="home-analyze-button relative flex w-full items-center justify-center overflow-visible rounded-2xl px-6 py-4 sm:py-5"
             >
               {status === "quantum" ? (
                 <motion.div
@@ -1465,14 +1468,14 @@ export default function App() {
                 </motion.div>
               ) : (
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="bg-slate-900 text-amber-400 p-1.5 sm:p-2 rounded-xl">
+                  <div className="rounded-xl p-1.5 sm:p-2">
                     <Target className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <span className="text-3xl sm:text-4xl font-black tracking-tight">
                     立即落點分析
                   </span>
                   <ArrowRight
-                    strokeWidth={4.5}
+                    strokeWidth={3}
                     className="w-7 h-7 sm:w-8 sm:h-8"
                   />
                 </div>
