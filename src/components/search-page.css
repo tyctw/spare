@@ -7,3 +7,7 @@
 @media(max-width:950px){.school-search-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.school-search-shell{width:min(100% - 28px,1180px);padding-top:22px}.school-search-hero{align-items:flex-start;flex-direction:column;gap:19px;margin:20px 0 14px;padding:28px 23px;border-radius:20px}.school-search-hero h1{font-size:2.45rem}.school-search-hero p{font-size:.95rem}.school-search-hero-stat{width:100%;padding:15px 19px}.school-search-hero-stat strong{font-size:2.15rem}.school-search-form{padding:22px 18px}.school-search-input-row{grid-template-columns:1fr}.school-search-input-row>button{min-height:44px}.school-search-filters{grid-template-columns:1fr}.school-search-grid{grid-template-columns:1fr}.school-search-results{margin-top:40px}.school-search-results-top{align-items:flex-start}.school-search-reset{white-space:nowrap;margin-top:10px}}
 .school-search-card>a{align-self:flex-end;justify-content:flex-end}
+@media(max-width:650px){
+  .school-search-card>a{display:flex;align-self:stretch;justify-content:center;min-height:44px;margin-top:16px;padding:10px;border:1px solid #d4d0ef;border-radius:9px;background:#f7f6ff}
+  .school-search-more button{justify-content:center;min-height:44px;width:100%;max-width:320px}
+}

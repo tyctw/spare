@@ -1,29 +1,48 @@
 import { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, CalendarDays, ChevronDown, ChevronUp, Flame, Megaphone, Search, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Megaphone, Search, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { newsArticles } from '../lib/news';
+import './latest-news-page.css';
+
+const PAGE_SIZE = 8;
 
 export default function LatestNewsPage() {
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('全部');
-  const [showCategories, setShowCategories] = useState(false);
-  const categories = useMemo(() => ['全部', ...Array.from(new Set(newsArticles.map((article) => article.category)))], []);
-  const visibleCategories = showCategories ? categories : [];
-  const orderedArticles = useMemo(() => [...newsArticles].sort((left, right) => right.publishedAt.localeCompare(left.publishedAt) || Number(right.id) - Number(left.id)), []);
+  const [sort, setSort] = useState('newest');
+  const [limit, setLimit] = useState(PAGE_SIZE);
+  const categories = useMemo(() => ['全部', ...new Set(newsArticles.map((article) => article.category))], []);
+  const orderedArticles = useMemo(() => [...newsArticles].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) || Number(b.id) - Number(a.id)), []);
   const visibleArticles = useMemo(() => {
     const keyword = query.trim().toLocaleLowerCase();
-    return orderedArticles.filter((article) => {
-      const matchesCategory = selectedCategory === '全部' || article.category === selectedCategory;
-      const matchesQuery = !keyword || [article.title, article.summary, article.category].some((value) => value.toLocaleLowerCase().includes(keyword));
-      return matchesCategory && matchesQuery;
-    });
-  }, [orderedArticles, query, selectedCategory]);
+    const articles = orderedArticles.filter((article) =>
+      (selectedCategory === '全部' || article.category === selectedCategory) &&
+      (!keyword || [article.title, article.summary, article.category].some((value) => value.toLocaleLowerCase().includes(keyword)))
+    );
+    return sort === 'oldest' ? articles.reverse() : articles;
+  }, [orderedArticles, query, selectedCategory, sort]);
   const hasFilters = query.trim().length > 0 || selectedCategory !== '全部';
-  const clearFilters = () => { setQuery(''); setSelectedCategory('全部'); };
+  const latest = orderedArticles[0];
+  const clearFilters = () => { setQuery(''); setSelectedCategory('全部'); setLimit(PAGE_SIZE); };
 
-  return <main className="min-h-screen bg-[#f8fafc] text-slate-900">
-    <section className="overflow-hidden border-b-4 border-slate-900 bg-gradient-to-br from-amber-200 via-orange-100 to-white"><div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10"><a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a]"><ArrowLeft className="h-4 w-4" />返回首頁</a><div className="mt-10 max-w-3xl"><div className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-slate-900 px-4 py-2 text-xs font-black tracking-[.16em] text-white"><Megaphone className="h-4 w-4 text-amber-300" />LATEST NEWS・最新消息</div><h1 className="mt-5 text-4xl font-black tracking-tight sm:text-6xl">掌握網站最新動態</h1><p className="mt-5 text-base font-bold leading-8 text-slate-700 sm:text-lg">從志願選填提醒、會考準備到網站功能更新，讓你在關鍵時刻少一點慌張、多一點把握。</p></div></div></section>
-    <section className="mx-auto max-w-5xl px-4 pt-8 sm:px-6 sm:pt-12"><div className="rounded-3xl border-2 border-slate-900 bg-white p-4 shadow-[3px_3px_0_#0f172a] sm:p-5"><div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><label className="relative block min-w-0 flex-1"><span className="sr-only">搜尋消息</span><Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋標題、摘要或分類" className="w-full rounded-xl border-2 border-slate-300 bg-slate-50 py-3 pl-11 pr-10 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100" />{query && <button type="button" onClick={() => setQuery('')} aria-label="清除搜尋" className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 transition hover:bg-slate-200 hover:text-slate-900"><X className="h-4 w-4" /></button>}</label><p className="shrink-0 text-sm font-black text-slate-600">找到 <span className="text-indigo-700">{visibleArticles.length}</span> 則消息</p></div>{showCategories && <div className="mt-4 flex flex-wrap gap-2">{visibleCategories.map((category) => <button key={category} type="button" onClick={() => setSelectedCategory(category)} className={`rounded-full border-2 px-3 py-2 text-xs font-black transition ${selectedCategory === category ? 'border-slate-900 bg-indigo-600 text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-900 hover:bg-slate-50'}`}>{category}</button>)}</div>}<div className="mt-3 flex justify-end border-t-2 border-dashed border-slate-200 pt-3"><button type="button" onClick={() => setShowCategories((visible) => !visible)} className="inline-flex items-center gap-1.5 text-xs font-black text-indigo-700 transition hover:text-indigo-950 hover:underline hover:underline-offset-4">{showCategories ? '收起分類篩選' : `開啟分類篩選（${categories.length}）`}{showCategories ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</button></div></div></section>
-    <section className="mx-auto max-w-5xl space-y-8 px-4 py-10 sm:px-6 sm:py-14">{visibleArticles.length > 0 ? visibleArticles.map((article, index) => <article key={article.id} className="relative overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-white p-6 shadow-[3px_3px_0_#0f172a] sm:p-10"><div aria-hidden="true" className="absolute -right-16 -top-16 h-52 w-52 rounded-full bg-amber-200 blur-2xl" /><div className="relative"><div className="flex flex-wrap items-center gap-3">{index === 0 && !hasFilters && <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-slate-900 bg-rose-500 px-3 py-1.5 text-xs font-black text-white"><Flame className="h-4 w-4 fill-amber-300 text-amber-300" />最新公告</span>}<span className="inline-flex items-center gap-1.5 rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-900"><CalendarDays className="h-4 w-4" />{article.category}</span></div><time dateTime={article.publishedAt} className="mt-5 block text-sm font-black text-slate-500">發布日期：{article.publishedLabel}</time><h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">{article.title}</h2><p className="mt-6 max-w-3xl text-base font-bold leading-8 text-slate-700 sm:text-lg">{article.summary}</p><div className="mt-6 flex justify-end"><a href={withBasePath(`/news/${article.id}`)} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black shadow-[2px_2px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-amber-50">閱讀完整內容<ArrowRight className="h-4 w-4" /></a></div></div></article>) : <div className="rounded-[2rem] border-4 border-dashed border-slate-300 bg-white p-10 text-center sm:p-14"><Search className="mx-auto h-10 w-10 text-slate-400" /><h2 className="mt-4 text-2xl font-black">找不到相符的消息</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-600">試試不同關鍵字，或清除分類篩選後再查看。</p><button type="button" onClick={clearFilters} className="mt-6 rounded-xl border-2 border-slate-900 bg-amber-300 px-4 py-2.5 text-sm font-black shadow-[2px_2px_0_#0f172a] transition hover:bg-amber-400">清除篩選</button></div>}</section>
+  return <main className="news-page">
+    <div className="news-shell">
+      <nav className="news-breadcrumb" aria-label="麵包屑"><a href={withBasePath('/')}><ArrowLeft size={15} />返回首頁</a><span aria-hidden="true">/</span><span aria-current="page">最新消息</span></nav>
+      <header className="news-hero">
+        <div><p className="news-eyebrow"><span /> LATEST NEWS</p><h1>掌握網站<br /><span>最新動態。</span></h1><p className="news-intro">升學路上的重要消息，一次整理給你。<br />從會考準備、志願選填到功能更新，讓每一步更有把握。</p></div>
+        <div className="news-hero-note"><span className="news-icon"><Megaphone size={28} strokeWidth={1.5} /></span><p>每個階段，都有值得留意的事。</p><span>留意更新，安心準備下一步</span><div className="news-stats"><div><strong>{newsArticles.length.toString().padStart(2, '0')}</strong><span>則消息</span></div><div><strong>{categories.length - 1}</strong><span>個主題分類</span></div></div></div>
+      </header>
+      {latest && !hasFilters && <section className="news-feature" aria-labelledby="news-feature-title"><div className="news-feature-side"><span className="news-eyebrow">LATEST UPDATE</span><span className="news-feature-label">最新公告</span><span className="news-feature-symbol" aria-hidden="true">↗</span></div><div className="news-feature-body"><div className="news-meta"><span className="news-tag">{latest.category}</span><time dateTime={latest.publishedAt}><CalendarDays size={14} />{latest.publishedLabel}</time></div><h2 id="news-feature-title"><a href={withBasePath(`/news/${latest.id}`)}>{latest.title}</a></h2><p>{latest.summary}</p><a className="news-feature-link" href={withBasePath(`/news/${latest.id}`)}>閱讀完整公告<ArrowUpRight size={18} /></a></div></section>}
+      <section className="news-library" aria-labelledby="news-library-title">
+        <div className="news-library-heading"><div><p className="news-eyebrow">EXPLORE UPDATES</p><h2 id="news-library-title">消息一覽<span>{newsArticles.length}</span></h2></div><p>找到你現在需要的資訊</p></div>
+        <div className="news-toolbar"><label className="news-search"><Search size={19} /><span className="sr-only">搜尋消息</span><input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setLimit(PAGE_SIZE); }} placeholder="搜尋標題、摘要或分類…" />{query && <button type="button" onClick={() => { setQuery(''); setLimit(PAGE_SIZE); }} aria-label="清除搜尋"><X size={17} /></button>}</label><label className="news-sort"><span>排序</span><select value={sort} onChange={(event) => { setSort(event.target.value); setLimit(PAGE_SIZE); }}><option value="newest">最新發布優先</option><option value="oldest">最早發布優先</option></select></label></div>
+        <div className="news-categories" role="group" aria-label="消息分類">{categories.map((category) => <button key={category} type="button" aria-pressed={selectedCategory === category} onClick={() => { setSelectedCategory(category); setLimit(PAGE_SIZE); }}>{category}<span>{category === '全部' ? newsArticles.length : newsArticles.filter((article) => article.category === category).length}</span></button>)}</div>
+        <div className="news-result-bar"><p role="status">{hasFilters ? '符合條件' : '全部消息'} <strong>{visibleArticles.length}</strong> 則</p>{hasFilters ? <button type="button" onClick={clearFilters}>清除篩選<X size={14} /></button> : <span>依發布日期排列</span>}</div>
+        <div className="news-list">{visibleArticles.slice(0, limit).map((article) => <article className="news-row" key={article.id}><div className="news-row-date"><time dateTime={article.publishedAt}>{article.publishedAt.replaceAll('-', '.')}</time><span className="news-tag">{article.category}</span></div><div className="news-row-content"><h3><a href={withBasePath(`/news/${article.id}`)}>{article.title}<ArrowUpRight size={21} /></a></h3><p>{article.summary}</p></div></article>)}</div>
+        {visibleArticles.length === 0 && <div className="news-empty"><Search size={32} /><h3>還沒有找到相符的消息</h3><p>換個關鍵字試試，或清除篩選查看所有消息。</p><button type="button" onClick={clearFilters}>查看全部消息<ArrowRight size={16} /></button></div>}
+        {visibleArticles.length > 0 && <div className="news-list-footer"><span>已顯示 {Math.min(limit, visibleArticles.length)} / {visibleArticles.length} 則消息</span>{limit < visibleArticles.length && <button type="button" onClick={() => setLimit((value) => value + PAGE_SIZE)}>載入更多消息<ArrowRight size={16} /></button>}</div>}
+      </section>
+      <aside className="news-bottom-note"><Megaphone size={20} /><p>準備升學，也別忘了確認官方公告。<span>招生時程、名額與規則，請以當年度招生委員會及學校公告為準。</span></p><a href={withBasePath('/')}>回首頁探索<ArrowRight size={16} /></a></aside>
+    </div>
   </main>;
 }

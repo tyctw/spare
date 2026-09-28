@@ -206,3 +206,7 @@
   .holland-page .holland-group-result { gap: 8px; }
   .holland-page .holland-group-result .text-3xl { font-size: 22px; }
 }
+
+/* Readability pass for test questions, answers, and result guidance. */
+.holland-page .holland-type-card p, .holland-page .holland-question-intro > p, .holland-page .holland-group-nav a, .holland-page .holland-answer-option { font-size: 14px; }
+.holland-page .holland-answer-guide-score, .holland-page .holland-group-heading strong, .holland-page .holland-result-score { font-size: 13px; }

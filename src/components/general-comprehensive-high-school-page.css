@@ -106,3 +106,7 @@
   .school-path-next > svg { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .school-path-page * { transition-duration: .01ms !important; } }
+
+/* Readability pass for comparison rows and decision prompts. */
+.school-path-comparison-head > *, .school-path-comparison-row > *, .school-path-route-points p, .school-path-question-grid p, .school-path-facts p, .school-path-checklist li { font-size: 15px; }
+.school-path-hero-summary > p, .school-path-heading > p, .school-path-caption, .school-path-route-foot, .school-path-checklist > p { font-size: 14px; }

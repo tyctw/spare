@@ -101,3 +101,8 @@
 @media (max-width: 680px) { .support-container { width: min(100% - 28px, 1280px); } .support-hero { padding-top: 18px; padding-bottom: 65px; } .support-hero-grid { gap: 27px; } .support-hero-copy h1 { font-size: clamp(34px, 9vw, 48px); } .support-main { margin-top: -22px; } .support-details, .support-impact-grid, .support-help { grid-template-columns: 1fr; } .support-impact { margin-top: 55px; } .support-impact-grid article { min-height: 0; } .support-help { gap: 25px; margin-top: 42px; } }
 @media (max-width: 420px) { .support-checkout, .support-side-card { padding: 19px; } .support-amount-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .support-order-summary { align-items: flex-start; flex-direction: column; } .support-order-summary > span { text-align: left; } .support-pay-button { font-size: 14px; } }
 @media (prefers-reduced-motion: reduce) { .support-page *, .support-page *::before, .support-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+/* Readability pass for support checkout details and help text. */
+.support-section-heading p, .support-notice, .support-side-card > p, .support-impact-grid p, .support-help p { font-size: 15px; }
+.support-field-hint, .support-checkout-assurance, .support-method-group > strong, .support-method-group span, .support-policy-links a { font-size: 14px; }
+.support-order-summary div > span, .support-order-summary > span, .support-limits dl > div { font-size: 14px; }

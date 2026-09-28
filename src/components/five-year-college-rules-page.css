@@ -64,3 +64,8 @@
   .college-priority-group:last-child { grid-column: auto; }
   .college-exam-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+/* Readability pass for scoring explanations and policy links. */
+.college-detail-list li, .college-conversion-card > p, .college-writing p, .college-priority-group li p { font-size: 15px; }
+.college-score-breakdown a, .college-source-links a, .college-next-links a { font-size: 14px; }
+.college-detail-top p, .college-score-total span { font-size: 14px; }

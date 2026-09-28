@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
-import { ArrowLeft, BookOpen, ChevronDown, CircleHelp, Search, ShieldAlert } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, CircleHelp, Search, ShieldAlert, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import './faq-glossary-page.css';
 
 type Entry = { category: string; term: string; summary: string; detail: string };
 
@@ -49,28 +50,48 @@ const entries: Entry[] = [
   { category: '特色招生與甄選', term: '報名特色招生後，還能參加免試入學嗎？', summary: '可能可以，但錄取、報到或放棄的時點與限制必須逐一確認。', detail: '不同特色招生類型與就學區的規定不盡相同，尤其牽涉到錄取後是否需要報到、放棄期限，以及能否再參加其他管道。不要只看考試日期沒有衝突；報名前請同時閱讀招生簡章的「錄取生報到」與「其他入學管道」規定，並向國中承辦人員確認。' },
 ];
 
+const questions = entries.filter((entry) => /[？?]/.test(entry.term));
+const glossary = entries.filter((entry) => !/[？?]/.test(entry.term));
+const categories = Array.from(new Set(glossary.map((entry) => entry.category)));
+
+type View = 'all' | 'questions' | 'glossary';
+
 export default function FaqGlossaryPage() {
   const [keyword, setKeyword] = useState('');
-  const [openTerm, setOpenTerm] = useState<string | null>(entries[0].term);
-  const filtered = useMemo(() => {
-    const query = keyword.trim().toLowerCase();
-    return entries.filter((entry) => !query || [entry.category, entry.term, entry.summary, entry.detail].join(' ').toLowerCase().includes(query));
-  }, [keyword]);
-  const groupedEntries = useMemo(() => filtered.reduce<Record<string, Entry[]>>((groups, entry) => {
+  const [view, setView] = useState<View>('all');
+  const [category, setCategory] = useState('全部');
+  const [openTerm, setOpenTerm] = useState<string | null>(null);
+  const query = keyword.trim().toLocaleLowerCase();
+  const matches = (entry: Entry) => !query || [entry.category, entry.term, entry.summary, entry.detail].some((value) => value.toLocaleLowerCase().includes(query));
+  const visibleQuestions = useMemo(() => questions.filter(matches), [query]);
+  const visibleGlossary = useMemo(() => glossary.filter((entry) => matches(entry) && (category === '全部' || entry.category === category)), [query, category]);
+  const groupedGlossary = useMemo(() => visibleGlossary.reduce<Record<string, Entry[]>>((groups, entry) => {
     (groups[entry.category] ??= []).push(entry);
     return groups;
-  }, {}), [filtered]);
+  }, {}), [visibleGlossary]);
+  const showQuestions = view !== 'glossary';
+  const showGlossary = view !== 'questions';
+  const resultCount = (showQuestions ? visibleQuestions.length : 0) + (showGlossary ? visibleGlossary.length : 0);
+  const selectView = (next: View) => { setView(next); setOpenTerm(null); };
+  const selectCategory = (next: string) => { setCategory(next); setOpenTerm(null); };
+  const clearFilters = () => { setKeyword(''); setCategory('全部'); setView('all'); setOpenTerm(null); };
 
-  return <main className="min-h-screen bg-slate-50 text-slate-900">
-    <section className="border-b-4 border-slate-900 bg-sky-50"><div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-      <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]"><ArrowLeft className="h-4 w-4" />返回首頁</a>
-      <div className="py-10"><div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"><div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-sky-100"><BookOpen className="h-6 w-6 text-sky-700" /></div><div><p className="text-xs font-black uppercase tracking-widest text-slate-500">FAQ & Glossary</p><p className="text-sm font-black text-slate-700">升學名詞一次看懂</p></div></div>
-      <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">常見問答與名詞百科</h1><p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">把會考、免試入學、志願選填與學校類型的常見名詞整理成易懂說明，幫助你閱讀資料、和家人討論志願。</p></div>
-    </div></section>
-    <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <div className="mt-6 rounded-3xl border-2 border-slate-900 bg-white p-4 shadow-sm shadow-slate-900/15 sm:p-5"><div className="flex flex-col gap-3 sm:flex-row sm:items-center"><label className="relative block flex-1"><span className="sr-only">搜尋名詞與問題</span><Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" /><input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="搜尋名詞或問題，例如：序位、五專、報到…" className="w-full rounded-xl border-2 border-slate-300 bg-slate-50 py-3 pl-12 pr-4 text-base font-bold outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100" /></label><p className="shrink-0 text-sm font-black text-slate-600">共 <span className="text-indigo-700">{filtered.length}</span> 筆</p></div></div>
-      {filtered.length > 0 ? <div className="mt-8 space-y-9">{Object.entries(groupedEntries).map(([category, categoryEntries]) => <section key={category} aria-labelledby={`faq-category-${category}`}><div className="flex items-center gap-3"><div className="h-px flex-1 bg-slate-200" /><h2 id={`faq-category-${category}`} className="shrink-0 rounded-full border-2 border-slate-900 bg-slate-900 px-4 py-2 text-sm font-black text-white shadow-sm shadow-slate-900/20">{category}</h2><div className="h-px flex-1 bg-slate-200" /></div><div className="mt-4 grid gap-3 lg:grid-cols-2">{categoryEntries.map((entry) => { const isOpen = openTerm === entry.term; return <article key={entry.term} className={`overflow-hidden rounded-2xl border-2 border-slate-900 bg-white shadow-sm shadow-slate-900/15 transition ${isOpen ? 'ring-4 ring-indigo-100' : 'hover:border-indigo-500 hover:shadow-md hover:shadow-slate-900/10'}`}><button type="button" onClick={() => setOpenTerm(isOpen ? null : entry.term)} className="flex w-full items-start gap-3 p-5 text-left transition hover:bg-indigo-50/60"><div className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${isOpen ? 'bg-indigo-600 text-white' : 'bg-sky-100 text-sky-700'}`}><CircleHelp className="h-5 w-5" /></div><div className="min-w-0 flex-1"><h3 className="text-lg font-black leading-7 text-slate-900">{entry.term}</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-600">{entry.summary}</p></div><ChevronDown className={`mt-1 h-5 w-5 shrink-0 text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} /></button>{isOpen && <div className="border-t-2 border-indigo-100 bg-indigo-50/60 px-5 py-5"><p className="text-sm font-bold leading-7 text-slate-700">{entry.detail}</p></div>}</article>; })}</div></section>)}</div> : <div className="mt-8 rounded-3xl border-2 border-dashed border-slate-900 bg-white p-12 text-center shadow-sm shadow-slate-900/15"><Search className="mx-auto h-9 w-9 text-slate-400" /><h2 className="mt-4 text-xl font-black text-slate-800">找不到相關名詞</h2><p className="mt-2 text-sm font-bold text-slate-500">試試較短的關鍵字，或改用不同說法搜尋。</p></div>}
-      <aside className="mt-10 rounded-3xl border-2 border-slate-900 bg-amber-50 p-5 shadow-sm shadow-slate-900/15 sm:p-6"><div className="flex items-start gap-3"><div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-slate-900 bg-amber-300 text-amber-950"><ShieldAlert className="h-5 w-5" /></div><div><p className="text-sm font-black text-amber-950">查詢前先知道</p><p className="mt-1 text-sm font-bold leading-7 text-slate-700">本頁協助理解名詞與流程；招生資格、計分、比序、名額與時程可能因年度及就學區不同，正式選填請以當年度招生簡章與官方公告為準。</p></div></div></aside>
-    </section>
-  </main>;
+  return <main className="faq-page"><div className="faq-shell">
+    <nav className="faq-breadcrumb" aria-label="麵包屑"><a href={withBasePath('/')}><ArrowLeft size={15} />返回首頁</a><span aria-hidden="true">/</span><span aria-current="page">常見問答與名詞百科</span></nav>
+    <header className="faq-hero"><div><p className="faq-kicker"><BookOpen size={17} /> FAQ & GLOSSARY</p><h1>升學問題，<br /><span>在這裡找到答案。</span></h1><p>把常見疑問和升學名詞整理成容易理解的說明。從會考成績、招生管道到志願選填，找到你現在需要的資訊。</p></div><div className="faq-hero-stats"><span><strong>{questions.length.toString().padStart(2, '0')}</strong>則常見問答</span><span><strong>{glossary.length.toString().padStart(2, '0')}</strong>個升學名詞</span></div></header>
+    <div className="faq-search-panel"><label className="faq-search"><Search size={21} /><span className="sr-only">搜尋名詞與問題</span><input type="search" value={keyword} onChange={(event) => { setKeyword(event.target.value); setOpenTerm(null); }} placeholder="搜尋名詞、問題或關鍵字，例如：序位、五專、報到" />{keyword && <button type="button" onClick={() => setKeyword('')} aria-label="清除搜尋"><X size={18} /></button>}</label><p>快速搜尋 {entries.length} 則說明</p></div>
+    <div className="faq-tabs" role="group" aria-label="內容類型"><button type="button" aria-pressed={view === 'all'} onClick={() => selectView('all')}>全部內容<span>{entries.length}</span></button><button type="button" aria-pressed={view === 'questions'} onClick={() => selectView('questions')}>常見問答<span>{questions.length}</span></button><button type="button" aria-pressed={view === 'glossary'} onClick={() => selectView('glossary')}>名詞百科<span>{glossary.length}</span></button></div>
+    {showGlossary && <div className="faq-category-filter"><span>主題分類</span><div>{['全部', ...categories].map((item) => <button type="button" key={item} aria-pressed={category === item} onClick={() => selectCategory(item)}>{item}</button>)}</div></div>}
+    <div className="faq-result-line"><p role="status">找到 <strong>{resultCount}</strong> 則內容</p>{(keyword || category !== '全部' || view !== 'all') && <button type="button" onClick={clearFilters}>清除所有篩選<X size={14} /></button>}</div>
+    {resultCount === 0 ? <div className="faq-empty"><Search size={32} /><h2>找不到相符的內容</h2><p>試試較短的關鍵字，或清除篩選查看全部內容。</p><button type="button" onClick={clearFilters}>查看全部內容<ArrowRight size={16} /></button></div> : <div className="faq-content">
+      {showQuestions && visibleQuestions.length > 0 && <section className="faq-section" aria-labelledby="faq-questions-title"><div className="faq-section-heading"><div><p>FREQUENTLY ASKED</p><h2 id="faq-questions-title">常見問答<span>{visibleQuestions.length}</span></h2></div><p>先從大家最常問的問題開始</p></div><div className="faq-entry-list">{visibleQuestions.map((entry, index) => <EntryCard key={entry.term} entry={entry} index={index} open={openTerm === entry.term} onToggle={() => setOpenTerm(openTerm === entry.term ? null : entry.term)} question />)}</div></section>}
+      {showGlossary && visibleGlossary.length > 0 && <section className="faq-section" aria-labelledby="faq-glossary-title"><div className="faq-section-heading"><div><p>UNDERSTAND THE TERMS</p><h2 id="faq-glossary-title">名詞百科<span>{visibleGlossary.length}</span></h2></div><p>從基礎概念看懂升學資訊</p></div>{Object.entries(groupedGlossary).map(([group, items]) => <div className="faq-group" key={group}><div className="faq-group-heading"><h3>{group}</h3><span>{items.length} 個名詞</span></div><div className="faq-entry-list">{items.map((entry, index) => <EntryCard key={entry.term} entry={entry} index={index} open={openTerm === entry.term} onToggle={() => setOpenTerm(openTerm === entry.term ? null : entry.term)} />)}</div></div>)}</section>}
+    </div>}
+    <aside className="faq-notice"><ShieldAlert size={21} /><div><h2>查詢前先知道</h2><p>本頁協助理解名詞與流程；招生資格、計分、比序、名額與時程可能因年度及就學區不同，正式選填請以當年度招生簡章與官方公告為準。</p></div></aside>
+  </div></main>;
+}
+
+function EntryCard({ entry, index, open, onToggle, question = false }: { entry: Entry; index: number; open: boolean; onToggle: () => void; question?: boolean }) {
+  const panelId = `faq-detail-${entry.term.replace(/[^\w\u4e00-\u9fff]/g, '-')}`;
+  return <article className={`faq-entry ${open ? 'is-open' : ''}`}><button type="button" aria-expanded={open} aria-controls={panelId} onClick={onToggle}><span className="faq-entry-number">{question ? 'Q' : String(index + 1).padStart(2, '0')}</span><span className="faq-entry-title"><strong>{entry.term}</strong><small>{entry.summary}</small></span><ChevronDown size={19} className="faq-entry-chevron" /></button>{open && <div id={panelId} className="faq-entry-detail"><span>{question ? '回答' : '詳細說明'}</span><p>{entry.detail}</p></div>}</article>;
 }
