@@ -257,37 +257,24 @@ export default function ResultsPage() {
                   );
                 })}
               </div>
+              <a href={withBasePath('/score-change')} className="results-summary-score-change" aria-label="前往一級變化試算，比較成績增減一級後的志願變化">
+                <span className="results-summary-score-change-icon"><Sparkles aria-hidden="true" className="h-5 w-5" /></span>
+                <span className="results-summary-score-change-copy"><small>一級變化工具</small><strong>成績差一級，志願會怎麼變？</strong><span>比較新增、離開與跨落點區的校科</span></span>
+                <span className="results-summary-score-change-action">立即試算 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-45" /></span>
+              </a>
             </div>
           </div>
+          {results.analysisReport?.suggestion && (
+            <details className="results-hero-strategy" id="results-hero-strategy">
+              <summary>
+                <span className="results-hero-strategy-icon"><Lightbulb aria-hidden="true" className="h-5 w-5" /></span>
+                <span className="results-hero-strategy-label"><small>依本次分析</small><strong>策略建議</strong></span>
+                <span className="results-hero-strategy-toggle"><span className="results-hero-strategy-closed">展開閱讀</span><span className="results-hero-strategy-open">收合建議</span><ArrowUp aria-hidden="true" className="h-4 w-4" /></span>
+              </summary>
+              <p>{results.analysisReport.suggestion}</p>
+            </details>
+          )}
         </section>
-
-        <div className={'results-guidance mt-5 grid gap-4 ' + (results.analysisReport?.suggestion ? 'lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]' : '')}>
-        {results.analysisReport?.suggestion && (
-          <section className="results-strategy" aria-labelledby="results-strategy-title">
-            <div className="results-strategy-copy">
-              <div className="results-strategy-heading">
-                <span className="results-strategy-icon"><Lightbulb aria-hidden="true" className="h-5 w-5" /></span>
-                <div><p>依本次分析</p><h2 id="results-strategy-title">策略建議</h2></div>
-              </div>
-              <p className="results-strategy-text">{results.analysisReport.suggestion}</p>
-            </div>
-            <a className="results-strategy-link" href="#recommended-schools">查看推薦清單 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-180" /></a>
-          </section>
-        )}
-
-        <section className="results-score-change" aria-labelledby="results-score-change-title">
-          <div className="results-score-change-copy">
-            <div className="results-score-change-eyebrow"><Sparkles aria-hidden="true" className="h-4 w-4" /><span>進階志願工具</span></div>
-            <h2 id="results-score-change-title"><span>差一級，</span>志願清單會怎麼變？</h2>
-            <p className="results-score-change-description">用你的成績試算，快速找出新增、離開及跨落點區的校科。</p>
-            <div className="results-score-change-preview" aria-label="比較成績增減一級後的志願變化">
-              <div><strong>＋1 級</strong><span>能多選哪些校科？</span></div>
-              <div><strong>－1 級</strong><span>哪些志願要調整？</span></div>
-            </div>
-          </div>
-          <a href={withBasePath('/score-change')} className="results-score-change-action">立即試算志願變化 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-45" /></a>
-        </section>
-        </div>
 
         <section className="results-content mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
           <aside className="results-sidebar space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-2 custom-scrollbar">
@@ -357,12 +344,14 @@ export default function ResultsPage() {
 
           <section id="recommended-schools" className="results-list-panel rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-6">
             <div className="results-list-header mb-5 space-y-4">
-              <div>
-                <h2 className="flex items-center gap-2 text-2xl font-black">
-                  <Building2 className="h-6 w-6 text-indigo-600" />
-                  學校推薦清單
-                </h2>
-                <p className="mt-1 text-sm font-bold text-slate-500">依照落點區間與條件篩選後顯示，共有 {filteredSchools.length} 所學校。</p>
+              <div className="results-list-heading-row">
+                <div>
+                  <h2 className="flex items-center gap-2 text-2xl font-black">
+                    <Building2 className="h-6 w-6 text-indigo-600" />
+                    學校推薦清單
+                  </h2>
+                  <p className="mt-1 text-sm font-bold text-slate-500">依照落點區間與條件篩選後顯示，共有 {filteredSchools.length} 所學校。</p>
+                </div>
               </div>
               <div className="results-filter-panel w-full">
                 <div className="relative">
@@ -620,6 +609,7 @@ export default function ResultsPage() {
             )}
           </section>
         </section>
+
       </main>
 
       <Footer />
