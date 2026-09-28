@@ -5,7 +5,6 @@ import { withBasePath } from '../lib/routes';
 import { formatSchoolOwnership } from '../lib/schoolDisplay';
 import { getComparisonSchools, saveComparisonSchools } from '../lib/comparisonStorage';
 import { formatHistoricalCredits, normalizeHistoricalScores } from './ResultsDialogs';
-import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
 import './strategy-page.css';
 import './comparison-page.css';
 
@@ -146,15 +145,7 @@ export default function ComparisonPage() {
         </div>
       </div>
     </section>
-    <div className="strategy-layout strategy-shell">
-      <aside className={pageNavigationAsideClassName}>
-        <PageNavigation title="本頁導覽" navClassName="strategy-nav" itemLayoutClassName="strategy-nav-list" items={schools.length ? [
-          { id: 'compare-list', label: '比較清單' },
-          { id: 'compare-filters', label: '搜尋與篩選' },
-          { id: 'compare-results', label: '逐項比較' },
-          { id: 'compare-notes', label: '資料判讀提醒' },
-        ] : [{ id: 'compare-empty', label: '開始建立清單' }]} />
-      </aside>
+    <div className="comparison-layout strategy-shell">
       <div className="strategy-content">
 
     {!schools.length ? <section id="compare-empty" className="strategy-section comparison-empty"><div className="comparison-empty-icon"><Layers3 className="h-7 w-7" aria-hidden="true" /></div><div className="strategy-heading"><p>先建立清單</p><h2>還沒有加入比較的校科</h2><span>到分析結果選擇想比較的學校，點選「加入比較」，就能在這裡逐項查看差異。</span></div><a href={withBasePath('/results')} className="strategy-primary"><Plus className="h-4 w-4" aria-hidden="true" />前往分析結果<ArrowRight className="h-4 w-4" aria-hidden="true" /></a></section> : <>

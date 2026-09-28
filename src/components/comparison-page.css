@@ -1,4 +1,5 @@
 .comparison-page .strategy-hero-note > span:last-child { margin-top: 10px; }
+.comparison-layout { padding-block: 44px 80px; }
 .comparison-page .strategy-content { min-width: 0; }
 .comparison-page .strategy-section { scroll-margin-top: 100px; }
 .comparison-panel { padding: 24px; border: 1px solid #e1e5ed; border-radius: 20px; background: #fff; box-shadow: 0 9px 28px #26364e0b; }
@@ -15,6 +16,7 @@
 .comparison-note p { margin: 5px 0 0; color: #53617a; font-size: 13px; line-height: 1.75; }
 .comparison-page a:focus-visible, .comparison-page button:focus-visible, .comparison-page input:focus-visible, .comparison-page select:focus-visible { outline: 3px solid #9a82d3; outline-offset: 3px; }
 @media (max-width: 650px) {
+  .comparison-layout { padding-block: 22px 60px; }
   .comparison-panel { padding: 19px 16px; }
   .comparison-empty { min-height: 300px; padding: 24px 20px; }
   .comparison-page .strategy-hero-note { min-width: 0; }
