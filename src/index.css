@@ -47,6 +47,50 @@
   }
 }
 
+/* Give older pages the same light surface treatment as the redesigned tools. */
+:where(#root) :is([class~="border-slate-900"], [class~="border-black"]) {
+  border-color: #d4ddeb;
+}
+
+:where(#root) :is([class~="border-2"], [class~="border-4"]):is([class~="border-slate-900"], [class~="border-black"]) {
+  border-width: 1px;
+}
+
+:where(#root) :is([class~="border-b-2"], [class~="border-b-4"]):is([class~="border-slate-900"], [class~="border-black"]) { border-bottom-width: 1px; }
+:where(#root) :is([class~="border-t-2"], [class~="border-t-4"]):is([class~="border-slate-900"], [class~="border-black"]) { border-top-width: 1px; }
+:where(#root) :is([class~="border-l-2"], [class~="border-l-4"]):is([class~="border-slate-900"], [class~="border-black"]) { border-left-width: 1px; }
+:where(#root) :is([class~="border-r-2"], [class~="border-r-4"]):is([class~="border-slate-900"], [class~="border-black"]) { border-right-width: 1px; }
+:where(#root) :is([class~="border-x-2"], [class~="border-x-4"]):is([class~="border-slate-900"], [class~="border-black"]) { border-inline-width: 1px; }
+:where(#root) :is([class~="border-y-2"], [class~="border-y-4"]):is([class~="border-slate-900"], [class~="border-black"]) { border-block-width: 1px; }
+
+:where(#root) :is(
+  [class*="shadow-["][class*="_0px_0px_"],
+  [class*="shadow-["][class*="_0_#"],
+  [class*="shadow-["][class*="_0_0_#"]
+) {
+  box-shadow: 0 8px 24px rgba(36, 52, 91, 0.11);
+}
+
+:where(#root) :is(
+  [class*="hover:shadow-["][class*="_0px_0px_"],
+  [class*="hover:shadow-["][class*="_0_#"],
+  [class*="hover:shadow-["][class*="_0_0_#"]
+):hover {
+  box-shadow: 0 12px 28px rgba(36, 52, 91, 0.16);
+}
+
+:where(#root) [class*="active:shadow-none"]:active { box-shadow: none; }
+
+:where(#root) :is([class~="border-slate-900"], [class~="border-black"]):focus-visible {
+  border-color: #596fc1;
+}
+
+@media (prefers-contrast: more), (forced-colors: active) {
+  :where(#root) :is([class~="border-slate-900"], [class~="border-black"]) {
+    border-color: currentColor;
+  }
+}
+
 /* Disclaimer page hero: use the same light, welcoming palette as the guide pages. */
 .disclaimer-page > section:first-child {
   background-color: #fffbeb;
