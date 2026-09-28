@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ArrowLeft,
   BookOpen,
@@ -7,10 +7,12 @@ import {
   ExternalLink,
   GraduationCap,
   Layers,
+  ArrowRight,
   Target,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
+import './school-types-page.css';
 
 type Tone = 'emerald' | 'sky' | 'amber' | 'rose' | 'purple';
 
@@ -18,6 +20,7 @@ const schoolTypes: Array<{
   title: string;
   alias: string;
   years: string;
+  highlight: string;
   tone: Tone;
   icon: React.ElementType;
   definition: string;
@@ -30,6 +33,7 @@ const schoolTypes: Array<{
     title: '普通型高級中等學校',
     alias: '普高／高中',
     years: '3 年制',
+    highlight: '以學科探索為核心',
     tone: 'emerald',
     icon: BookOpen,
     definition: '依法以基本學科為主，著重強化通識能力。課程以國文、英文、數學、社會、自然等一般科目為核心，並有校訂必修與多元選修。',
@@ -42,6 +46,7 @@ const schoolTypes: Array<{
     title: '技術型高級中等學校',
     alias: '技高／高職',
     years: '3 年制',
+    highlight: '從專業與實作累積能力',
     tone: 'sky',
     icon: Compass,
     definition: '依法以專業及實習科目為主，培養專門技術與職業能力。依群、科規劃課程，包含一般科目、專業科目、實習及專題實作。',
@@ -54,6 +59,7 @@ const schoolTypes: Array<{
     title: '綜合型高級中等學校',
     alias: '綜高／綜中',
     years: '3 年制',
+    highlight: '先探索，再選擇學程',
     tone: 'amber',
     icon: Target,
     definition: '依法提供基本學科、專業及實習課程，輔導學生選修適性課程。其精神是先探索、再依性向選擇學術或專門學程。',
@@ -66,6 +72,7 @@ const schoolTypes: Array<{
     title: '單科型高級中等學校',
     alias: '單科型高中',
     years: '3 年制',
+    highlight: '集中發展明確專長',
     tone: 'rose',
     icon: GraduationCap,
     definition: '依法以特定學科領域為核心課程，讓學習性向明顯的學生持續發展潛能。常見發展方向可能與藝術、體育、科學或其他專長領域相關。',
@@ -78,6 +85,7 @@ const schoolTypes: Array<{
     title: '五年制專科學校',
     alias: '五專',
     years: '5 年制',
+    highlight: '較早進入專科教育',
     tone: 'purple',
     icon: Layers,
     definition: '五專招收國中畢業生，修業五年；畢業後取得副學士學位。它與前三類高中不同，屬專科教育體系，會較早、較長時間地培養專業能力。',
@@ -95,44 +103,132 @@ const comparisons = [
   ['畢業後常見規劃', '一般大學為主，也可規劃科技校院等進路。', '科技校院與就業為常見方向，也有其他進路。', '依修讀學程規劃一般大學或科技校院。', '依專長準備相關校系、術科或成果資料。', '取得副學士後就業，或續讀二技、插班／轉學等。'],
 ];
 
-const toneClasses: Record<Tone, { card: string; text: string; border: string; dot: string }> = {
-  emerald: { card: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-300', dot: 'bg-emerald-500' },
-  sky: { card: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-300', dot: 'bg-sky-500' },
-  amber: { card: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-300', dot: 'bg-amber-500' },
-  rose: { card: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-300', dot: 'bg-rose-500' },
-  purple: { card: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-300', dot: 'bg-purple-500' },
-};
+const decisionQuestions = [
+  { title: '我喜歡怎麼學？', text: '比較閱讀、解題、探究、操作與實作在課表中的比重，想想哪種學習方式能讓你持續投入。' },
+  { title: '方向有多明確？', text: '還想多方嘗試，就留意探索課程與選修；已有興趣，則深入看科別、設備與專題成果。' },
+  { title: '畢業後想保留哪些選擇？', text: '從想去的校系或工作方向回推，確認需要準備的學科、專業、術科或作品。' },
+  { title: '生活條件能配合嗎？', text: '把通勤、住宿、費用、實習地點與家庭支持一起放進選擇，避免只看校名。' },
+];
 
-function Detail({ label, text, tone }: { label: string; text: string; tone: Tone }) {
-  const style = toneClasses[tone];
-  return <div><div className={`mb-2 flex items-center gap-2 text-sm font-black ${style.text}`}><span className={`h-2 w-2 rounded-full ${style.dot}`} />{label}</div><p className="text-sm font-bold leading-7 text-slate-700">{text}</p></div>;
+function Detail({ label, text }: { label: string; text: string }) {
+  return <div className="school-type-detail"><h4>{label}</h4><p>{text}</p></div>;
 }
 
 export default function SchoolTypesPage() {
+  const [comparisonIndex, setComparisonIndex] = useState(1);
+  const [comparisonTopic, ...comparisonValues] = comparisons[comparisonIndex];
+
   return (
-    <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
-      <section className="border-b-4 border-slate-900 bg-sky-50"><div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-        <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none sm:px-4"><ArrowLeft className="h-4 w-4" />返回首頁</a>
-        <div className="py-8 sm:py-10"><div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-3 py-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:px-4"><div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-slate-900 bg-sky-100"><Building2 className="h-5 w-5 text-sky-700" /></div><div><p className="text-xs font-black uppercase tracking-widest text-slate-500">School Type Guide</p><p className="text-sm font-black text-slate-700">高中與五專進路比較</p></div></div>
-          <h1 className="text-3xl font-black sm:text-5xl lg:text-6xl">學校類型解析</h1>
-          <p className="mt-4 max-w-4xl text-[15px] font-bold leading-8 text-slate-700 sm:mt-5 sm:text-lg">國中畢業後可選擇普通型、技術型、綜合型、單科型高級中等學校，或五年制專科學校。它們沒有絕對高低，差別在課程重心、探索時間與後續規劃。請用興趣、學習方式與可接受的投入程度來選，而不是只看名稱或分數。</p>
-        </div>
-      </div></section>
-
-      <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className={pageNavigationAsideClassName}><PageNavigation navClassName="w-full rounded-2xl border-4 border-slate-900 bg-white p-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-4" itemLayoutClassName="grid gap-2 lg:block lg:space-y-2" items={[{ id: 'overview', label: '五種學校類型', className: 'block text-left' }, { id: 'comparison', label: '快速比較', className: 'block text-left' }, { id: 'choose', label: '選校前檢查', className: 'block text-left' }, { id: 'sources', label: '官方資料與提醒', className: 'block text-left' }]} /></aside>
-        <div className="min-w-0 space-y-6 sm:space-y-8">
-          <section id="overview" className="scroll-mt-8"><div className="mb-4"><h2 className="text-2xl font-black sm:text-3xl">五種學校類型</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-600">以下以法定定位與常見課程規劃說明。實際開設科別、學程、選修、實習與招生名額，仍要回到各校課程計畫與當年度簡章確認。</p></div><div className="grid gap-5">{schoolTypes.map((type) => { const Icon = type.icon; const tone = toneClasses[type.tone]; return <article key={type.title} className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-7 sm:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"><div className="flex flex-col gap-5 lg:flex-row"><div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 ${tone.card}`}><Icon className={`h-7 w-7 ${tone.text}`} /></div><div className="min-w-0 flex-1"><div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><div><h3 className="text-xl font-black sm:text-2xl">{type.title}</h3><p className={`mt-1 text-sm font-black ${tone.text}`}>{type.alias}</p></div><span className={`w-fit rounded-lg border-2 ${tone.border} ${tone.card} px-3 py-1 text-xs font-black ${tone.text}`}>{type.years}</span></div><div className="mt-5 grid gap-4 md:grid-cols-2"><Detail label="課程與定位" text={type.definition} tone={type.tone} /><Detail label="學習樣貌" text={type.learning} tone={type.tone} /><Detail label="適合的學生" text={type.suited} tone={type.tone} /><Detail label="畢業後的規劃" text={type.nextStep} tone={type.tone} /></div><p className="mt-5 rounded-xl border-2 border-amber-300 bg-amber-50 p-3 text-sm font-bold leading-7 text-slate-700"><span className="font-black text-amber-800">選擇提醒：</span>{type.reminder}</p></div></div></article>; })}</div></section>
-
-          <section id="comparison" className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-8 sm:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"><h2 className="text-2xl font-black sm:text-3xl">快速比較</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-600">這是規劃方向，不是招生資格或保證結果；每年採計方式與各校安排可能調整。</p><div className="mt-5 space-y-4 md:hidden">{comparisons.map(([topic, ...values]) => <article key={topic} className="rounded-xl border-2 border-slate-900 bg-slate-50 p-4"><h3 className="text-base font-black">{topic}</h3><div className="mt-3 space-y-3">{schoolTypes.map((type, index) => <div key={type.title} className="rounded-lg border border-slate-200 bg-white p-3"><p className={`text-xs font-black ${toneClasses[type.tone].text}`}>{type.alias}</p><p className="mt-1 text-sm font-bold leading-7 text-slate-700">{values[index]}</p></div>)}</div></article>)}</div><div className="mt-6 hidden overflow-x-auto md:block"><table className="w-full min-w-[1050px] border-collapse text-left"><thead><tr><th className="border-b-4 border-slate-900 px-3 py-3 text-sm font-black text-slate-500">比較項目</th>{schoolTypes.map((type) => <th key={type.title} className={`border-b-4 border-slate-900 px-3 py-3 text-sm font-black ${toneClasses[type.tone].text}`}>{type.alias}</th>)}</tr></thead><tbody>{comparisons.map(([topic, ...values]) => <tr key={topic} className="border-b border-slate-200 last:border-b-0"><td className="bg-slate-50 px-3 py-4 text-sm font-black text-slate-700">{topic}</td>{values.map((value, index) => <td key={`${topic}-${index}`} className="px-3 py-4 text-sm font-bold leading-7 text-slate-700">{value}</td>)}</tr>)}</tbody></table></div></section>
-
-          <section id="choose" className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-amber-300 p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-8 sm:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"><h2 className="text-2xl font-black sm:text-3xl">選校前，先回答這四件事</h2><div className="mt-5 grid gap-4 md:grid-cols-2"><div className="rounded-2xl border-2 border-slate-900 bg-white p-5"><h3 className="text-lg font-black">1. 我喜歡怎麼學？</h3><p className="mt-2 text-sm font-bold leading-7 text-slate-700">喜歡閱讀、解題與學科探究，不代表只能選普高；喜歡動手做也不代表只看技高。請直接看課表與實作比例，判斷自己能否持續投入。</p></div><div className="rounded-2xl border-2 border-slate-900 bg-white p-5"><h3 className="text-lg font-black">2. 我現在的方向有多明確？</h3><p className="mt-2 text-sm font-bold leading-7 text-slate-700">方向尚不明確，可優先考慮探索空間與選修；若已有明確專長或職群興趣，則比較該校科的課程、設備、師資與成果機會。</p></div><div className="rounded-2xl border-2 border-slate-900 bg-white p-5"><h3 className="text-lg font-black">3. 三年或五年後，我想保留哪些選擇？</h3><p className="mt-2 text-sm font-bold leading-7 text-slate-700">先寫下可能想走的校系與工作方向，再回推需要的學科、專業、術科或作品準備；不要把單一考試當成唯一選項。</p></div><div className="rounded-2xl border-2 border-slate-900 bg-white p-5"><h3 className="text-lg font-black">4. 現實條件能不能配合？</h3><p className="mt-2 text-sm font-bold leading-7 text-slate-700">通勤時間、住宿、學費與助學、實習地點、家人支持及校園環境都會影響三到五年的學習品質，應一併比較。</p></div></div></section>
-
-          <section className="rounded-2xl border-4 border-slate-900 bg-indigo-50 p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-7"><h2 className="text-2xl font-black">想比較通勤與生活條件？</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-700">使用獨立比較單，填入兩所候選校科的通勤、費用、住宿與家人討論情況，也可直接列印給學生與家長使用。</p><a href={withBasePath('/life-feasibility')} className="mt-5 inline-flex w-full justify-center rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0_#0f172a] sm:w-auto">開啟生活條件比較單</a></section>
-
-          <section id="sources" className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-8 sm:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]"><h2 className="text-2xl font-black sm:text-3xl">官方資料與重要提醒</h2><p className="mt-3 text-sm font-bold leading-7 text-slate-700">本頁依《高級中等教育法》第 5 條、十二年國教課綱及技專招生官方資訊整理。入學管道、會考採計、比序、名額、科別、修課與畢業規定均可能因年度、就學區與學校不同而變動。</p><div className="mt-5 grid gap-3 sm:grid-cols-2"><a href="https://www.tntcsh.tn.edu.tw/ischool/publish_page/13/?cid=246" target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-xl border-2 border-slate-900 bg-slate-50 p-4 text-sm font-black hover:bg-sky-50">高級中等教育法：四類高中定義 <ExternalLink className="h-4 w-4" /></a><a href="https://www.techadmi.edu.tw/guide-page.php?gid=567" target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-xl border-2 border-slate-900 bg-slate-50 p-4 text-sm font-black hover:bg-sky-50">技專校院招策會：五專多元入學 <ExternalLink className="h-4 w-4" /></a></div><div className="mt-5 rounded-xl border-2 border-rose-300 bg-rose-50 p-4 text-sm font-bold leading-7 text-slate-700"><span className="font-black text-rose-800">最後確認：</span>填志願前請下載當學年度、所屬招生區的正式簡章，並查閱目標學校的招生科別與課程計畫；本頁是協助比較的導覽，不取代官方公告。</div></section>
+    <main className="school-types-page">
+      <section className="school-types-hero">
+        <div className="school-types-shell">
+          <a href={withBasePath('/')} className="school-types-back"><ArrowLeft size={16} />返回首頁</a>
+          <div className="school-types-hero-grid">
+            <div>
+              <p className="school-types-kicker"><Building2 size={16} />升學路線指南</p>
+              <h1>學校類型解析</h1>
+              <p className="school-types-lead">普高、技高、綜高、單科型高中與五專，課程重心各不相同。先看清楚怎麼學、何時選方向，再找到適合自己的升學路線。</p>
+              <div className="school-types-hero-actions">
+                <a href="#overview" className="school-types-primary">先看五種類型<ArrowRight size={17} /></a>
+                <a href="#choose" className="school-types-text-link">從選校問題開始</a>
+              </div>
+            </div>
+            <div className="school-types-hero-note" aria-label="閱讀重點">
+              <span>閱讀這頁時，先想三件事</span>
+              <strong>學習方式</strong><strong>探索空間</strong><strong>生活條件</strong>
+              <p>不同類型沒有絕對高低；最後仍要比較個別學校的課程與當年度簡章。</p>
+            </div>
+          </div>
         </div>
       </section>
+
+      <div className="school-types-layout school-types-shell">
+        <aside className={pageNavigationAsideClassName}>
+          <PageNavigation
+            title="本頁導覽"
+            navClassName="school-types-nav"
+            itemLayoutClassName="school-types-nav-list"
+            items={[
+              { id: 'overview', label: '五種類型一眼看懂' },
+              { id: 'details', label: '逐一認識學校類型' },
+              { id: 'comparison', label: '依項目快速比較' },
+              { id: 'choose', label: '選校前想清楚' },
+              { id: 'sources', label: '官方資料與提醒' },
+            ]}
+          />
+        </aside>
+
+        <div className="school-types-content">
+          <section id="overview" className="school-types-section">
+            <div className="school-types-section-heading"><p>先看全貌</p><h2>五種類型，一眼看懂</h2><span>先用學習重心縮小方向，再往下看課程與畢業後的規劃。</span></div>
+            <div className="school-types-overview-grid">
+              {schoolTypes.map((type, index) => {
+                const Icon = type.icon;
+                return <a key={type.title} href={`#type-${index}`} data-tone={type.tone} className="school-types-overview-card">
+                  <div className="school-types-overview-top"><span className="school-types-icon"><Icon size={21} /></span><span className="school-types-years">{type.years}</span></div>
+                  <p className="school-types-overview-index">0{index + 1} / {type.alias}</p>
+                  <h3>{type.title}</h3><p className="school-types-overview-highlight">{type.highlight}</p>
+                  <span className="school-types-overview-link">了解這種類型<ArrowRight size={15} /></span>
+                </a>;
+              })}
+            </div>
+          </section>
+
+          <section id="details" className="school-types-section">
+            <div className="school-types-section-heading"><p>深入了解</p><h2>逐一認識每條路線</h2><span>同一類型內，各校課程、選修與設備仍可能差很多。</span></div>
+            <div className="school-types-detail-list">
+              {schoolTypes.map((type, index) => {
+                const Icon = type.icon;
+                return <article id={`type-${index}`} key={type.title} data-tone={type.tone} className="school-types-detail-card">
+                  <div className="school-types-detail-header">
+                    <span className="school-types-icon"><Icon size={23} /></span>
+                    <div><p>0{index + 1} / {type.alias}</p><h3>{type.title}</h3><span>{type.highlight}</span></div>
+                    <strong>{type.years}</strong>
+                  </div>
+                  <div className="school-types-detail-grid">
+                    <Detail label="課程定位" text={type.definition} />
+                    <Detail label="實際怎麼學" text={type.learning} />
+                    <Detail label="適合誰考慮" text={type.suited} />
+                    <Detail label="畢業後方向" text={type.nextStep} />
+                  </div>
+                  <div className="school-types-reminder"><strong>選擇前留意</strong><p>{type.reminder}</p></div>
+                </article>;
+              })}
+            </div>
+          </section>
+
+          <section id="comparison" className="school-types-section school-types-comparison">
+            <div className="school-types-section-heading"><p>放在一起看</p><h2>依項目快速比較</h2><span>選一個你在意的問題，就能對照五種類型。</span></div>
+            <div className="school-types-comparison-tabs" role="group" aria-label="比較項目">
+              {comparisons.map(([topic], index) => <button key={topic} type="button" aria-pressed={comparisonIndex === index} onClick={() => setComparisonIndex(index)}>{topic}</button>)}
+            </div>
+            <div className="school-types-comparison-panel" aria-live="polite">
+              <h3>{comparisonTopic}</h3>
+              <div className="school-types-comparison-grid">
+                {schoolTypes.map((type, index) => <div key={type.title} data-tone={type.tone} className="school-types-comparison-item"><span>{type.alias}</span><p>{comparisonValues[index]}</p></div>)}
+              </div>
+            </div>
+            <p className="school-types-comparison-note">這裡是規劃方向，實際課程與招生方式請以個別學校及當年度簡章為準。</p>
+          </section>
+
+          <section id="choose" className="school-types-section school-types-choose">
+            <div className="school-types-section-heading"><p>做決定之前</p><h2>先回答這四件事</h2><span>把「喜不喜歡」與「能不能持續」一起納入選擇。</span></div>
+            <div className="school-types-questions">
+              {decisionQuestions.map((item, index) => <article key={item.title}><span>0{index + 1}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}
+            </div>
+            <a className="school-types-life-link" href={withBasePath('/life-feasibility')}><div><strong>通勤、費用與住宿也要比較</strong><span>用生活條件比較單，整理候選校科的現實條件。</span></div><span>開啟比較單<ArrowRight size={17} /></span></a>
+          </section>
+
+          <section id="sources" className="school-types-section school-types-sources">
+            <div className="school-types-section-heading"><p>最後確認</p><h2>回到官方資料核對</h2><span>招生名額、科別、採計方式與課程安排，可能因年度和學校而變動。</span></div>
+            <div className="school-types-source-links">
+              <a href="https://www.tntcsh.tn.edu.tw/ischool/publish_page/13/?cid=246" target="_blank" rel="noopener noreferrer"><BookOpen size={19} /><span><strong>高級中等教育法</strong><small>了解四類高中的法定定位</small></span><ExternalLink size={16} /></a>
+              <a href="https://www.techadmi.edu.tw/guide-page.php?gid=567" target="_blank" rel="noopener noreferrer"><GraduationCap size={19} /><span><strong>五專多元入學資訊</strong><small>查看招生管道與最新公告</small></span><ExternalLink size={16} /></a>
+            </div>
+            <p className="school-types-final-note"><strong>填志願前：</strong>請下載當學年度、所屬招生區的正式簡章，並查閱目標學校的招生科別與課程計畫。本頁供比較方向參考。</p>
+          </section>
+        </div>
+      </div>
     </main>
   );
 }
