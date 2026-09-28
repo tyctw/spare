@@ -175,20 +175,31 @@ export default function ResultsPage() {
 
   const handleExport = async (type: 'txt' | 'excel' | 'json' | 'print') => {
     const payload = { scores, results, identity: scores?.identity, vocationalGroups };
-    const { exportExcel, exportJson, exportTxt, printResults } = await import('../lib/exportUtils');
-    switch (type) {
-      case 'txt':
-        exportTxt(payload, regionName);
-        break;
-      case 'excel':
-        await exportExcel(payload, regionName);
-        break;
-      case 'json':
-        exportJson(payload);
-        break;
-      case 'print':
-        printResults(payload, regionName);
-        break;
+    const printWindow = type === 'print' ? window.open('', '_blank') : null;
+    if (type === 'print' && !printWindow) {
+      alert('無法開啟報告預覽，請檢查是否被瀏覽器阻擋。');
+      return;
+    }
+    try {
+      const { exportExcel, exportJson, exportTxt, printResults } = await import('../lib/exportUtils');
+      switch (type) {
+        case 'txt':
+          exportTxt(payload, regionName);
+          break;
+        case 'excel':
+          await exportExcel(payload, regionName);
+          break;
+        case 'json':
+          exportJson(payload);
+          break;
+        case 'print':
+          printResults(payload, regionName, printWindow!);
+          break;
+      }
+    } catch (error) {
+      if (printWindow && !printWindow.closed) printWindow.close();
+      console.error('Export failed:', error);
+      alert('匯出報告時發生錯誤，請稍後再試。');
     }
   };
 
