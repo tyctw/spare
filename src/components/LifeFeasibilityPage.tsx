@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
-import { ArrowLeft, CheckCircle2, Printer, RotateCcw } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { ArrowLeft, CheckCircle2, Printer, RotateCcw, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import { buildLifeDiscussionHtml } from '../lib/lifeDiscussionPrint';
 
 type Candidate = {
   name: string;
@@ -41,6 +42,9 @@ export default function LifeFeasibilityPage() {
   const [candidates, setCandidates] = useState([blankCandidate(), blankCandidate()]);
   const [decision, setDecision] = useState('');
   const [discussion, setDiscussion] = useState('');
+  const [printPreview, setPrintPreview] = useState<string | null>(null);
+  const [previewReady, setPreviewReady] = useState(false);
+  const printFrameRef = useRef<HTMLIFrameElement>(null);
   const results = useMemo(() => candidates.map((candidate) => score(candidate, budget)), [budget, candidates]);
 
   const update = (index: number, patch: Partial<Candidate>) => {
@@ -54,6 +58,20 @@ export default function LifeFeasibilityPage() {
     setDecision('');
     setDiscussion('');
   };
+
+  const previewDiscussionSheet = () => {
+    setPreviewReady(false);
+    setPrintPreview(buildLifeDiscussionHtml({ student, budget, candidates, results, decision, discussion }));
+  };
+
+  useEffect(() => {
+    if (!printPreview) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPrintPreview(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [printPreview]);
 
   return (
     <main className="life-print-sheet min-h-screen bg-slate-100 text-slate-900 print:bg-white">
@@ -102,7 +120,7 @@ export default function LifeFeasibilityPage() {
               </div>
               <div className="no-print flex w-full gap-2 sm:w-auto">
                 <button type="button" onClick={reset} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2.5 text-sm font-black sm:flex-none"><RotateCcw className="h-4 w-4" />清除</button>
-                <button type="button" onClick={() => window.print()} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-3 py-2.5 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] sm:flex-none"><Printer className="h-4 w-4" />列印討論單</button>
+                <button type="button" onClick={previewDiscussionSheet} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-3 py-2.5 text-sm font-black text-white shadow-[2px_2px_0_#0f172a] sm:flex-none"><Printer className="h-4 w-4" />列印討論單</button>
               </div>
             </div>
           </header>
@@ -153,6 +171,15 @@ export default function LifeFeasibilityPage() {
           </div>
         </section>
       </div>
+      {printPreview && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/65 p-2 sm:p-5" onClick={() => setPrintPreview(null)}>
+        <section role="dialog" aria-modal="true" aria-labelledby="life-print-preview-title" className="flex h-full max-h-[94vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 sm:px-6">
+            <div><h2 id="life-print-preview-title" className="text-lg font-black text-slate-900">討論單預覽</h2><p className="text-xs font-bold text-slate-600">請先確認內容；列印時只會輸出討論單。</p></div>
+            <div className="flex items-center gap-2"><button type="button" disabled={!previewReady} onClick={() => printFrameRef.current?.contentWindow?.print()} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-indigo-700 px-4 py-2 text-sm font-black text-white disabled:cursor-wait disabled:opacity-50"><Printer className="h-4 w-4" />列印／另存 PDF</button><button type="button" onClick={() => setPrintPreview(null)} aria-label="關閉討論單預覽" className="grid h-11 w-11 place-items-center rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100"><X className="h-5 w-5" /></button></div>
+          </div>
+          <iframe ref={printFrameRef} title="生活條件討論單列印預覽" srcDoc={printPreview} onLoad={() => setPreviewReady(true)} className="min-h-0 w-full flex-1 bg-slate-100" />
+        </section>
+      </div>}
     </main>
   );
 }
