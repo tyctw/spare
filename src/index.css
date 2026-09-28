@@ -91,6 +91,19 @@
   }
 }
 
+/* Keep the footer's original framed sections and clear dividers. */
+:where(#root) .site-footer[class~="border-t-4"] { border-top-width: 4px; border-top-color: #0f172a; }
+:where(#root) .site-footer [class~="border-slate-900"] { border-color: #0f172a; }
+:where(#root) .site-footer [class~="border-2"] { border-width: 2px; }
+:where(#root) .site-footer [class~="border-y-2"] { border-block-width: 2px; }
+:where(#root) .site-footer [class~="border-r-2"] { border-right-width: 2px; }
+:where(#root) .site-footer [class~="border-t-2"] { border-top-width: 2px; }
+:where(#root) .site-footer nav a:last-child { border-right-width: 0; }
+
+@media (prefers-contrast: more), (forced-colors: active) {
+  :where(#root) .site-footer [class~="border-slate-900"] { border-color: currentColor; }
+}
+
 /* Disclaimer page hero: use the same light, welcoming palette as the guide pages. */
 .disclaimer-page > section:first-child {
   background-color: #fffbeb;

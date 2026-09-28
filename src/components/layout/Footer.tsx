@@ -9,7 +9,7 @@ const links = [
 ];
 
 export default function Footer() {
-  return <footer className="mt-12 w-full border-t-4 border-slate-900">
+  return <footer className="site-footer mt-12 w-full border-t-4 border-slate-900">
     <div className="w-full bg-white">
       <div className="grid gap-7 p-6 sm:p-8 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
         <section className="relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-[#f5f7ff] p-4 shadow-[3px_3px_0_#0f172a] sm:p-5">
