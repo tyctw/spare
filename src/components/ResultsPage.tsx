@@ -112,6 +112,12 @@ export default function ResultsPage() {
   const { scores, results } = stored;
   const vocationalGroups = Array.isArray(stored.vocationalGroups) ? stored.vocationalGroups : [];
   const eligibleSchools = Array.isArray(results.eligibleSchools) ? results.eligibleSchools : [];
+  const zoneCounts = {
+    reach: Number(results.analysisReport?.zoneCounts?.reach) || 0,
+    target: Number(results.analysisReport?.zoneCounts?.target) || 0,
+    safe: Number(results.analysisReport?.zoneCounts?.safe) || 0,
+  };
+  const zoneTotal = zoneCounts.reach + zoneCounts.target + zoneCounts.safe;
   const regionName = ALL_REGIONS.find((region) => region.id === scores?.region)?.name || scores?.region || '未選擇';
   const schoolTypeLabel = scores?.schoolType === 'all' ? '全部類型' : scores?.schoolType || '全部類型';
   const ownershipLabel =
@@ -225,14 +231,14 @@ export default function ResultsPage() {
 
             <div className="results-hero-stats bg-amber-50 p-6 sm:p-8 lg:p-10">
               <div className="results-summary-heading">本次分析摘要</div>
-              <div className="results-stat-grid results-context-grid grid grid-cols-2 gap-3">
-                <div className="results-stat results-context-stat rounded-2xl border-2 border-slate-900 bg-white p-4">
-                  <div className="text-xs font-black text-slate-500">分析區域</div>
-                  <div className="mt-1 text-xl font-black">{regionName}</div>
+              <div className="results-summary-overview">
+                <div>
+                  <span>分析區域</span>
+                  <strong>{regionName}</strong>
                 </div>
-                <div className="results-stat results-context-stat rounded-2xl border-2 border-slate-900 bg-white p-4">
-                  <div className="text-xs font-black text-slate-500">推薦學校</div>
-                  <div className="mt-1 text-xl font-black">{results.eligibleSchools?.length || 0}<span className="results-stat-unit">所</span></div>
+                <div>
+                  <span>推薦學校</span>
+                  <strong>{eligibleSchools.length}<small>所</small></strong>
                 </div>
               </div>
               <div className="results-stat-grid results-score-stat-grid grid grid-cols-2 gap-3">
@@ -245,23 +251,25 @@ export default function ResultsPage() {
                   <div className="mt-1 text-4xl font-black">{results.totalCredits ?? '無'}</div>
                 </div>
               </div>
-              <div className="results-zone-grid grid grid-cols-3 gap-2 sm:gap-3" aria-label="落點區間分布">
-                {(['reach', 'target', 'safe'] as const).map((zone) => {
-                  const meta = zoneMeta[zone];
-                  const Icon = meta.icon;
-                  return (
-                    <div key={zone} data-zone={zone} className={`results-zone rounded-2xl border-2 p-3 sm:p-4 ${meta.tone}`}>
-                      <div className="results-zone-label"><Icon aria-hidden="true" className="h-4 w-4" /><span>{meta.label}</span></div>
-                      <div className="text-2xl font-black sm:text-3xl">{results.analysisReport?.zoneCounts?.[zone] || 0}</div>
-                    </div>
-                  );
-                })}
+              <div className="results-zone-section">
+                <div className="results-zone-section-heading"><span>落點區間分布</span><span>共 {zoneTotal} 所</span></div>
+                {zoneTotal > 0 && (
+                  <div className="results-zone-bar" role="img" aria-label={`夢幻區 ${zoneCounts.reach} 所，實際區 ${zoneCounts.target} 所，保守區 ${zoneCounts.safe} 所`}>
+                    {(['reach', 'target', 'safe'] as const).map((zone) => <span key={zone} data-zone={zone} style={{ width: `${(zoneCounts[zone] / zoneTotal) * 100}%` }} />)}
+                  </div>
+                )}
+                <div className="results-zone-grid grid grid-cols-3 gap-2 sm:gap-3" aria-label="落點區間數量">
+                  {(['reach', 'target', 'safe'] as const).map((zone) => {
+                    const meta = zoneMeta[zone];
+                    return (
+                      <div key={zone} data-zone={zone} className="results-zone">
+                        <div className="results-zone-label"><span className="results-zone-dot" aria-hidden="true" />{meta.label}</div>
+                        <div>{zoneCounts[zone]}<small>所</small></div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <a href={withBasePath('/score-change')} className="results-summary-score-change" aria-label="前往一級變化試算，比較成績增減一級後的志願變化">
-                <span className="results-summary-score-change-icon"><Sparkles aria-hidden="true" className="h-5 w-5" /></span>
-                <span className="results-summary-score-change-copy"><small>一級變化工具</small><strong>成績差一級，志願會怎麼變？</strong><span>比較新增、離開與跨落點區的校科</span></span>
-                <span className="results-summary-score-change-action">立即試算 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-45" /></span>
-              </a>
             </div>
           </div>
           {results.analysisReport?.suggestion && (
@@ -275,6 +283,12 @@ export default function ResultsPage() {
             </details>
           )}
         </section>
+
+        <a href={withBasePath('/score-change')} className="results-summary-score-change" aria-label="前往一級變化試算，比較成績增減一級後的志願變化">
+          <span className="results-summary-score-change-icon"><Sparkles aria-hidden="true" className="h-5 w-5" /></span>
+          <span className="results-summary-score-change-copy"><small>一級變化工具</small><strong>成績差一級，志願會怎麼變？</strong><span>比較新增、離開與跨落點區的校科</span></span>
+          <span className="results-summary-score-change-action">立即試算 <ArrowUp aria-hidden="true" className="h-4 w-4 rotate-45" /></span>
+        </a>
 
         <section className="results-content mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
           <aside className="results-sidebar space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-2 custom-scrollbar">
