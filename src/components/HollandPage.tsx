@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import {
   ArrowLeft,
+  ArrowRight,
   BookOpen,
   Brain,
   Check,
@@ -11,6 +12,8 @@ import {
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { pageNavigationAsideClassName } from './PageNavigation';
+import './holland-page.css';
+import hollandPrintStyles from './holland-print.css?inline';
 
 type HollandType = 'R' | 'I' | 'A' | 'S' | 'E' | 'C';
 
@@ -86,9 +89,11 @@ const answerOptions = [
   { score: 2, label: '非常符合', desc: '很像平常的我' },
 ];
 
+const questionGroups = Array.from({ length: 5 }, (_, index) => questions.slice(index * 6, index * 6 + 6));
+
 const hollandPrintCopy: Record<HollandType, { name: string; desc: string }> = {
   R: {
-    name: '實作型',
+    name: '實用型',
     desc: '偏好動手操作、工具設備、機械結構、戶外或實體任務，適合在明確目標中透過實作解決問題。',
   },
   I: {
@@ -124,6 +129,7 @@ export default function HollandPage() {
   const missingQuestionNumbers = questions
     .filter((question) => answers[question.id] === undefined)
     .map((question) => question.id);
+  const activeGroupIndex = Math.min(4, Math.floor(((missingQuestionNumbers[0] ?? 30) - 1) / 6));
 
   const results = useMemo(() => {
     const scores: Record<HollandType, number> = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
@@ -225,14 +231,9 @@ export default function HollandPage() {
       .map((item, index) => {
         const copy = hollandPrintCopy[item.type];
         return `
-          <article class="type-card ${index === 0 ? 'primary' : ''}">
-            <div class="type-row">
-              <div>
-                <span class="type-code">${item.type}</span>
-                <h3>${copy.name}</h3>
-              </div>
-              <div class="score">${item.score} / 10</div>
-            </div>
+          <article class="type-card">
+            <div class="type-card-top"><span class="type-rank">第 ${index + 1} 特質</span><strong>${item.score}<small> / 10</small></strong></div>
+            <div class="type-title"><span class="type-code">${item.type}</span><h3>${copy.name}</h3></div>
             <p>${copy.desc}</p>
           </article>
         `;
@@ -241,14 +242,11 @@ export default function HollandPage() {
 
     const groupsHtml = results.topGroups
       .map((group, index) => `
-        <tr>
-          <td class="rank">${index + 1}</td>
-          <td>
-            <strong>${group.id}</strong>
-            <span>${group.codes.join(' / ')}</span>
-          </td>
-          <td class="match">${group.matchPercentage}%</td>
-        </tr>
+        <article class="group-card">
+          <span class="group-rank">${String(index + 1).padStart(2, '0')}</span>
+          <div class="group-main"><h3>${group.id}</h3><p>關聯類型 ${group.codes.join(' / ')}</p></div>
+          <div class="group-match"><strong>${group.matchPercentage}%</strong><span>興趣關聯</span></div>
+        </article>
       `)
       .join('');
 
@@ -257,218 +255,39 @@ export default function HollandPage() {
       <html lang="zh-Hant">
         <head>
           <meta charset="utf-8" />
-          <title>Holland 性向測驗結果</title>
-          <style>
-            @page { size: A4; margin: 14mm; }
-            * { box-sizing: border-box; }
-            body {
-              margin: 0;
-              color: #0f172a;
-              font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            .report {
-              min-height: 100vh;
-              border: 3px solid #0f172a;
-              border-radius: 18px;
-              padding: 28px;
-            }
-            header {
-              display: flex;
-              justify-content: space-between;
-              gap: 24px;
-              border-bottom: 3px solid #0f172a;
-              padding-bottom: 18px;
-              margin-bottom: 22px;
-            }
-            h1 { margin: 0; font-size: 30px; font-weight: 900; }
-            .subtitle {
-              margin-top: 6px;
-              color: #64748b;
-              font-size: 13px;
-              font-weight: 800;
-              letter-spacing: 0.08em;
-              text-transform: uppercase;
-            }
-            .date {
-              align-self: flex-start;
-              border: 2px solid #cbd5e1;
-              border-radius: 12px;
-              padding: 8px 12px;
-              color: #475569;
-              font-size: 13px;
-              font-weight: 900;
-              white-space: nowrap;
-            }
-            .code-panel {
-              background: #f5f3ff;
-              border: 2px solid #8b5cf6;
-              border-radius: 18px;
-              padding: 22px;
-              text-align: center;
-              margin-bottom: 22px;
-            }
-            .label {
-              color: #6d28d9;
-              font-size: 12px;
-              font-weight: 900;
-              letter-spacing: 0.14em;
-              text-transform: uppercase;
-            }
-            .code {
-              margin-top: 8px;
-              font-size: 44px;
-              font-weight: 900;
-              letter-spacing: 0.06em;
-            }
-            .grid {
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              gap: 20px;
-            }
-            h2 { margin: 0 0 12px; font-size: 20px; font-weight: 900; }
-            .type-card {
-              border: 2px solid #e2e8f0;
-              border-radius: 16px;
-              padding: 14px;
-              margin-bottom: 10px;
-              background: #fff;
-            }
-            .type-card.primary {
-              border-color: #7c3aed;
-              background: #f5f3ff;
-            }
-            .type-row {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              gap: 12px;
-            }
-            .type-code {
-              display: inline-flex;
-              width: 42px;
-              height: 42px;
-              align-items: center;
-              justify-content: center;
-              border-radius: 12px;
-              background: #0f172a;
-              color: #fff;
-              font-size: 24px;
-              font-weight: 900;
-            }
-            h3 {
-              display: inline-block;
-              margin: 0 0 0 10px;
-              font-size: 18px;
-              font-weight: 900;
-            }
-            .score {
-              border-radius: 999px;
-              background: #ede9fe;
-              color: #6d28d9;
-              padding: 5px 10px;
-              font-size: 13px;
-              font-weight: 900;
-              white-space: nowrap;
-            }
-            p {
-              margin: 10px 0 0;
-              color: #475569;
-              font-size: 13px;
-              font-weight: 700;
-              line-height: 1.7;
-            }
-            table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-            td {
-              background: #f8fafc;
-              border-top: 2px solid #e2e8f0;
-              border-bottom: 2px solid #e2e8f0;
-              padding: 12px;
-              font-size: 13px;
-              font-weight: 800;
-            }
-            td:first-child {
-              border-left: 2px solid #e2e8f0;
-              border-radius: 12px 0 0 12px;
-            }
-            td:last-child {
-              border-right: 2px solid #e2e8f0;
-              border-radius: 0 12px 12px 0;
-            }
-            .rank { width: 42px; text-align: center; color: #64748b; font-weight: 900; }
-            td span {
-              display: block;
-              margin-top: 3px;
-              color: #64748b;
-              font-size: 11px;
-              font-weight: 800;
-            }
-            .match {
-              width: 78px;
-              text-align: right;
-              color: #6d28d9;
-              font-size: 18px;
-              font-weight: 900;
-            }
-            .note {
-              margin-top: 20px;
-              border: 2px dashed #cbd5e1;
-              border-radius: 16px;
-              background: #f8fafc;
-              padding: 14px;
-              color: #475569;
-              font-size: 12px;
-              font-weight: 700;
-              line-height: 1.7;
-            }
-            footer {
-              margin-top: 18px;
-              border-top: 2px solid #e2e8f0;
-              padding-top: 12px;
-              color: #94a3b8;
-              font-size: 11px;
-              font-weight: 800;
-              display: flex;
-              justify-content: space-between;
-              gap: 12px;
-            }
-          </style>
+          <title>荷倫碼性向測驗｜興趣探索報告</title>
+          <style>${hollandPrintStyles}</style>
         </head>
         <body>
           <main class="report">
             <header>
-              <div>
-                <h1>Holland 性向測驗結果</h1>
-                <div class="subtitle">Organized Result Report</div>
-              </div>
-              <div class="date">測驗日期：${reportDate}</div>
+              <div class="report-heading"><span class="eyebrow">興趣探索報告</span><h1>荷倫碼性向測驗結果</h1><p>從興趣特質出發，整理值得進一步認識的學習方向。</p></div>
+              <div class="date"><span>測驗日期</span><strong>${reportDate}</strong></div>
             </header>
 
-            <section class="code-panel">
-              <div class="label">你的 Holland Code</div>
-              <div class="code">${hollandCode}</div>
+            <section class="code-panel" aria-label="荷倫碼摘要">
+              <div><span class="eyebrow">你的前三項興趣特質</span><div class="code">${hollandCode}</div></div>
+              <p>依作答分數排序；分數相同時依題目類型順序排列。</p>
             </section>
 
-            <section class="grid">
-              <div>
-                <h2>前三項性向整理</h2>
-                ${typesHtml}
-              </div>
-              <div>
-                <h2>推薦技職群別</h2>
-                <table>
-                  <tbody>${groupsHtml}</tbody>
-                </table>
-                <div class="note">
-                  這份結果用來輔助探索興趣與選校方向，不代表唯一適合的科系。建議搭配成績、學習經驗、家庭討論與學校輔導資源一起判斷。
-                </div>
-              </div>
+            <section class="report-section">
+              <div class="section-heading"><div><span class="section-index">01</span><h2>前三項興趣特質</h2></div><p>看看你較偏好的活動與學習方式</p></div>
+              <div class="types-grid">${typesHtml}</div>
+            </section>
+
+            <section class="report-section groups-section">
+              <div class="section-heading"><div><span class="section-index">02</span><h2>優先探索的技職群別</h2></div><p>依興趣代碼整理的前六項群別</p></div>
+              <div class="groups-grid">${groupsHtml}</div>
+            </section>
+
+            <section class="note">
+              <strong>如何使用這份結果</strong>
+              <p>先查看感興趣群別的課程內容與實作方式，再搭配成績、學習經驗與學校輔導資源討論。興趣關聯百分比只是題目分數的對照，並非錄取機率或適合程度的保證。</p>
             </section>
 
             <footer>
               <span>TW 全國會考落點分析引擎</span>
-              <span>列印內容已排除題目與作答明細，只保留整理後結果。</span>
+              <span>本報告僅供升學探索參考 · 第 1 頁</span>
             </footer>
           </main>
         </body>
@@ -483,143 +302,126 @@ export default function HollandPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className="border-b-4 border-slate-900 bg-purple-50">
-        <div className="mx-auto max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
-          <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+    <main className={`holland-page min-h-screen text-slate-900 ${started ? 'is-started' : 'is-intro'}`}>
+      <section className="holland-hero">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <a href={withBasePath('/')} className="holland-back inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold">
             <ArrowLeft className="h-4 w-4" />
             返回首頁
           </a>
 
-          <div className="grid gap-8 py-10 lg:grid-cols-[1fr_340px] lg:items-end">
+          <div className="holland-hero-grid grid gap-8 py-9 lg:grid-cols-[minmax(0,1fr)_310px] lg:items-center">
             <div>
-              <div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-purple-100">
-                  <Brain className="h-6 w-6 text-purple-700" />
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">RIASEC Assessment</p>
-                  <p className="text-sm font-black text-slate-700">30 題 · 約 3 分鐘</p>
-                </div>
-              </div>
-              <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">荷倫碼性向測驗</h1>
-              <p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">
-                透過 RIASEC 六大興趣類型，快速整理你的學習偏好、職涯傾向與可能適合的高職群科。完成作答後，按下「分析結果」才會顯示分析。
+              <p className="holland-eyebrow"><Brain className="h-4 w-4" />RIASEC 興趣探索<span>30 題・約 3 分鐘</span></p>
+              <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">荷倫碼性向測驗</h1>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-slate-700 sm:text-lg">
+                從你喜歡的活動與做事方式出發，認識六種興趣特質，找到值得進一步探索的技職群科。
               </p>
+              {!started && <button type="button" onClick={startTest} className="holland-primary mt-6 inline-flex items-center justify-center gap-2 px-6 py-3.5 font-black">開始測驗<ArrowRight className="h-4 w-4" /></button>}
+              {started && <a href="#holland-questions" className="holland-text-link mt-5 inline-flex items-center gap-2 font-bold">前往作答題目<ArrowRight className="h-4 w-4" /></a>}
             </div>
 
-            <div className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]">
+            <div className="holland-progress-card rounded-2xl bg-white p-5">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm font-black text-slate-500">作答進度</p>
-                  <p className="mt-1 text-3xl font-black text-slate-900">{answeredCount}/{questions.length}</p>
+                  <p className="text-sm font-bold text-slate-500">作答進度</p>
+                  <p className="mt-1 text-3xl font-black text-slate-900">{answeredCount}<span className="text-lg text-slate-400"> / {questions.length}</span></p>
                 </div>
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-slate-900 bg-purple-100 text-xl font-black text-purple-700">
+                <div className="holland-progress-percent flex h-14 w-14 items-center justify-center rounded-2xl text-lg font-black text-purple-700">
                   {Math.round((answeredCount / questions.length) * 100)}%
                 </div>
               </div>
-              <div className="mt-5 h-3 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
+              <div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={answeredCount} aria-valuemin={0} aria-valuemax={questions.length} aria-label="作答進度">
                 <div className="h-full rounded-full bg-purple-600 transition-all" style={{ width: `${(answeredCount / questions.length) * 100}%` }} />
               </div>
-              {!started && (
-                <button onClick={startTest} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-                  開始測驗
-                  <Sparkles className="h-4 w-4" />
-                </button>
-              )}
+              <p className="mt-3 text-xs font-bold text-slate-500">{isComplete ? '題目已完成，可以查看分析結果。' : started ? '依直覺選擇，答案可以隨時修改。' : '開始後會顯示所有題目，依直覺作答即可。'}</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-[110rem] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-10">
-        <aside className={pageNavigationAsideClassName}>
-          <div className="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)]">
-            <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500">
-              <FileText className="h-4 w-4" />
-              頁面導覽
-            </div>
-            <div className="space-y-2">
+      <section className="holland-layout mx-auto grid max-w-7xl gap-7 px-4 py-9 sm:px-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
+        <aside className={`holland-aside ${started ? pageNavigationAsideClassName : ''}`}>
+          <div className="holland-aside-card rounded-2xl bg-white p-4">
+            <h2 className="mb-3 flex items-center gap-2 text-sm font-black text-slate-700"><FileText className="h-4 w-4 text-purple-700" />{started ? '題組導覽' : '認識六種興趣類型'}</h2>
+            {started ? <>
+              <p className="mb-3 text-xs font-bold leading-5 text-slate-500">每組 6 題。完成後可回頭修改答案。</p>
+              <nav aria-label="測驗題組" className="holland-group-nav">
+                {questionGroups.map((group, index) => <a key={index} href={`#holland-question-${group[0].id}`} aria-current={activeGroupIndex === index ? 'step' : undefined}><span>第 {index + 1} 組</span><small>{String(group[0].id).padStart(2, '0')}–{String(group[5].id).padStart(2, '0')}</small></a>)}
+              </nav>
+              <div className="holland-aside-tip mt-4 text-xs leading-5 text-slate-600">{isComplete ? '全部題目已完成，請前往查看結果。' : `還有 ${questions.length - answeredCount} 題未完成。`}</div>
+            </> : <div className="holland-type-list">
               {(Object.keys(hollandTypes) as HollandType[]).map((type) => {
                 const data = hollandTypes[type];
                 return (
-                  <div key={type} className={`rounded-xl border-2 ${data.border} ${data.bg} px-3 py-2`}>
-                    <div className={`text-sm font-black ${data.color}`}>{type} {data.name}</div>
-                    <p className="mt-1 text-xs font-bold leading-5 text-slate-600">{data.desc}</p>
+                  <div key={type} className="holland-type-card" data-type={type}>
+                    <div className="holland-type-letter">{type}</div><div><h3>{data.name}</h3><p>{data.desc}</p></div>
                   </div>
                 );
               })}
-            </div>
+            </div>}
           </div>
         </aside>
 
-        <div className="space-y-6">
+        <div className="holland-content space-y-6">
           {!started ? (
-            <div className="rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
-              <h2 className="text-2xl font-black tracking-tight">作答方式</h2>
-              <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <div className="holland-intro-card rounded-2xl bg-white p-6 sm:p-8">
+              <p className="holland-section-kicker">開始之前</p>
+              <h2 className="mt-2 text-2xl font-black tracking-tight">依直覺回答，沒有標準答案</h2>
+              <p className="mt-2 text-sm leading-7 text-slate-600">每題選一個最接近自己的程度。完成 30 題後，才能查看興趣類型與推薦探索職群。</p>
+              <div className="holland-answer-guide mt-6 grid gap-3 md:grid-cols-3">
                 {answerOptions.map((option) => (
-                  <div key={option.score} className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-4">
-                    <div className="text-lg font-black text-slate-900">{option.label}</div>
-                    <p className="mt-2 text-sm font-bold leading-6 text-slate-600">{option.desc}</p>
+                  <div key={option.score} className="rounded-2xl p-4">
+                    <span className="holland-answer-guide-score">{option.score + 1}</span>
+                    <div className="mt-3 text-lg font-black text-slate-900">{option.label}</div>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">{option.desc}</p>
                   </div>
                 ))}
               </div>
+              <button type="button" onClick={startTest} className="holland-primary mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 font-black">開始作答<ArrowRight className="h-4 w-4" /></button>
             </div>
           ) : (
-            <div id="holland-questions" className="scroll-mt-6 space-y-4">
-              {questions.map((question, index) => {
-                const selectedScore = answers[question.id];
-                return (
-                  <article id={`holland-question-${question.id}`} key={question.id} tabIndex={-1} className="scroll-mt-6 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] outline-none focus:ring-4 focus:ring-purple-300 sm:p-6">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                      <div className="min-w-0">
-                        <div className="mb-2 flex items-center gap-2">
-                          <span className="rounded-lg border-2 border-slate-900 bg-slate-900 px-2 py-1 text-xs font-black text-white">{String(index + 1).padStart(2, '0')}</span>
-                          <span className={`rounded-lg border px-2 py-1 text-xs font-black ${hollandTypes[question.type].border} ${hollandTypes[question.type].bg} ${hollandTypes[question.type].color}`}>
-                            {question.type} {hollandTypes[question.type].name}
-                          </span>
+            <div id="holland-questions" className="holland-question-list scroll-mt-6 space-y-6">
+              <div className="holland-question-intro"><div><p className="holland-section-kicker">測驗進行中</p><h2 className="mt-1 text-2xl font-black">選出最符合你的答案</h2></div><p>點選答案後會移到下一題；也可以用左側題組導覽回頭調整。</p></div>
+              {questionGroups.map((group, groupIndex) => (
+                <section className="holland-question-group" key={groupIndex} aria-label={`第 ${groupIndex + 1} 組題目`}>
+                  <div className="holland-group-heading"><div><span>第 {groupIndex + 1} 組・共 5 組</span><h2>題目 {String(group[0].id).padStart(2, '0')}–{String(group[5].id).padStart(2, '0')}</h2></div><strong>已答 {group.filter((question) => answers[question.id] !== undefined).length} / 6</strong></div>
+                  <div className="holland-group-questions">
+                    {group.map((question) => {
+                      const selectedScore = answers[question.id];
+                      return <article id={`holland-question-${question.id}`} key={question.id} tabIndex={-1} className="holland-question scroll-mt-6 outline-none">
+                        <div className="holland-question-heading"><span className="holland-question-number">{String(question.id).padStart(2, '0')}</span><span className="holland-question-type" data-type={question.type}>{question.type}・{hollandTypes[question.type].name}</span></div>
+                        <h3 className="mt-3 text-lg font-black leading-7 text-slate-900 sm:text-xl">{question.text}</h3>
+                        <div className="holland-answer-options mt-4 grid grid-cols-3 gap-2" role="group" aria-label={`第 ${question.id} 題答案`}>
+                          {answerOptions.map((option) => {
+                            const active = selectedScore === option.score;
+                            return <button type="button" key={option.score} onClick={() => setAnswer(question.id, option.score)} aria-pressed={active} className="holland-answer-option flex min-h-12 items-center justify-center gap-1 rounded-xl px-2 py-2 text-center text-xs font-bold sm:text-sm">{active && <Check className="h-4 w-4 shrink-0" />}{option.label}</button>;
+                          })}
                         </div>
-                        <h2 className="text-lg font-black leading-7 text-slate-900 sm:text-xl">{question.text}</h2>
-                      </div>
-
-                      <div className="grid shrink-0 grid-cols-3 gap-2 lg:w-[360px]">
-                        {answerOptions.map((option) => {
-                          const active = selectedScore === option.score;
-                          return (
-                            <button
-                              key={option.score}
-                              onClick={() => setAnswer(question.id, option.score)}
-                              className={`flex min-h-[64px] flex-col items-center justify-center rounded-xl border-2 px-2 py-2 text-center text-xs font-black transition-all ${active ? 'border-slate-900 bg-purple-600 text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]' : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-900 hover:bg-white'}`}
-                            >
-                              {active && <Check className="mb-1 h-4 w-4" />}
-                              {option.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
+                      </article>;
+                    })}
+                  </div>
+                </section>
+              ))}
             </div>
           )}
 
           {started && (
-            <section id="holland-actions" className="scroll-mt-6 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-6">
+            <section id="holland-actions" className="holland-actions scroll-mt-6 rounded-2xl p-5 sm:p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-xl font-black">測驗結果</h2>
-                  <p className="mt-1 text-sm font-bold text-slate-800">
-                    {isComplete ? '已完成全部題目。按下分析結果後，系統會顯示你的荷倫碼與推薦職群。' : '完成全部題目後，才可以進行分析。'}
+                  <p className="holland-section-kicker">完成作答</p>
+                  <h2 className="mt-1 text-xl font-black">查看你的興趣輪廓</h2>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {isComplete ? '30 題已完成，可以查看荷倫碼與建議探索的職群。' : `還有 ${questions.length - answeredCount} 題未完成，按下分析結果可快速找到漏答題目。`}
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
-                    <button onClick={analyzeResults} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                    <button type="button" onClick={analyzeResults} className="holland-primary inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-black">
                       <Sparkles className="h-4 w-4" />
                       分析結果
                     </button>
-                  <button onClick={reset} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                  <button type="button" onClick={reset} className="holland-secondary inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-black">
                     <RotateCcw className="h-4 w-4" />
                     重新作答
                   </button>
@@ -629,74 +431,75 @@ export default function HollandPage() {
           )}
 
           {isComplete && showResults && (
-            <section id="holland-results" className="scroll-mt-6 space-y-5">
-              <div className="rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
-                <div className="flex flex-col gap-4 border-b-2 border-dashed border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
+            <section id="holland-results" className="holland-results scroll-mt-6 space-y-5">
+              <div className="holland-result-panel rounded-2xl bg-white p-6 sm:p-8">
+                <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <div className="text-sm font-black uppercase tracking-widest text-purple-600">Your Holland Code</div>
-                    <h2 className="mt-2 text-3xl font-black tracking-tight">{results.topTypes.map((item) => item.type).join(' - ')}</h2>
+                    <div className="holland-section-kicker">你的測驗結果</div>
+                    <h2 className="mt-2 text-3xl font-black tracking-tight">荷倫碼 {results.topTypes.map((item) => item.type).join('・')}</h2>
+                    <p className="mt-2 text-sm text-slate-600">前三項興趣特質，幫你整理適合深入了解的學習方向。</p>
                   </div>
-                  <button onClick={printOrganizedResults} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(251,191,36,1)]">
+                  <button type="button" onClick={printOrganizedResults} className="holland-secondary inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-black">
                     <Printer className="h-4 w-4" />
                     列印結果
                   </button>
                 </div>
 
-                <div className="mt-6 grid gap-4 md:grid-cols-3">
+                <div className="holland-result-types mt-6 grid gap-4 md:grid-cols-3">
                   {results.topTypes.map((item, index) => {
                     const data = hollandTypes[item.type];
                     return (
-                      <div key={item.type} className={`rounded-2xl border-2 ${data.border} ${data.bg} p-5`}>
+                      <div key={item.type} className="holland-result-type rounded-2xl p-5" data-type={item.type}>
                         <div className="flex items-center justify-between gap-3">
-                          <div className={`text-5xl font-black ${data.color}`}>{item.type}</div>
-                          {index === 0 && <span className="rounded-lg border border-amber-300 bg-amber-100 px-2 py-1 text-xs font-black text-amber-700">主要特質</span>}
+                          <div className="holland-result-letter text-5xl font-black">{item.type}</div>
+                          <span className="holland-rank">{index === 0 ? '主要特質' : `第 ${index + 1} 特質`}</span>
                         </div>
                         <h3 className="mt-3 text-xl font-black text-slate-900">{data.name}</h3>
-                        <p className="mt-2 text-sm font-bold leading-6 text-slate-600">{data.desc}</p>
-                        <div className="mt-4 text-sm font-black text-slate-500">分數：{item.score} / 10</div>
+                        <p className="mt-2 text-sm leading-6 text-slate-600">{data.desc}</p>
+                        <div className="holland-result-score mt-4"><span>興趣分數</span><strong>{item.score} <small>/ 10</small></strong></div>
                       </div>
                     );
                   })}
                 </div>
               </div>
 
-              <div className="rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-8">
+              <div className="holland-result-panel rounded-2xl bg-white p-6 sm:p-8">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-emerald-100">
-                    <Sparkles className="h-6 w-6 text-emerald-700" />
-                  </div>
+                  <div className="holland-section-icon flex h-11 w-11 items-center justify-center rounded-xl"><Sparkles className="h-5 w-5" /></div>
                   <div>
                     <h2 className="text-2xl font-black tracking-tight">推薦探索職群</h2>
-                    <p className="mt-1 text-sm font-bold text-slate-500">依你的前三項荷倫碼計算契合度，建議從高分群科開始了解。</p>
+                    <p className="mt-1 text-sm text-slate-600">依前三項興趣特質整理，點選職群可查看學習內容與科別。</p>
                   </div>
                 </div>
 
-                <div className="mt-6 grid gap-4 md:grid-cols-2">
+                <div className="holland-group-results mt-6 grid gap-3 md:grid-cols-2">
                   {results.topGroups.map((group, index) => (
                     <a
                       key={group.id}
                       href={`${withBasePath('/vocational-encyclopedia')}?group=${encodeURIComponent(group.id)}`}
                       aria-label={`查看${group.id}的職群科系百科`}
-                      className="group flex items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 transition-all hover:-translate-y-0.5 hover:border-slate-900 hover:bg-purple-50 hover:shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] focus:outline-none focus:ring-4 focus:ring-purple-300"
+                      className="holland-group-result group flex items-center justify-between gap-4 rounded-2xl p-4 transition-all"
                     >
                       <div className="flex items-center gap-3">
                         <div className="text-3xl">{group.icon}</div>
                         <div>
                           <div className="text-lg font-black text-slate-900">{group.id}</div>
-                          <div className="mt-1 text-xs font-bold text-slate-500">關聯類型：{group.codes.join(' / ')} · 點擊探索</div>
+                          <div className="mt-1 text-xs text-slate-500">關聯類型：{group.codes.join(' / ')}</div>
                         </div>
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-black text-purple-700">{group.matchPercentage}%</div>
-                        {index === 0 && <div className="text-[10px] font-black text-emerald-600">最高契合</div>}
+                        <div className="text-[10px] font-bold text-slate-500">{index === 0 ? '最高關聯' : '興趣關聯'}</div>
                       </div>
+                      <ArrowRight className="h-4 w-4 shrink-0 text-purple-600" />
                     </a>
                   ))}
                 </div>
+                <p className="mt-4 text-xs leading-5 text-slate-500">百分比依本次回答換算，僅供探索方向參考，並非正式職涯診斷。</p>
 
-                <div className="mt-6 flex flex-col gap-3 border-t-2 border-dashed border-slate-200 pt-6 sm:flex-row">
-                  <a href={applyFilterHref()} className="inline-flex flex-1 items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">回首頁套用篩選</a>
-                  <a href={withBasePath('/vocational-encyclopedia')} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
+                <div className="mt-6 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row">
+                  <a href={applyFilterHref()} className="holland-secondary inline-flex flex-1 items-center justify-center px-4 py-3 text-sm font-black">回首頁套用篩選</a>
+                  <a href={withBasePath('/vocational-encyclopedia')} className="holland-primary inline-flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-black">
                     <BookOpen className="h-4 w-4" />
                     查看職群百科
                   </a>
@@ -708,27 +511,27 @@ export default function HollandPage() {
       </section>
 
       {showMissingModal && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4" role="presentation">
           <button
             type="button"
             aria-label="關閉未填寫題號提示"
             onClick={() => setShowMissingModal(false)}
             className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
           />
-          <div className="relative w-full max-w-lg rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+          <div role="dialog" aria-modal="true" aria-labelledby="holland-missing-title" className="holland-missing-dialog relative w-full max-w-lg rounded-2xl bg-white p-6">
             <div className="flex items-start gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-amber-100">
+              <div className="holland-missing-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100">
                 <FileText className="h-6 w-6 text-amber-700" />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-slate-900">還有題目未填寫</h2>
+                <h2 id="holland-missing-title" className="text-2xl font-black text-slate-900">還有題目未填寫</h2>
                 <p className="mt-2 text-sm font-bold leading-6 text-slate-600">
                   請先完成下列題號，再按一次「分析結果」。
                 </p>
               </div>
             </div>
 
-            <div className="mt-5 max-h-56 overflow-y-auto rounded-2xl border-2 border-slate-200 bg-slate-50 p-4">
+            <div className="holland-missing-list mt-5 max-h-56 overflow-y-auto rounded-2xl bg-slate-50 p-4">
               <div className="flex flex-wrap gap-2">
                 {missingQuestionNumbers.map((number) => (
                   <button
@@ -736,7 +539,7 @@ export default function HollandPage() {
                     key={number}
                     onClick={() => jumpToQuestion(number)}
                     aria-label={`跳到第 ${number} 題`}
-                    className="inline-flex h-9 min-w-9 items-center justify-center rounded-lg border-2 border-slate-900 bg-white px-2 text-sm font-black text-purple-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 hover:bg-purple-50 focus:outline-none focus:ring-4 focus:ring-purple-200 active:translate-y-0 active:shadow-none"
+                    className="holland-missing-number inline-flex h-9 min-w-9 items-center justify-center rounded-lg bg-white px-2 text-sm font-black text-purple-700 transition-all hover:bg-purple-50"
                   >
                     {number}
                   </button>
@@ -746,7 +549,7 @@ export default function HollandPage() {
 
             <button
               onClick={() => setShowMissingModal(false)}
-              className="mt-5 w-full rounded-xl border-2 border-slate-900 bg-purple-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+              className="holland-primary mt-5 w-full px-4 py-3 text-sm font-black"
             >
               繼續填答
             </button>
