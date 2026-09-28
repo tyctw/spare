@@ -167,3 +167,8 @@
 @media (prefers-reduced-motion: reduce) {
   .score-records-page *, .score-records-page *::before, .score-records-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* Readability pass for score records, forms, and explanatory notes. */
+.score-subject-tabs button, .score-history-filters button, .score-heading-link, .score-records-fields label, .score-records-subject, .score-analysis-empty a { font-size: 14px; }
+.score-chart-heading p, .score-profile-note, .score-analysis-disclaimer, .score-records-save-row p, .score-official-card > p, .score-summary-table { font-size: 14px; }
+.score-analysis-empty p, .score-history-empty, .score-records-notice { font-size: 15px; }

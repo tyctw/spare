@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BarChart3, BookOpen, ChevronDown, GraduationCap, Info, TrendingDown, TrendingUp } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { table114, table115 } from './HistoricalStatsModal';
+import MobileContentsNav from './MobileContentsNav';
 import './historical-stats-page.css';
 
 type YearKey = '115' | '114';
@@ -71,7 +72,7 @@ export default function HistoricalStatsPage() {
   return <main className="historical-page"><div className="historical-shell">
     <a className="historical-back" href={withBasePath('/')}><ArrowLeft size={17} aria-hidden="true" />返回首頁</a>
     <header className="historical-hero"><div><span className="historical-eyebrow"><BarChart3 size={17} aria-hidden="true" />會考成績分布參考</span><h1>歷年會考統計資料</h1><p>用年度摘要與等級組合比較，掌握五科成績及寫作測驗的整體分布。</p></div><div className="historical-hero-note"><Info size={22} aria-hidden="true" /><strong>看分布，也要看招生規則</strong><p>統計顯示整體人數與占比，不能直接當作個別學校的錄取門檻。</p></div></header>
-    <nav className="historical-jump" aria-label="本頁內容"><a href="#historical-overview">年度摘要</a><a href="#historical-focus">重點組合</a><a href="#historical-table">完整資料</a><a href="#historical-notes">判讀提醒</a></nav>
+    <nav className="historical-jump" aria-label="本頁內容"><a href="#historical-overview">年度摘要</a><a href="#historical-focus">重點組合</a><a href="#historical-table">完整資料</a><a href="#historical-notes">判讀提醒</a></nav><MobileContentsNav items={[{ id: 'historical-overview', label: '年度摘要' }, { id: 'historical-focus', label: '重點組合' }, { id: 'historical-table', label: '完整資料' }, { id: 'historical-notes', label: '判讀提醒' }]} />
 
     <section className="historical-section" id="historical-overview"><div className="historical-section-top"><div className="historical-heading"><span>01 / 年度總覽</span><h2>{activeYear} 學年度成績分布</h2><p>切換年度後，下方摘要、比較圖與完整資料會一起更新。</p></div><div className="historical-year-switch" aria-label="選擇會考學年度">{(['115', '114'] as YearKey[]).map((year) => <button key={year} type="button" aria-pressed={activeYear === year} onClick={() => setActiveYear(year)}>{year} 學年度</button>)}</div></div>
       <div className="historical-summary"><SummaryCard title="統計總人數" value={formatNumber(currentSummary.total)} note="本年度統計樣本" tone="neutral" /><SummaryCard title="5A0B0C" value={formatNumber(currentSummary.fiveACount)} note={`全體占比 ${currentSummary.fiveARate}`} tone="purple" /><SummaryCard title="3A 以上合計" value={formatNumber(currentSummary.threeAPlusCount)} note={`全體占比 ${currentSummary.threeAPlusRate}`} tone="blue" /><SummaryCard title="0A5B0C" value={formatNumber(currentSummary.zeroACount)} note={`全體占比 ${currentSummary.zeroARate}`} tone="peach" /></div>

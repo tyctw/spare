@@ -363,3 +363,6 @@
   .home-main { margin-top: 140px; }
   .home-analyze-bar > div { max-width: 100%; }
 }
+
+/* Readability pass for home page benefit and access guidance. */
+.home-promo-heading p, .home-promo-benefits li, .home-promo-action a, .home-free-access-help, .home-free-code-action, .home-vocational-help { font-size: 14px; }

@@ -1,7 +1,8 @@
 import React from 'react';
-import { ArrowLeft, Database, Mail, Shield } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, ChevronRight, Database, Mail, Search, Shield, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
+import MobileContentsNav from './MobileContentsNav';
+import './terms-page.css';
 
 type LegalPageKind = 'privacy' | 'terms';
 type LegalSection = { title: string; body: string[] };
@@ -388,24 +389,48 @@ const pages: Record<LegalPageKind, LegalPageContent> = {
 };
 
 export default function LegalPage({ kind }: { kind: LegalPageKind }) {
+  return <LegalDocumentLayout kind={kind} />;
+}
+
+const termsGroups = [
+  { id: 'terms-basics', title: '服務與使用範圍', range: '01—05', start: 0, end: 5 },
+  { id: 'terms-account', title: '帳號、資料與分享', range: '06—10', start: 5, end: 10 },
+  { id: 'terms-payment', title: '會員、付款與退款', range: '11—16', start: 10, end: 16 },
+  { id: 'terms-rights', title: '資料權利與使用規則', range: '17—22', start: 16, end: 22 },
+  { id: 'terms-service', title: '服務責任與爭議', range: '23—26', start: 22, end: 26 },
+];
+
+const privacyGroups = [
+  { id: 'privacy-principles', title: '政策與資料原則', range: '01—03', start: 0, end: 3 },
+  { id: 'privacy-activity', title: '帳號與互動資料', range: '04—09', start: 3, end: 9 },
+  { id: 'privacy-technology', title: '技術與第三方服務', range: '10—12', start: 9, end: 12 },
+  { id: 'privacy-rights', title: '資料保存與您的權利', range: '13—17', start: 12, end: 17 },
+  { id: 'privacy-security', title: '安全與政策更新', range: '18—19', start: 17, end: 19 },
+];
+
+function LegalDocumentLayout({ kind }: { kind: LegalPageKind }) {
+  const [query, setQuery] = React.useState('');
   const page = pages[kind];
-  const Icon = page.icon;
+  const sections = page.sections;
+  const groups = kind === 'privacy' ? privacyGroups : termsGroups;
   const isPrivacy = kind === 'privacy';
-  const colors = isPrivacy
-    ? { hero: 'bg-emerald-50', iconBg: 'bg-emerald-100', iconText: 'text-emerald-700', panel: 'bg-emerald-50' }
-    : { hero: 'bg-indigo-50', iconBg: 'bg-indigo-100', iconText: 'text-indigo-700', panel: 'bg-indigo-50' };
-  const alternateHref = isPrivacy ? withBasePath('/terms') : withBasePath('/privacy');
-  const alternateText = isPrivacy ? '查看服務條款' : '查看隱私權政策';
-  return <main className="min-h-screen bg-slate-50 text-slate-900">
-    <section className={'border-b-4 border-slate-900 ' + colors.hero}><div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-      <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5"><ArrowLeft className="h-4 w-4" />回到首頁</a>
-      <div className="py-10"><div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0_#0f172a]"><div className={'flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 ' + colors.iconBg}><Icon className={'h-6 w-6 ' + colors.iconText} /></div><div><p className="text-xs font-black tracking-widest text-slate-500">{page.eyebrow}</p><p className="text-sm font-black text-slate-700">最後更新：{updatedDates[kind]}</p></div></div><h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">{page.title}</h1><p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">{page.description}</p></div>
-    </div></section>
-    <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[240px_1fr] lg:px-8">
-      <aside className={pageNavigationAsideClassName}><PageNavigation navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0_#0f172a]" itemLayoutClassName="space-y-2" items={page.sections.map((section, index) => ({ id: 'section-' + String(index + 1), label: section.title, className: 'block rounded-xl' }))} /></aside>
-      <div className="space-y-5">{page.sections.map((section, index) => <article key={section.title} id={'section-' + String(index + 1)} className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0_#0f172a] sm:p-8"><h2 className="text-2xl font-black tracking-tight">{section.title}</h2><div className="mt-4 space-y-4">{section.body.map((paragraph) => <p key={paragraph} className="text-base font-bold leading-8 text-slate-700">{paragraph}</p>)}</div></article>)}
-        <section className={'rounded-2xl border-4 border-slate-900 p-5 shadow-[5px_5px_0_#0f172a] ' + colors.panel}><h2 className="text-xl font-black">{isPrivacy ? '有問題或想行使資料權利嗎？' : '條款、會員或交易問題'}</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-700">請透過電子郵件聯絡本網站營運者；我們會依適用法令處理您的請求。</p><div className="mt-4 flex flex-col gap-3 sm:flex-row"><a href={alternateHref} className="inline-flex items-center justify-center rounded-xl border-2 border-slate-900 bg-white px-4 py-3 text-sm font-black shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5">{alternateText}</a><a href={'mailto:' + contactEmail} className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5"><Mail className="h-4 w-4" />{contactEmail}</a></div></section>
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const matches = React.useMemo(() => sections.map((section) => !normalizedQuery || [section.title, ...section.body].some((text) => text.toLocaleLowerCase().includes(normalizedQuery))), [sections, normalizedQuery]);
+  const resultCount = matches.filter(Boolean).length;
+  const visibleGroups = groups.filter((group) => matches.slice(group.start, group.end).some(Boolean));
+  const searchLabel = isPrivacy ? '搜尋隱私權政策' : '搜尋服務條款';
+  const sectionNoun = isPrivacy ? '節政策' : '節條款';
+  const alternateHref = isPrivacy ? '/terms' : '/privacy';
+  const alternateLabel = isPrivacy ? '查看服務條款' : '查看隱私權政策';
+
+  return <main className={`terms-page ${isPrivacy ? 'privacy-page' : ''}`}><div className="terms-shell">
+    <nav className="terms-breadcrumb" aria-label="麵包屑"><a href={withBasePath('/')}><ArrowLeft size={15} />返回首頁</a><ChevronRight size={14} /><span aria-current="page">{page.title}</span></nav>
+    <header className="terms-hero"><div><p className="terms-kicker">{isPrivacy ? <Database size={16} /> : <Shield size={16} />}{page.eyebrow}</p><h1>{page.title}</h1><p className="terms-hero-description">{page.description}</p><div className="terms-meta"><span><BookOpen size={15} />共 {sections.length} 節</span><time dateTime={updatedDates[kind]}>最後更新：{updatedDates[kind]}</time></div></div><div className="terms-hero-aside"><span>閱讀提示</span><p>{isPrivacy ? '想了解資料保存、刪除及個人資料權利，可先查看第 13 至 16 節。' : '依主題查找你需要的條款，付款與會員權益請特別留意第 11 至 16 節。'}</p></div></header>
+    <div className="terms-search-panel"><label className="terms-search"><Search size={20} /><span className="sr-only">{searchLabel}</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={isPrivacy ? '搜尋政策，例如：分享、保存、刪除帳號' : '搜尋條款，例如：退款、分享、LINE 登入'} />{query && <button type="button" onClick={() => setQuery('')} aria-label="清除搜尋"><X size={18} /></button>}</label><span role="status">{normalizedQuery ? `找到 ${resultCount} 節相關內容` : '快速查找章節內容'}</span></div>
+    <div className="terms-layout"><aside className="terms-aside"><nav aria-label="主題導覽"><p>{isPrivacy ? '政策目錄' : '條款目錄'}</p>{visibleGroups.map((group) => <a key={group.id} href={`#${group.id}`}><span>{group.range}</span>{group.title}</a>)}</nav><MobileContentsNav items={visibleGroups.map(({ id, title, range }) => ({ id, label: title, number: range }))} /><div className="terms-aside-note">{isPrivacy ? <Database size={20} /> : <Shield size={20} />}<p>{isPrivacy ? '如需查詢、更正或刪除資料，可依政策說明聯絡本網站營運者。' : '請保留交易時適用的條款版本，並留意當次方案內容。'}</p></div></aside>
+      <div className="terms-content">{resultCount ? groups.map((group, groupIndex) => { const visibleSections = sections.slice(group.start, group.end).map((section, localIndex) => ({ section, index: group.start + localIndex })).filter(({ index }) => matches[index]); if (!visibleSections.length) return null; return <section key={group.id} id={group.id} className="terms-group" aria-labelledby={`${group.id}-title`}><div className="terms-group-heading"><span>PART {String(groupIndex + 1).padStart(2, '0')} / {group.range}</span><h2 id={`${group.id}-title`}>{group.title}</h2><p>{visibleSections.length} {sectionNoun}</p></div><div className="terms-articles">{visibleSections.map(({ section, index }) => <article key={section.title} id={`section-${index + 1}`} className="terms-article"><div className="terms-article-head"><span>{String(index + 1).padStart(2, '0')}</span><h3>{section.title}</h3></div><div className="terms-article-body">{section.body.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}</div></article>)}</div></section>; }) : <div className="terms-empty"><Search size={32} /><h2>找不到相符的內容</h2><p>試試較短的關鍵字，或清除搜尋查看完整內容。</p><button type="button" onClick={() => setQuery('')}>查看全部內容<ArrowRight size={16} /></button></div>}
+        <section className="terms-contact"><div><p>需要進一步協助？</p><h2>{isPrivacy ? '有問題或想行使資料權利嗎？' : '條款、會員或交易問題'}</h2><span>請透過電子郵件聯絡本網站營運者；我們會依適用法令處理您的請求。</span></div><div className="terms-contact-actions"><a href={withBasePath(alternateHref)}>{alternateLabel}<ArrowRight size={16} /></a><a href={`mailto:${contactEmail}`}><Mail size={17} />{contactEmail}</a></div></section>
       </div>
-    </section>
-  </main>;
+    </div>
+  </div></main>;
 }

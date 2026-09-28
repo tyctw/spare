@@ -318,3 +318,8 @@
 @media (prefers-reduced-motion: reduce) {
   .results-page *, .results-empty-page * { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* Readability pass for analysis summaries and result actions. */
+.results-page .results-tools-menu :is(a, button), .results-page .results-school-actions > *, .results-page .results-hero-strategy-toggle, .results-page .results-summary-score-change-action { font-size: 14px; }
+.results-page .results-summary-heading, .results-page .results-zone-section-heading, .results-page .results-analysis-heading { font-size: 15px; }
+.results-page .results-summary-overview span, .results-page .results-score-stat-label, .results-page .results-school-meta-tags > :is(span, a), .results-page .results-school-district-tag { font-size: 13px; }

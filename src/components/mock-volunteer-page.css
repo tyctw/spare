@@ -365,3 +365,8 @@
 @media (prefers-reduced-motion: reduce) {
   .mock-volunteer-page *, .mock-volunteer-page *::before, .mock-volunteer-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* Readability pass for school choices and selection actions. */
+.mock-volunteer-region-card p, .mock-volunteer-empty-list p { font-size: 15px; }
+.mock-volunteer-search-head > p, .mock-volunteer-list-help, .mock-volunteer-school-dept, .mock-volunteer-add-button, .mock-volunteer-action, .mock-volunteer-strategy-link, .mock-volunteer-empty-list a, .mock-volunteer-choice-dept, .mock-volunteer-notice button, .mock-volunteer-mobile-nav a { font-size: 14px; }
+.mock-volunteer-share-note { font-size: 13px; }

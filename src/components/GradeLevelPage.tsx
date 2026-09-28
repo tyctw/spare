@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, ArrowRight, Award, BookOpen, CheckCircle2, Info, Layers, Table2 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import MobileContentsNav from './MobileContentsNav';
 import './grade-level-page.css';
 
 type YearKey = '115' | '114';
@@ -54,7 +55,7 @@ export default function GradeLevelPage() {
   return <main className="grade-level-page"><div className="grade-level-shell">
     <a className="grade-level-back" href={withBasePath('/')}><ArrowLeft size={17} aria-hidden="true" />返回首頁</a>
     <header className="grade-level-hero"><div><span className="grade-level-eyebrow"><Award size={17} aria-hidden="true" />國中教育會考・成績參考</span><h1>等級對照表</h1><p>先認識 A、B、C 與加號標示，再查不同年度各科的答對題數與加權成績區間。</p></div><div className="grade-level-hero-aside"><Info size={22} aria-hidden="true" /><strong>等級和標示，分開看更清楚</strong><p>A++、A+、B++、B+ 是同一等級內的細分標示；招生積分仍須依就學區規則換算。</p></div></header>
-    <nav className="grade-level-jump" aria-label="本頁內容"><a href="#grade-level-overview">成績等級</a><a href="#grade-level-marks">加號標示</a><a href="#grade-level-table">年度對照</a><a href="#grade-level-notes">使用提醒</a></nav>
+    <nav className="grade-level-jump" aria-label="本頁內容"><a href="#grade-level-overview">成績等級</a><a href="#grade-level-marks">加號標示</a><a href="#grade-level-table">年度對照</a><a href="#grade-level-notes">使用提醒</a></nav><MobileContentsNav items={[{ id: 'grade-level-overview', label: '成績等級' }, { id: 'grade-level-marks', label: '加號標示' }, { id: 'grade-level-table', label: '年度對照' }, { id: 'grade-level-notes', label: '使用提醒' }]} />
 
     <section className="grade-level-section" id="grade-level-overview"><div className="grade-level-heading"><span>01 / 先看大方向</span><h2>會考成績分成三個等級</h2><p>五科以精熟、基礎、待加強呈現；加號標示再細分同一等級內的表現。</p></div><div className="grade-level-summary"><article data-tone="a"><span>精熟</span><strong>A</strong><p>A++・A+・A</p></article><article data-tone="b"><span>基礎</span><strong>B</strong><p>B++・B+・B</p></article><article data-tone="c"><span>待加強</span><strong>C</strong><p>C</p></article></div></section>
 

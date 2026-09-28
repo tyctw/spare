@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FileText } from 'lucide-react';
+import MobileContentsNav from './MobileContentsNav';
 
 export interface PageNavigationItem {
   id: string;
@@ -56,7 +57,8 @@ export default function PageNavigation({
   }, [itemIds]);
 
   return (
-    <nav className={navClassName}>
+    <>
+    <nav className={`${navClassName} page-navigation-desktop`} data-page-navigation>
       <div className="mb-3 flex items-center gap-2 text-sm font-black text-slate-500">
         <FileText className="h-4 w-4" />
         {title}
@@ -81,5 +83,7 @@ export default function PageNavigation({
         })}
       </div>
     </nav>
+    <MobileContentsNav items={validItems} activeId={activeId} />
+    </>
   );
 }

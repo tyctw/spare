@@ -90,7 +90,7 @@
 .school-types-final-note strong { color: #493990; }
 .school-types-page a:focus-visible, .school-types-page button:focus-visible { outline: 3px solid #9077d1; outline-offset: 3px; }
 @media (max-width: 1100px) { .school-types-layout { grid-template-columns: 190px minmax(0, 1fr); gap: 24px; } .school-types-overview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 850px) {
+@media (max-width: 950px) {
   .school-types-hero-grid { grid-template-columns: 1fr; gap: 27px; padding-top: 42px; }
   .school-types-hero-note { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
   .school-types-hero-note > span, .school-types-hero-note p { grid-column: 1 / -1; }
@@ -127,3 +127,20 @@
   .school-types-life-link { align-items: flex-start; flex-direction: column; gap: 10px; }
 }
 @media (prefers-reduced-motion: reduce) { .school-types-page * { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+@media(max-width:950px){
+  .school-types-nav-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;padding:0}
+  .school-types-page .school-types-nav a{display:flex;align-items:center;width:auto;min-height:44px;white-space:normal}
+  .school-types-comparison-tabs button{min-height:44px}
+}
+@media(max-width:600px){
+  .school-types-hero-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .school-types-primary{width:100%}
+  .school-types-text-link{display:flex;align-items:center;justify-content:center;min-height:44px}
+  .school-types-comparison-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .school-types-comparison-tabs button{white-space:normal}
+}
+
+/* Readability pass for school-type explanations and comparison controls. */
+.school-type-detail p, .school-types-comparison-item p, .school-types-questions p { font-size: 15px; }
+.school-types-page .school-types-nav a, .school-types-overview-link, .school-types-hero-note p, .school-types-reminder p, .school-types-comparison-tabs button, .school-types-comparison-note, .school-types-final-note { font-size: 14px; }
+.school-types-section-heading > p, .school-types-detail-header p { font-size: 13px; }

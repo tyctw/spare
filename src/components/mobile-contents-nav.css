@@ -1,0 +1,19 @@
+.mobile-contents-nav { display: none; }
+
+@media (max-width: 950px) {
+  .page-navigation-desktop { display: none !important; }
+  .mobile-contents-nav { display: block; overflow: hidden; border: 1px solid #dcd8ed; border-radius: 12px; background: #fff; box-shadow: 0 8px 24px #30285c0a; }
+  .mobile-contents-nav summary { display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 0 17px; cursor: pointer; list-style: none; }
+  .mobile-contents-nav summary::-webkit-details-marker { display: none; }
+  .mobile-contents-nav-title { display: inline-flex; align-items: center; gap: 10px; color: #493a91; }
+  .mobile-contents-nav-title strong { color: #29364c; font-size: 15px; font-weight: 800; }
+  .mobile-contents-nav-count { margin-left: auto; color: #7e88a0; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .mobile-contents-nav summary > svg:last-child { flex: none; color: #6655ab; transition: transform .2s; }
+  .mobile-contents-nav[open] summary > svg:last-child { transform: rotate(180deg); }
+  .mobile-contents-nav-links { display: grid; border-top: 1px solid #e9e6f2; padding: 5px 17px 10px; }
+  .mobile-contents-nav-links a { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 3px; border-bottom: 1px solid #f0eef5; color: #4e5c71; font-size: 14px; font-weight: 700; text-decoration: none; }
+  .mobile-contents-nav-links a:last-child { border-bottom: 0; }
+  .mobile-contents-nav-links a:hover, .mobile-contents-nav-links a[aria-current] { color: #5947a9; }
+  .mobile-contents-nav-links a span { flex: none; color: #8474bb; font-size: 12px; }
+  .mobile-contents-nav-links a svg { flex: none; margin-left: auto; color: #a5a0bb; }
+}

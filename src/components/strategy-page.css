@@ -84,7 +84,7 @@
 .strategy-final-note svg { flex: none; }
 .strategy-page a:focus-visible { outline: 3px solid #9a82d3; outline-offset: 3px; }
 @media (max-width: 1100px) { .strategy-layout { grid-template-columns: 190px minmax(0, 1fr); gap: 24px; } .strategy-ranking-points, .strategy-tiers { grid-template-columns: 1fr; } .strategy-tiers article { min-height: 0; } }
-@media (max-width: 850px) {
+@media (max-width: 950px) {
   .strategy-hero-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 42px; }
   .strategy-hero-note { display: grid; grid-template-columns: 45px 1fr; align-items: start; gap: 0 13px; }
   .strategy-note-icon { grid-row: 1 / 4; }
@@ -121,3 +121,8 @@
   .strategy-workflow-cta-action { width: 100%; justify-content: flex-end; }
 }
 @media (prefers-reduced-motion: reduce) { .strategy-page * { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+/* Readability pass for strategy advice, checks, and navigation. */
+.strategy-principles p, .strategy-tiers p, .strategy-rule-note p, .strategy-checks p { font-size: 15px; }
+.strategy-page .strategy-nav a, .strategy-inline-link, .strategy-final-note, .strategy-heading > p, .strategy-hero-note > p { font-size: 14px; }
+.strategy-workflow-cta-action { font-size: 14px; }

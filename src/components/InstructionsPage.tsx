@@ -1,11 +1,12 @@
-import React from "react";
 import {
   ArrowLeft,
   Award,
   BookOpen,
+  ArrowRight,
   Calculator,
   CheckCircle2,
   Download,
+  ChevronRight,
   KeyRound,
   MapPin,
   Search,
@@ -14,7 +15,8 @@ import {
   Target,
 } from "lucide-react";
 import { withBasePath } from "../lib/routes";
-import PageNavigation, { pageNavigationAsideClassName } from "./PageNavigation";
+import MobileContentsNav from "./MobileContentsNav";
+import "./instructions-page.css";
 
 const steps = [
   {
@@ -91,177 +93,39 @@ const finalChecks = [
   '和家人討論通勤、住宿、學費、課程方向與就讀意願；志願序應由最想就讀且符合資格的選項開始排列。',
 ];
 
+const sections = [
+  { id: "flow", label: "操作流程", number: "01" },
+  { id: "scores", label: "填寫成績", number: "02" },
+  { id: "results", label: "閱讀結果", number: "03" },
+  { id: "planning", label: "規劃志願", number: "04" },
+  { id: "actions", label: "選填前確認", number: "05" },
+];
+
 export default function InstructionsPage() {
-  return (
-    <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
-      <section className="border-b-4 border-slate-900 bg-blue-50">
-        <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8">
-          <a
-            href={withBasePath("/")}
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none sm:px-4"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            返回首頁
-          </a>
-          <div className="grid gap-8 py-8 sm:py-10 lg:grid-cols-[1fr_320px] lg:items-end">
-            <div>
-              <div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-3 py-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:px-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-blue-100">
-                  <BookOpen className="h-6 w-6 text-blue-700" />
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">
-                    User Guide
-                  </p>
-                  <p className="text-sm font-black text-slate-700">
-                    從輸入條件到閱讀結果
-                  </p>
-                </div>
-              </div>
-              <h1 className="text-3xl font-black sm:text-5xl lg:text-6xl">
-                使用說明
-              </h1>
-              <p className="mt-4 max-w-3xl text-[15px] font-bold leading-8 text-slate-700 sm:text-lg">
-                用這份流程完成一次落點分析，並正確解讀結果。填志願前，請務必回到當年度招生簡章確認資格、採計項目、比序、名額與時程。
-              </p>
-            </div>
-            <div className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-              <div className="flex items-center gap-3">
-                <ShieldCheck className="h-6 w-6 text-emerald-700" />
-                <h2 className="text-lg font-black">使用前先知道</h2>
-              </div>
-              <p className="mt-3 text-sm font-bold leading-7 text-slate-600">
-                本工具協助整理可能方向與校科選項，不會保證錄取，也不取代學校輔導老師、招生單位或正式公告。
-              </p>
-            </div>
-          </div>
+  return <main className="guide-page">
+    <div className="guide-shell">
+      <nav className="guide-breadcrumb" aria-label="麵包屑"><a href={withBasePath("/")}><ArrowLeft size={15} />返回首頁</a><ChevronRight size={14} /><span aria-current="page">使用說明</span></nav>
+      <header className="guide-hero">
+        <div className="guide-hero-copy"><span className="guide-kicker"><BookOpen size={15} /> USER GUIDE / 使用指南</span><h1>從開始分析，<br /><em>到選出適合的方向。</em></h1><p>第一次使用也能跟著步驟完成落點分析。了解怎麼填入條件、閱讀結果，再把有興趣的校科整理成志願清單。</p><div className="guide-hero-actions"><a className="guide-primary-button" href={withBasePath("/")}>開始落點分析<ArrowRight size={17} /></a><a className="guide-text-link" href="#flow">先看操作步驟<ArrowRight size={16} /></a></div></div>
+        <div className="guide-hero-panel" aria-label="使用流程摘要"><div className="guide-panel-header"><span>YOUR JOURNEY</span><span>01 — 04</span></div><div className="guide-journey"><div><span><SlidersHorizontal size={20} /></span><p>設定條件<small>就學區與會考成績</small></p></div><div><span><Search size={20} /></span><p>閱讀結果<small>核對推薦與資料</small></p></div><div><span><Target size={20} /></span><p>規劃志願<small>比較、排序與討論</small></p></div><div><span><ShieldCheck size={20} /></span><p>正式確認<small>回到當年度官方簡章</small></p></div></div></div>
+      </header>
+      <div className="guide-caution"><ShieldCheck size={20} /><p><strong>使用前先知道</strong>落點分析用於整理可能方向與校科選項，不保證錄取。招生資格、計分、名額與時程，請以當年度官方公告為準。</p></div>
+      <div className="guide-layout">
+        <aside className="guide-aside"><nav aria-label="頁面導覽"><p>本頁內容</p>{sections.map((section) => <a href={`#${section.id}`} key={section.id}><span>{section.number}</span>{section.label}<ArrowRight size={14} /></a>)}</nav><MobileContentsNav items={sections} /><div className="guide-aside-help"><p>準備好開始了嗎？</p><a href={withBasePath("/")}>前往分析頁<ArrowUpRightIcon /></a></div></aside>
+        <div className="guide-content">
+          <section id="flow" className="guide-section"><SectionHeading number="01" eyebrow="GET STARTED" title="六步完成落點分析" description="先依序填妥資料，再核對送出。每個條件都以實際報名資料與成績通知單為準。" /><ol className="guide-steps">{steps.map((step, index) => { const Icon = step.icon; return <li key={step.title}><div className="guide-step-marker"><span>{String(index + 1).padStart(2, "0")}</span></div><div className="guide-step-body"><div className="guide-step-icon"><Icon size={22} /></div><div><h3>{step.title}</h3><p>{step.desc}</p></div></div></li>; })}</ol><a className="guide-inline-link" href={withBasePath("/")}>現在就開始分析<ArrowRight size={16} /></a></section>
+          <section id="scores" className="guide-section"><SectionHeading number="02" eyebrow="ENTER YOUR SCORES" title="成績怎麼填？" description="選擇成績通知單上的等級、標示與寫作級分，不需要換算原始答對題數。" /><div className="guide-score-panel"><div className="guide-score-example"><Calculator size={25} /><p>五科成績</p><strong>A++ · A+ · A<br />B++ · B+ · B · C</strong><span>依首頁實際選項填入</span></div><ul>{scoreNotes.map((note) => <li key={note}><CheckCircle2 size={18} /><span>{note}</span></li>)}</ul></div></section>
+          <section id="results" className="guide-section"><SectionHeading number="03" eyebrow="READ YOUR RESULTS" title="結果怎麼看？" description="先確認輸入條件，再理解推薦範圍，最後把感興趣的校科放在一起比較。" /><div className="guide-tips-grid">{resultTips.map((tip, index) => <article key={tip.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{tip.title}</h3><p>{tip.desc}</p></article>)}</div></section>
+          <section id="planning" className="guide-section"><SectionHeading number="04" eyebrow="MAKE YOUR PLAN" title="從結果到志願清單" description="依序探索、比較、排序與討論，讓清單同時符合興趣和實際生活條件。" /><div className="guide-planning-grid">{planningTips.map((tip, index) => <article key={tip.title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{tip.title}</h3><p>{tip.desc}</p></div></article>)}</div><a className="guide-inline-link" href={withBasePath("/mock-volunteer")}>前往模擬志願序<ArrowRight size={16} /></a></section>
+          <section id="actions" className="guide-section guide-final-section"><SectionHeading number="05" eyebrow="FINAL CHECK" title="正式選填前，再確認一次" description="用這份清單檢查資料與選擇，再依官方流程完成正式選填。" /><ul className="guide-checklist">{finalChecks.map((check) => <li key={check}><CheckCircle2 size={20} /><span>{check}</span></li>)}</ul><div className="guide-download-note"><Download size={20} /><p>保留分析結果時，匯出後請再次核對就學區與成績。含邀請碼或個人資訊的檔案，請妥善保管。</p></div><a className="guide-primary-button" href={withBasePath("/")}>開始落點分析<ArrowRight size={17} /></a></section>
         </div>
-      </section>
-      <section className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className={pageNavigationAsideClassName}>
-          <PageNavigation
-            items={[
-              { id: "flow", label: "分析流程" },
-              { id: "scores", label: "成績怎麼填" },
-              { id: "results", label: "結果怎麼看" },
-              { id: "planning", label: "建立志願清單" },
-              { id: "actions", label: "正式選填前確認" },
-            ]}
-          />
-        </aside>
-        <div className="min-w-0 space-y-8">
-          <section id="flow" className="scroll-mt-8">
-            <div className="mb-5">
-              <h2 className="text-2xl font-black sm:text-3xl">六步完成分析</h2>
-              <p className="mt-2 text-sm font-bold leading-7 text-slate-600">
-                資料輸入越完整，越方便做初步比較；但每一項條件都請以自己實際的報名與成績資料為準。
-              </p>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              {steps.map((step, index) => {
-                const Icon = step.icon;
-                return (
-                  <article
-                    key={step.title}
-                    className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div
-                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 ${step.tone}`}
-                      >
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-black text-slate-500">
-                          STEP {index + 1}
-                        </p>
-                        <h3 className="mt-1 text-xl font-black">
-                          {step.title}
-                        </h3>
-                        <p className="mt-2 text-sm font-bold leading-7 text-slate-600">
-                          {step.desc}
-                        </p>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-          <section
-            id="scores"
-            className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-7"
-          >
-            <div className="flex gap-4">
-              <div>
-                <h2 className="text-2xl font-black sm:text-3xl">
-                  成績怎麼填才不會誤判
-                </h2>
-                <p className="mt-2 text-sm font-bold leading-7 text-slate-600">
-                  系統不是要你輸入原始答對題數，而是選擇成績通知單上的等級、標示與寫作級分。
-                </p>
-              </div>
-              <Calculator className="ml-auto h-8 w-8 shrink-0 text-emerald-700" />
-            </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {scoreNotes.map((note) => (
-                <div
-                  key={note}
-                  className="flex gap-3 rounded-xl border-2 border-slate-200 bg-slate-50 p-4"
-                >
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                  <p className="text-sm font-bold leading-7 text-slate-700">
-                    {note}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-          <section id="results" className="scroll-mt-8">
-            <div className="mb-5 flex items-center gap-3">
-              <Search className="h-7 w-7 text-blue-700" />
-              <h2 className="text-2xl font-black sm:text-3xl">結果怎麼看</h2>
-            </div>
-            <div className="grid gap-4 lg:grid-cols-3">
-              {resultTips.map((tip) => (
-                <article
-                  key={tip.title}
-                  className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"
-                >
-                  <h3 className="text-lg font-black">{tip.title}</h3>
-                  <p className="mt-3 text-sm font-bold leading-7 text-slate-600">
-                    {tip.desc}
-                  </p>
-                </article>
-              ))}
-            </div>
-          </section>
-          <section id="planning" className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-indigo-50 p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-7">
-            <div className="flex items-center gap-3"><Target className="h-7 w-7 text-indigo-700" /><div><h2 className="text-2xl font-black sm:text-3xl">從結果到志願清單</h2><p className="mt-1 text-sm font-bold leading-7 text-slate-600">分析完成後，依序探索、比較、排序與討論，能讓志願清單更貼近自己的選擇。</p></div></div>
-            <div className="mt-5 grid gap-4 md:grid-cols-2">{planningTips.map((tip, index) => <article key={tip.title} className="rounded-2xl border-2 border-slate-900 bg-white p-4"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-700 text-xs font-black text-white">{index + 1}</span><h3 className="mt-3 text-lg font-black">{tip.title}</h3><p className="mt-2 text-sm font-bold leading-7 text-slate-600">{tip.desc}</p></article>)}</div>
-          </section>
-          <section
-            id="actions"
-            className="scroll-mt-8 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] sm:p-7"
-          >
-            <div>
-              <h2 className="text-2xl font-black sm:text-3xl">正式選填前最後確認</h2>
-              <ul className="mt-3 space-y-2 text-sm font-bold leading-7 text-slate-800">{finalChecks.map((check) => <li key={check} className="flex gap-2"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0" />{check}</li>)}</ul>
-            </div>
-            <div className="mt-5 border-t-2 border-amber-500 pt-4">
-              <p className="flex items-start gap-2 text-sm font-bold leading-7 text-slate-800">
-                <Download className="mt-1 h-4 w-4 shrink-0" />
-                若要保留結果，建議匯出後再核對一次輸入的就學區與成績；不要將含邀請碼或其他個人資訊的檔案傳給不信任的對象。
-              </p>
-            </div>
-            <div className="mt-6 flex justify-end">
-              <a href={withBasePath("/")} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-slate-900 px-5 py-3.5 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(255,255,255,0.8)] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none sm:w-auto">
-                開始落點分析 <Target className="h-4 w-4" />
-              </a>
-            </div>
-          </section>
-        </div>
-      </section>
-    </main>
-  );
+      </div>
+    </div>
+  </main>;
+}
+
+function ArrowUpRightIcon() { return <ArrowRight size={15} />; }
+
+function SectionHeading({ number, eyebrow, title, description }: { number: string; eyebrow: string; title: string; description: string }) {
+  return <div className="guide-section-heading"><div className="guide-section-label"><span>{number}</span>{eyebrow}</div><h2>{title}</h2><p>{description}</p></div>;
 }

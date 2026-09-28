@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, BookOpen, Check, ClipboardList, Compass, ExternalLink, GraduationCap, Route, SearchCheck } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import MobileContentsNav from './MobileContentsNav';
 import './grade-11-pathways-page.css';
 
 const pathTypes = [
@@ -49,7 +50,7 @@ export default function Grade11PathwaysPage() {
         <div className="grade11-hero-note"><span>選群前記住</span><strong>看課程，<br />不只看名稱。</strong><p>班群是校內課程安排；各校名稱與實際開課不一定相同。</p><div className="grade11-hero-note-line"><BookOpen size={18} aria-hidden="true" />課程計畫是最重要的參考</div></div>
       </header>
 
-      <nav className="grade11-jump" aria-label="本頁內容"><a href="#grade11-basics">認識班群</a><a href="#grade11-directions">比較方向</a><a href="#grade11-steps">選群步驟</a><a href="#grade11-check">選前核對</a></nav>
+      <nav className="grade11-jump" aria-label="本頁內容"><a href="#grade11-basics">認識班群</a><a href="#grade11-directions">比較方向</a><a href="#grade11-steps">選群步驟</a><a href="#grade11-check">選前核對</a></nav><MobileContentsNav items={[{ id: 'grade11-basics', label: '認識班群' }, { id: 'grade11-directions', label: '比較方向' }, { id: 'grade11-steps', label: '選群步驟' }, { id: 'grade11-check', label: '選前核對' }]} />
 
       <section className="grade11-section" id="grade11-basics"><SectionHeading eyebrow="01 / 先釐清觀念" title="班群是學校安排課程的方式" description="不是全國統一的類組，也不會單靠班群名稱決定你能申請哪些校系。" /><div className="grade11-basics"><article><span>班群的功能</span><h3>讓選修與共同課程更容易安排</h3><p>學校可依生涯進路與興趣安排部分加深加廣課程，並規劃分班與跨班選課。</p></article><article><span>各校不相同</span><h3>名稱相似，課表可能不同</h3><p>班群名稱、課程組合、分班時間、名額、選課和轉群方式，都應逐校確認。</p></article><article><span>真正要比較</span><h3>高二、高三實際修得到什麼</h3><p>查看課程地圖、學分、開課年級，以及能否跨班群選修，再對照目標校系要求。</p></article></div></section>
 
