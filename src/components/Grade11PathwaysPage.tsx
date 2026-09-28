@@ -1,17 +1,67 @@
-import { ArrowLeft, BookOpen, CheckCircle2, Compass, GraduationCap, Route, SearchCheck } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { ArrowLeft, ArrowRight, BookOpen, Check, ClipboardList, Compass, ExternalLink, GraduationCap, Route, SearchCheck } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import './grade-11-pathways-page.css';
 
-export default function Grade11PathwaysPage() { return <main className="min-h-screen bg-slate-50 text-slate-900"><section className="border-b-4 border-slate-900 bg-gradient-to-br from-rose-100 via-white to-amber-100"><div className="mx-auto w-full max-w-[110rem] px-4 py-5 sm:px-6 lg:px-10"><a href={withBasePath('/general-comprehensive-high-school')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"><ArrowLeft className="h-4 w-4" />回普通科與綜合高中介紹</a><div className="py-8 sm:py-12"><div className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-black text-rose-800"><GraduationCap className="h-4 w-4" />普通型高中高二規劃</div><h1 className="mt-4 text-3xl font-black tracking-tight sm:text-5xl">高二「班群」是什麼？怎麼選？</h1><p className="mt-4 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">班群是學校依課程與選修安排形成的校內學習路徑。它不是全國統一的類組制度，也不會直接限制你申請哪些科系；真正重要的是班群能修到的課，是否支持你的探索與升學準備。</p></div></div></section><div className="mx-auto w-full max-w-[110rem] space-y-7 px-4 py-8 sm:px-6 lg:px-10">
-  <section className="rounded-[2rem] border-4 border-slate-900 bg-white p-5 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] sm:p-7"><div className="flex items-start gap-3"><div className="rounded-xl border-2 border-slate-900 bg-rose-100 p-2 text-rose-800"><Compass className="h-6 w-6" /></div><div><h2 className="text-2xl font-black">先釐清：班群不是「新版一、二、三類組」</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-600">現行課綱下，普通型高中會以班群方式及跨班選修安排課程，讓學生依生涯進路與興趣修課。各校可自行設計班群名稱、課程組合、分班時間、選課規則與轉群方式，因此「人社班群」「自然班群」「數理班群」等名稱只代表校內安排，不能直接拿來和其他學校比較。</p></div></div><div className="mt-5 grid gap-3 sm:grid-cols-3">{[['班群的功能', '集中安排部分加深加廣選修與共同課程，讓排課與選課更可行。'], ['班群不能決定', '不能取代校系分則；也不會自動保證特定科系或考科資格。'], ['真正要比較', '高二、高三的課程地圖、每門課的學分與是否能跨班、跨群選修。']].map(([title, body]) => <Info key={title} title={title} body={body} />)}</div></section>
-  <section className="grid gap-5 lg:grid-cols-2"><Panel title="常見班群方向（僅供理解，不是固定分類）" icon={<BookOpen className="h-5 w-5" />} items={['人文社會導向：常見歷史、地理、公民與社會相關的加深加廣選修，適合想深化人文、社科、法律、商管等領域探索的學生。', '自然科學導向：常見數學、物理、化學、生物、地球科學相關的加深加廣選修，適合想深化理工、生命科學、醫藥衛生等領域探索的學生。', '跨域或特色班群：可能以數理、語文外語、資訊、醫農、設計或其他校本特色命名；一定要查看實際課表。']} /><Panel title="高一升高二前：這樣做最可靠" icon={<SearchCheck className="h-5 w-5" />} items={['先列出感興趣的 3 至 5 個學系或學群，再查看其當年度校系分則與採計科目。', '下載自己入學年度適用的學校課程計畫書，對照高二、高三班群的必修、加深加廣、多元選修與彈性學習。', '問清楚班群選填的時間、名額、分發原則，以及轉群或補修課程的規則。']} /></section>
-  <section className="rounded-[2rem] border-4 border-slate-900 bg-indigo-50 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-7"><div className="flex items-center gap-2"><Route className="h-6 w-6 text-indigo-700" /><h2 className="text-2xl font-black">五步選群流程</h2></div><ol className="mt-5 grid gap-3 md:grid-cols-5">{[['看興趣', '先辨認自己願意長期投入的學科與議題。'], ['看能力', '回顧高一學習狀況與需要補強的學科。'], ['看課程', '比較實際課名、學分與開課年級。'], ['看進路', '核對目標校系最新採計與審查要求。'], ['確認彈性', '詢問轉群、跨班選修和補修的可行性。']].map(([title, body], index) => <li key={title} className="rounded-xl border-2 border-slate-900 bg-white p-4"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-xs font-black text-white">{index + 1}</span><h3 className="mt-3 font-black">{title}</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-600">{body}</p></li>)}</ol></section>
-  <section className="grid gap-5 lg:grid-cols-[1.15fr_.85fr]"><div className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"><h2 className="text-xl font-black">選群後目標改變，怎麼辦？</h2><ul className="mt-4 space-y-3">{['不要只看能不能「換班」：先確認想補的課是否仍有開設、時間是否衝堂，以及是否有先修限制。', '盡早找導師、輔導室與教務處討論；不同學校的轉群、補修與跨班選課期限差異很大。', '若無法完整轉群，仍可評估跨班選修、多元選修、自主學習與其他可補強的校內資源。', '申請大學時，依當年度校系規定準備；班群名稱不是審查標準本身。'].map((item) => <li key={item} className="flex gap-2 text-sm font-bold leading-6 text-slate-600"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-indigo-600" />{item}</li>)}</ul></div><aside className="rounded-2xl border-4 border-slate-900 bg-amber-50 p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"><h2 className="text-xl font-black">選前必問學校的問題</h2><ul className="mt-4 space-y-3">{['這個班群高二、高三各學期實際開哪些課？', '有多少門加深加廣選修可選？是否可以跨班群修？', '分發依志願、成績、名額或其他條件嗎？', '可以轉群嗎？最晚何時？已修課程如何銜接？', '近年是否因人數不足停開過課程？'].map((item) => <li key={item} className="flex gap-2 text-sm font-bold leading-6 text-slate-700"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-amber-700" />{item}</li>)}</ul></aside></section>
-  <section className="rounded-[2rem] border-4 border-slate-900 bg-white p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-7"><div className="flex items-start gap-3"><div className="rounded-xl border-2 border-slate-900 bg-sky-100 p-2 text-sky-800"><BookOpen className="h-6 w-6" /></div><div><p className="text-xs font-black tracking-[0.16em] text-sky-700">NATURAL & SOCIAL PATHWAYS</p><h2 className="text-2xl font-black">自然取向、社會取向：差別在修課重點，不是把未來鎖死</h2><p className="mt-2 text-sm font-bold leading-7 text-slate-600">許多學校會用自然或社會作為班群名稱，但實際課程與可選科目不盡相同。自然取向通常安排較多數學與自然科學深化課程；社會取向通常安排較多歷史、地理、公民與社會深化課程。兩者都仍會修習共同核心課程，也可能透過跨班選修補足其他領域。</p></div></div><div className="mt-5 grid gap-4 lg:grid-cols-2"><PathCard title="自然取向，先看這些課是否開得完整" color="sky" items={['數學 A 類與進一步數學課程的安排。', '物理、化學、生物、地球科學相關加深加廣選修。', '探究與實作、實驗設備、跨班選修與課程銜接。']} /><PathCard title="社會取向，先看這些課是否開得完整" color="amber" items={['歷史、地理、公民與社會相關加深加廣選修。', '語文、外語、社會探究、跨領域專題等校本課程。', '數學 B 類與其他需要數學能力的校系之修課銜接方式。']} /></div><div className="mt-4 rounded-xl border-2 border-slate-900 bg-slate-50 p-4 text-sm font-bold leading-7 text-slate-600"><span className="font-black text-slate-950">數學 A／B 提醒：</span>學測的數學 A、數學 B 是不同考科，分別以 10 年級必修加上 11 年級必修 A 類或 B 類內容為範圍。選班群前，請同時確認學校提供哪一類課程、自己擬報校系採計哪一考科；不要只因班群名稱就假設一定對應某一種數學。</div></section>
-  <section className="rounded-[2rem] border-4 border-slate-900 bg-emerald-50 p-5 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:p-7"><div className="flex items-center gap-2"><Compass className="h-6 w-6 text-emerald-800" /><h2 className="text-2xl font-black">班群與 18 學群：用來探索，不是硬性對照表</h2></div><p className="mt-3 text-sm font-bold leading-7 text-slate-700">下列是常見的課程關聯，幫助你先找方向；同一學群內各校系採計科目可能不同，跨取向申請也常見，務必回到最新校系分則確認。</p><div className="mt-5 grid gap-4 lg:grid-cols-2"><ClusterCard title="常與自然取向課程連結的學群" items={['資訊、工程、數理化、醫藥衛生、生命科學', '生物資源、地球與環境、建築與設計', '部分財經、管理與運動休閒校系也可能重視數學或自然能力']} /><ClusterCard title="常與社會取向課程連結的學群" items={['社會心理、大眾傳播、外語、文史哲、教育', '法政、管理、財經、遊憩與運動', '藝術、建築與設計等學群常需依校系再看術科、作品或特定採計']} /></div><p className="mt-4 rounded-xl border-2 border-emerald-300 bg-white p-4 text-sm font-bold leading-7 text-emerald-950">重要原則：班群不能替你決定志願。請用「想讀的校系 → 當年度採計科目與審查重點 → 學校實際課程」反向檢查，這比用自然組／社會組名稱判斷更可靠。</p></section>
-</div></main>; }
+const pathTypes = [
+  { number: '01', title: '人文社會取向', subtitle: '適合想深入理解人與社會的你', description: '常見歷史、地理、公民與社會等加深加廣選修，也可能搭配語文、外語及跨領域專題。', topics: ['人文、社科、法律', '商管、外語與傳播'], tone: 'peach' },
+  { number: '02', title: '自然科學取向', subtitle: '適合喜歡探究科學與數理的你', description: '常見數學、物理、化學、生物及地球科學相關課程；也要確認實驗、探究與實作的安排。', topics: ['理工與資訊', '生命科學、醫藥衛生'], tone: 'blue' },
+  { number: '03', title: '跨域與特色班群', subtitle: '從學校實際課表認識特色', description: '可能以數理、語文、資訊、醫農或設計等命名。名稱與課程組合由學校規劃，不能只看名稱判斷。', topics: ['依校本課程安排', '可跨領域探索'], tone: 'lavender' },
+];
 
-function Info({ title, body }: { title: string; body: string }) { return <article className="rounded-xl border-2 border-slate-900 bg-slate-50 p-4"><h3 className="font-black">{title}</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-600">{body}</p></article>; }
-function Panel({ title, icon, items }: { title: string; icon: ReactNode; items: string[] }) { return <section className="rounded-2xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"><div className="flex items-center gap-2 text-rose-800">{icon}<h2 className="text-xl font-black text-slate-950">{title}</h2></div><ul className="mt-4 space-y-3">{items.map((item) => <li key={item} className="flex gap-2 text-sm font-bold leading-6 text-slate-600"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-rose-600" />{item}</li>)}</ul></section>; }
-function PathCard({ title, color, items }: { title: string; color: 'sky' | 'amber'; items: string[] }) { const classes = color === 'sky' ? 'border-sky-300 bg-sky-50 text-sky-950' : 'border-amber-300 bg-amber-50 text-amber-950'; return <article className={`rounded-2xl border-2 p-4 ${classes}`}><h3 className="font-black">{title}</h3><ul className="mt-3 space-y-2">{items.map((item) => <li key={item} className="flex gap-2 text-sm font-bold leading-6 text-slate-700"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0" />{item}</li>)}</ul></article>; }
-function ClusterCard({ title, items }: { title: string; items: string[] }) { return <article className="rounded-2xl border-2 border-slate-900 bg-white p-4"><h3 className="font-black text-slate-950">{title}</h3><ul className="mt-3 space-y-2">{items.map((item) => <li key={item} className="flex gap-2 text-sm font-bold leading-6 text-slate-600"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-700" />{item}</li>)}</ul></article>; }
+const chooseSteps = [
+  { title: '看興趣', text: '找出願意長期投入的學科與議題。' },
+  { title: '看能力', text: '回顧高一的學習狀況與待補強科目。' },
+  { title: '看課程', text: '比較課名、學分、開課年級及選修限制。' },
+  { title: '看進路', text: '核對感興趣校系的最新採計與審查要求。' },
+  { title: '確認彈性', text: '問清楚轉群、跨班選修和補修的可行性。' },
+];
+
+const schoolQuestions = [
+  '這個班群高二、高三各學期實際開哪些課？',
+  '加深加廣選修能選到幾門？可以跨班群修課嗎？',
+  '分發依志願、成績、名額或其他條件嗎？',
+  '能轉群嗎？最晚何時？已修課程如何銜接？',
+  '近年是否因人數不足停開過課程？',
+];
+
+const changePlan = [
+  '先確認目標課程仍有開設、是否衝堂，以及是否需要先修。',
+  '及早找導師、輔導室與教務處討論轉群和補修期限。',
+  '即使無法轉群，也可評估跨班選修、多元選修與自主學習。',
+  '申請大學仍依當年度校系規定準備，班群名稱不是審查標準。',
+];
+
+function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description?: string }) {
+  return <div className="grade11-section-heading"><span>{eyebrow}</span><h2>{title}</h2>{description && <p>{description}</p>}</div>;
+}
+
+function CheckList({ items }: { items: string[] }) {
+  return <ul className="grade11-check-list">{items.map((item) => <li key={item}><Check size={16} aria-hidden="true" /><span>{item}</span></li>)}</ul>;
+}
+
+export default function Grade11PathwaysPage() {
+  return <main className="grade11-page">
+    <div className="grade11-shell">
+      <a className="grade11-back" href={withBasePath('/general-comprehensive-high-school')}><ArrowLeft size={17} aria-hidden="true" />普通科與綜合高中</a>
+
+      <header className="grade11-hero">
+        <div className="grade11-hero-copy"><span className="grade11-eyebrow"><GraduationCap size={17} aria-hidden="true" />高一升高二・選課指南</span><h1>高二「班群」<br /><em>是什麼？怎麼選？</em></h1><p>從感興趣的校系回頭看課程，再比較學校的班群安排。掌握選課、分流與轉群規則，讓高二的選擇更有方向。</p><a href="#grade11-steps" className="grade11-primary">從五步選群開始 <ArrowRight size={17} aria-hidden="true" /></a></div>
+        <div className="grade11-hero-note"><span>選群前記住</span><strong>看課程，<br />不只看名稱。</strong><p>班群是校內課程安排；各校名稱與實際開課不一定相同。</p><div className="grade11-hero-note-line"><BookOpen size={18} aria-hidden="true" />課程計畫是最重要的參考</div></div>
+      </header>
+
+      <nav className="grade11-jump" aria-label="本頁內容"><a href="#grade11-basics">認識班群</a><a href="#grade11-directions">比較方向</a><a href="#grade11-steps">選群步驟</a><a href="#grade11-check">選前核對</a></nav>
+
+      <section className="grade11-section" id="grade11-basics"><SectionHeading eyebrow="01 / 先釐清觀念" title="班群是學校安排課程的方式" description="不是全國統一的類組，也不會單靠班群名稱決定你能申請哪些校系。" /><div className="grade11-basics"><article><span>班群的功能</span><h3>讓選修與共同課程更容易安排</h3><p>學校可依生涯進路與興趣安排部分加深加廣課程，並規劃分班與跨班選課。</p></article><article><span>各校不相同</span><h3>名稱相似，課表可能不同</h3><p>班群名稱、課程組合、分班時間、名額、選課和轉群方式，都應逐校確認。</p></article><article><span>真正要比較</span><h3>高二、高三實際修得到什麼</h3><p>查看課程地圖、學分、開課年級，以及能否跨班群選修，再對照目標校系要求。</p></article></div></section>
+
+      <section className="grade11-section" id="grade11-directions"><SectionHeading eyebrow="02 / 看見不同方向" title="常見班群，可以從課程理解" description="以下是常見取向，僅用來幫助探索；實際分類與課程仍以學校公告為準。" /><div className="grade11-path-grid">{pathTypes.map((path) => <article className="grade11-path" data-tone={path.tone} key={path.title}><span className="grade11-path-number">{path.number} / 課程方向</span><h3>{path.title}</h3><strong>{path.subtitle}</strong><p>{path.description}</p><div>{path.topics.map((topic) => <span key={topic}>{topic}</span>)}</div></article>)}</div><div className="grade11-ab-note"><strong>數學 A／B 要另外核對</strong><p>學測數學 A、數學 B 是不同考科，範圍分別包含高二必修 A 類或 B 類。選班群前，請對照學校提供的課程與擬報校系採計科目，不要只從「自然」或「社會」名稱推斷。</p></div></section>
+
+      <section className="grade11-section grade11-clusters"><SectionHeading eyebrow="課程與升學探索" title="班群與 18 學群，怎麼連起來看？" description="把學群當作探索方向，再依個別校系的採計科目與審查重點核對。" /><div className="grade11-cluster-grid"><article><span>自然取向常連結</span><p>資訊、工程、數理化、醫藥衛生、生命科學、生物資源、地球與環境等學群；部分財經、管理及運動相關校系也重視數學或自然能力。</p></article><article><span>社會取向常連結</span><p>社會心理、大眾傳播、外語、文史哲、教育、法政、管理、財經等學群；藝術、設計等校系還須看作品、術科或特定採計。</p></article></div><div className="grade11-formula"><span>查核順序</span><strong>想讀的校系 <ArrowRight size={18} aria-hidden="true" /> 當年度校系要求 <ArrowRight size={18} aria-hidden="true" /> 學校實際課程</strong></div></section>
+
+      <section className="grade11-section" id="grade11-steps"><SectionHeading eyebrow="03 / 做出選擇" title="用五步驟找到適合的班群" description="先了解自己，再核對想修的課和未來校系要求。" /><ol className="grade11-steps">{chooseSteps.map((step, index) => <li key={step.title}><span>{String(index + 1).padStart(2, '0')}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol><div className="grade11-action"><SearchCheck size={23} aria-hidden="true" /><p>先列出感興趣的 3 至 5 個學系或學群，再下載自己入學年度適用的學校課程計畫，對照高二、高三的必修與選修。</p></div></section>
+
+      <section className="grade11-section grade11-check" id="grade11-check"><SectionHeading eyebrow="04 / 選前核對" title="把關鍵問題問清楚" description="同一個班群名稱，在不同學校可能代表完全不同的修課經驗。" /><div className="grade11-check-grid"><article><div className="grade11-card-title"><ClipboardList size={22} aria-hidden="true" /><h3>選群前，向學校確認</h3></div><CheckList items={schoolQuestions} /></article><article><div className="grade11-card-title"><Route size={22} aria-hidden="true" /><h3>選群後改變目標，也有辦法</h3></div><CheckList items={changePlan} /></article></div></section>
+
+      <section className="grade11-footer"><div><Compass size={27} aria-hidden="true" /><h2>先認識學校類型，再決定升學方向</h2><p>若還在比較普通科與綜合高中，可回到學校類型介紹，確認不同課程路線的差異。</p></div><a href={withBasePath('/general-comprehensive-high-school')}>比較學校類型 <ExternalLink size={17} aria-hidden="true" /></a></section>
+    </div>
+  </main>;
+}

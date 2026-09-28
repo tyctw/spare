@@ -1,0 +1,64 @@
+.college-page .strategy-hero-note .strategy-inline-link { margin-top: 17px; }
+.college-page .strategy-hero-note > span:last-of-type { display: block; margin-top: 10px; color: #5d687b; font-size: 13px; line-height: 1.7; }
+.college-page .strategy-section { scroll-margin-top: 100px; }
+.college-score-overview { display: grid; grid-template-columns: 190px minmax(0, 1fr); overflow: hidden; border: 1px solid #e1e5ed; border-radius: 18px; background: #fff; box-shadow: 0 7px 21px #27364e0b; }
+.college-score-total { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 24px; background: #efeafb; color: #493a8b; }
+.college-score-total strong { font-size: 58px; font-weight: 900; letter-spacing: -.06em; line-height: 1; }
+.college-score-total span { margin-top: 7px; font-size: 12px; font-weight: 800; }
+.college-score-breakdown { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: center; gap: 1px; background: #e9ecf2; }
+.college-score-breakdown a { display: flex; min-width: 0; align-items: center; gap: 9px; padding: 12px 14px; background: #fff; color: #27354f; font-size: 13px; font-weight: 800; text-decoration: none; }
+.college-score-breakdown a:hover { background: #f7f4ff; color: #493b92; }
+.college-score-breakdown a strong { margin-left: auto; color: #514296; white-space: nowrap; }
+.college-score-index { color: #9a84ca; font-size: 11px; }
+.college-detail-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.college-detail-list article { min-width: 0; padding: 20px; border: 1px solid #e1e5ed; border-radius: 17px; background: #fff; box-shadow: 0 7px 21px #27364e0b; scroll-margin-top: 100px; }
+.college-detail-top { display: flex; align-items: flex-start; gap: 11px; }
+.college-detail-number { color: #8c76c3; font-size: 13px; font-weight: 900; }
+.college-detail-top > div { min-width: 0; flex: 1; }
+.college-detail-top h3 { margin: 0; color: #1c2943; font-size: 18px; font-weight: 900; }
+.college-detail-top p { margin: 5px 0 0; color: #6b778b; font-size: 12px; line-height: 1.5; }
+.college-detail-top > strong { display: grid; flex: none; gap: 2px; min-width: 63px; padding: 7px; border-radius: 10px; background: #f2effb; color: #574399; font-size: 23px; font-weight: 900; line-height: 1; text-align: center; }
+.college-detail-top small { font-size: 10px; font-weight: 800; white-space: nowrap; }
+.college-detail-list ul { display: grid; gap: 8px; margin: 16px 0 0; padding: 14px 0 0; border-top: 1px solid #eef0f5; list-style: none; }
+.college-detail-list li { display: flex; align-items: flex-start; gap: 8px; color: #53617a; font-size: 13px; line-height: 1.7; }
+.college-detail-list li svg { flex: none; margin-top: 3px; color: #7662af; }
+.college-conversion-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.college-conversion-card { overflow: hidden; padding: 21px; border: 1px solid #e1e5ed; border-radius: 17px; background: #fff; box-shadow: 0 7px 21px #27364e0b; }
+.college-conversion-card h3 { margin: 0; color: #1c2943; font-size: 18px; font-weight: 900; }
+.college-conversion-card > p { margin: 5px 0 16px; color: #637188; font-size: 12px; line-height: 1.7; }
+.college-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.college-choice-grid > div, .college-exam-grid > div { display: grid; gap: 4px; padding: 10px; border: 1px solid #e8eaf0; border-radius: 9px; background: #fbfbfe; }
+.college-choice-grid span, .college-exam-grid span { color: #647188; font-size: 11px; font-weight: 700; }
+.college-choice-grid strong, .college-exam-grid strong { color: #514296; font-size: 15px; font-weight: 900; }
+.college-exam-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.college-exam-grid > div { padding: 8px 5px; text-align: center; }
+.college-exam-grid strong { white-space: nowrap; }
+.college-writing { margin-top: 15px; padding-top: 12px; border-top: 1px solid #e9ecf2; }
+.college-writing > strong { color: #28354d; font-size: 12px; }
+.college-writing p { margin: 6px 0 0; color: #53617a; font-size: 12px; line-height: 1.8; }
+.college-priority { display: grid; grid-template-columns: 1.15fr .85fr 1.1fr; align-items: stretch; gap: 11px; }
+.college-priority-group { padding: 18px; border: 1px solid #e1e5ed; border-radius: 16px; background: #fff; box-shadow: 0 7px 21px #27364e0b; }
+.college-priority-group h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; color: #1c2943; font-size: 14px; font-weight: 900; }
+.college-priority-group h3 svg { color: #7055ad; }
+.college-priority-group ol { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.college-priority-group li { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 9px; background: #fafbfe; }
+.college-priority-group li span { display: grid; width: 27px; height: 27px; flex: none; place-items: center; border-radius: 8px; background: #f2effb; color: #574399; font-size: 11px; font-weight: 900; }
+.college-priority-group li p { margin: 0; color: #4e5d75; font-size: 12px; line-height: 1.5; }
+.college-source-links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
+.college-source-links a { display: inline-flex; min-height: 41px; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; border: 1px solid #d8d2eb; border-radius: 10px; background: #fff; color: #514091; font-size: 12px; font-weight: 900; text-decoration: none; }
+.college-source-links a:hover { border-color: #aa99d4; background: #f5f1ff; }
+.college-next-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.college-next-links a { display: flex; min-height: 60px; align-items: center; gap: 10px; padding: 14px; border: 1px solid #d8d1ed; border-radius: 12px; background: #f2effb; color: #362771; font-size: 13px; font-weight: 900; text-decoration: none; }
+.college-next-links a:hover { border-color: #aa99d4; background: #ece6fa; }
+.college-next-links a svg:last-child { margin-left: auto; }
+.college-page a:focus-visible { outline: 3px solid #9a82d3; outline-offset: 3px; }
+@media (max-width: 1100px) { .college-detail-list, .college-conversion-grid { grid-template-columns: 1fr; } .college-priority { grid-template-columns: repeat(2, minmax(0, 1fr)); } .college-priority-group:last-child { grid-column: 1 / -1; } }
+@media (max-width: 650px) {
+  .college-score-overview { grid-template-columns: 1fr; }
+  .college-score-total { flex-direction: row; align-items: baseline; gap: 9px; padding: 18px; }
+  .college-score-total strong { font-size: 44px; }
+  .college-score-breakdown { grid-template-columns: 1fr; }
+  .college-detail-list, .college-conversion-grid, .college-priority, .college-next-links { grid-template-columns: 1fr; }
+  .college-priority-group:last-child { grid-column: auto; }
+  .college-exam-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
