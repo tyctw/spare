@@ -321,3 +321,8 @@
     }
   }
 }
+
+/* Shared guide navigation: keep links comfortable to tap on smaller screens. */
+@media (max-width: 850px) {
+  [data-page-navigation] a { min-height: 44px; }
+}
