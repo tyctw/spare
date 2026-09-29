@@ -39,7 +39,9 @@ export function buildLifeDiscussionHtml(data: PrintData): string {
     const result = data.results[index];
     const warnings = result.warnings.length
       ? `<ul>${result.warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join('')}</ul>`
-      : '<p class="okay">目前沒有明顯生活負擔警訊。</p>';
+      : result.label === '待填條件'
+        ? '<p>尚未填寫生活條件，請先確認通勤與費用。</p>'
+        : '<p class="okay">目前沒有明顯生活負擔警訊。</p>';
     const stay = candidate.stay === 'home' ? '每天回家' : candidate.stay === 'dorm' ? '住宿／租屋' : '尚未決定';
 
     return `<article class="candidate">

@@ -5,6 +5,7 @@ import {
   ArrowRight,
   BarChart3,
   CalendarDays,
+  Clock3,
   ClipboardList,
   Copy,
   CheckCircle2,
@@ -203,13 +204,21 @@ function VolunteerReport({
             <span>個志願選項</span>
             <div><MapPin size={17} />{regionName}</div>
           </div>
+          <div className="shared-volunteer-meta" aria-label="分享資訊">
+            <div className="shared-volunteer-meta-item">
+              <ShieldCheck size={19} aria-hidden="true" />
+              <span><small>分享權限</small><strong>{canEdit ? '可留言、調整順序與確認版本' : '檢視用清單，無法修改原內容'}</strong></span>
+            </div>
+            <div className="shared-volunteer-meta-item">
+              <CalendarDays size={19} aria-hidden="true" />
+              <span><small>連結期限</small><strong>{expiresAt ? `有效至 ${new Date(expiresAt).toLocaleDateString('zh-TW')}` : '長期分享連結'}</strong></span>
+            </div>
+            {createdAt && <div className="shared-volunteer-meta-item">
+              <Clock3 size={19} aria-hidden="true" />
+              <span><small>建立時間</small><strong>{createdAt}</strong></span>
+            </div>}
+          </div>
         </header>
-
-        <div className="shared-volunteer-meta" aria-label="分享資訊">
-          <span><ShieldCheck size={16} />{canEdit ? '可留言、調整順序與確認版本' : '檢視用清單，無法修改原內容'}</span>
-          <span><CalendarDays size={16} />{expiresAt ? `連結有效至 ${new Date(expiresAt).toLocaleDateString('zh-TW')}` : '長期分享連結'}</span>
-          {createdAt && <span>建立於 {createdAt}</span>}
-        </div>
 
         <section className="shared-volunteer-copy" aria-labelledby="shared-copy-title">
           <div><span className="shared-volunteer-copy-icon"><Copy size={21} /></span><div><h2 id="shared-copy-title">想依自己的想法調整？</h2><p>複製這份志願表到自己的模擬頁，試著更換順序或加入其他校科；原分享清單不受影響。</p></div></div>

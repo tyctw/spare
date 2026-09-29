@@ -28,6 +28,7 @@ import {
   type MembershipStatus,
 } from "../lib/membership";
 import { withBasePath } from "../lib/routes";
+import PageBreadcrumb from "./PageBreadcrumb";
 import './membership.css';
 
 const plans = [
@@ -339,9 +340,9 @@ export default function MembershipPage() {
 
   if (membership === null)
     return (
-      <main id="main-content" aria-labelledby="membership-check-title" className="membership-page member-check-page min-h-screen px-4 py-6 sm:px-6 sm:py-10">
+      <main id="main-content" aria-labelledby="membership-check-title" className="membership-page member-check-page min-h-screen px-4 pb-6 sm:px-6 sm:pb-10">
         <div className="mx-auto w-full max-w-6xl">
-          <a href={withBasePath("/")} className="member-check-back"><ArrowRight aria-hidden="true" className="h-4 w-4 rotate-180" />回到落點分析</a>
+          <PageBreadcrumb title="會員方案" />
           <header className="member-check-header">
             <span className="member-check-header-icon"><Crown aria-hidden="true" className="h-6 w-6" /></span>
             <div><p>MEMBERSHIP</p><h1 id="membership-check-title">會員方案與資格</h1><span>查看會員方案、權益與目前的使用狀態。</span></div>
@@ -353,11 +354,11 @@ export default function MembershipPage() {
 
   if (isSuccessPage && membership !== null && !membership.active)
     return (
-      <main id="main-content" aria-busy="true" aria-labelledby="payment-confirming-title" className="membership-page min-h-screen overflow-hidden bg-[#f7f8f5] px-4 py-7 text-slate-900 sm:px-6 sm:py-12">
+      <main id="main-content" aria-busy="true" aria-labelledby="payment-confirming-title" className="membership-page min-h-screen overflow-hidden bg-[#f7f8f5] px-4 pb-7 text-slate-900 sm:px-6 sm:pb-12">
         <div aria-hidden="true" className="fixed -left-24 top-20 h-64 w-64 rounded-full bg-emerald-200/60 blur-3xl" />
         <div aria-hidden="true" className="fixed -right-20 bottom-0 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
         <section className="relative mx-auto max-w-lg">
-          <a href={withBasePath("/")} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"><ArrowRight className="h-4 w-4 rotate-180" />回到落點分析</a>
+          <PageBreadcrumb title="付款確認中" parent={{ label: "會員方案", href: "/membership" }} />
           <article className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35]">
             <div aria-hidden="true" className="absolute -right-10 -top-12 h-36 w-36 rounded-full border-[15px] border-emerald-100" />
             <div className="relative border-b-2 border-slate-900 bg-emerald-100 px-6 py-5 sm:px-8">
@@ -380,14 +381,9 @@ export default function MembershipPage() {
 
   if (membership.active)
     return (
-      <main id="main-content" aria-labelledby="member-active-title" className="membership-page member-active-page min-h-screen px-4 py-6 text-slate-900 sm:px-6 sm:py-12">
+      <main id="main-content" aria-labelledby="member-active-title" className="membership-page member-active-page min-h-screen px-4 pb-6 text-slate-900 sm:px-6 sm:pb-12">
         <section className="mx-auto max-w-6xl">
-          <nav aria-label="會員頁面導覽" className="member-active-nav">
-            <a href={withBasePath("/")}>
-              <ArrowRight aria-hidden="true" className="h-4 w-4 rotate-180" />回到落點分析
-            </a>
-            <span><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
-          </nav>
+          <PageBreadcrumb title="會員方案" />
           <div className="member-active-layout">
             <header className="member-active-hero">
               <span className="member-active-status"><BadgeCheck aria-hidden="true" className="h-4 w-4" />會員資格有效</span>
@@ -427,22 +423,16 @@ export default function MembershipPage() {
     );
 
   return (
-    <main id="main-content" aria-labelledby="member-benefits-title" className="membership-page membership-purchase-page min-h-screen overflow-hidden px-4 py-5 text-slate-900 sm:px-6 sm:py-10">
+    <main id="main-content" aria-labelledby="member-benefits-title" className="membership-page membership-purchase-page min-h-screen overflow-hidden px-4 pb-5 text-slate-900 sm:px-6 sm:pb-10">
       <section className="relative mx-auto max-w-6xl">
-        <nav aria-label="會員頁面導覽" className="flex items-center justify-between">
-          <a
-            href={withBasePath("/")}
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0_#161b35] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
-          >
-            <ArrowRight className="h-4 w-4 rotate-180" />
-            回到落點分析
-          </a>
+        <div className="member-page-topbar">
+          <PageBreadcrumb title="會員方案" />
           <a href={withBasePath('/membership/account')} aria-label="已購買？查看我的資格" className="member-account-shortcut inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold">
             <BadgeCheck className="h-4 w-4" />
             <span className="sm:hidden">查詢資格</span>
             <span className="hidden sm:inline">已購買？查看我的資格</span>
           </a>
-        </nav>
+        </div>
         <section className="member-intro" aria-labelledby="member-benefits-title">
           <div className="member-intro-copy">
             <span className="member-intro-kicker"><Crown className="h-4 w-4" /> 升學小助手會員</span>

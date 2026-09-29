@@ -1,10 +1,7 @@
-.privacy-center-page { min-height: 100vh; padding: 1.5rem 1rem 3rem; color: #203047; background: radial-gradient(circle at 94% 3%, #ece7f6, transparent 30rem), #f8f7fb; }
+.privacy-center-page { min-height: 100vh; padding: 0 1rem 3rem; color: #203047; background: radial-gradient(circle at 94% 3%, #ece7f6, transparent 30rem), #f8f7fb; }
 .privacy-center-page * { box-sizing: border-box; }
 .privacy-center-page :is(a, button, summary):focus-visible { outline: 3px solid #422782; outline-offset: 3px; }
 .privacy-shell { width: min(100%, 72rem); margin: 0 auto; }
-.privacy-top-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
-.privacy-top-nav button, .privacy-top-nav span { display: inline-flex; align-items: center; gap: .45rem; padding: .55rem .8rem; border: 1px solid #ded8eb; border-radius: .8rem; color: #42316b; background: #fff; font-size: .8rem; font-weight: 750; }
-.privacy-top-nav button:hover { background: #f1eef9; }
 .privacy-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 13rem; gap: 1.5rem; overflow: hidden; padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid #e0dceb; border-radius: 2rem; background: linear-gradient(120deg, #f7f5fc, #eae5f5); box-shadow: 0 24px 48px -40px #3d2b678c; }
 .privacy-hero::before { position: absolute; top: -8rem; right: -7rem; width: 26rem; height: 26rem; border: 3.5rem solid #ffffff68; border-radius: 50%; content: ''; }
 .privacy-hero-copy, .privacy-hero-mark, .privacy-overview { position: relative; }
@@ -98,7 +95,7 @@
 .privacy-dialog > p { margin: .75rem 0 0; color: #5d707a; font-size: .85rem; line-height: 1.7; }
 .privacy-dialog-actions { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1.35rem; }
 @media (max-width: 767px) {
-  .privacy-center-page { padding: 1rem .8rem 2.5rem; }
+  .privacy-center-page { padding: 0 .8rem 2.5rem; }
   .privacy-hero { grid-template-columns: 1fr; }
   .privacy-hero-mark { display: none; }
   .privacy-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -110,7 +107,6 @@
   .privacy-share-list, .privacy-local-grid, .privacy-other-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
-  .privacy-top-nav span { display: none; }
   .privacy-panel-heading, .privacy-panel-body { padding: 1.15rem; }
   .privacy-share-actions > * { width: 100%; }
   .privacy-local-actions > * { width: 100%; }

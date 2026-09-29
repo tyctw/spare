@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  ArrowLeft,
   ArrowRight,
   BadgeCheck,
   CircleUserRound,
@@ -27,6 +26,7 @@ import {
   type MembershipStatus,
 } from '../lib/membership';
 import { withBasePath } from '../lib/routes';
+import PageBreadcrumb from './PageBreadcrumb';
 import './membership.css';
 
 type AccountState = 'loading' | 'ready' | 'error';
@@ -179,13 +179,11 @@ export default function MembershipAccountPage() {
     : 0;
 
   return (
-    <main id="main-content" aria-labelledby="member-account-title" className="membership-page member-account-page min-h-screen overflow-hidden px-4 py-6 text-slate-900 sm:px-6 sm:py-10">
+    <main id="main-content" aria-labelledby="member-account-title" className="membership-page member-account-page min-h-screen overflow-hidden px-4 pb-6 text-slate-900 sm:px-6 sm:pb-10">
       <section className="relative mx-auto max-w-6xl">
-        <a href={withBasePath('/membership')} className="account-back-link">
-          <ArrowLeft className="h-4 w-4" />返回會員方案
-        </a>
+        <PageBreadcrumb title="我的會員帳號" parent={{ label: '會員方案', href: '/membership' }} />
 
-        <header className="member-account-hero account-hero relative mt-6 overflow-hidden rounded-[2rem] px-6 py-8 sm:px-10 sm:py-10">
+        <header className="member-account-hero account-hero relative overflow-hidden rounded-[2rem] px-6 py-8 sm:px-10 sm:py-10">
           <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 h-72 w-72 rounded-full border border-[#a18bb34d]" />
           <div className="relative flex items-center justify-between gap-6">
             <div className="min-w-0">

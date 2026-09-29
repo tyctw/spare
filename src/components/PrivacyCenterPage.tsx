@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, ArrowRight, ArrowUpRight, Clock3, Database, Download,
+  ArrowRight, ArrowUpRight, Clock3, Database, Download,
   FileText, Link2, LockKeyhole, RefreshCw, ShieldCheck, Trash2,
 } from 'lucide-react';
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
 import { managedLocalEntries } from '../lib/privacyStorage';
+import PageBreadcrumb from './PageBreadcrumb';
 import './privacy-center.css';
 
 type Share = {
@@ -128,21 +129,10 @@ export default function PrivacyCenterPage() {
     }
   };
 
-  const goBack = () => {
-    let fromThisSite = false;
-    try { fromThisSite = !!document.referrer && new URL(document.referrer).origin === window.location.origin; }
-    catch { /* A direct visit returns to the home page. */ }
-    if (fromThisSite && window.history.length > 1) window.history.back();
-    else window.location.assign(withBasePath('/'));
-  };
-
   return (
     <main id="main-content" className="privacy-center-page">
       <div className="privacy-shell">
-        <nav className="privacy-top-nav" aria-label="頁面導覽">
-          <button type="button" onClick={goBack}><ArrowLeft aria-hidden="true" size={17} />返回上一頁</button>
-          <span><ShieldCheck aria-hidden="true" size={16} />資料管理中心</span>
-        </nav>
+        <PageBreadcrumb title="個資與分享管理中心" />
 
         <header className="privacy-hero">
           <div className="privacy-hero-copy">
