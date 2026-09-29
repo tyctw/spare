@@ -96,17 +96,20 @@ export default function RelatedReading({ path }: { path: string }) {
   return <section className="related-reading" aria-labelledby="related-reading-title">
     <div className="related-reading__shell">
       <div className="related-reading__intro">
-        <div className="related-reading__eyebrow"><Compass size={18} aria-hidden="true" /><span>別錯過這{items.length === 4 ? '四' : '三'}個實用工具</span><span className="related-reading__count">NEXT STEPS</span></div>
-        <h2 id="related-reading-title">別急著離開，<br />這幾頁能幫你更快做決定</h2>
-        <p>看完這一頁，選一個最想釐清的問題繼續探索。從認識方向、比較選項，到安排下一步，都可以慢慢來。</p>
+        <div className="related-reading__intro-copy">
+          <div className="related-reading__eyebrow"><Compass size={17} aria-hidden="true" /><span>接著探索</span><span className="related-reading__count">{items.length} 個推薦方向</span></div>
+          <h2 id="related-reading-title">下一步，<span>讓選擇更有把握。</span></h2>
+          <p>挑一個現在最想釐清的問題，從下面的內容繼續看。每多了解一點，就更接近適合自己的方向。</p>
+        </div>
+        <div className="related-reading__spotlight" aria-hidden="true"><span>YOUR NEXT STEP</span><strong>{String(items.length).padStart(2, '0')}</strong><span>個值得繼續看的方向</span><ArrowUpRight size={27} /></div>
       </div>
       <div className={`related-reading__grid${items.length === 4 ? ' related-reading__grid--four' : ''}`}>
         {items.map((item, index) => {
           const Icon = item.icon;
           return <a key={item.href} href={withBasePath(item.href)} className="related-reading__card">
-            <div className="related-reading__card-top"><span className="related-reading__number">{String(index + 1).padStart(2, '0')}</span><span className={`related-reading__icon ${item.tone}`}><Icon size={23} aria-hidden="true" /></span></div>
+            <div className="related-reading__card-top"><span className="related-reading__number">推薦 {String(index + 1).padStart(2, '0')}</span><span className={`related-reading__icon ${item.tone}`}><Icon size={25} aria-hidden="true" /></span></div>
             <div className="related-reading__card-copy"><h3>{item.title}</h3><p>{item.description}</p></div>
-            <span className="related-reading__card-link">前往了解 <ArrowUpRight size={18} aria-hidden="true" /></span>
+            <span className="related-reading__card-link">前往了解 <span><ArrowUpRight size={18} aria-hidden="true" /></span></span>
           </a>;
         })}
       </div>
