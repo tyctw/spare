@@ -4,10 +4,12 @@ import {
   AlertCircle,
   ArrowDown,
   ArrowLeft,
+  ArrowRight,
   ArrowUp,
   Building2,
   Filter,
   Loader2,
+  Lightbulb,
   Plus,
   Printer,
   Search,
@@ -726,14 +728,26 @@ export default function MockVolunteerPage() {
                 </div>
                 <div className="mock-volunteer-list-count">{selectedChoices.length}<span> / 30</span></div>
               </div>
+              <a href={withBasePath('/strategy')} onClick={requestLeavePage} className="mock-volunteer-strategy-link">
+                <span className="mock-volunteer-strategy-icon"><Lightbulb className="h-4 w-4" /></span>
+                <span><strong>排序拿不定主意？</strong><small>查看志願選填攻略</small></span>
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+            </div>
+
+            <div className="mock-volunteer-list-tools">
+              <div className="mock-volunteer-list-tools-heading">
+                <strong>整理好後，分享這份清單</strong>
+                <p>產生唯讀連結給家長查看；會員也可另開協作權限。</p>
+              </div>
               <div className="mock-volunteer-list-actions">
                 <button
                   onClick={() => setIsShareOpen(true)}
                   disabled={selectedChoices.length === 0}
-                  className="mock-volunteer-action mock-volunteer-action--primary"
+                  className="mock-volunteer-action mock-volunteer-action--primary mock-volunteer-action--share"
                 >
                   <Share2 className="h-4 w-4" />
-                  {'\u5206\u4eab'}
+                  分享志願清單
                 </button>
                 <button
                   onClick={() => setShowPrintDialog(true)}
@@ -751,10 +765,6 @@ export default function MockVolunteerPage() {
                   清空
                 </button>
               </div>
-              <p className="mock-volunteer-share-note">分享可建立唯讀連結；會員可邀請家長共同討論與調整。</p>
-              <a href={withBasePath('/strategy')} onClick={requestLeavePage} className="mock-volunteer-strategy-link">
-                需要排序建議？查看志願選填攻略
-              </a>
             </div>
 
             <div className="mock-volunteer-choice-list custom-scrollbar">

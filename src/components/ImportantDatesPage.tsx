@@ -21,12 +21,12 @@ import {
 } from '../lib/importantDates';
 
 const highlights = [
-  { date: '03/04–03/06', title: '會考報名', month: 3, step: '報名', detail: '確認報名資料與應試資訊' },
-  { date: '05/15–05/16', title: '國中教育會考', month: 5, step: '應考', detail: '依准考證資訊準時應試' },
-  { date: '06/04', title: '會考成績查詢', month: 6, step: '查成績', detail: '核對各科等級、標示與寫作級分' },
-  { date: '06/18–06/24', title: '序位查詢、志願選填', month: 6, step: '填志願', detail: '留意 6 月 24 日選填截止', featured: true },
-  { date: '07/06', title: '免試入學放榜', month: 7, step: '看結果', detail: '確認錄取學校與科別' },
-  { date: '07/08', title: '免試入學報到', month: 7, step: '報到', detail: '依錄取學校通知完成報到' },
+  { date: '03/04–03/06', title: '會考報名', month: 3, detail: '確認報名資料與應試資訊' },
+  { date: '05/15–05/16', title: '國中教育會考', month: 5, detail: '依准考證資訊準時應試' },
+  { date: '06/04', title: '會考成績查詢', month: 6, detail: '核對各科等級、標示與寫作級分' },
+  { date: '06/18–06/24', title: '序位查詢、志願選填', month: 6, detail: '留意 6 月 24 日選填截止', featured: true },
+  { date: '07/06', title: '免試入學放榜', month: 7, detail: '確認錄取學校與科別' },
+  { date: '07/08', title: '免試入學報到', month: 7, detail: '依錄取學校通知完成報到' },
 ];
 
 const displayDate = (date: string) => date.replace(/（[一二三四五六日]）/g, '');
@@ -78,10 +78,10 @@ export default function ImportantDatesPage() {
             <span className="important-highlights-instruction"><CalendarDays size={16} aria-hidden="true" />點選節點查看該月完整日程</span>
           </div>
           <ol className="important-highlights-grid">
-            {highlights.map(({ date, title, month, step, detail, featured }, index) => (
+            {highlights.map(({ date, title, month, detail, featured }, index) => (
               <li key={title}>
                 <a href={`#month-${month}`} onClick={() => openHighlightMonth(month)} className={`important-highlight-card${featured ? ' important-highlight-card--featured' : ''}`} aria-label={`第 ${index + 1} 個節點，${date} ${title}，查看 ${month} 月完整日程`}>
-                  <span className="important-highlight-top"><span className="important-highlight-number">{String(index + 1).padStart(2, '0')}</span><span className="important-highlight-step">{step}</span></span>
+                  <span className="important-highlight-top"><span className="important-highlight-number">{String(index + 1).padStart(2, '0')}</span></span>
                   <strong className="important-highlight-date">{date}</strong>
                   <span className="important-highlight-title">{title}</span>
                   <span className="important-highlight-detail">{detail}</span>

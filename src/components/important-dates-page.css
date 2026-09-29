@@ -83,8 +83,6 @@
 .important-highlight-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
 }
 .important-highlight-number {
   display: grid;
@@ -97,16 +95,7 @@
   font-size: 12px;
   font-weight: 900;
 }
-.important-highlight-step {
-  border-radius: 999px;
-  background: #edf0fb;
-  padding: 5px 9px;
-  color: #5665aa;
-  font-size: 11px;
-  font-weight: 900;
-}
-.important-highlight-card--featured .important-highlight-number,
-.important-highlight-card--featured .important-highlight-step {
+.important-highlight-card--featured .important-highlight-number {
   background: #f7e6bb;
   color: #775321;
 }
@@ -187,8 +176,6 @@
     grid-column: 1;
     grid-row: 1 / 5;
     justify-content: start;
-    flex-direction: column;
-    gap: 6px;
   }
   .important-highlight-date {
     grid-column: 2;
