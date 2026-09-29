@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   AlertCircle,
   ArrowLeft,
+  ArrowRight,
   BarChart3,
   CalendarDays,
   ClipboardList,
@@ -20,11 +21,11 @@ import {
   Plus,
   Search,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { callBackend } from "../lib/api";
 import { withBasePath } from "../lib/routes";
 import VolunteerVersionHistory from './VolunteerVersionHistory';
+import './shared-report-page.css';
 import type { VolunteerVersion } from '../lib/volunteerVersions';
 import RelatedReading from "./RelatedReading";
 
@@ -162,187 +163,93 @@ function VolunteerReport({
   collaborationConfirmedBy: string | null;
   onChoicesUpdated: (choices: any[], version: number, confirmation?: { confirmedAt: string | null; confirmedBy: string | null }) => void;
 }) {
-  const [displayMode, setDisplayMode] = useState<'table' | 'cards'>('table');
+  const [displayMode, setDisplayMode] = useState<'table' | 'cards'>('cards');
+  const canEdit = collaborationEnabled && Boolean(collaborationKey);
   const summaryChoices = choices.slice(0, 10);
-  const groupCounts = countBy(
-    summaryChoices,
-    (choice) => choice.groupName || "其他",
-  );
+  const groupCounts = countBy(summaryChoices, (choice) => choice.groupName || '其他');
   const typeCounts = countBy(summaryChoices, schoolCategory);
   const createCopy = () => {
-    window.localStorage.setItem(
-      copyStorageKey,
-      JSON.stringify({ region, regionName, choices }),
-    );
-    window.location.href = withBasePath("/mock-volunteer?import=shared");
+    window.localStorage.setItem(copyStorageKey, JSON.stringify({ region, regionName, choices }));
+    window.location.href = withBasePath('/mock-volunteer?import=shared');
   };
+  const preferenceScore = (choice: any) => choice.preferenceScore === null
+    ? '不計分'
+    : `${choice.preferenceScore ?? choice.score ?? choice.points ?? choice.minScore ?? '--'} 分`;
+  const groupLink = (name: string) => name === '學術群'
+    ? withBasePath('/general-comprehensive-high-school')
+    : `${withBasePath('/vocational-encyclopedia')}?group=${encodeURIComponent(name)}`;
+
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f5f7ff] px-4 py-5 text-slate-900 sm:px-6 sm:py-8">
-      <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-sky-200/60 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 top-72 h-80 w-80 rounded-full bg-amber-200/60 blur-3xl" />
-      <div className="relative mx-auto w-full min-w-0 max-w-[110rem]">
-        <a
-          href={withBasePath("/")}
-          className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-5 py-3 text-lg font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
-        >
-          <ArrowLeft className="h-5 w-5 stroke-[3]" />
-          回到首頁
-        </a>
-        <header className={`relative mt-6 overflow-hidden rounded-[2rem] border-2 border-slate-900 px-6 py-7 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:px-9 sm:py-9 ${collaborationEnabled && collaborationKey ? 'bg-emerald-50 text-slate-950' : 'bg-sky-50 text-slate-950'}`}>
-          <div className={`absolute -right-12 -top-14 h-44 w-44 rounded-full border-4 ${collaborationEnabled && collaborationKey ? 'border-emerald-200 bg-emerald-200/70' : 'border-sky-200 bg-sky-200/70'}`} />
-          <div className="relative max-w-2xl">
-            <div className={`inline-flex items-center gap-2 rounded-full border-2 px-3 py-1 text-xs font-black ${collaborationEnabled && collaborationKey ? 'border-emerald-300 bg-emerald-100 text-emerald-900' : 'border-sky-300 bg-sky-100 text-sky-900'}`}>
-              <ShieldCheck className={`h-4 w-4 ${collaborationEnabled && collaborationKey ? 'text-emerald-700' : 'text-sky-700'}`} />
-              {collaborationEnabled && collaborationKey ? '可共同編輯' : '唯讀分享'}
+    <main className="shared-volunteer-page">
+      <div className="shared-volunteer-shell">
+        <nav className="shared-volunteer-nav" aria-label="分享頁導覽">
+          <a href={withBasePath('/')}><ArrowLeft size={17} />返回首頁</a>
+          <span><ShieldCheck size={16} />{canEdit ? '共同編輯連結' : '唯讀分享連結'}</span>
+        </nav>
+
+        <header className="shared-volunteer-hero">
+          <div className="shared-volunteer-hero-copy">
+            <span className="shared-volunteer-kicker"><ClipboardList size={17} /> 模擬志願序 · 分享清單</span>
+            <h1>一起看清楚，<br />每一步志願選擇。</h1>
+            <p>依照排列順序查看候選校科，先聚焦最想去的選擇，再討論適合自己的方向。</p>
+            <div className="shared-volunteer-hero-actions">
+              <a href="#shared-choices" className="shared-volunteer-primary">查看志願清單 <ArrowDown size={18} /></a>
+              {canEdit && <a href="#collaboration" className="shared-volunteer-secondary">前往共同編輯 <ArrowDown size={17} /></a>}
             </div>
-            <div className="mt-5 flex items-start gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300 text-slate-900">
-                <ClipboardList className="h-6 w-6" />
-              </div>
-              <div>
-                <p className={`text-sm font-black ${collaborationEnabled && collaborationKey ? 'text-emerald-700' : 'text-sky-700'}`}>學生志願規劃</p>
-                <h1 className="mt-1 text-3xl font-black tracking-tight sm:text-5xl">
-                  模擬志願序
-                </h1>
-              </div>
-            </div>
-            <p className="mt-5 max-w-xl text-sm font-bold leading-7 text-slate-600">
-              依志願順序整理，讓家庭可以快速討論孩子的探索方向。
-            </p>
+          </div>
+          <div className="shared-volunteer-hero-aside" aria-label="分享摘要">
+            <span className="shared-volunteer-aside-label">這份清單</span>
+            <strong>{choices.length}<small> / 30</small></strong>
+            <span>個志願選項</span>
+            <div><MapPin size={17} />{regionName}</div>
           </div>
         </header>
-        <section className="relative z-10 mt-6 grid grid-cols-3 gap-2 sm:gap-3">
-          <StatCard
-            icon={<MapPin className="h-5 w-5" />}
-            label="就學區"
-            value={regionName}
-            tone="bg-sky-100 text-sky-800"
-          />
-          <StatCard
-            icon={<Sparkles className="h-5 w-5" />}
-            label="志願數"
-            value={String(choices.length)}
-            tone="bg-amber-100 text-amber-800"
-          />
-          <StatCard
-            icon={<CalendarDays className="h-5 w-5" />}
-            label={expiresAt ? "連結有效至" : "分享狀態"}
-            value={expiresAt ? new Date(expiresAt).toLocaleDateString("zh-TW") : "會員專屬長期連結"}
-            tone="bg-violet-100 text-violet-800"
-          />
+
+        <div className="shared-volunteer-meta" aria-label="分享資訊">
+          <span><ShieldCheck size={16} />{canEdit ? '可留言、調整順序與確認版本' : '檢視用清單，無法修改原內容'}</span>
+          <span><CalendarDays size={16} />{expiresAt ? `連結有效至 ${new Date(expiresAt).toLocaleDateString('zh-TW')}` : '長期分享連結'}</span>
+          {createdAt && <span>建立於 {createdAt}</span>}
+        </div>
+
+        <section className="shared-volunteer-copy" aria-labelledby="shared-copy-title">
+          <div><span className="shared-volunteer-copy-icon"><Copy size={21} /></span><div><h2 id="shared-copy-title">想依自己的想法調整？</h2><p>複製這份志願表到自己的模擬頁，試著更換順序或加入其他校科；原分享清單不受影響。</p></div></div>
+          <button type="button" onClick={createCopy}>建立我的副本 <ArrowRight size={18} /></button>
         </section>
-        {choices.length > 0 && (
-          <section className="mt-9 rounded-[2rem] border-2 border-slate-900 bg-white p-5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-6">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-indigo-700">
-                  <BarChart3 className="h-5 w-5" />
-                  <p className="text-xs font-black tracking-[0.16em]">
-                    DIRECTION SNAPSHOT
-                  </p>
-                </div>
-                <h2 className="mt-1 text-2xl font-black text-slate-950 sm:text-3xl">
-                  志願方向總覽
-                </h2>
-                <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-slate-600">
-                  從前幾個志願看出目前的探索方向；群科與類型標籤可點擊查看介紹。
-                </p>
-              </div>
-              <span className="shrink-0 rounded-xl border-2 border-slate-900 bg-amber-100 px-3 py-2 text-xs font-black">
-                以前 10 個志願統計
-              </span>
+
+        <section id="shared-choices" className="shared-volunteer-list" aria-labelledby="shared-choices-title">
+          <div className="shared-volunteer-section-head">
+            <div><span className="shared-volunteer-section-label">01 · 志願清單</span><h2 id="shared-choices-title">目前的志願順序</h2><p>由上到下依優先順序排列，點選群別與類型可了解更多。</p></div>
+            <div className="shared-volunteer-display-controls" role="group" aria-label="清單顯示方式">
+              <button type="button" aria-pressed={displayMode === 'cards'} onClick={() => setDisplayMode('cards')}>卡片</button>
+              <button type="button" aria-pressed={displayMode === 'table'} onClick={() => setDisplayMode('table')}>表格</button>
             </div>
-            <div className="mt-5 grid gap-4 lg:grid-cols-2">
-              <DistributionCard
-                icon={<GraduationCap className="h-5 w-5" />}
-                title="前幾志願的群科分布"
-                entries={groupCounts}
-                linkFor={(name) =>
-                  name === "學術群"
-                    ? withBasePath("/general-comprehensive-high-school")
-                    : withBasePath("/vocational-encyclopedia") +
-                      "?group=" +
-                      encodeURIComponent(name)
-                }
-              />
-              <DistributionCard
-                icon={<PieChart className="h-5 w-5" />}
-                title="普通高中／技高比例"
-                entries={typeCounts}
-                linkFor={() => withBasePath("/school-types")}
-              />
-            </div>
-            <div className="mt-5 rounded-2xl border-2 border-slate-900 bg-indigo-50 p-4 sm:flex sm:items-center sm:justify-between sm:gap-5">
-              <div className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 bg-white">
-                  <Copy className="h-5 w-5 text-indigo-700" />
-                </div>
-                <p className="text-sm font-bold leading-6 text-slate-700">
-                  <span className="block font-black text-slate-950">
-                    建立我的模擬副本
-                  </span>
-                  將這份清單帶到自己的模擬頁繼續調整；原分享內容不會被修改。
-                </p>
-              </div>
-              <button
-                onClick={createCopy}
-                className="mt-4 inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-indigo-600 px-4 py-3 text-sm font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none sm:mt-0 sm:w-auto"
-              >
-                <Copy className="h-4 w-4" />
-                建立我的副本
-              </button>
-            </div>
-          </section>
-        )}
-        {collaborationEnabled && collaborationKey && <VolunteerCollaborationPanel
-          token={token}
-          editorKey={collaborationKey}
-          choices={choices}
-          initialVersion={collaborationVersion}
-          initialConfirmedAt={collaborationConfirmedAt}
-          initialConfirmedBy={collaborationConfirmedBy}
-          onChoicesUpdated={onChoicesUpdated}
-        />}
-        <section className="mt-9">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-black tracking-[0.16em] text-indigo-600">
-                PREFERENCE LIST
-              </p>
-              <h2 className="mt-1 text-2xl font-black text-slate-950 sm:text-3xl">
-                志願順序
-              </h2>
-            </div>
-            <div className="mb-2 flex items-center gap-2"><div className="inline-flex overflow-hidden rounded-xl border-2 border-slate-900 bg-white text-xs font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"><button type="button" onClick={() => setDisplayMode('table')} className={`px-3 py-2 ${displayMode === 'table' ? 'bg-indigo-600 text-white' : 'text-slate-700'}`}>表格</button><button type="button" onClick={() => setDisplayMode('cards')} className={`border-l-2 border-slate-900 px-3 py-2 ${displayMode === 'cards' ? 'bg-indigo-600 text-white' : 'text-slate-700'}`}>卡片</button></div><div className="rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">{choices.length} / 30</div></div>
           </div>
           {choices.length === 0 ? (
-            <p className="mt-5 rounded-2xl border-2 border-dashed border-slate-300 bg-white p-8 text-center font-bold text-slate-500">
-              此報告尚未加入志願。
-            </p>
-          ) : (
-            displayMode === 'table' ? <><p className="mt-5 mb-2 text-xs font-bold text-slate-500 sm:hidden">左右滑動查看完整欄位</p><div className="min-w-0 max-w-full overflow-x-auto rounded-2xl border-2 border-slate-900">
-              <table className="min-w-[36rem] w-full text-left text-xs sm:min-w-[40rem] sm:text-sm">
-                <thead className="bg-indigo-50 text-xs font-black text-slate-700">
-                  <tr><th className="w-16 px-2 py-2.5 text-center sm:w-20 sm:px-4 sm:py-3">順序</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">學校</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">科別／班別</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">志願序分數</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">類型</th><th className="px-2 py-2.5 sm:px-4 sm:py-3">地區</th></tr>
-                </thead>
-                <tbody className="divide-y-2 divide-slate-100 bg-white">
+            <div className="shared-volunteer-empty"><ClipboardList size={30} /><h3>這份分享還沒有志願</h3><p>建立自己的模擬清單，開始整理想了解的學校與科別。</p><a href={withBasePath('/mock-volunteer')}>前往模擬志願序 <ArrowRight size={17} /></a></div>
+          ) : displayMode === 'cards' ? (
+            <ol className="shared-volunteer-cards">
               {choices.map((choice: any, index: number) => (
-                <tr
-                  key={`${choice.code}-${choice.deptCode}-${index}`}
-                  className="transition hover:bg-indigo-50/60"
-                >
-                  <td className="px-2 py-2.5 text-center sm:px-4 sm:py-3"><span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-amber-300 font-black text-slate-950">{index + 1}</span></td>
-                  <td className="whitespace-nowrap px-2 py-2.5 font-black text-slate-950">{choice.name}</td>
-                  <td className="whitespace-nowrap px-2 py-2.5 font-bold text-sky-700">{choice.deptName}{choice.shift ? `（${choice.shift}）` : ""}</td>
-                  <td className="whitespace-nowrap px-2 py-2.5 font-black text-indigo-700">{choice.preferenceScore ?? choice.preferenceScore ?? choice.score ?? choice.points ?? choice.minScore ?? "--"}</td><td className="px-2 py-2.5"><div className="flex flex-wrap gap-1.5">{choice.levelInfo && <a href={withBasePath("/school-types")} className="rounded-lg border border-amber-300 bg-amber-100 px-2 py-1 text-xs font-black text-amber-900">{choice.levelInfo}</a>}{choice.groupName && <a href={choice.groupName === "學術群" ? withBasePath("/general-comprehensive-high-school") : withBasePath("/vocational-encyclopedia") + "?group=" + encodeURIComponent(choice.groupName)} className="rounded-lg border border-sky-300 bg-sky-100 px-2 py-1 text-xs font-black text-sky-800">{choice.groupName}</a>}</div></td>
-                  <td className="whitespace-nowrap px-2 py-2.5 font-bold text-slate-600">{choice.county || "--"}</td>
-                </tr>
+                <li key={`${choice.code}-${choice.deptCode}-${index}`} className="shared-volunteer-choice">
+                  <span className="shared-volunteer-rank" aria-label={`第 ${index + 1} 志願`}>{String(index + 1).padStart(2, '0')}</span>
+                  <div className="shared-volunteer-choice-main"><span className="shared-volunteer-choice-caption">第 {index + 1} 志願</span><h3>{choice.name || '未提供學校名稱'}</h3><p>{choice.deptName || '未提供科別'}{choice.shift ? `（${choice.shift}）` : ''}</p>
+                    <div className="shared-volunteer-tags">
+                      {choice.levelInfo && <a href={withBasePath('/school-types')}>{choice.levelInfo}<ExternalLink size={13} /></a>}
+                      {choice.groupName && <a href={groupLink(choice.groupName)}>{choice.groupName}<ExternalLink size={13} /></a>}
+                      {choice.county && <span><MapPin size={13} />{choice.county}</span>}
+                    </div>
+                  </div>
+                  <div className="shared-volunteer-score"><small>志願序分數</small><strong>{preferenceScore(choice)}</strong></div>
+                </li>
               ))}
-                </tbody>
-              </table>
-            </div></> : <div className="mt-5 grid gap-3 sm:grid-cols-2">{choices.map((choice: any, index: number) => <article key={`${choice.code}-${choice.deptCode}-${index}`} className="rounded-2xl border-2 border-slate-900 bg-white p-3 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"><div className="flex items-start gap-2.5"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-slate-900 bg-amber-300 text-base font-black">{index + 1}</span><div className="min-w-0 flex-1"><h3 className="truncate text-sm font-black leading-5 text-slate-950">{choice.name}</h3><p className="truncate text-sm font-bold text-sky-700">{choice.deptName}{choice.shift ? ` (${choice.shift})` : ''}</p><div className="mt-1.5 space-y-1 border-t border-slate-100 pt-1.5 text-[11px] font-black leading-4"><div><span className="inline-flex max-w-full rounded-md border border-amber-200 bg-amber-100 px-1.5 py-0.5 text-amber-900"><span className="truncate">類型：{choice.levelInfo || '未提供'}</span></span></div><div className="flex min-w-0 items-center justify-between gap-2"><span className="inline-flex min-w-0 max-w-[55%] rounded-md border border-sky-200 bg-sky-100 px-1.5 py-0.5 text-sky-800"><span className="truncate">群別：{choice.groupName || '未提供'}</span></span><span className="shrink-0 rounded-md border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-indigo-800">{choice.preferenceScore === null ? '不計分' : `${choice.preferenceScore ?? choice.score ?? choice.points ?? choice.minScore ?? '--'} 分`}</span></div></div></div></div></article>)}</div>
+            </ol>
+          ) : (
+            <div className="shared-volunteer-table-wrap"><table><thead><tr><th>順序</th><th>學校</th><th>科別／班別</th><th>志願序分數</th><th>類型／群別</th><th>地區</th></tr></thead><tbody>{choices.map((choice: any, index: number) => <tr key={`${choice.code}-${choice.deptCode}-${index}`}><td><span className="shared-volunteer-table-rank">{index + 1}</span></td><td><strong>{choice.name || '未提供'}</strong></td><td>{choice.deptName || '未提供'}{choice.shift ? `（${choice.shift}）` : ''}</td><td><strong>{preferenceScore(choice)}</strong></td><td><div className="shared-volunteer-table-tags">{choice.levelInfo && <a href={withBasePath('/school-types')}>{choice.levelInfo}</a>}{choice.groupName && <a href={groupLink(choice.groupName)}>{choice.groupName}</a>}</div></td><td>{choice.county || '--'}</td></tr>)}</tbody></table></div>
           )}
         </section>
+
+        {choices.length > 0 && <section className="shared-volunteer-insights" aria-labelledby="shared-insights-title"><div className="shared-volunteer-section-head"><div><span className="shared-volunteer-section-label">02 · 方向觀察</span><h2 id="shared-insights-title">前 10 個志願的分布</h2><p>快速看出清單偏向哪些群科與學校類型，作為討論的起點。</p></div><span className="shared-volunteer-insights-note"><BarChart3 size={16} />依前 {summaryChoices.length} 個志願統計</span></div><div className="shared-volunteer-insights-grid"><DistributionCard icon={<GraduationCap size={20} />} title="群科分布" entries={groupCounts} linkFor={groupLink} /><DistributionCard icon={<PieChart size={20} />} title="學校類型" entries={typeCounts} linkFor={() => withBasePath('/school-types')} /></div></section>}
+
+        {canEdit && <VolunteerCollaborationPanel token={token} editorKey={collaborationKey} choices={choices} initialVersion={collaborationVersion} initialConfirmedAt={collaborationConfirmedAt} initialConfirmedBy={collaborationConfirmedBy} onChoicesUpdated={onChoicesUpdated} />}
         <DecisionFooter createdAt={createdAt} />
       </div>
     </main>
@@ -475,8 +382,8 @@ function VolunteerCollaborationPanel({ token, editorKey, choices, initialVersion
     } catch (err) { setError(err instanceof Error ? err.message : '確認版本失敗。'); }
     finally { setSaving(false); }
   };
-  return <section className="mt-9 rounded-[2rem] border-2 border-slate-900 bg-white p-3 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:p-6">
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="flex items-center gap-2 text-xs font-black tracking-[.16em] text-indigo-700"><MessageCircle className="h-4 w-4" />FAMILY COLLABORATION</p><h2 className="mt-1 text-2xl font-black text-slate-950">一起調整，也留下討論紀錄</h2><p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-slate-600">這是一份可編輯連結。調整志願、留言與確認都會記錄時間與版本；請只轉傳給願意一起討論的人。</p></div><span className="shrink-0 rounded-xl border-2 border-slate-900 bg-indigo-100 px-3 py-2 text-sm font-black text-indigo-950">第 {version} 版</span></div>
+  return <section id="collaboration" className="shared-volunteer-collaboration">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="flex items-center gap-2 text-xs font-black tracking-[.16em] text-indigo-700"><MessageCircle className="h-4 w-4" />03 · 家庭協作</p><h2 className="mt-1 text-2xl font-black text-slate-950">一起調整，也留下討論紀錄</h2><p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-slate-600">這是一份可編輯連結。調整志願、留言與確認都會記錄時間與版本；請只轉傳給願意一起討論的人。</p></div><span className="shrink-0 rounded-xl border-2 border-slate-900 bg-indigo-100 px-3 py-2 text-sm font-black text-indigo-950">第 {version} 版</span></div>
     <label className="mt-4 block text-sm font-bold">這次修改的原因（選填）<input maxLength={120} value={revisionNote} onChange={e => setRevisionNote(e.target.value)} placeholder="例如：考量交通，調整優先順序" className="mt-2 w-full rounded-xl border-2 p-2" /></label>
     <VolunteerVersionHistory versions={versions} choices={choices} busy={!ready || saving || loading} onSave={note => saveChoices(choices, undefined, note)} onRestore={v => saveChoices(v.choices, v.version)} />
     <p className="text-xs text-slate-500">顯示最近 100 版；功能啟用前的舊內容無法回溯。每次修改自動保存，還原會清除原確認狀態。</p>
@@ -488,53 +395,18 @@ function VolunteerCollaborationPanel({ token, editorKey, choices, initialVersion
 }
 
 function DecisionFooter({ createdAt }: { createdAt?: string }) {
-  return (
-    <footer className="relative mt-8 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white">
-      <div aria-hidden="true" className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-amber-200/70 blur-2xl" />
-      <div className="relative bg-gradient-to-br from-amber-100 via-white to-sky-50 px-5 py-6 sm:px-7 sm:py-8">
-        <p className="inline-flex rounded-full bg-slate-900 px-3 py-1 text-[11px] font-black tracking-[0.16em] text-amber-200">
-          NEXT STEPS
-        </p>
-        <h2 className="mt-4 max-w-2xl text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-          別急著離開，這幾頁能幫你更快做決定
-        </h2>
-        <p className="mt-2 max-w-xl text-sm font-bold leading-6 text-slate-600">
-          多看一點學制、職群與選填策略，再和家人一起確認方向。
-        </p>
-      </div>
-      <div className="relative p-5 sm:p-6">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <a
-            href={withBasePath("/strategy")}
-            className="group rounded-2xl border-2 border-sky-200 bg-sky-50 p-5 text-sky-950 transition hover:-translate-y-0.5 hover:border-sky-500 hover:bg-sky-100"
-          >
-            <span className="text-xs font-black tracking-[0.14em] text-sky-700">01 · 排好志願</span>
-            <span className="mt-2 block text-lg font-black">志願選填策略</span>
-            <span className="mt-1 block text-sm font-bold leading-6 text-slate-600">掌握排序與風險配置</span>
-          </a>
-          <a
-            href={withBasePath("/vocational-encyclopedia")}
-            className="group rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-5 text-emerald-950 transition hover:-translate-y-0.5 hover:border-emerald-500 hover:bg-emerald-100"
-          >
-            <span className="text-xs font-black tracking-[0.14em] text-emerald-700">02 · 找到方向</span>
-            <span className="mt-2 block text-lg font-black">職群介紹百科</span>
-            <span className="mt-1 block text-sm font-bold leading-6 text-slate-600">認識學習內容與發展方向</span>
-          </a>
-        </div>
-        <a
-          href={withBasePath("/support")}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-rose-500 px-5 py-3.5 font-black text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
-        >
-          <Sparkles className="h-5 w-5" />
-          加入小額贊助
-        </a>
-      </div>
-      <p className="border-t-2 border-slate-200 bg-slate-50 px-5 py-3 text-center text-xs font-bold leading-6 text-slate-500 sm:px-6">
-        {createdAt && `建立於 ${createdAt} · `}
-        本頁僅供檢視；實際選填請以官方系統與簡章為準。
-      </p>
-    </footer>
-  );
+  return <footer className="shared-volunteer-footer">
+    <div className="shared-volunteer-footer-main">
+      <div><span>接下來可以這樣看</span><h2>把清單變成更有把握的選擇</h2><p>先確認選填策略，再比較學校類型與科別；需要不同排序時，建立自己的模擬清單。</p></div>
+      <a href={withBasePath('/mock-volunteer')}>開始我的志願規劃 <ArrowRight size={18} /></a>
+    </div>
+    <div className="shared-volunteer-footer-links">
+      <a href={withBasePath('/strategy')}><strong>志願選填策略</strong><span>了解排序與風險配置</span><ArrowRight size={18} /></a>
+      <a href={withBasePath('/school-types')}><strong>學校類型解析</strong><span>看懂普高、技高與五專</span><ArrowRight size={18} /></a>
+      <a href={withBasePath('/departments')}><strong>科別總覽</strong><span>探索不同群科的學習內容</span><ArrowRight size={18} /></a>
+    </div>
+    <p className="shared-volunteer-footer-note">{createdAt && `清單建立於 ${createdAt} · `}本站模擬清單僅供討論與規劃，正式選填請以官方系統及當年度簡章為準。</p>
+  </footer>;
 }
 function countBy(
   choices: any[],
@@ -614,29 +486,6 @@ function DistributionCard({
         })}
       </div>
     </section>
-  );
-}
-function StatCard({
-  icon,
-  label,
-  value,
-  tone,
-}: {
-  icon: ReactNode;
-  label: string;
-  value: string;
-  tone: string;
-}) {
-  return (
-    <article className="min-w-0 rounded-2xl border-2 border-slate-900 bg-white p-2.5 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] sm:border-3 sm:p-4 sm:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-      <div
-        className={`inline-flex rounded-lg border-2 border-slate-900 p-1.5 sm:rounded-xl sm:p-2 ${tone}`}
-      >
-        {icon}
-      </div>
-      <p className="mt-2 text-xs font-black text-slate-500">{label}</p>
-      <p className="mt-1 truncate text-sm font-black text-slate-950 sm:text-lg">{value}</p>
-    </article>
   );
 }
 function Layout({

@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
+import { AREA_DATA } from './src/lib/areaData';
+import { pageMetadata, SCORING_RULES_META } from './src/lib/seoMetadata';
+import { departments } from './src/lib/vocationalDepartments';
 
 type StaticNewsArticle = {
   id: string;
@@ -26,10 +29,17 @@ const extractStaticNewsArticles = (): StaticNewsArticle[] => {
 
 const staticNewsArticles = extractStaticNewsArticles();
 
+// The sitemap is the source of truth for public URLs. Decode path segments for
+// filesystem entries; the canonical URL is encoded again by URL below.
+const sitemap = fs.readFileSync(path.resolve(__dirname, 'public', 'sitemap.xml'), 'utf8');
+const sitemapRoutes = [...sitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>/g)]
+  .map((match) => decodeURIComponent(new URL(match[1]).pathname.replace(/^\/spare\/?/, '')))
+  .filter(Boolean);
+
 // GitHub Pages serves a 404 response for client-side routes unless each route
 // has an index.html. Publish static entry points for every public SEO page so
 // the URLs listed in sitemap.xml can be fetched and indexed successfully.
-const seoRoutes = [
+const seoRoutes = [...new Set([
   'advantages',
   'disclaimer',
   'five-year-college-rules',
@@ -81,6 +91,9 @@ const seoRoutes = [
   'membership/account',
   'membership',
   'membership/success',
+  'privacy-center',
+  'score-change',
+  'score-records',
   'after-sales-service',
   'refund-cancellation-policy',
   'vocational-encyclopedia',
@@ -97,43 +110,31 @@ const seoRoutes = [
   'guide/help',
   'news',
   ...staticNewsArticles.map((article) => `news/${article.id}`),
-];
+  ...sitemapRoutes,
+])];
 
-const staticNoindexRoutes = new Set([
-  'results',
-  'compare',
-  'membership/account',
-  'membership/success',
-  'support/failed',
-  'support/success',
-]);
+const staticNoindexRoutes = new Set(Object.entries(pageMetadata)
+  .filter(([, metadata]) => metadata.noindex)
+  .map(([route]) => route.slice(1)));
 
-const staticPageMetadata: Record<string, { title: string; description: string }> = {
-  'vocational-compare': {
-    title: '職群比較｜高中職課程、升學與職涯方向比較',
-    description: '選擇 2～3 個技術型高中職群，從主要課程、相關科別、升學方向、可能職涯與 Holland 興趣比較差異，並查詢開設學校，探索適合自己的升學方向。',
-  },
-  membership: {
-    title: '會員方案｜免廣告與升學工具｜全國會考落點分析',
-    description: '以 LINE 登入確認會員資格，選擇免廣告方案並持續使用會考落點分析與升學規劃工具。',
-  },
-  changelog: {
-    title: '更新紀錄｜全國會考落點分析',
-    description: '查看全國會考落點分析的功能更新、資料調整與服務改善紀錄。',
-  },
-  'report-error': {
-    title: '資料問題回報｜全國會考落點分析',
-    description: '回報學校資料、功能操作或升學資訊問題，協助我們持續改善服務品質。',
-  },
-  disclaimer: {
-    title: '免責聲明｜全國會考落點分析',
-    description: '說明會考落點分析結果的資料來源、使用範圍與正式招生資訊的確認方式。',
-  },
-  'future-pathways': {
-    title: '高中職三年後的下一步地圖｜全國會考落點分析',
-    description: '互動整理普高、技高、綜高與五專畢業後的常見升學、技優、特殊選才、就業與轉換路徑；正式資格以當年度簡章為準。',
-  },
-};
+function getStaticMetadata(route: string) {
+  const newsArticle = route.startsWith('news/')
+    ? staticNewsArticles.find((article) => route === `news/${article.id}`)
+    : undefined;
+  if (newsArticle) return { title: `${newsArticle.title}｜全國會考落點分析`, description: newsArticle.summary };
+  const department = route.startsWith('departments/')
+    ? departments.find((item) => route === `departments/${item.name}`)
+    : undefined;
+  if (department) return { title: `${department.name}介紹｜${department.group}科別探索`, description: `${department.intro}查看${department.name}的實作方向、選校核對與相關科別。` };
+  const area = route.startsWith('area/')
+    ? AREA_DATA.find((item) => route === `area/${item.slug}`)
+    : undefined;
+  if (area) return { title: `${area.name}會考落點分析｜${area.cities}免試入學志願選填`, description: area.description };
+  const scoring = route.startsWith('scoring-rules/')
+    ? SCORING_RULES_META[route.slice('scoring-rules/'.length)]
+    : undefined;
+  return scoring || pageMetadata[`/${route}`];
+}
 
 const escapeHtmlAttribute = (value: string) => value
   .replace(/&/g, '&amp;')
@@ -145,10 +146,9 @@ function staticRouteHtml(indexHtml: string, route: string) {
   const newsArticle = route.startsWith('news/')
     ? staticNewsArticles.find((article) => route === `news/${article.id}`)
     : undefined;
-  const metadata = newsArticle
-    ? { title: `${newsArticle.title}｜全國會考落點分析`, description: newsArticle.summary }
-    : staticPageMetadata[route];
-  const canonical = `https://tyctw.github.io/spare/${route}`;
+  const metadata = getStaticMetadata(route);
+  if (!metadata) throw new Error(`Missing SEO metadata for /${route}`);
+  const canonical = new URL(route, 'https://tyctw.github.io/spare/').href;
   let html = indexHtml;
 
   if (metadata) {
@@ -186,16 +186,17 @@ function staticRouteHtml(indexHtml: string, route: string) {
       inLanguage: 'zh-Hant-TW',
       publisher: { '@type': 'Organization', name: '全國會考落點分析', url: 'https://tyctw.github.io/spare/' },
     }).replace(/</g, '\\u003c');
-    html = html.replace('</head>', `<script type="application/ld+json" id="static-news-article-structured-data">${articleStructuredData}</script></head>`);
+    html = html.replace('</head>', `<script type="application/ld+json" id="news-article-structured-data">${articleStructuredData}</script></head>`);
   }
 
   if (!staticNoindexRoutes.has(route)) return html;
 
   // Crawlers can inspect a static entry before React has replaced its metadata.
   // Put the noindex directive into the generated HTML as well as runtime SEO.
+  const robots = pageMetadata[`/${route}`]?.nofollow ? 'noindex, nofollow' : 'noindex, follow';
   return html
-    .replace(/(<meta name="robots" content=")[^"]*("\s*\/?>)/, '$1noindex, nofollow$2')
-    .replace(/(<meta name="googlebot" content=")[^"]*("\s*\/?>)/, '$1noindex, nofollow$2');
+    .replace(/(<meta name="robots" content=")[^"]*("\s*\/?>)/, `$1${robots}$2`)
+    .replace(/(<meta name="googlebot" content=")[^"]*("\s*\/?>)/, `$1${robots}$2`);
 }
 
 const staticRouteEntries = () => ({

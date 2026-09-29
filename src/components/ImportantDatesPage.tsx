@@ -1,7 +1,7 @@
 import PageBreadcrumb from './PageBreadcrumb';
 import { useState } from 'react';
 import {
-  ArrowLeft,
+  ArrowRight,
   ArrowUpRight,
   CalendarDays,
   ChevronDown,
@@ -11,6 +11,7 @@ import {
   ListFilter,
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import './important-dates-page.css';
 import {
   admissionPathways,
   getScheduleForPathway,
@@ -20,12 +21,12 @@ import {
 } from '../lib/importantDates';
 
 const highlights = [
-  { date: '03/04–03/06', title: '會考報名', month: 3 },
-  { date: '05/15–05/16', title: '國中教育會考', month: 5 },
-  { date: '06/04', title: '會考成績查詢', month: 6 },
-  { date: '06/18–06/24', title: '序位查詢、志願選填', month: 6 },
-  { date: '07/06', title: '免試入學放榜', month: 7 },
-  { date: '07/08', title: '免試入學報到', month: 7 },
+  { date: '03/04–03/06', title: '會考報名', month: 3, step: '報名', detail: '確認報名資料與應試資訊' },
+  { date: '05/15–05/16', title: '國中教育會考', month: 5, step: '應考', detail: '依准考證資訊準時應試' },
+  { date: '06/04', title: '會考成績查詢', month: 6, step: '查成績', detail: '核對各科等級、標示與寫作級分' },
+  { date: '06/18–06/24', title: '序位查詢、志願選填', month: 6, step: '填志願', detail: '留意 6 月 24 日選填截止', featured: true },
+  { date: '07/06', title: '免試入學放榜', month: 7, step: '看結果', detail: '確認錄取學校與科別' },
+  { date: '07/08', title: '免試入學報到', month: 7, step: '報到', detail: '依錄取學校通知完成報到' },
 ];
 
 const displayDate = (date: string) => date.replace(/（[一二三四五六日]）/g, '');
@@ -67,22 +68,28 @@ export default function ImportantDatesPage() {
           <CalendarDays size={260} strokeWidth={.7} aria-hidden="true" className="pointer-events-none absolute -bottom-20 -right-12 hidden rotate-[-12deg] text-white/10 md:block" />
         </header>
 
-        <section aria-labelledby="highlight-heading" className="mt-9">
-          <div className="flex flex-wrap items-end justify-between gap-3">
+        <section aria-labelledby="highlight-heading" className="important-highlights">
+          <div className="important-highlights-heading">
             <div>
-              <p className="text-xs font-black tracking-[.12em] text-indigo-600">先記住這些日期</p>
-              <h2 id="highlight-heading" className="mt-1 text-2xl font-black tracking-tight sm:text-[28px]">六個關鍵節點</h2>
+              <p>先記住這些日期</p>
+              <h2 id="highlight-heading">六個關鍵節點</h2>
+              <span>從報名到報到，先掌握最需要留意的時間。</span>
             </div>
-            <p className="text-sm text-slate-500">點選日期可跳至該月份</p>
+            <span className="important-highlights-instruction"><CalendarDays size={16} aria-hidden="true" />點選節點查看該月完整日程</span>
           </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            {highlights.map(({ date, title, month }) => (
-              <a key={title} href={`#month-${month}`} onClick={() => openHighlightMonth(month)} className="group flex min-h-[92px] flex-col justify-between rounded-2xl border border-slate-200 border-l-4 border-l-indigo-500 bg-white p-4 shadow-[0_7px_22px_rgba(31,42,85,0.04)] transition hover:-translate-y-0.5 hover:border-indigo-300 hover:border-l-indigo-600 hover:shadow-[0_12px_26px_rgba(31,42,85,0.09)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                <strong className="text-base font-black text-indigo-700">{date}</strong>
-                <span className="mt-2 text-sm font-bold leading-5 text-slate-700">{title}</span>
-              </a>
+          <ol className="important-highlights-grid">
+            {highlights.map(({ date, title, month, step, detail, featured }, index) => (
+              <li key={title}>
+                <a href={`#month-${month}`} onClick={() => openHighlightMonth(month)} className={`important-highlight-card${featured ? ' important-highlight-card--featured' : ''}`} aria-label={`第 ${index + 1} 個節點，${date} ${title}，查看 ${month} 月完整日程`}>
+                  <span className="important-highlight-top"><span className="important-highlight-number">{String(index + 1).padStart(2, '0')}</span><span className="important-highlight-step">{step}</span></span>
+                  <strong className="important-highlight-date">{date}</strong>
+                  <span className="important-highlight-title">{title}</span>
+                  <span className="important-highlight-detail">{detail}</span>
+                  <span className="important-highlight-link">查看 {month} 月日程 <ArrowRight size={16} aria-hidden="true" /></span>
+                </a>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
 
         <section aria-labelledby="pathway-heading" className="mt-9 rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_10px_32px_rgba(31,42,85,0.05)] sm:p-6">

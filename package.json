@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "prebuild": "node update-sitemap-lastmod.cjs",
-    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && vite build",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && vite build && node scripts/check-seo.mjs",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
+    "check:seo": "node scripts/check-seo.mjs",
     "supabase:start": "npx supabase start",
     "supabase:deploy": "npx supabase db push && npx supabase functions deploy backend && npx supabase functions deploy ecpay-callback --no-verify-jwt && npx supabase functions deploy line-login --no-verify-jwt"
   },
