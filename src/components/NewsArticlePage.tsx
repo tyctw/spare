@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, ChevronRight, List, Megaphone, ShieldCheck } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageBreadcrumb from './PageBreadcrumb';
 import { getNewsArticle, newsArticles } from '../lib/news';
 import './news-article-page.css';
 
@@ -14,7 +15,7 @@ export default function NewsArticlePage({ articleId }: { articleId: string }) {
   const related = ordered.filter((item) => item.id !== article.id).sort((a, b) => Number(b.category === article.category) - Number(a.category === article.category)).slice(0, 2);
 
   return <main className="article-page"><article className="article-shell">
-    <nav className="article-breadcrumb" aria-label="麵包屑"><a href={withBasePath('/news')}>最新消息</a><ChevronRight size={14} /><span aria-current="page">{article.category}</span></nav>
+    <PageBreadcrumb title={article.category} parent={{ label: '最新消息', href: '/news' }} />
     <header className="article-header"><div className="article-heading"><div className="article-meta"><span className="article-category"><Megaphone size={14} />{article.category}</span><time dateTime={article.publishedAt}><CalendarDays size={15} />{article.publishedLabel}</time></div><h1>{article.title}</h1><p className="article-deck">{article.summary}</p></div><div className="article-header-rule"><span>NEWS / {article.id}</span><span>網站最新動態</span></div></header>
     <div className="article-layout"><aside className="article-sidebar"><div className="article-sidebar-inner"><p className="article-sidebar-label"><List size={15} />本篇內容</p><nav aria-label="文章段落">{article.body.map((section, index) => <a href={`#section-${index + 1}`} key={`${index}-${section.heading}`}><span>{String(index + 1).padStart(2, '0')}</span>{section.heading}</a>)}</nav><a className="article-sidebar-back" href={withBasePath('/news')}><ArrowLeft size={15} />返回消息列表</a></div><details className="article-mobile-toc"><summary><List size={17} />本篇內容<span>{article.body.length} 個段落</span><ChevronRight size={17} /></summary><nav aria-label="手機版文章段落">{article.body.map((section, index) => <a href={`#section-${index + 1}`} key={`${index}-${section.heading}`}><span>{String(index + 1).padStart(2, '0')}</span>{section.heading}</a>)}</nav></details></aside>
       <div className="article-main"><div className="article-body">{article.body.map((section, index) => <section id={`section-${index + 1}`} key={`${index}-${section.heading}`}><div className="article-section-heading"><span>{String(index + 1).padStart(2, '0')}</span><h2>{section.heading}</h2></div>{section.paragraphs.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}</section>)}</div>

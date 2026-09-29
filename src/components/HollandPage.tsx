@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import React, { useMemo, useState } from 'react';
 import {
   ArrowLeft,
@@ -305,10 +306,7 @@ export default function HollandPage() {
     <main className={`holland-page min-h-screen text-slate-900 ${started ? 'is-started' : 'is-intro'}`}>
       <section className="holland-hero">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <a href={withBasePath('/')} className="holland-back inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold">
-            <ArrowLeft className="h-4 w-4" />
-            返回首頁
-          </a>
+          <PageBreadcrumb title="荷倫碼性向測驗" />
 
           <div className="holland-hero-grid grid gap-8 py-9 lg:grid-cols-[minmax(0,1fr)_310px] lg:items-center">
             <div>

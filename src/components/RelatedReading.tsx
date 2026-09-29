@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowRight, ArrowUpRight, BookOpen, CalendarDays, Compass, GraduationCap, LineChart, ListChecks, Map, Target } from 'lucide-react';
+import { ArrowUpRight, BookOpen, CalendarDays, Compass, GraduationCap, LineChart, ListChecks, Map, Target } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import './related-reading.css';
 
 type Recommendation = {
   title: string;
@@ -17,9 +18,15 @@ const recommendations: Record<string, Recommendation[]> = {
     { title: '填志願策略', description: '知道要選哪種學校後，下一步把志願排得更有把握。', href: '/strategy', icon: Target, tone: 'bg-orange-100 text-orange-800' },
   ],
   '/vocational-encyclopedia': [
+    { title: '科別探索圖鑑', description: '想細看某一科？從類別與群別進入各科獨立介紹。', href: '/departments', icon: BookOpen, tone: 'bg-violet-100 text-violet-800' },
     { title: '學校類型解析', description: '先確認技高、五專與其他高中類型，哪一種學習節奏更適合你。', href: '/school-types', icon: BookOpen, tone: 'bg-sky-100 text-sky-800' },
     { title: 'Holland 興趣測驗', description: '用興趣結果交叉比對群科，少一點憑印象選科。', href: '/holland', icon: Compass, tone: 'bg-purple-100 text-purple-800' },
     { title: '搜尋學校與科別', description: '找到心動群科後，直接查看有哪些學校開設。', href: '/search', icon: Map, tone: 'bg-amber-100 text-amber-800' },
+  ],
+  '/departments': [
+    { title: '技職群科百科', description: '先了解職群共同課程與學習方式，再比較科別。', href: '/vocational-encyclopedia', icon: GraduationCap, tone: 'bg-emerald-100 text-emerald-800' },
+    { title: '搜尋學校與科別', description: '找到感興趣的科別後，確認哪些學校實際開設。', href: '/search', icon: Map, tone: 'bg-amber-100 text-amber-800' },
+    { title: '學校類型解析', description: '比較技高與其他學制的學習安排。', href: '/school-types', icon: BookOpen, tone: 'bg-sky-100 text-sky-800' },
   ],
   '/holland': [
     { title: '技職群科百科', description: '把測驗結果轉成可探索的群科與學習內容。', href: '/vocational-encyclopedia', icon: GraduationCap, tone: 'bg-emerald-100 text-emerald-800' },
@@ -85,12 +92,23 @@ export default function RelatedReading({ path }: { path: string }) {
     { title: '填志願策略', description: '把區域規則轉成實際志願排序，避開不必要的志願序扣分。', href: '/strategy', icon: Target, tone: 'bg-orange-100 text-orange-800' },
     { title: '模擬志願序', description: '用清單試排校科與志願順序，再回頭核對你所在考區的規則。', href: '/mock-volunteer', icon: ListChecks, tone: 'bg-amber-100 text-amber-800' },
   ];
-  const items = path.startsWith('/scoring-rules/') ? scoringRuleRecommendations : path.startsWith('/area/') ? areaRecommendations : path.startsWith('/news/') ? recommendations['/news'] : recommendations[path] ?? fallback;
-  return <section className="mx-auto max-w-[90rem] px-4 pb-12 sm:px-6 lg:px-8 xl:px-10" aria-labelledby="related-reading-title">
-    <div className="relative overflow-hidden rounded-[2rem] border-4 border-slate-900 bg-[linear-gradient(135deg,#fffbeb_0%,#ffffff_48%,#eef2ff_100%)] p-5 text-slate-900 shadow-[2px_2px_0_#0f172a] sm:p-7 lg:p-9">
-      <div className="relative">
-        <div><p className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-amber-300 px-3 py-1.5 text-[11px] font-black tracking-[0.16em] text-slate-900"><Compass className="h-3.5 w-3.5" />別錯過這三個實用工具</p><h2 id="related-reading-title" className="mt-4 max-w-3xl text-3xl font-black tracking-tight sm:text-4xl">別急著離開，這幾頁能幫你更快做決定</h2><p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-slate-700 sm:text-base">還卡在「我適合哪一種學校？」「志願該怎麼排？」嗎？先從下方三個重點頁面開始，把模糊的想法變成今天就能完成的下一步。</p></div>
-        <div className="mt-7 grid gap-4 md:grid-cols-3">{items.map((item) => { const Icon = item.icon; return <a key={item.href} href={withBasePath(item.href)} className="group relative overflow-hidden rounded-2xl border-2 border-slate-900 bg-white p-5 text-slate-900 shadow-[1px_1px_0_#0f172a] transition duration-200 hover:-translate-y-0.5 hover:bg-indigo-50 hover:shadow-[2px_2px_0_#0f172a]"><div className="relative flex items-center gap-3"><div className={`inline-flex shrink-0 rounded-xl border-2 border-slate-900 p-2.5 ${item.tone}`}><Icon className="h-5 w-5" /></div><h3 className="text-lg font-black leading-snug">{item.title}</h3></div><p className="relative mt-4 text-sm font-bold leading-6 text-slate-600">{item.description}</p><span className="relative mt-5 flex items-center justify-end gap-1.5 text-sm font-black text-indigo-700">繼續閱讀 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span></a>; })}</div>
+  const items = path.startsWith('/scoring-rules/') ? scoringRuleRecommendations : path.startsWith('/area/') ? areaRecommendations : path.startsWith('/news/') ? recommendations['/news'] : path.startsWith('/departments/') ? recommendations['/departments'] : recommendations[path] ?? fallback;
+  return <section className="related-reading" aria-labelledby="related-reading-title">
+    <div className="related-reading__shell">
+      <div className="related-reading__intro">
+        <div className="related-reading__eyebrow"><Compass size={18} aria-hidden="true" /><span>別錯過這{items.length === 4 ? '四' : '三'}個實用工具</span><span className="related-reading__count">NEXT STEPS</span></div>
+        <h2 id="related-reading-title">別急著離開，<br />這幾頁能幫你更快做決定</h2>
+        <p>看完這一頁，選一個最想釐清的問題繼續探索。從認識方向、比較選項，到安排下一步，都可以慢慢來。</p>
+      </div>
+      <div className={`related-reading__grid${items.length === 4 ? ' related-reading__grid--four' : ''}`}>
+        {items.map((item, index) => {
+          const Icon = item.icon;
+          return <a key={item.href} href={withBasePath(item.href)} className="related-reading__card">
+            <div className="related-reading__card-top"><span className="related-reading__number">{String(index + 1).padStart(2, '0')}</span><span className={`related-reading__icon ${item.tone}`}><Icon size={23} aria-hidden="true" /></span></div>
+            <div className="related-reading__card-copy"><h3>{item.title}</h3><p>{item.description}</p></div>
+            <span className="related-reading__card-link">前往了解 <ArrowUpRight size={18} aria-hidden="true" /></span>
+          </a>;
+        })}
       </div>
     </div>
   </section>;

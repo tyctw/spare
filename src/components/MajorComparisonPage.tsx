@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import React, { useState } from 'react';
 import { ArrowLeft, BookOpen, Check, Lightbulb, Sparkles } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
@@ -98,7 +99,7 @@ export default function MajorComparisonPage() {
   return <main className="min-h-screen bg-slate-50 text-slate-900">
     <section className="border-b-4 border-slate-900 bg-sky-50">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]"><ArrowLeft className="h-4 w-4" />返回首頁</a>
+        <PageBreadcrumb title="相似科別 PK" />
         <div className="py-10"><div className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1.5 text-xs font-black text-sky-800"><Sparkles className="h-4 w-4" />科別探索工具</div><h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">相似科別 PK</h1><p className="mt-4 max-w-3xl text-base font-bold leading-8 text-slate-700 sm:text-lg">科名相近，不代表每天學的內容一樣。從課程、實作與適合特質，找出更值得深入了解的方向。</p></div>
       </div>
     </section>

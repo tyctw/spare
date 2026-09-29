@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, ExternalLink, FileText, GraduationCap, Info, ListOrdered, ShieldCheck } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
@@ -39,7 +40,7 @@ export default function FiveYearCollegeRulesPage() {
   return <main className="strategy-page college-page">
     <section className="strategy-hero">
       <div className="strategy-shell">
-        <a href={withBasePath('/')} className="strategy-back"><ArrowLeft size={16} />返回首頁</a>
+        <PageBreadcrumb title="五專優先免試入學計分規則" />
         <div className="strategy-hero-grid">
           <div>
             <p className="strategy-kicker"><GraduationCap size={17} />五專升學・計分指南</p>

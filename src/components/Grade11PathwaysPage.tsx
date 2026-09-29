@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, BookOpen, Check, ClipboardList, Compass, ExternalLink, GraduationCap, Route, SearchCheck } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageBreadcrumb from './PageBreadcrumb';
 import MobileContentsNav from './MobileContentsNav';
 import './grade-11-pathways-page.css';
 
@@ -43,7 +44,7 @@ function CheckList({ items }: { items: string[] }) {
 export default function Grade11PathwaysPage() {
   return <main className="grade11-page">
     <div className="grade11-shell">
-      <a className="grade11-back" href={withBasePath('/general-comprehensive-high-school')}><ArrowLeft size={17} aria-hidden="true" />普通科與綜合高中</a>
+      <PageBreadcrumb title="高二班群選擇" parent={{ label: '普通科與綜合高中', href: '/general-comprehensive-high-school' }} />
 
       <header className="grade11-hero">
         <div className="grade11-hero-copy"><span className="grade11-eyebrow"><GraduationCap size={17} aria-hidden="true" />高一升高二・選課指南</span><h1>高二「班群」<br /><em>是什麼？怎麼選？</em></h1><p>從感興趣的校系回頭看課程，再比較學校的班群安排。掌握選課、分流與轉群規則，讓高二的選擇更有方向。</p><a href="#grade11-steps" className="grade11-primary">從五步選群開始 <ArrowRight size={17} aria-hidden="true" /></a></div>

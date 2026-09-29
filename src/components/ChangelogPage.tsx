@@ -1,7 +1,9 @@
 import React from 'react';
-import { ArrowLeft, BadgeCheck, BookOpenCheck, History, Rocket, Search, ShieldCheck, Sparkles, Wrench } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BadgeCheck, BookOpenCheck, CalendarDays, History, Rocket, ShieldCheck, Sparkles, Wrench } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageNavigation, { pageNavigationAsideClassName } from './PageNavigation';
+import PageBreadcrumb from './PageBreadcrumb';
+import PageNavigation from './PageNavigation';
+import './changelog-page.css';
 
 type Release = {
   version: string;
@@ -95,30 +97,65 @@ const releases: Release[] = [
   },
 ];
 
-const toneClasses = {
-  emerald: { badge: 'bg-emerald-500', soft: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-  indigo: { badge: 'bg-indigo-500', soft: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' },
-  amber: { badge: 'bg-amber-500', soft: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
-  slate: { badge: 'bg-slate-600', soft: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200' },
-};
+const latestRelease = releases[0];
 
 export default function ChangelogPage() {
-  return <main className="min-h-screen bg-slate-50 text-slate-900">
-    <section className="border-b-4 border-slate-900 bg-indigo-50">
-      <div className="mx-auto w-full max-w-[110rem] px-4 py-6 sm:px-6 lg:px-10">
-        <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5"><ArrowLeft className="h-4 w-4" />返回首頁</a>
-        <div className="py-10">
-          <div className="mb-5 inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0_#0f172a]"><div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 bg-indigo-100"><History className="h-6 w-6 text-indigo-600" /></div><div><p className="text-xs font-black uppercase tracking-widest text-slate-500">Release Notes</p><p className="text-sm font-black text-slate-700">最後更新：{updatedAt}</p></div></div>
-          <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">系統更新日誌</h1>
-          <p className="mt-5 max-w-4xl text-base font-bold leading-8 text-slate-700 sm:text-lg">記錄服務的重要功能、資料與介面調整。計分與招生規則會依使用者提供資料與官方公告持續更新；實際申請請以當學年度官方簡章為準。</p>
+  return <main className="changelog-page">
+    <div className="changelog-shell">
+      <PageBreadcrumb title="系統更新日誌" />
+
+      <header className="changelog-hero">
+        <div className="changelog-hero-copy">
+          <p className="changelog-kicker"><History size={17} aria-hidden="true" /> RELEASE NOTES · 系統更新</p>
+          <h1>系統更新日誌</h1>
+          <p className="changelog-lead">從新功能到操作細節，依版本整理每次重要調整。你可以先看最近更新，再往下查找過去的改動。</p>
+          <div className="changelog-hero-meta"><span><CalendarDays size={17} aria-hidden="true" />最後收錄 {updatedAt}</span><span>{releases.length} 筆版本紀錄</span></div>
+        </div>
+        <a className="changelog-latest" href={`#${latestRelease.version}`}>
+          <span className="changelog-latest-label"><Sparkles size={17} aria-hidden="true" />最近更新</span>
+          <strong>{latestRelease.version}</strong>
+          <span className="changelog-latest-title">{latestRelease.title}</span>
+          <span className="changelog-latest-action">閱讀這次更新 <ArrowRight size={18} aria-hidden="true" /></span>
+        </a>
+      </header>
+
+      <div className="changelog-layout">
+        <aside className="changelog-aside">
+          <PageNavigation
+            title="依版本查看"
+            navClassName="changelog-version-nav"
+            itemLayoutClassName="changelog-version-list"
+            items={releases.map((release) => ({ id: release.version, label: `${release.version} · ${release.title}` }))}
+          />
+          <p className="changelog-aside-note">版本依發布時間由新到舊排列。</p>
+        </aside>
+
+        <div className="changelog-history">
+          <div className="changelog-history-heading"><div><span>ALL UPDATES</span><h2>版本紀錄</h2></div><p>共 {releases.length} 筆更新</p></div>
+          <div className="changelog-timeline">
+            {releases.map((release, index) => {
+              const Icon = release.icon;
+              return <article key={release.version} id={release.version} className="changelog-release" data-tone={release.tone}>
+                <div className="changelog-timeline-marker" aria-hidden="true"><Icon size={18} /></div>
+                <div className="changelog-release-card">
+                  <header className="changelog-release-head">
+                    <div className="changelog-release-meta"><span className="changelog-version">{release.version}</span><time dateTime={release.date}>{release.date}</time>{index === 0 && <span className="changelog-newest">最新收錄</span>}</div>
+                    <h3>{release.title}</h3>
+                    <p>{release.summary}</p>
+                  </header>
+                  <div className="changelog-release-sections">
+                    {release.sections.map((section, sectionIndex) => <section key={section.title} className="changelog-change-group">
+                      <div className="changelog-change-heading"><span>{String(sectionIndex + 1).padStart(2, '0')}</span><h4>{section.title}</h4></div>
+                      <ul>{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
+                    </section>)}
+                  </div>
+                </div>
+              </article>;
+            })}
+          </div>
+          <p className="changelog-source-note">計分及招生資訊可能隨公告調整；實際申請請以當學年度官方簡章與招生系統公告為準。</p>
         </div>
       </div>
-    </section>
-    <section className="mx-auto grid w-full max-w-[110rem] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[260px_1fr] lg:px-10">
-      <aside className={pageNavigationAsideClassName}><PageNavigation navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0_#0f172a]" itemLayoutClassName="space-y-2" items={releases.map((release) => ({ id: release.version, label: `${release.version}｜${release.title}`, className: 'block rounded-xl' }))} /></aside>
-      <div className="relative space-y-6"><div className="absolute bottom-3 left-5 top-3 hidden w-1 rounded-full bg-slate-200 sm:block" />
-        {releases.map((release) => { const Icon = release.icon; const tone = toneClasses[release.tone]; return <article key={release.version} id={release.version} className="relative scroll-mt-8 sm:pl-14"><div className={`absolute left-0 top-6 hidden h-11 w-11 items-center justify-center rounded-2xl border-4 border-slate-900 bg-white shadow-[2px_2px_0_#0f172a] sm:flex ${tone.soft} ${tone.text}`}><Icon className="h-6 w-6" /></div><div className="rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0_#0f172a] sm:p-8"><div className="border-b-2 border-dashed border-slate-200 pb-5"><div className="mb-3 flex flex-wrap items-center gap-2"><span className={`rounded-lg border-2 border-slate-900 px-2.5 py-1 text-xs font-black text-white shadow-[2px_2px_0_#0f172a] ${tone.badge}`}>{release.version}</span><span className="rounded-lg border-2 border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-black text-slate-500">{release.date}</span></div><h2 className="text-2xl font-black tracking-tight sm:text-3xl">{release.title}</h2><p className="mt-3 max-w-3xl text-sm font-bold leading-7 text-slate-600 sm:text-base">{release.summary}</p></div><div className="mt-6 grid gap-4 lg:grid-cols-3">{release.sections.map((section) => <section key={section.title} className={`rounded-2xl border-2 p-4 ${tone.border} ${tone.soft}`}><h3 className={`text-lg font-black ${tone.text}`}>{section.title}</h3><ul className="mt-3 space-y-3">{section.items.map((item) => <li key={item} className="flex gap-3 text-sm font-bold leading-6 text-slate-700"><span className={`mt-2 h-2 w-2 shrink-0 rounded-full border border-slate-900 ${tone.badge}`} /><span>{item}</span></li>)}</ul></section>)}</div></div></article>; })}
-      </div>
-    </section>
+    </div>
   </main>;
 }

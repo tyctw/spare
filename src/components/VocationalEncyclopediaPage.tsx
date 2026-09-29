@@ -1,7 +1,9 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Search, Sparkles, Tags, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { groups, type VocationalGroup } from '../lib/vocationalGroups';
+import { departmentPath, departments, getDepartment } from '../lib/vocationalDepartments';
 import './vocational-encyclopedia-page.css';
 
 type Myth = { myth: string; fact: string };
@@ -104,8 +106,8 @@ export default function VocationalEncyclopediaPage() {
 
   return <main className="voc-page">
     <section className="voc-hero"><div className="voc-shell">
-      <a href={withBasePath('/')} className="voc-back"><ArrowLeft size={16} />返回首頁</a>
-      <div className="voc-hero-grid"><div><p className="voc-kicker"><BookOpen size={17} />技術型高中職群指南</p><h1>職群科系百科</h1><p className="voc-lead">從 15 個職群認識學習內容、常見科別與未來方向。先找到感興趣的群，再比較實際開設的學校與課程。</p><a href="#explore-groups" className="voc-primary">開始探索職群<ArrowRight size={17} /></a></div>
+      <PageBreadcrumb title="職群科系百科" />
+      <div className="voc-hero-grid"><div><p className="voc-kicker"><BookOpen size={17} />技術型高中職群指南</p><h1>職群科系百科</h1><p className="voc-lead">從 15 個職群認識學習內容、常見科別與未來方向。先找到感興趣的群，再比較實際開設的學校與課程。</p><div className="voc-hero-actions"><a href="#explore-groups" className="voc-primary">開始探索職群<ArrowRight size={17} /></a><a href={withBasePath('/departments')} className="voc-departments-link">瀏覽 {departments.length} 個科別<ArrowRight size={17} /></a></div></div>
         <div className="voc-hero-aside"><strong>15 個職群</strong><span>每個職群都有不同的課程、實作方式與科別。</span><p>群別是專業領域分類，不代表每所學校都開設群內所有科別。</p></div>
       </div>
     </div></section>
@@ -130,7 +132,7 @@ export default function VocationalEncyclopediaPage() {
           </section>
 
           <section className="voc-info-section"><div className="voc-section-heading"><p>從課程開始</p><h3>在這個職群會學什麼？</h3></div><InfoList items={selectedGroup.learning} /></section>
-          <section className="voc-info-section"><div className="voc-section-heading"><p>往下看科別</p><h3>常見相關科別</h3><span>點科別可查看開設學校；實際招生仍以當年度簡章為準。</span></div><div className="voc-major-list">{selectedGroup.majors.map((major) => <a key={major} href={withBasePath(`/search?${new URLSearchParams({ group: selectedGroup.id, q: major })}`)} aria-label={`查看開設${major}的學校`}>{major}<ArrowUpRight size={15} /></a>)}</div></section>
+          <section className="voc-info-section"><div className="voc-section-heading"><p>往下看科別</p><h3>常見相關科別</h3><span>點選科別查看介紹；未收錄的科別可直接查詢開設學校。</span></div><div className="voc-major-list">{selectedGroup.majors.map((major) => <a key={major} href={withBasePath(getDepartment(major) ? departmentPath(major) : `/search?${new URLSearchParams({ group: selectedGroup.id, q: major })}`)} aria-label={getDepartment(major) ? `查看${major}介紹` : `查看開設${major}的學校`}>{major}<ArrowUpRight size={15} /></a>)}</div></section>
           <section className="voc-future-section"><div className="voc-section-heading"><p>放眼未來</p><h3>升學與職涯方向</h3></div><div className="voc-future-grid"><div><GraduationCap size={21} /><h4>升學延伸</h4><InfoList items={selectedGroup.furtherStudy} /></div><div><Briefcase size={21} /><h4>可能職涯</h4><InfoList items={selectedGroup.careers} /></div></div></section>
           <section className="voc-traits-section"><div className="voc-section-heading"><p>了解自己</p><h3>適合培養的特質</h3></div><div className="voc-trait-list">{selectedGroup.traits.map((trait) => <span key={trait}>{trait}</span>)}</div><div className="voc-holland-note"><Tags size={18} /><div><strong>Holland {selectedGroup.holland}</strong><p>{selectedGroup.hollandDesc}</p><small>興趣代碼僅供探索參考，不能單獨決定選科。</small></div></div></section>
           <section className="voc-choice-section"><div className="voc-section-heading"><p>選科前想清楚</p><h3>這個方向適合我嗎？</h3></div><p>{selectedGroup.selectionTip}</p><div className="voc-choice-steps"><div><strong>01 看課程</strong><span>這些學習內容，是我願意長期練習的嗎？</span></div><div><strong>02 看學校</strong><span>目標科別、設備、實習與通勤條件合適嗎？</span></div><div><strong>03 核對簡章</strong><span>招生名額、採計與最新課程都確認過了嗎？</span></div></div></section>

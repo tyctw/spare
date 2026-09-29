@@ -1,6 +1,7 @@
 import { appBasePath } from './routes';
 import { getNewsArticle } from './news';
 import { getAreaBySlug } from '../components/AreaPage';
+import { getDepartmentFromPath } from './vocationalDepartments';
 
 // Per-region metadata for /scoring-rules/:id pages
 const SCORING_RULES_META: Record<string, { title: string; description: string; cityKeywords: string }> = {
@@ -58,6 +59,10 @@ type PageMeta = {
 };
 
 const pageMetadata: Record<string, PageMeta> = {
+  '/departments': {
+    title: '技術型高中科別總覽｜87 個科別獨立介紹',
+    description: '依 6 大類別與 15 個群別探索 87 個技術型高中科別，逐一了解學習內容、實作方向、選校提醒與開設學校。',
+  },
   '/vocational-compare': {
     title: '職群比較｜高中職課程、升學與職涯方向比較',
     description: '選擇 2～3 個技術型高中職群，從主要課程、相關科別、升學方向、可能職涯與 Holland 興趣比較差異，並查詢開設學校，探索適合自己的升學方向。',
@@ -78,28 +83,32 @@ const pageMetadata: Record<string, PageMeta> = {
     title: '會考等級對照表｜答對題數與積分說明',
     description: '查詢國中教育會考各科等級、標示與答對題數對照，快速了解會考成績的判讀方式。',
   },
+  '/score-inquiry': {
+    title: '會考成績查詢｜官方入口與落點分析下一步',
+    description: '從國中教育會考官方網站查詢成績，了解查詢後如何填入成績與就學區，使用本站探索高中職校科及規劃志願。',
+  },
   '/guide/find': {
-    title: '我要查資料｜學校、科別與升學資訊｜全國會考落點分析',
-    description: '從學校、科別、群科、學制與歷年資料開始，整理會考升學規劃所需的資訊。',
+    title: '學校與科別｜搜尋學校及探索技職群科｜全國會考落點分析',
+    description: '搜尋學校與科別，了解學校類型、技職群科與職群比較，整理適合自己的升學方向。',
   },
   '/guide/choose': {
-    title: '我要選志願｜會考志願選填工具說明｜全國會考落點分析',
-    description: '依成績、興趣與志願順序整理選填方向，使用落點分析與模擬志願序完成規劃。',
+    title: '成績與志願｜會考查詢、落點分析與志願序｜全國會考落點分析',
+    description: '從會考成績查詢、落點分析到模擬志願序，逐步整理選填方向。',
   },
   '/guide/scoring': {
-    title: '各區計分方式｜會考積分換算與超額比序｜全國會考落點分析',
+    title: '計分與比序｜會考積分換算與各區規則｜全國會考落點分析',
     description: '集中查詢基北、桃連、竹苗、中投、彰化、嘉義、臺南、高雄計分規則，以及積分換算與五專優先免試比序。',
   },
   '/guide/plan': {
-    title: '我要規劃升學｜探索興趣與升學時程｜全國會考落點分析',
-    description: '整合興趣探索、學校類型、重要時程與升學方向，協助學生安排下一步。',
+    title: '升學規劃｜興趣探索、班群與重要時程｜全國會考落點分析',
+    description: '探索興趣、比較生活條件，認識班群與未來路徑，掌握升學重要時程。',
   },
   '/guide/member': {
     title: '會員與資源｜會員方案與升學工具｜全國會考落點分析',
     description: '查看會員資格、免廣告方案與延伸升學資源，持續完成個人升學規劃。',
   },
   '/guide/help': {
-    title: '使用協助｜會考落點分析操作說明｜全國會考落點分析',
+    title: '說明與支援｜會考落點分析操作說明｜全國會考落點分析',
     description: '查找功能使用說明、常見問題、平台規範與更新資訊，快速取得操作協助。',
   },
   '/grade-11-pathways': {
@@ -251,6 +260,8 @@ const setMetaContent = (selector: string, content: string) => {
 };
 
 export const applyPageSeo = (path: string) => {
+  const departmentSegment = path.match(/^\/departments\/([^/]+)$/)?.[1];
+  const department = departmentSegment ? getDepartmentFromPath(departmentSegment) : undefined;
   const newsArticleId = path.match(/^\/news\/(\d+)$/)?.[1];
   const newsArticle = getNewsArticle(newsArticleId);
   const scoringRulesRegionId = path.match(/^\/scoring-rules\/([a-z-]+)$/)?.[1];
@@ -260,6 +271,10 @@ export const applyPageSeo = (path: string) => {
   const isSharedReport = /^\/shared\/[0-9a-f-]+$/i.test(path);
   const metadata = isSharedReport
     ? { title: '已分享的志願規劃｜全國會考落點分析', description: '此連結包含使用者分享的個人規劃資料。', noindex: true, nofollow: true }
+    : department
+    ? { title: `${department.name}介紹｜${department.group}科別探索`, description: `${department.intro}查看${department.name}的實作方向、選校核對與相關科別。` }
+    : departmentSegment
+    ? { title: '找不到科別｜全國會考落點分析', description: '返回科別總覽，重新搜尋技術型高中科別。', noindex: true }
     : newsArticle
     ? { title: `${newsArticle.title}｜全國會考落點分析`, description: newsArticle.summary }
     : scoringRulesMeta

@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BarChart3, BookOpen, ChevronDown, GraduationCap, Info, TrendingDown, TrendingUp } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
@@ -70,7 +71,7 @@ export default function HistoricalStatsPage() {
   ];
 
   return <main className="historical-page"><div className="historical-shell">
-    <a className="historical-back" href={withBasePath('/')}><ArrowLeft size={17} aria-hidden="true" />返回首頁</a>
+    <PageBreadcrumb title="歷年會考統計資料" />
     <header className="historical-hero"><div><span className="historical-eyebrow"><BarChart3 size={17} aria-hidden="true" />會考成績分布參考</span><h1>歷年會考統計資料</h1><p>用年度摘要與等級組合比較，掌握五科成績及寫作測驗的整體分布。</p></div><div className="historical-hero-note"><Info size={22} aria-hidden="true" /><strong>看分布，也要看招生規則</strong><p>統計顯示整體人數與占比，不能直接當作個別學校的錄取門檻。</p></div></header>
     <nav className="historical-jump" aria-label="本頁內容"><a href="#historical-overview">年度摘要</a><a href="#historical-focus">重點組合</a><a href="#historical-table">完整資料</a><a href="#historical-notes">判讀提醒</a></nav><MobileContentsNav items={[{ id: 'historical-overview', label: '年度摘要' }, { id: 'historical-focus', label: '重點組合' }, { id: 'historical-table', label: '完整資料' }, { id: 'historical-notes', label: '判讀提醒' }]} />
 

@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -122,7 +123,7 @@ export default function SchoolTypesPage() {
     <main className="school-types-page">
       <section className="school-types-hero">
         <div className="school-types-shell">
-          <a href={withBasePath('/')} className="school-types-back"><ArrowLeft size={16} />返回首頁</a>
+          <PageBreadcrumb title="學校類型解析" />
           <div className="school-types-hero-grid">
             <div>
               <p className="school-types-kicker"><Building2 size={16} />升學路線指南</p>
@@ -130,7 +131,7 @@ export default function SchoolTypesPage() {
               <p className="school-types-lead">普高、技高、綜高、單科型高中與五專，課程重心各不相同。先看清楚怎麼學、何時選方向，再找到適合自己的升學路線。</p>
               <div className="school-types-hero-actions">
                 <a href="#overview" className="school-types-primary">先看五種類型<ArrowRight size={17} /></a>
-                <a href="#choose" className="school-types-text-link">從選校問題開始</a>
+                <a href="#choose" className="school-types-text-link">從選校問題開始<ArrowRight size={17} aria-hidden="true" /></a>
               </div>
             </div>
             <div className="school-types-hero-note" aria-label="閱讀重點">

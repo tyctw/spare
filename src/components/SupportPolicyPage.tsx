@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { withBasePath } from "../lib/routes";
 import PageNavigation, { pageNavigationAsideClassName } from "./PageNavigation";
+import PageBreadcrumb from "./PageBreadcrumb";
 
 type PolicyKind = "after-sales" | "refund-cancellation";
 type PolicySection = { title: string; body: string[] };
@@ -446,13 +447,7 @@ export default function SupportPolicyPage({ kind }: { kind: PolicyKind }) {
     <main className="min-h-screen bg-slate-50 text-slate-900">
       <section className={"border-b-4 border-slate-900 " + accent.hero}>
         <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
-          <a
-            href={withBasePath("/membership")}
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-black shadow-[3px_3px_0_#0f172a]"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {labels.back}
-          </a>
+          <PageBreadcrumb title={title} parent={{ label: '會員方案', href: '/membership' }} />
           <div className="py-12">
             <div className="inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0_#0f172a]">
               <div

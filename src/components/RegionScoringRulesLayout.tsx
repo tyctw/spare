@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import { ArrowLeft, ArrowRight, BookOpenCheck, Calculator, ChevronDown, ExternalLink, FileText, MapPin, Scale } from 'lucide-react';
 import { ALL_REGIONS } from './RegionModal';
 import { withBasePath } from '../lib/routes';
@@ -33,7 +34,7 @@ export default function RegionScoringRulesLayout({ regionId, data }: { regionId:
 
   return <main className="scoring-page">
     <div className="scoring-shell">
-      <a className="scoring-back" href={withBasePath('/')}><ArrowLeft size={17} aria-hidden="true" />返回首頁</a>
+      <PageBreadcrumb title={`${region.name}計分方式`} />
       <header className="scoring-hero">
         <div className="scoring-hero-copy">
           <span className="scoring-eyebrow"><MapPin size={16} aria-hidden="true" />115 學年度・一般免試入學</span>

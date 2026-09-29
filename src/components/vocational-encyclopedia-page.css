@@ -8,7 +8,8 @@
 .voc-kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 13px; color: #30816d; font-size: 13px; font-weight: 900; letter-spacing: .05em; }
 .voc-hero h1 { margin: 0; font-size: clamp(39px, 4.6vw, 65px); font-weight: 900; letter-spacing: -.05em; line-height: 1.2; }
 .voc-lead { max-width: 710px; margin: 19px 0 0; color: #4b5e74; font-size: clamp(16px, 1.45vw, 19px); font-weight: 650; line-height: 1.85; }
-.voc-primary { display: inline-flex; min-height: 48px; align-items: center; gap: 9px; margin-top: 28px; padding: 12px 19px; border-radius: 11px; background: #237e6c; box-shadow: 0 8px 18px #2b857033; color: white; font-size: 14px; font-weight: 900; text-decoration: none; transition: transform .18s, background .18s; }
+.voc-hero-actions { display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px; margin-top: 28px; }
+.voc-primary { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 9px; padding: 12px 19px; border-radius: 11px; background: #237e6c; box-shadow: 0 8px 18px #2b857033; color: white; font-size: 14px; font-weight: 900; text-decoration: none; transition: transform .18s, background .18s; }
 .voc-primary:hover { transform: translateY(-2px); background: #186654; }
 .voc-hero-aside { display: grid; gap: 7px; padding: 23px; border: 1px solid #d6e6df; border-radius: 20px; background: #fffffff0; box-shadow: 0 12px 32px #31624d17; }
 .voc-hero-aside strong { color: #237965; font-size: 27px; font-weight: 900; }
@@ -106,3 +107,7 @@
 .voc-hero-aside p, .voc-selector-heading p, .voc-section-heading > p, .voc-detail-heading p, .voc-info-list li, .voc-holland-note p, .voc-myths details > p, .voc-bottom-grid p { font-size: 15px; }
 .voc-search input, .voc-group-button strong, .voc-action-primary, .voc-action-secondary, .voc-major-list a, .voc-trait-list span, .voc-choice-steps span { font-size: 14px; }
 .voc-group-button small, .voc-search-count { font-size: 12px; }
+/* Keep both hero actions aligned and equally easy to tap. */
+.voc-departments-link { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border: 1px solid #b8d8ca; border-radius: 11px; background: #fff; color: #226b58; font-size: 14px; font-weight: 900; text-decoration: none; transition: border-color .18s, background .18s, transform .18s; }
+.voc-departments-link:hover { transform: translateY(-2px); border-color: #73ae92; background: #f0f8f3; }
+@media (max-width: 650px) { .voc-hero-actions { flex-direction: column; gap: 10px; } .voc-hero-actions a { width: 100%; } }

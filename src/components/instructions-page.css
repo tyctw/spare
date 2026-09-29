@@ -20,3 +20,12 @@
 @media (max-width: 650px) { .guide-hero-copy > p { font-size: 15px; } .guide-step-body p { font-size: 14px; } }
 
 @media (max-width: 950px) { .guide-aside > nav { display: none !important; } }
+
+/* Align the two hero choices as one action group. */
+.guide-hero-actions { align-items: stretch; gap: 12px; }
+.guide-hero-actions .guide-primary-button,
+.guide-hero-actions .guide-text-link { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 11px; padding: 12px 19px; border-radius: 9px; font-size: 14px; font-weight: 800; text-decoration: none; }
+.guide-hero-actions .guide-primary-button { border: 1px solid #37206e; }
+.guide-hero-actions .guide-text-link { border: 1px solid #cfc6e3; background: #fff; color: #3c266f; transition: border-color .2s, background .2s, transform .2s; }
+.guide-hero-actions .guide-text-link:hover { transform: translateY(-2px); border-color: #a797ca; background: #f5f2fb; }
+@media (max-width: 650px) { .guide-hero-actions { gap: 9px; } .guide-hero-actions .guide-primary-button, .guide-hero-actions .guide-text-link { width: 100%; min-height: 50px; } }

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import PageBreadcrumb from './PageBreadcrumb';
 import {
   AlertCircle,
   ArrowDown,
@@ -549,14 +550,7 @@ export default function MockVolunteerPage() {
     <main className="mock-volunteer-page min-h-screen text-slate-900">
       <section className="mock-volunteer-hero">
         <div className="mock-volunteer-container">
-          <a
-            href={withBasePath('/')}
-            onClick={requestLeavePage}
-            className="mock-volunteer-back"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            回到落點分析
-          </a>
+          <PageBreadcrumb title="模擬志願選填" onHomeClick={requestLeavePage} />
 
           <div className="mock-volunteer-hero-grid">
             <div className="mock-volunteer-hero-copy">

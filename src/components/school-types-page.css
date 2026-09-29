@@ -13,11 +13,11 @@
 .school-types-kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; color: #604caa; font-size: 13px; font-weight: 900; letter-spacing: .06em; }
 .school-types-hero h1 { margin: 0; color: #172442; font-size: clamp(38px, 4.5vw, 66px); font-weight: 900; letter-spacing: -.055em; line-height: 1.18; }
 .school-types-lead { max-width: 730px; margin: 21px 0 0; color: #4d5c75; font-size: clamp(16px, 1.5vw, 19px); font-weight: 600; line-height: 1.85; }
-.school-types-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 25px; margin-top: 30px; }
-.school-types-primary { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 9px; padding: 12px 20px; border-radius: 12px; background: #5642a6; box-shadow: 0 8px 19px #5f4a9d2e; color: #fff; font-size: 14px; font-weight: 900; text-decoration: none; transition: background .18s, transform .18s; }
+.school-types-hero-actions { display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px; margin-top: 30px; }
+.school-types-primary { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 11px; padding: 12px 20px; border-radius: 12px; background: #5642a6; box-shadow: 0 8px 19px #5f4a9d2e; color: #fff; font-size: 14px; font-weight: 900; text-decoration: none; transition: background .18s, transform .18s; }
 .school-types-primary:hover { transform: translateY(-2px); background: #3f318b; }
-.school-types-text-link { color: #514296; font-size: 14px; font-weight: 900; text-decoration: underline; text-underline-offset: 5px; }
-.school-types-text-link:hover { color: #30266d; }
+.school-types-text-link { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 11px; padding: 11px 19px; border: 1px solid #c6bce7; border-radius: 12px; background: #fff; color: #514296; font-size: 14px; font-weight: 900; text-decoration: none; transition: border-color .18s, background .18s, transform .18s; }
+.school-types-text-link:hover { transform: translateY(-2px); border-color: #9c89d0; background: #f5f2fc; color: #30266d; }
 .school-types-hero-note { display: grid; gap: 8px; padding: 23px; border: 1px solid #ded9f2; border-radius: 22px; background: #ffffffd9; box-shadow: 0 14px 35px #4c59861a; }
 .school-types-hero-note > span { margin-bottom: 5px; color: #6a56a4; font-size: 12px; font-weight: 900; }
 .school-types-hero-note strong { padding: 10px 12px; border-radius: 10px; background: #f3f1fa; color: #34415d; font-size: 15px; }
@@ -134,8 +134,7 @@
 }
 @media(max-width:600px){
   .school-types-hero-actions{display:grid;grid-template-columns:1fr;gap:8px}
-  .school-types-primary{width:100%}
-  .school-types-text-link{display:flex;align-items:center;justify-content:center;min-height:44px}
+  .school-types-hero-actions a{width:100%}
   .school-types-comparison-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
   .school-types-comparison-tabs button{white-space:normal}
 }

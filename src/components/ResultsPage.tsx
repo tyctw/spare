@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import React, { useMemo, useState } from 'react';
 import {
   ArrowLeft,
@@ -208,10 +209,7 @@ export default function ResultsPage() {
       <main className="results-main mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="results-toolbar mb-6 flex items-start justify-between gap-2">
           <div className="flex flex-wrap items-center gap-3">
-            <a href={withBasePath('/')} className="results-back inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-2.5 text-sm font-black text-slate-700 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-slate-50 hover:text-slate-950 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none">
-              <ArrowLeft className="h-4 w-4" />
-              回到落點分析
-            </a>
+            <PageBreadcrumb title="分析結果報告" />
           </div>
           <button type="button" onClick={() => setIsExportOpen(true)} className="results-export inline-flex w-fit shrink-0 items-center gap-2 rounded-xl border-2 border-slate-900 bg-emerald-100 px-4 py-2.5 text-sm font-black text-emerald-800 shadow-[3px_3px_0_#0f172a] transition hover:-translate-y-0.5 hover:bg-emerald-200 hover:shadow-[5px_5px_0_#0f172a] active:translate-y-0 active:shadow-none"><Download className="h-4 w-4" />匯出結果</button>
           <div className="results-tools fixed bottom-5 right-5 z-40">

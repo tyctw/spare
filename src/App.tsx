@@ -102,9 +102,6 @@ const ExportModal = React.lazy(() => import("./components/ExportModal"));
 const HistoricalStatsModal = React.lazy(
   () => import("./components/HistoricalStatsModal"),
 );
-const ScoreInquiryModal = React.lazy(
-  () => import("./components/ScoreInquiryModal"),
-);
 const SharePlatformModal = React.lazy(
   () => import("./components/SharePlatformModal"),
 );
@@ -393,7 +390,6 @@ export default function App() {
     | "sharePlatform"
     | "strategy"
     | "historicalStats"
-    | "scoreInquiry"
     | "savedScoreImport"
     | null
   >(null);
@@ -2479,9 +2475,6 @@ export default function App() {
           <HistoricalStatsModal isOpen onClose={() => setActiveModal(null)} />
         )}
 
-        {activeModal === "scoreInquiry" && (
-          <ScoreInquiryModal isOpen onClose={() => setActiveModal(null)} />
-        )}
 
         <InfoModal
           isOpen={activeModal === "savedScoreImport"}
@@ -3008,8 +3001,8 @@ export default function App() {
                           <div className="p-3 flex flex-col gap-2">
                             {[
                               {
-                                type: "modal",
-                                id: "scoreInquiry",
+                                type: "route",
+                                href: "/score-inquiry",
                                 icon: Search,
                                 label: "會考成績查詢",
                                 color: "text-fuchsia-600",
@@ -3040,12 +3033,11 @@ export default function App() {
                                 bg: "bg-emerald-100",
                               },
                             ].map((link) =>
-                              link.type === "link" ? (
                                 <a
                                   key={link.label}
-                                  href={link.href}
-                                  target="_blank"
-                                  rel="noreferrer"
+                                  href={link.type === 'route' ? withBasePath(link.href) : link.href}
+                                  target={link.type === 'link' ? '_blank' : undefined}
+                                  rel={link.type === 'link' ? 'noopener noreferrer' : undefined}
                                   className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 group active:scale-95 transition-all"
                                 >
                                   <div className="flex items-center gap-3">
@@ -3061,31 +3053,7 @@ export default function App() {
                                     </span>
                                   </div>
                                   <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 -rotate-45 group-hover:rotate-0 transition-transform" />
-                                </a>
-                              ) : (
-                                <button
-                                  key={link.label}
-                                  onClick={() => {
-                                    setActiveModal(link.id as any);
-                                    setIsNavMenuOpen(false);
-                                  }}
-                                  className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 group active:scale-95 transition-all outline-none"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <div
-                                      className={`p-1.5 rounded-lg border-2 border-slate-900 ${link.bg}`}
-                                    >
-                                      <link.icon
-                                        className={`w-4 h-4 ${link.color}`}
-                                      />
-                                    </div>
-                                    <span className="font-bold text-slate-900">
-                                      {link.label}
-                                    </span>
-                                  </div>
-                                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                                </button>
-                              ),
+                                </a>,
                             )}
                           </div>
                         </motion.div>

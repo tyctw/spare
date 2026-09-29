@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Calculator, CheckCircle2, ChevronDown, Database, FileSearch, HeartHandshake, List, Mail, Map, ShieldCheck, Sparkles, Target } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageBreadcrumb from './PageBreadcrumb';
 import './advantages-page.css';
 
 const mission = [
@@ -47,11 +48,7 @@ export default function AdvantagesPage() {
   return (
     <main className="about-page">
       <div className="about-shell">
-        <nav className="about-breadcrumb" aria-label="麵包屑導覽">
-          <a href={withBasePath('/')}><ArrowLeft size={15} />返回首頁</a>
-          <span aria-hidden="true">/</span>
-          <span>系統優點與關於我們</span>
-        </nav>
+        <PageBreadcrumb title="系統優點與關於我們" />
 
         <header className="about-hero">
           <div>

@@ -15,6 +15,7 @@ import {
   Target,
 } from "lucide-react";
 import { withBasePath } from "../lib/routes";
+import PageBreadcrumb from './PageBreadcrumb';
 import MobileContentsNav from "./MobileContentsNav";
 import "./instructions-page.css";
 
@@ -104,7 +105,7 @@ const sections = [
 export default function InstructionsPage() {
   return <main className="guide-page">
     <div className="guide-shell">
-      <nav className="guide-breadcrumb" aria-label="麵包屑"><a href={withBasePath("/")}><ArrowLeft size={15} />返回首頁</a><ChevronRight size={14} /><span aria-current="page">使用說明</span></nav>
+      <PageBreadcrumb title="使用說明" />
       <header className="guide-hero">
         <div className="guide-hero-copy"><span className="guide-kicker"><BookOpen size={15} /> USER GUIDE / 使用指南</span><h1>從開始分析，<br /><em>到選出適合的方向。</em></h1><p>第一次使用也能跟著步驟完成落點分析。了解怎麼填入條件、閱讀結果，再把有興趣的校科整理成志願清單。</p><div className="guide-hero-actions"><a className="guide-primary-button" href={withBasePath("/")}>開始落點分析<ArrowRight size={17} /></a><a className="guide-text-link" href="#flow">先看操作步驟<ArrowRight size={16} /></a></div></div>
         <div className="guide-hero-panel" aria-label="使用流程摘要"><div className="guide-panel-header"><span>YOUR JOURNEY</span><span>01 — 04</span></div><div className="guide-journey"><div><span><SlidersHorizontal size={20} /></span><p>設定條件<small>就學區與會考成績</small></p></div><div><span><Search size={20} /></span><p>閱讀結果<small>核對推薦與資料</small></p></div><div><span><Target size={20} /></span><p>規劃志願<small>比較、排序與討論</small></p></div><div><span><ShieldCheck size={20} /></span><p>正式確認<small>回到當年度官方簡章</small></p></div></div></div>

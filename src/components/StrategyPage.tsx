@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import React from 'react';
 import {
   AlertCircle,
@@ -78,7 +79,7 @@ export default function StrategyPage() {
     <main className="strategy-page">
       <section className="strategy-hero">
         <div className="strategy-shell">
-          <a href={withBasePath('/')} className="strategy-back"><ArrowLeft size={16} />返回首頁</a>
+          <PageBreadcrumb title="志願選填攻略" />
           <div className="strategy-hero-grid">
             <div>
               <p className="strategy-kicker"><Target size={17} />選填志願指南</p>

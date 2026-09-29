@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import { useState } from 'react';
 import {
   ArrowLeft,
@@ -49,9 +50,7 @@ export default function ImportantDatesPage() {
   return (
     <main className="min-h-screen bg-[#f7f8fc] pb-16 text-slate-900">
       <div className="mx-auto max-w-6xl px-4 pt-7 sm:px-6 sm:pt-9">
-        <a href={withBasePath('/')} className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-slate-600 underline-offset-4 hover:text-indigo-700 hover:underline">
-          <ArrowLeft size={17} aria-hidden="true" />返回首頁
-        </a>
+        <PageBreadcrumb title="重要日程" />
 
         <header className="relative mt-4 overflow-hidden rounded-[28px] bg-[#283468] px-6 py-9 text-white sm:px-10 sm:py-12">
           <div className="relative z-10 max-w-3xl">

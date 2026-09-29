@@ -14,7 +14,7 @@ function ThreadsIcon({ className }: { className?: string }) {
   );
 }
 
-type HeaderModalId = 'rating' | 'scoreInquiry';
+type HeaderModalId = 'rating';
 
 interface AppHeaderProps {
   isScrolled: boolean;
@@ -88,12 +88,12 @@ export default function AppHeader({ isScrolled, onShareClick, onMenuClick, setAc
   }, []);
   const findCategory = (id: string) => menuCategories.find((category) => category.id === id)!;
   const navigationLinks: Array<{ id: keyof typeof categoryOverviewPaths; label: string; icon: typeof Compass; iconColor: string; title: string; description: string; categories: MenuCategory[] }> = [
-    { id: 'find', label: '我要查資料', icon: Compass, iconColor: findCategory('find').color, title: '我要查資料', description: '快速找到適合的學校、科別與升學方向', categories: [findCategory('find')] },
-    { id: 'choose', label: '我要選志願', icon: Target, iconColor: findCategory('choose').color, title: '我要選志願', description: '依據成績與目標，安排你的志願順序', categories: [findCategory('choose')] },
-    { id: 'scoring', label: '各區計分方式', icon: Calculator, iconColor: findCategory('scoring').color, title: '各區計分方式', description: '集中查詢各就學區積分換算、超額比序與五專規則', categories: [findCategory('scoring')] },
-    { id: 'plan', label: '我要規劃升學', icon: CalendarDays, iconColor: findCategory('plan').color, title: '我要規劃升學', description: '從興趣探索到重要時程，一次準備好', categories: [findCategory('plan')] },
-    { id: 'member', label: '會員與資源', icon: CircleHelp, iconColor: findCategory('membership').color, title: '會員與升學資源', description: '管理會員資格，前往相關的升學工具與平台', categories: [findCategory('membership'), findCategory('external')] },
-    { id: 'help', label: '使用協助', icon: CircleHelp, iconColor: findCategory('support').color, title: '使用協助與平台資訊', description: '取得操作支援，也能查看平台規範與最新狀態', categories: [findCategory('support'), findCategory('about')] },
+    { id: 'choose', label: '成績與志願', icon: Target, iconColor: findCategory('choose').color, title: '成績與志願', description: '查成績、使用落點分析，再安排志願順序', categories: [findCategory('choose')] },
+    { id: 'find', label: '學校與科別', icon: Compass, iconColor: findCategory('find').color, title: '學校與科別', description: '搜尋學校、了解學制並比較技職群科', categories: [findCategory('find')] },
+    { id: 'scoring', label: '計分與比序', icon: Calculator, iconColor: findCategory('scoring').color, title: '計分與比序', description: '查會考積分換算、各就學區與五專規則', categories: [findCategory('scoring')] },
+    { id: 'plan', label: '升學規劃', icon: CalendarDays, iconColor: findCategory('plan').color, title: '升學規劃', description: '探索興趣、比較生活條件並掌握重要時程', categories: [findCategory('plan')] },
+    { id: 'member', label: '會員與資源', icon: CircleHelp, iconColor: findCategory('membership').color, title: '會員與延伸資源', description: '管理會員資料，前往延伸工具與平台', categories: [findCategory('membership'), findCategory('external')] },
+    { id: 'help', label: '說明與支援', icon: CircleHelp, iconColor: findCategory('support').color, title: '說明與平台資訊', description: '取得操作協助、回報問題與查看平台規範', categories: [findCategory('support'), findCategory('about')] },
   ];
   const selectedMenu = navigationLinks.find((menu) => menu.id === activeMenu);
   const selectedItems = selectedMenu?.categories.flatMap((category) => category.items.map((item) => ({ ...item, categoryLabel: category.label }))) ?? [];

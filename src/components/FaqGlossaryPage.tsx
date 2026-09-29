@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, CircleHelp, Search, ShieldAlert, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageBreadcrumb from './PageBreadcrumb';
 import './faq-glossary-page.css';
 
 type Entry = { category: string; term: string; summary: string; detail: string };
@@ -77,7 +78,7 @@ export default function FaqGlossaryPage() {
   const clearFilters = () => { setKeyword(''); setCategory('全部'); setView('all'); setOpenTerm(null); };
 
   return <main className="faq-page"><div className="faq-shell">
-    <nav className="faq-breadcrumb" aria-label="麵包屑"><a href={withBasePath('/')}><ArrowLeft size={15} />返回首頁</a><span aria-hidden="true">/</span><span aria-current="page">常見問答與名詞百科</span></nav>
+    <PageBreadcrumb title="常見問答與名詞百科" />
     <header className="faq-hero"><div><p className="faq-kicker"><BookOpen size={17} /> FAQ & GLOSSARY</p><h1>升學問題，<br /><span>在這裡找到答案。</span></h1><p>把常見疑問和升學名詞整理成容易理解的說明。從會考成績、招生管道到志願選填，找到你現在需要的資訊。</p></div><div className="faq-hero-stats"><span><strong>{questions.length.toString().padStart(2, '0')}</strong>則常見問答</span><span><strong>{glossary.length.toString().padStart(2, '0')}</strong>個升學名詞</span></div></header>
     <div className="faq-search-panel"><label className="faq-search"><Search size={21} /><span className="sr-only">搜尋名詞與問題</span><input type="search" value={keyword} onChange={(event) => { setKeyword(event.target.value); setOpenTerm(null); }} placeholder="搜尋名詞、問題或關鍵字，例如：序位、五專、報到" />{keyword && <button type="button" onClick={() => setKeyword('')} aria-label="清除搜尋"><X size={18} /></button>}</label><p>快速搜尋 {entries.length} 則說明</p></div>
     <div className="faq-tabs" role="group" aria-label="內容類型"><button type="button" aria-pressed={view === 'all'} onClick={() => selectView('all')}>全部內容<span>{entries.length}</span></button><button type="button" aria-pressed={view === 'questions'} onClick={() => selectView('questions')}>常見問答<span>{questions.length}</span></button><button type="button" aria-pressed={view === 'glossary'} onClick={() => selectView('glossary')}>名詞百科<span>{glossary.length}</span></button></div>

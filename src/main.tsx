@@ -5,6 +5,7 @@ import { GraduationCap, Lightbulb } from 'lucide-react';
 import './index.css';
 import './page-loading.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
+import { getDepartmentFromPath } from './lib/vocationalDepartments.ts';
 import { applyPageSeo } from './lib/seo.ts';
 import RelatedReading from './components/RelatedReading.tsx';
 import Footer from './components/layout/Footer.tsx';
@@ -36,6 +37,7 @@ const SearchPage = lazy(() => import('./components/SearchPage.tsx'));
 const ResultsPage = lazy(() => import('./components/ResultsPage.tsx'));
 const ScoreChangePage = lazy(() => import('./components/ScoreChangePage.tsx'));
 const ScoreRecordsPage = lazy(() => import('./components/ScoreRecordsPage.tsx'));
+const ScoreInquiryPage = lazy(() => import('./components/ScoreInquiryPage.tsx'));
 const ComparisonPage = lazy(() => import('./components/ComparisonPage.tsx'));
 const ReportErrorPage = lazy(() => import('./components/ReportErrorPage.tsx'));
 const SharedReportPage = lazy(() => import('./components/SharedReportPage.tsx'));
@@ -50,6 +52,8 @@ const MembershipPage = lazy(() => import('./components/MembershipPage.tsx'));
 const MembershipAccountPage = lazy(() => import('./components/MembershipAccountPage.tsx'));
 const PrivacyCenterPage = lazy(() => import('./components/PrivacyCenterPage.tsx'));
 const VocationalEncyclopediaPage = lazy(() => import('./components/VocationalEncyclopediaPage.tsx'));
+const VocationalDepartmentsPage = lazy(() => import('./components/VocationalDepartmentsPage.tsx'));
+const VocationalDepartmentDetailPage = lazy(() => import('./components/VocationalDepartmentDetailPage.tsx'));
 const RegionScoringRulesPage = lazy(() => import('./components/RegionScoringRulesPage.tsx'));
 const AreaPage = lazy(() => import('./components/AreaPage.tsx'));
 
@@ -84,6 +88,8 @@ const sharedReportToken = path.match(/^\/shared\/([0-9a-f-]+)$/i)?.[1];
 const scoringRulesRegionId = path.match(/^\/scoring-rules\/([a-z-]+)$/)?.[1];
 const areaSlug = path.match(/^\/area\/([a-z-]+)$/)?.[1];
 const newsArticleId = path.match(/^\/news\/(\d+)$/)?.[1];
+const departmentRouteSegment = path.match(/^\/departments\/([^/]+)$/)?.[1];
+const department = departmentRouteSegment ? getDepartmentFromPath(departmentRouteSegment) : undefined;
 const redirectedRoute = new URLSearchParams(window.location.search).get('route');
 if (redirectedRoute) {
   // GitHub Pages redirects deep links through ?route=… . Keep any other
@@ -123,6 +129,7 @@ const page =
   path === '/results' ? <ResultsPage /> :
   path === '/score-change' ? <ScoreChangePage /> :
   path === '/score-records' ? <ScoreRecordsPage /> :
+  path === '/score-inquiry' ? <ScoreInquiryPage /> :
   path === '/compare' ? <ComparisonPage /> :
   path === '/report-error' ? <ReportErrorPage /> :
   sharedReportToken ? <SharedReportPage token={sharedReportToken} /> :
@@ -143,12 +150,14 @@ const page =
   path === '/refund-cancellation-policy' ? <SupportPolicyPage kind="refund-cancellation" /> :
   path === '/vocational-compare' ? <VocationalComparePage /> :
   path === '/vocational-encyclopedia' ? <VocationalEncyclopediaPage /> :
+  path === '/departments' ? <VocationalDepartmentsPage /> :
+  departmentRouteSegment ? <VocationalDepartmentDetailPage department={department} /> :
   scoringRulesRegionId ? <RegionScoringRulesPage regionId={scoringRulesRegionId} /> :
   areaSlug ? <AreaPage slug={areaSlug} /> :
   <App />;
 
-const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/five-year-college-rules', '/grade-level', '/grade-11-pathways', '/future-pathways', '/life-feasibility', '/general-comprehensive-high-school', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia']);
-const showRelatedReading = informationalPaths.has(path) || Boolean(newsArticleId) || path.startsWith('/scoring-rules/') || path.startsWith('/area/');
+const informationalPaths = new Set(['/advantages', '/disclaimer', '/faq-glossary', '/five-year-college-rules', '/grade-level', '/grade-11-pathways', '/future-pathways', '/life-feasibility', '/general-comprehensive-high-school', '/historical-stats', '/important-dates', '/instructions', '/holland', '/school-types', '/strategy', '/vocational-encyclopedia', '/departments']);
+const showRelatedReading = informationalPaths.has(path) || Boolean(department) || Boolean(newsArticleId) || path.startsWith('/scoring-rules/') || path.startsWith('/area/');
 const pagesWithoutSharedFooter = new Set(['/', '/results', '/compare', '/holland', '/support/success', '/support/failed']);
 const showSharedFooter = !pagesWithoutSharedFooter.has(path) && !sharedReportToken;
 

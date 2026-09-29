@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BadgeCheck, BriefcaseBusiness, Building2, CheckCircle2, ChevronDown, GraduationCap, Route, Sparkles } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageBreadcrumb from './PageBreadcrumb';
 import './future-pathways-page.css';
 
 type PathwayId = 'general' | 'vocational' | 'comprehensive' | 'fiveYear';
@@ -67,7 +68,7 @@ export default function FuturePathwaysPage() {
   const highlightedKind = hasMatchingStep ? goal : 'base';
 
   return <main className="future-page"><div className="future-shell">
-    <a className="future-back" href={withBasePath('/school-types')}><ArrowLeft size={17} aria-hidden="true" />學校類型解析</a>
+    <PageBreadcrumb title="未來路線探索" parent={{ label: '學校類型解析', href: '/school-types' }} />
     <header className="future-hero"><div><span className="future-eyebrow"><Route size={17} aria-hidden="true" />升學與職涯路線</span><h1>三年或五年後，<br /><em>我可以怎麼走？</em></h1><p>選一種學制，再選你關心的目標。看看畢業後的常見方向，以及現在能先確認的事情。</p><a href="#future-choose" className="future-primary">開始探索路線 <ArrowRight size={17} aria-hidden="true" /></a></div><div className="future-hero-guide"><span>這頁怎麼用</span><ol><li><b>01</b>選擇學校類型</li><li><b>02</b>選擇關心方向</li><li><b>03</b>查看路徑和準備清單</li></ol><p>每條路都可能繼續升學或就業，實際資格請以當年度簡章為準。</p></div></header>
 
     <section className="future-section" id="future-choose"><div className="future-heading"><span>01 / 選擇起點</span><h2>你現在或想讀哪一種學制？</h2><p>先選最接近自己的類型，下方內容就會更新。</p></div><div className="future-path-options" role="group" aria-label="選擇學校類型">{pathways.map((pathway) => <button type="button" key={pathway.id} data-tone={pathway.id} aria-pressed={selectedId === pathway.id} onClick={() => setSelectedId(pathway.id)}><span className="future-option-top"><Building2 size={21} aria-hidden="true" /><small>{pathway.duration}</small></span><strong>{pathway.label}</strong><span>{pathway.description}</span></button>)}</div></section>

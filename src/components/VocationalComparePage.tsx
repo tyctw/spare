@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Briefcase, Check, Compass, Info, Search, X } from 'lucide-react';
 import { groups } from '../lib/vocationalGroups';
@@ -35,11 +36,7 @@ export default function VocationalComparePage() {
   return (
     <main className="vc-page">
       <div className="vc-shell">
-        <nav className="vc-breadcrumb" aria-label="麵包屑導覽">
-          <a href={withBasePath('/vocational-encyclopedia')}><ArrowLeft size={15} />職群科系百科</a>
-          <span aria-hidden="true">/</span>
-          <span>職群比較</span>
-        </nav>
+        <PageBreadcrumb title="職群比較" parent={{ label: '職群科系百科', href: '/vocational-encyclopedia' }} />
 
         <header className="vc-hero">
           <div>

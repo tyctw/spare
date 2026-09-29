@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import React from 'react';
 import { ArrowLeft, ArrowRight, CheckCircle2, ExternalLink } from 'lucide-react';
 import { menuCategories, type MenuItem } from './layout/NavigationDrawer';
@@ -7,28 +8,28 @@ import MissingFeatureCard from './MissingFeatureCard';
 
 const pageContent: Record<CategoryOverviewId, { title: string; intro: string; categoryIds: string[]; steps: string[] }> = {
   find: {
-    title: '我要查資料',
-    intro: '從學校、科別、學制到歷年資料，先把升學選擇需要的資訊整理清楚。',
+    title: '學校與科別',
+    intro: '搜尋學校與科別，了解不同學制，再比較感興趣的技職群科。',
     categoryIds: ['find'],
-    steps: ['先確認想查詢的學校、科別或學制。', '搭配區域與群科資料交叉比較。', '將結果作為後續選填與討論的參考。'],
+    steps: ['先搜尋想了解的學校或科別。', '閱讀學校類型與技職群科介紹。', '把感興趣的職群放在一起比較。'],
   },
   choose: {
-    title: '我要選志願',
-    intro: '依成績、興趣與志願順序逐步整理，建立更有方向的選填清單。',
+    title: '成績與志願',
+    intro: '從會考成績查詢開始，使用落點分析與歷年資料，逐步安排志願順序。',
     categoryIds: ['choose'],
-    steps: ['輸入成績與相關條件。', '查看推薦清單與歷年趨勢。', '透過模擬功能調整志願排序。'],
+    steps: ['查詢成績並輸入落點分析。', '參考分析結果與歷年統計。', '使用模擬志願序調整排序。'],
   },
   scoring: {
-    title: '各區計分方式',
+    title: '計分與比序',
     intro: '集中查詢各就學區的會考換算、超額比序及五專優先免試規則，先看懂計分，再安排志願。',
     categoryIds: ['scoring'],
     steps: ['選擇你要報名的就學區或五專招生管道。', '查看會考換算、積分項目與同分比序。', '核對當年度官方簡章，再使用落點分析與模擬志願。'],
   },
   plan: {
-    title: '我要規劃升學',
-    intro: '把探索興趣、掌握時程與認識升學方向放在同一個規劃流程中。',
+    title: '升學規劃',
+    intro: '探索興趣、比較生活條件，了解高中職後的路徑並掌握重要時程。',
     categoryIds: ['plan'],
-    steps: ['從興趣與學校類型開始探索。', '追蹤重要時程與官方資訊。', '依結果安排下一步準備。'],
+    steps: ['先探索興趣與生活條件。', '了解班群選擇與未來路徑。', '追蹤重要日程與最新消息。'],
   },
   member: {
     title: '會員與資源',
@@ -37,7 +38,7 @@ const pageContent: Record<CategoryOverviewId, { title: string; intro: string; ca
     steps: ['查看會員方案與目前資格。', '依需求開啟延伸工具與資源。', '保存常用入口，持續完成規劃。'],
   },
   help: {
-    title: '使用協助',
+    title: '說明與支援',
     intro: '快速找到操作說明、常見問題、平台規範與最新更新資訊。',
     categoryIds: ['support', 'about'],
     steps: ['先閱讀對應功能的使用說明。', '遇到問題可查看常見問答或回報。', '定期留意平台更新與使用規範。'],
@@ -59,9 +60,7 @@ export default function CategoryOverviewPage({ categoryId }: { categoryId: Categ
     <main className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900">
       <section className="border-b-4 border-slate-900 bg-indigo-50">
         <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 lg:px-8">
-          <a href={withBasePath('/')} className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-3 py-2 text-sm font-black shadow-[2px_2px_0_#0f172a] transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2">
-            <ArrowLeft className="h-4 w-4" />返回首頁
-          </a>
+          <PageBreadcrumb title={page.title} />
           <div className="py-8 sm:py-12">
             <p className="text-sm font-black tracking-[0.16em] text-indigo-700">功能分類說明</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-6xl">{page.title}</h1>

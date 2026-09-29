@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpDown, Check, Download, ExternalLink, Info, Layers3, MapPin, Plus, Printer, RotateCcw, Search, SlidersHorizontal, Trash2, X } from 'lucide-react';
 import Footer from './layout/Footer';
 import { withBasePath } from '../lib/routes';
+import PageBreadcrumb from './PageBreadcrumb';
 import { formatSchoolOwnership } from '../lib/schoolDisplay';
 import { getComparisonSchools, saveComparisonSchools } from '../lib/comparisonStorage';
 import { formatHistoricalCredits, normalizeHistoricalScores } from './ResultsDialogs';
@@ -125,7 +126,7 @@ export default function ComparisonPage() {
   return <div className="strategy-page comparison-page"><main>
     <section className="strategy-hero">
       <div className="strategy-shell">
-        <a href={withBasePath('/results')} className="strategy-back"><ArrowLeft size={16} />回到分析結果</a>
+        <PageBreadcrumb title="分析結果比較" parent={{ label: '分析結果', href: '/results' }} />
         <div className="strategy-hero-grid">
           <div>
             <p className="strategy-kicker"><Layers3 size={17} />升學選擇工具</p>

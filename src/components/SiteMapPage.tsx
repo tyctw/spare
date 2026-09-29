@@ -1,3 +1,4 @@
+import PageBreadcrumb from './PageBreadcrumb';
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, Crown, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, MapPin, Megaphone, Search, Shield, Sparkles, Target, UserRound } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
@@ -7,7 +8,8 @@ type Item = { title: string; desc: string; href: string; icon: React.ElementType
 type Category = { title: string; desc: string; items: Item[] };
 
 const categories: Category[] = [
-  { title: '先完成落點分析', desc: '第一次使用時，從這三個入口開始最快。', items: [
+  { title: '先完成落點分析', desc: '從官方成績查詢到落點分析，依序找到需要的入口。', items: [
+    { title: '會考成績查詢', desc: '前往官方網站查成績，並了解查詢後如何使用本站。', href: '/score-inquiry', icon: Search, tone: 'bg-violet-100 text-violet-700', keywords: '會考 成績 查詢 官方 入口' },
     { title: '開始落點分析', desc: '輸入邀請碼、就學區、偏好與會考成績，取得推薦校科。', href: '/', icon: Compass, tone: 'bg-indigo-100 text-indigo-700', keywords: '首頁 分析 成績 邀請碼 結果' },
     { title: '使用說明', desc: '用六個步驟完成資料輸入，並知道結果該怎麼看。', href: '/instructions', icon: HelpCircle, tone: 'bg-blue-100 text-blue-700', keywords: '教學 說明 步驟 怎麼用' },
     { title: '會考成績等級', desc: '確認 A、B、C 與標示、寫作級分的填寫方式。', href: '/grade-level', icon: GraduationCap, tone: 'bg-rose-100 text-rose-700', keywords: 'A++ A+ B++ 等級 標示 寫作' },
@@ -19,9 +21,12 @@ const categories: Category[] = [
     { title: '高二「班群」是什麼？怎麼選？', desc: '認識自然、社會取向、數學 A／B 與 18 學群的規劃方式。', href: '/grade-11-pathways', icon: Compass, tone: 'bg-fuchsia-100 text-fuchsia-700', keywords: '高二 班群 自然組 社會組 數學A 數學B 18學群 分組' },
     { title: '高中職三年後的下一步地圖', desc: '互動查看普高、技高、綜高與五專的升學、就業與轉換路徑。', href: '/future-pathways', icon: Map, tone: 'bg-orange-100 text-orange-700', keywords: '普高 技高 綜高 五專 升學 技優 特殊選才 就業 二技 插班' },
     { title: '技職群科百科', desc: '認識技職群別、常見科別、學習特質與未來進路。', href: '/vocational-encyclopedia', icon: BookOpen, tone: 'bg-emerald-100 text-emerald-700', keywords: '技職 群科 科別 專業 高職' },
+    { title: '科別探索圖鑑', desc: '依類別與群別查找 87 個科別，閱讀各科獨立介紹。', href: '/departments', icon: BookOpen, tone: 'bg-violet-100 text-violet-700', keywords: '科別 圖鑑 技高 高職 職群 介紹' },
+    { title: '職群比較', desc: '把感興趣的技職群別放在一起比較。', href: '/vocational-compare', icon: Target, tone: 'bg-sky-100 text-sky-700', keywords: '職群 比較 技職 選擇' },
     { title: 'Holland 興趣測驗', desc: '完成簡易興趣測驗，取得 RIASEC 類型與群科探索方向。', href: '/holland', icon: Sparkles, tone: 'bg-purple-100 text-purple-700', keywords: '興趣 測驗 holland RIASEC 性向' },
   ] },
   { title: '規劃與選填志願', desc: '有了方向後，用資料與工具把選項排成可執行的志願清單。', items: [
+    { title: '生活條件比較單', desc: '整理通勤、費用與生活需求，協助比較選校條件。', href: '/life-feasibility', icon: Map, tone: 'bg-indigo-100 text-indigo-700', keywords: '生活 條件 比較 通勤 費用 選校' },
     { title: '模擬志願序', desc: '搜尋校科加入清單，自行調整順序並列印草稿。', href: '/mock-volunteer', icon: Target, tone: 'bg-amber-100 text-amber-700', keywords: '模擬 志願序 排序 選填' },
     { title: '填志願策略', desc: '了解夢幻、實際、保守志願的安排原則與常見提醒。', href: '/strategy', icon: CheckCircle2, tone: 'bg-orange-100 text-orange-700', keywords: '策略 夢幻 實際 保守 志願' },
     { title: '歷年會考統計', desc: '查看歷年等級組合與分布，理解成績的整體趨勢。', href: '/historical-stats', icon: LineChart, tone: 'bg-indigo-100 text-indigo-700', keywords: '歷年 統計 分布 成績 趨勢' },
@@ -84,6 +89,7 @@ const searchAliases: Record<string, string> = {
   '/mock-volunteer': '志願 志願序 模擬 選填',
   '/strategy': '策略 填志願 選填 志願序',
   '/grade-level': '會考 成績 等級 A++ A+ B++ 寫作',
+  '/score-inquiry': '會考 成績 查詢 官方 網站 落點',
   '/important-dates': '日期 時程 報名 放榜 會考',
   '/news': '最新 消息 公告 資料 更新',
   '/membership': '會員 免廣告 LINE 付款 月費 年費',
@@ -139,7 +145,7 @@ export default function SiteMapPage() {
   const isSearching = searchTerm.trim().length > 0;
 
   return <main className="site-map-page"><div className="site-map-shell">
-    <a className="site-map-back" href={withBasePath('/')}><ArrowLeft size={17} aria-hidden="true" />返回首頁</a>
+    <PageBreadcrumb title="網站地圖" />
     <header className="site-map-hero"><div><span className="site-map-eyebrow"><Map size={17} aria-hidden="true" />全站功能索引</span><h1>網站地圖</h1><p>從想做的事出發，快速找到落點分析、校科探索、志願規劃與各區資訊。</p></div><div className="site-map-hero-stat"><strong>{totalCount}</strong><span>個功能與資訊頁面</span></div></header>
 
     <section className="site-map-search-panel" aria-label="搜尋網站功能"><label htmlFor="site-map-search">想找什麼功能？</label><div className="site-map-search-row"><Search size={20} aria-hidden="true" /><input id="site-map-search" type="search" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="輸入功能或關鍵字，例如：五專、志願、會員" autoComplete="off" />{isSearching && <button type="button" onClick={() => setSearchTerm('')}>清除</button>}</div><p role="status" aria-live="polite">{isSearching ? `找到 ${count} 個相關頁面` : '也可以從下方分類直接瀏覽全部功能。'}</p></section>
