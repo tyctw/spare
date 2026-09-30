@@ -18,8 +18,7 @@ const plans = [
     name: "30 天方案",
     price: 49,
     duration: "30 天",
-    note: "從查成績到排志願，用 30 天專心比較，把這次選擇準備好。",
-    comparison: "NT$49，體驗完整會員權益",
+    comparison: "完整權益，先用 30 天體驗",
     accent: "sky",
     featured: false,
   },
@@ -28,7 +27,6 @@ const plans = [
     name: "365 天方案",
     price: 399,
     duration: "365 天",
-    note: "從模擬考一路陪你到選填志願，持續追蹤成績，和家人慢慢討論。",
     comparison: "比購買 12 次 30 天方案省 NT$189",
     accent: "emerald",
     featured: true,
@@ -280,7 +278,15 @@ export default function MembershipPage() {
       ].map(({ icon: Icon, title, description }) => <div className="plans-assurance" key={title}><span className="plans-assurance-icon"><Icon size={21} aria-hidden="true" /></span><div><h2>{title}</h2><p>{description}</p></div></div>)}</section>
       <form className="plans-purchase" onSubmit={(event) => { event.preventDefault(); if (lineName) void checkout(); }}>
         <section id="membership-plans" className="plans-selection" aria-labelledby="membership-plans-title"><div className="plans-section-heading"><span className="plans-step">01</span><div><h2 id="membership-plans-title">選一段適合你的規劃時間</h2><p>30 天先體驗，365 天持續規劃。兩種方案都享有完整會員權益。</p></div></div>
-          <fieldset className="plans-options"><legend className="sr-only">選擇會員方案</legend>{plans.map(plan => <label key={plan.id} className="plans-option" data-selected={selected === plan.id}><div className="plans-option-top"><input type="radio" name="membership-plan" value={plan.id} checked={selected === plan.id} onChange={() => setSelected(plan.id)} disabled={submitting} /><span>{plan.name}</span><small>{plan.featured ? '長期使用更划算' : '輕鬆開始'}</small></div><p className="plans-price"><span>NT$</span>{plan.price}<small>／{plan.duration}</small></p><p className="plans-option-note">{plan.note}</p>{plan.featured && <p className="plans-daily-price">平均每天約 NT$1.1<small>以 NT$399 ÷ 365 天換算，實際一次付款 NT$399。</small></p>}<div className="plans-option-bottom">{plan.comparison}</div></label>)}</fieldset>
+          <fieldset className="plans-options"><legend className="sr-only">選擇會員方案</legend>{plans.map(plan => {
+            const isSelected = selected === plan.id;
+            return <label key={plan.id} className="plans-option" data-selected={isSelected} data-featured={plan.featured}>
+              <div className="plans-option-top"><span className="plans-option-tag">{plan.featured ? '長期規劃更划算' : '輕鬆開始'}</span><input type="radio" name="membership-plan" value={plan.id} aria-label={plan.name} checked={isSelected} onChange={() => setSelected(plan.id)} disabled={submitting} /></div>
+              <h3>{plan.name}</h3><p className="plans-price"><span>NT$</span>{plan.price}</p><p className="plans-price-caption">一次付款 · 使用 {plan.duration}</p>
+              <div className="plans-option-value">{plan.featured ? <><strong>平均每天約 NT$1.1</strong><small>NT$399 ÷ 365 天換算；一次付款 NT$399。</small></> : <><strong>30 天享有完整會員權益</strong><small>適合本次選填，或先體驗會員功能。</small></>}</div>
+              <div className="plans-option-bottom"><p>{plan.comparison}</p><span className="plans-option-select">{isSelected ? '已選擇此方案' : `選擇${plan.duration}方案`}<ArrowRight size={16} aria-hidden="true" /></span></div>
+            </label>;
+          })}</fieldset>
           <section className="plans-benefits" aria-labelledby="membership-benefits-title"><h3 id="membership-benefits-title">加入會員，讓規劃更順手</h3><div>{benefits.map(({icon: Icon,title,text}) => <article key={title}><Icon size={21} aria-hidden="true" /><div><h4>{title}</h4><p>{text}</p></div></article>)}</div></section>
         </section>
         <section className="plans-checkout" aria-labelledby="membership-checkout-title"><div className="plans-section-heading"><span className="plans-step">02</span><div><h2 id="membership-checkout-title">開始你的會員規劃</h2><p>一次付款，到期不自動續扣。</p></div></div>

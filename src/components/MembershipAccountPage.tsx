@@ -6,6 +6,7 @@ import {
   Crown,
   LogOut,
   Mail,
+  Pencil,
   ReceiptText,
   ShieldCheck,
   Sparkles,
@@ -54,6 +55,16 @@ export default function MembershipAccountPage() {
   const [emailError, setEmailError] = useState('');
   const [emailSaving, setEmailSaving] = useState(false);
   const [emailEditMode, setEmailEditMode] = useState(false);
+  const [emailSaved, setEmailSaved] = useState(false);
+  const [accountSection, setAccountSection] = useState('');
+
+  useEffect(() => {
+    const syncSection = () => setAccountSection(window.location.hash);
+    syncSection();
+    window.addEventListener('hashchange', syncSection);
+    return () => window.removeEventListener('hashchange', syncSection);
+  }, []);
+
   const deleteDialogRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -148,6 +159,9 @@ export default function MembershipAccountPage() {
         setMembership((prev) => ({ ...prev, contactEmail: result.contactEmail ?? null }));
         setEmailEditMode(false);
         setEmailInput('');
+        setEmailSaved(true);
+      } else {
+        setEmailError('未能更新信箱，請重新確認登入狀態後再試。');
       }
     } catch (err) {
       setEmailError(err instanceof Error ? err.message : '儲存失敗，請稍後再試。');
@@ -215,10 +229,25 @@ export default function MembershipAccountPage() {
     : state === 'error' ? <section className="account-center-feedback account-center-error" role="alert"><ShieldCheck size={26} aria-hidden="true" /><h2>暫時無法確認帳號狀態</h2><p>{errorMessage || '請重新整理；若仍無法確認，可重新使用 LINE 登入。'}</p><div className="account-center-form-actions"><button type="button" className="account-center-primary" onClick={() => { setState('loading'); void refresh().catch((err) => { setErrorMessage(err instanceof Error ? err.message : ''); setState('error'); }); }}>重新整理</button><button type="button" className="account-center-secondary" onClick={loginWithLine}>重新登入 LINE</button></div></section>
     : <>
       {!signedIn ? <section className="account-center-guest"><div className="account-center-guest-copy"><span className="account-center-guest-icon"><CircleUserRound size={31} aria-hidden="true" /></span><h2>使用 LINE 登入會員帳號</h2><p>已購買方案？使用當時的 LINE 帳號登入，就能查看資格、到期日與訂單。</p><button type="button" onClick={loginWithLine} className="account-center-line"><img src={withBasePath('/brand/line/line-login.png')} width={44} height={44} alt="" aria-hidden="true" /><span>使用 LINE 登入</span><ArrowRight size={18} aria-hidden="true" /></button><a className="account-center-text-link" href={withBasePath('/membership')}>了解會員方案<ArrowRight size={16} aria-hidden="true" /></a></div><div className="account-center-guest-note"><h3>你的會員資料，集中管理</h3><ol><li><Crown size={20} aria-hidden="true" /><div><strong>方案與期限</strong><span>確認目前資格及使用期間</span></div></li><li><ReceiptText size={20} aria-hidden="true" /><div><strong>訂單與付款</strong><span>查看訂單編號與處理狀態</span></div></li><li><ShieldCheck size={20} aria-hidden="true" /><div><strong>帳號與資料</strong><span>管理聯絡信箱與分享設定</span></div></li></ol><p>換裝置時，登入同一個 LINE 帳號即可確認資格。</p></div></section>
-      : <><nav className="account-center-section-nav" aria-label="帳號頁面導覽"><a href="#account-membership">方案與期限</a><a href="#account-profile">帳號資料</a><a href="#account-orders">購買紀錄</a></nav><div className="account-center-main-grid">
+      : <><nav className="account-center-section-nav" aria-label="帳號頁面導覽">{[
+        { href: '#account-membership', icon: Crown, title: '方案與期限', description: '確認使用期間' },
+        { href: '#account-profile', icon: CircleUserRound, title: '帳號資料', description: '管理登入與信箱' },
+        { href: '#account-orders', icon: ReceiptText, title: '購買紀錄', description: '查看付款狀態' },
+      ].map(({ href, icon: Icon, title, description }) => <a key={href} href={href} aria-current={accountSection === href ? 'location' : undefined} onClick={() => setAccountSection(href)}><Icon size={21} aria-hidden="true" /><span><strong>{title}</strong><small>{description}</small></span><ArrowRight size={16} aria-hidden="true" className="account-center-nav-arrow" /></a>)}</nav><div className="account-center-main-grid">
         <section id="account-membership" className="account-center-panel account-center-membership"><div className="account-center-panel-title"><span><Crown size={21} aria-hidden="true" /></span><div><p>目前使用狀態</p><h2>方案與期限</h2></div><span className="account-center-badge" data-active={membership.active}>{membership.active ? '使用中' : '未啟用'}</span></div>{membership.active ? <><div className="account-center-current-plan"><Crown size={24} aria-hidden="true" /><div><span>目前方案</span><strong>{planName}</strong></div><span className="account-center-days">剩餘 <strong>{remainingDays}</strong> 天</span></div><dl className="account-center-dates"><div><dt>有效期限</dt><dd>{formatDate(membership.expiresAt)}</dd></div><div><dt>啟用日期</dt><dd>{formatDate(membership.activatedAt)}</dd></div></dl><a className="account-center-text-link" href={withBasePath('/membership')}>查看會員方案<ArrowRight size={16} aria-hidden="true" /></a></> : <><div className="account-center-inactive"><h3>目前尚未啟用會員方案</h3><p>你已完成 LINE 登入。可查看會員方案，選擇適合的免廣告使用期間。</p></div><a className="account-center-primary" href={withBasePath('/membership')}>查看方案與價格<ArrowRight size={17} aria-hidden="true" /></a></>}</section>
         <section id="account-profile" className="account-center-panel account-center-profile"><div className="account-center-panel-title"><span><ShieldCheck size={21} aria-hidden="true" /></span><div><p>登入與聯絡方式</p><h2>帳號資料</h2></div></div><div className="account-center-identity"><span><CircleUserRound size={25} aria-hidden="true" /></span><div><small>登入的 LINE 帳號</small><strong>{lineName || 'LINE 會員'}</strong></div><span className="account-center-connected">已登入</span></div>
-          {membership.active && <div className="account-center-email"><div className="account-center-subheading"><Mail size={18} aria-hidden="true" /><h3>聯絡信箱</h3></div><p>用於會員服務聯繫與付款協助。</p>{emailEditMode ? <form onSubmit={(event) => { event.preventDefault(); void saveEmail(); }}><label htmlFor="account-email">電子信箱</label><input id="account-email" type="email" inputMode="email" autoComplete="email" required placeholder="your@email.com" value={emailInput} onChange={(event) => { setEmailInput(event.target.value); setEmailError(''); }} aria-invalid={Boolean(emailError)} aria-describedby={emailError ? 'account-email-error' : undefined} disabled={emailSaving} />{emailError && <p id="account-email-error" role="alert" className="account-center-field-error">{emailError}</p>}<div className="account-center-form-actions"><button type="submit" className="account-center-primary" disabled={emailSaving}>{emailSaving ? '儲存中…' : '儲存信箱'}</button><button type="button" className="account-center-secondary" disabled={emailSaving} onClick={() => { setEmailEditMode(false); setEmailInput(''); setEmailError(''); }}>取消</button></div></form> : <div className="account-center-email-value"><strong>{membership.contactEmail || '尚未設定聯絡信箱'}</strong><button type="button" className="account-center-secondary" onClick={() => { setEmailEditMode(true); setEmailInput(membership.contactEmail ?? ''); }}>{membership.contactEmail ? '編輯' : '新增信箱'}</button></div>}</div>}
+          {membership.active && <section className="account-center-email" aria-labelledby="account-email-title">
+            <div className="account-center-email-heading"><div className="account-center-subheading"><Mail size={18} aria-hidden="true" /><h3 id="account-email-title">聯絡信箱</h3></div>{!emailEditMode && <button type="button" className="account-center-email-edit" onClick={() => { setEmailEditMode(true); setEmailInput(membership.contactEmail ?? ''); setEmailError(''); setEmailSaved(false); }}><Pencil size={15} aria-hidden="true" />{membership.contactEmail ? '編輯信箱' : '新增信箱'}</button>}</div>
+            <p id="account-email-help">用於會員服務聯繫與付款協助。</p>
+            {emailEditMode ? <form aria-busy={emailSaving} onSubmit={(event) => { event.preventDefault(); void saveEmail(); }}>
+              <label htmlFor="account-email">{membership.contactEmail ? '新的聯絡信箱' : '電子信箱'}</label>
+              <input id="account-email" type="email" inputMode="email" autoComplete="email" autoFocus required placeholder="your@email.com" value={emailInput} onChange={(event) => { setEmailInput(event.target.value); setEmailError(''); }} aria-invalid={Boolean(emailError)} aria-describedby={emailError ? 'account-email-help account-email-error' : 'account-email-help'} disabled={emailSaving} />
+              {emailError && <p id="account-email-error" role="alert" className="account-center-field-error">{emailError}</p>}
+              <div className="account-center-form-actions"><button type="button" className="account-center-secondary" disabled={emailSaving} onClick={() => { setEmailEditMode(false); setEmailInput(''); setEmailError(''); }}>取消</button><button type="submit" className="account-center-primary" disabled={emailSaving}>{emailSaving ? '儲存中…' : '儲存變更'}</button></div>
+            </form> : <div className="account-center-email-value"><small>{membership.contactEmail ? '目前聯絡信箱' : '尚未新增'}</small><strong>{membership.contactEmail || '新增信箱，方便我們協助你處理會員問題。'}</strong></div>}
+            {emailSaved && <p className="account-center-email-success" role="status" aria-live="polite"><ShieldCheck size={16} aria-hidden="true" />聯絡信箱已更新</p>}
+          </section>}
+
           <p className="account-center-session-note">登入狀態有效 24 小時。登出後，此裝置會恢復一般使用者顯示。</p><button type="button" className="account-center-secondary account-center-logout" onClick={() => void logout()}><LogOut size={16} aria-hidden="true" />登出 LINE</button>
         </section>
       </div></>}
