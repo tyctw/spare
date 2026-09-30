@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-09-30T17:15:19.450Z",
+  "networkAttackRequests": 0,
+  "observations": {
+    "predictableInvitationBypassesConsumption": true,
+    "sharedPageLoadsAnalyticsWithCredentialsInURL": true,
+    "unusedCollaborationGuard": true,
+    "duplicateMigrationVersions": [
+      "20260807000100",
+      "20260807000200"
+    ]
+  },
+  "securityRegressionTests": {
+    "passed": 27,
+    "failed": 0
+  }
+}

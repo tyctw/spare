@@ -1,0 +1,97 @@
+{
+  "checkedAt": "2026-09-30T17:15:19.853Z",
+  "advisories": {
+    "brace-expansion": [
+      {
+        "id": 1240108,
+        "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+        "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+        "severity": "high",
+        "vulnerable_versions": "<1.1.19",
+        "cwe": [
+          "CWE-400",
+          "CWE-674"
+        ],
+        "cvss": {
+          "score": 7.5,
+          "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        }
+      },
+      {
+        "id": 1240109,
+        "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+        "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+        "severity": "high",
+        "vulnerable_versions": ">=2.0.0 <2.1.5",
+        "cwe": [
+          "CWE-400",
+          "CWE-674"
+        ],
+        "cvss": {
+          "score": 7.5,
+          "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        }
+      },
+      {
+        "id": 1240100,
+        "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+        "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+        "severity": "moderate",
+        "vulnerable_versions": "<1.1.21",
+        "cwe": [
+          "CWE-400",
+          "CWE-407"
+        ],
+        "cvss": {
+          "score": 5.3,
+          "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+        }
+      },
+      {
+        "id": 1240101,
+        "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+        "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+        "severity": "moderate",
+        "vulnerable_versions": ">=2.0.0 <2.1.7",
+        "cwe": [
+          "CWE-400",
+          "CWE-407"
+        ],
+        "cvss": {
+          "score": 5.3,
+          "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+        }
+      },
+      {
+        "id": 1240104,
+        "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+        "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+        "severity": "high",
+        "vulnerable_versions": "<1.1.20",
+        "cwe": [
+          "CWE-400",
+          "CWE-674"
+        ],
+        "cvss": {
+          "score": 7.5,
+          "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        }
+      },
+      {
+        "id": 1240105,
+        "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+        "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+        "severity": "high",
+        "vulnerable_versions": ">=2.0.0 <2.1.6",
+        "cwe": [
+          "CWE-400",
+          "CWE-674"
+        ],
+        "cvss": {
+          "score": 7.5,
+          "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        }
+      }
+    ]
+  }
+}
