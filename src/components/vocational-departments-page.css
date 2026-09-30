@@ -66,7 +66,29 @@
 .department-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 220px; align-items: start; gap: 68px; padding: 54px 0 0; }
 .department-detail-main { min-width: 0; }.department-detail-section { scroll-margin-top: 80px; border-bottom: 1px solid #e0e6e3; padding-bottom: 51px; margin-bottom: 51px; }.department-detail-section-title span { color: #806eaa; font-size: 12px; font-weight: 850; letter-spacing: .1em; }.department-detail-section-title h2 { margin: 9px 0 19px; font-size: clamp(25px, 3vw, 32px); letter-spacing: -.035em; }.department-detail-section > p { color: #61717d; font-size: 15px; line-height: 1.9; }.department-detail-section small { display: block; margin-top: 15px; color: #8a96a0; font-size: 12px; line-height: 1.7; }
 .department-detail-learning { display: grid; gap: 9px; margin-top: 20px; }.department-detail-learning > div { display: flex; align-items: center; gap: 15px; border: 1px solid #e3e4e9; border-radius: 9px; background: #fff; padding: 13px 16px; }.department-detail-learning span { color: #816faf; font-size: 12px; font-weight: 850; }.department-detail-learning p { color: #4c5c6d; font-size: 15px; line-height: 1.6; }
+.department-detail-focus { margin-top: 22px; border: 1px solid #ded8eb; border-radius: 14px; background: #f3f0f8; padding: 22px; }
+.department-detail-focus h3 { margin: 0; color: #392b5f; font-size: 19px; line-height: 1.5; }
+.department-detail-focus > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 15px; }
+.department-detail-focus p { display: flex; gap: 12px; min-width: 0; border: 1px solid #e5e0ef; border-radius: 10px; background: #fff; padding: 16px; color: #4d5d68; font-size: 15px; line-height: 1.75; }
+.department-detail-focus p span { flex: none; color: #795fa6; font-size: 12px; font-weight: 850; }
+.department-detail-group-heading { margin: 30px 0 8px; color: #3b3155; font-size: 19px; line-height: 1.5; }
+.department-detail-group-summary { color: #61717d; font-size: 15px; line-height: 1.8; }
+.department-detail-explainer { margin-top: 17px; border-left: 3px solid #876eaf; border-radius: 0 10px 10px 0; background: #f5f2f9; padding: 18px 22px; }
+.department-detail-explainer span { color: #634a92; font-size: 13px; font-weight: 850; letter-spacing: .02em; }
+.department-detail-explainer p { margin-top: 8px; color: #485a68; font-size: 16px; line-height: 1.9; }
+.department-detail-comparison { border-color: #9d83b9; background: #fff; }
+.department-detail-traits-heading { margin-top: 24px; color: #3c315b; font-size: 17px; line-height: 1.5; }
+.department-detail-pathway { display: flex; align-items: flex-start; gap: 15px; border: 1px solid #dcd6e9; border-radius: 13px; background: #f1eef7; padding: 22px; }
+.department-detail-pathway > svg { flex: none; color: #654b9a; }
+.department-detail-pathway h3 { color: #3b2d5b; font-size: 18px; line-height: 1.5; }
+.department-detail-pathway p { margin-top: 9px; color: #526272; font-size: 16px; line-height: 1.9; }
+.department-detail-group-more { margin-top: 18px; border: 1px solid #e0e3e4; border-radius: 11px; background: #fff; padding: 17px 20px; }
+.department-detail-group-more summary { color: #55417f; font-size: 15px; font-weight: 800; line-height: 1.7; cursor: pointer; }
+.department-detail-group-more > p { margin: 11px 0 16px; color: #667682; font-size: 14px; line-height: 1.75; }
 .department-detail-practice { display: flex; align-items: flex-start; gap: 14px; border: 1px solid #ded8eb; border-radius: 12px; background: #f0edf7; padding: 22px; }.department-detail-practice svg { flex: none; color: #655198; }.department-detail-practice p { color: #463761; font-size: 17px; font-weight: 750; line-height: 1.75; }.department-detail-note { margin-top: 16px; color: #75828b !important; font-size: 13px !important; }
+.department-detail-scenario { margin-top: 13px; border-left: 3px solid #8c76b3; border-radius: 0 10px 10px 0; background: #fff; padding: 18px 21px; }
+.department-detail-scenario span { color: #705998; font-size: 13px; font-weight: 850; }
+.department-detail-scenario p { margin-top: 7px; color: #4e5e6b; font-size: 15px; line-height: 1.8; }
 .department-detail-fit { border: 1px solid #dcd7e9; border-radius: 18px; background: #f3f0f8; padding: 27px; }
 .department-detail-fit-intro { display: flex; align-items: flex-start; gap: 16px; border-bottom: 1px solid #ded9e8; padding: 6px 0 23px; }
 .department-detail-fit-icon { display: grid; width: 48px; height: 48px; flex: none; place-items: center; border-radius: 13px; background: #e3dbf0; color: #59418b; }
@@ -98,6 +120,7 @@
   .departments-page { padding: 0 18px 60px; }.departments-breadcrumb { padding: 18px 0; }.departments-hero h1 { font-size: clamp(38px, 9vw, 49px); }.departments-lead { font-size: 15px; }.departments-hero-stats { padding: 13px; }.departments-hero-stats strong { font-size: 25px; }
   .departments-section-heading { align-items: flex-start; flex-direction: column; gap: 6px; }.departments-section-heading p { font-size: 13px; }.departments-tools { align-items: flex-start; flex-direction: column; gap: 9px; }.departments-search { width: 100%; }.departments-filters { flex-wrap: nowrap; overflow-x: auto; margin-bottom: 24px; padding-bottom: 5px; }.departments-filters button { flex: none; }.departments-group { padding: 18px; }.departments-group-heading { flex-wrap: wrap; }.departments-group-count { margin-left: auto; }.departments-card-grid { grid-template-columns: 1fr; }.departments-card { min-height: 0; }.departments-card > span:nth-child(2) { -webkit-line-clamp: 3; }.departments-next { align-items: stretch; flex-direction: column; padding: 22px; }.departments-next a { align-self: flex-start; }
   .department-detail-hero h1 { font-size: 42px; }.department-detail-lead { font-size: 16px; }.department-detail-actions { align-items: stretch; flex-direction: column; }.department-detail-actions a { width: 100%; }.department-detail-section { padding-bottom: 39px; margin-bottom: 39px; }.department-detail-next-grid { grid-template-columns: 1fr; }.department-detail-check { padding: 19px; }.department-detail-related > div:last-child { grid-template-columns: 1fr; }
+  .department-detail-focus { padding: 18px; }.department-detail-focus > div { grid-template-columns: 1fr; }.department-detail-focus p { padding: 14px; }
   .department-detail-fit { padding: 22px 18px; }
   .department-detail-fit-intro { gap: 12px; }
   .department-detail-fit-icon { width: 42px; height: 42px; }
