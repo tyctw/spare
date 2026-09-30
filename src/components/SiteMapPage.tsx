@@ -1,6 +1,6 @@
 import PageBreadcrumb from './PageBreadcrumb';
 import React, { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, Crown, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, MapPin, Megaphone, Search, Shield, Sparkles, Target, UserRound } from 'lucide-react';
+import { ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, Crown, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, MapPin, Megaphone, Search, Shield, Sparkles, Target, UserRound } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import './site-map-page.css';
 
@@ -81,6 +81,17 @@ const categories: Category[] = [
   ] },
 ];
 
+const categoryNavigation = [
+  { icon: Compass, hint: '查成績、看等級、開始分析' },
+  { icon: GraduationCap, hint: '找學校、認識科別與興趣方向' },
+  { icon: Target, hint: '比較條件、排志願、掌握日期' },
+  { icon: Crown, hint: '會員資格、資料管理與公告' },
+  { icon: MapPin, hint: '前往各就學區的分析專頁' },
+  { icon: Calculator, hint: '了解積分換算與超額比序' },
+  { icon: BookOpen, hint: '操作說明、名詞與網站政策' },
+  { icon: ExternalLink, hint: '序位查詢與錄取分享平台' },
+];
+
 const quickLinks = categories.slice(0, 3).flatMap((category) => category.items).filter((item) => ['開始落點分析', '搜尋學校與科別', '模擬志願序'].includes(item.title));
 
 const searchAliases: Record<string, string> = {
@@ -151,7 +162,18 @@ export default function SiteMapPage() {
     <section className="site-map-search-panel" aria-label="搜尋網站功能"><label htmlFor="site-map-search">想找什麼功能？</label><div className="site-map-search-row"><Search size={20} aria-hidden="true" /><input id="site-map-search" type="search" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="輸入功能或關鍵字，例如：五專、志願、會員" autoComplete="off" />{isSearching && <button type="button" onClick={() => setSearchTerm('')}>清除</button>}</div><p role="status" aria-live="polite">{isSearching ? `找到 ${count} 個相關頁面` : '也可以從下方分類直接瀏覽全部功能。'}</p></section>
 
     {!isSearching && <><section className="site-map-quick" aria-labelledby="site-map-quick-heading"><div className="site-map-section-intro"><span>常用入口</span><h2 id="site-map-quick-heading">先從這裡開始</h2></div><div className="site-map-quick-grid">{quickLinks.map((item, index) => { const Icon = item.icon; return <a className="site-map-quick-link" key={item.title} href={withBasePath(item.href)}><span className="site-map-quick-number">0{index + 1}</span><Icon size={23} aria-hidden="true" /><strong>{item.title}</strong><span>{item.desc}</span><ArrowRight className="site-map-quick-arrow" size={18} aria-hidden="true" /></a>; })}</div></section>
-    <nav className="site-map-index" aria-label="跳到網站分類"><span>依分類瀏覽</span><div>{categories.map((category, index) => <a key={category.title} href={`#site-map-category-${index}`}>{category.title}<small>{category.items.length}</small></a>)}</div></nav></>}
+    <nav className="site-map-index" aria-labelledby="site-map-index-title">
+      <div className="site-map-index-heading"><div><h2 id="site-map-index-title">依分類瀏覽</h2><p>選擇你想做的事，直接跳到相關頁面。</p></div><span>{categories.length} 個分類</span></div>
+      <div className="site-map-index-grid">{categories.map((category, index) => {
+        const { icon: Icon, hint } = categoryNavigation[index];
+        return <a key={category.title} href={`#site-map-category-${index}`} className="site-map-index-link">
+          <span className="site-map-index-icon"><Icon size={21} aria-hidden="true" /></span>
+          <span className="site-map-index-copy"><strong>{category.title}</strong><small>{hint}</small></span>
+          <span className="site-map-index-count">{category.items.length}<small>{index === 7 ? '個資源' : '個頁面'}</small></span>
+          <ArrowRight size={17} aria-hidden="true" className="site-map-index-arrow" />
+        </a>;
+      })}</div>
+    </nav></>}
 
     <div className="site-map-categories">{filtered.length === 0 ? <div className="site-map-empty"><Search size={27} aria-hidden="true" /><h2>找不到相關功能</h2><p>試著用較短的關鍵字，或清除搜尋查看完整網站地圖。</p><button type="button" onClick={() => setSearchTerm('')}>查看全部頁面</button></div> : filtered.map((category) => {
       const categoryIndex = categories.findIndex((item) => item.title === category.title);

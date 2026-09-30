@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
-  BadgeCheck,
   CircleUserRound,
   HeartHandshake,
   Crown,
@@ -13,7 +12,6 @@ import {
   ShieldCheck,
   Sparkles,
   Trash2,
-  Clock,
   RotateCcw,
   History,
 } from 'lucide-react';
@@ -28,6 +26,7 @@ import {
 import { withBasePath } from '../lib/routes';
 import PageBreadcrumb from './PageBreadcrumb';
 import './membership.css';
+import './membership-account-page.css';
 
 type AccountState = 'loading' | 'ready' | 'error';
 type MembershipPurchase = {
@@ -41,7 +40,7 @@ type MembershipPurchase = {
 };
 
 const formatDate = (value?: string) => value
-  ? new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long' }).format(new Date(value))
+  ? new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long', timeZone: 'Asia/Taipei' }).format(new Date(value))
   : '—';
 
 export default function MembershipAccountPage() {
@@ -58,6 +57,40 @@ export default function MembershipAccountPage() {
   const [emailError, setEmailError] = useState('');
   const [emailSaving, setEmailSaving] = useState(false);
   const [emailEditMode, setEmailEditMode] = useState(false);
+  const deleteDialogRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!deleteDialogOpen) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && deleteDialogRef.current?.querySelector('button:not(:disabled)')) {
+        setDeleteDialogOpen(false);
+      }
+      if (event.key !== 'Tab') return;
+      const buttons = deleteDialogRef.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)');
+      if (!buttons?.length) {
+        event.preventDefault();
+        return;
+      }
+      const first = buttons[0];
+      const last = buttons[buttons.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+      previousFocus?.focus();
+    };
+  }, [deleteDialogOpen]);
 
   const refresh = async () => {
     setErrorMessage('');
@@ -128,6 +161,7 @@ export default function MembershipAccountPage() {
 
   const loginWithLine = () => {
     if (!import.meta.env.VITE_SUPABASE_URL) {
+      setErrorMessage('目前登入服務尚未設定，請稍後再試或聯絡 tyctw.analyze@gmail.com。');
       setState('error');
       return;
     }
@@ -174,364 +208,28 @@ export default function MembershipAccountPage() {
   };
 
   const planName = membership.plan === 'yearly' ? '年費會員' : '月費會員';
-  const remainingDays = membership.expiresAt
-    ? Math.max(0, Math.ceil((new Date(membership.expiresAt).getTime() - Date.now()) / 86_400_000))
-    : 0;
+  const remainingDays = membership.expiresAt ? Math.max(0, Math.ceil((new Date(membership.expiresAt).getTime() - Date.now()) / 86_400_000)) : 0;
+  const signedIn = Boolean(lineName) || membership.active;
 
-  return (
-    <main id="main-content" aria-labelledby="member-account-title" className="membership-page member-account-page min-h-screen overflow-hidden px-4 pb-6 text-slate-900 sm:px-6 sm:pb-10">
-      <section className="relative mx-auto max-w-6xl">
-        <PageBreadcrumb title="我的會員帳號" parent={{ label: '會員方案', href: '/membership' }} />
-
-        <header className="member-account-hero account-hero relative overflow-hidden rounded-[2rem] px-6 py-8 sm:px-10 sm:py-10">
-          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 h-72 w-72 rounded-full border border-[#a18bb34d]" />
-          <div className="relative flex items-center justify-between gap-6">
-            <div className="min-w-0">
-              <span className="account-hero-kicker"><Crown aria-hidden="true" className="h-4 w-4" />會員中心</span>
-              <h1 id="member-account-title" className="mt-5 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">我的會員帳號</h1>
-              <p className="member-account-description mt-4 max-w-xl text-sm leading-7 sm:text-base">{lineName ? `${lineName}，` : ''}資格、購買紀錄與 LINE 帳號資料，都可以在這裡查看與管理。</p>
-            </div>
-            <div aria-hidden="true" className="account-hero-mark hidden sm:grid"><CircleUserRound className="h-14 w-14" strokeWidth={1.5} /></div>
-          </div>
-          {state === 'ready' && <div className="account-hero-status"><BadgeCheck aria-hidden="true" className="h-4 w-4" />{membership.active ? `${planName}有效 · 至 ${formatDate(membership.expiresAt)}` : lineName ? 'LINE 已登入 · 尚未啟用會員' : '尚未登入 LINE'}</div>}
-        </header>
-
-        <section className="account-shortcuts" aria-labelledby="account-shortcuts-title">
-          <h2 id="account-shortcuts-title">快速前往</h2>
-          <nav className="member-account-nav" aria-label="會員常用功能">
-            <a href={withBasePath('/')}><Sparkles className="h-5 w-5 shrink-0" /><span>開始落點分析</span><ArrowRight className="ml-auto hidden h-4 w-4 sm:block" /></a>
-            <a href={withBasePath('/score-records')}><History className="h-5 w-5 shrink-0" /><span>我的成績紀錄</span><ArrowRight className="ml-auto hidden h-4 w-4 sm:block" /></a>
-            <a href={withBasePath('/privacy-center')}><ShieldCheck className="h-5 w-5 shrink-0" /><span>個資與分享管理</span><ArrowRight className="ml-auto hidden h-4 w-4 sm:block" /></a>
-          </nav>
-        </section>
-
-        {state === 'loading' ? (
-          <div role="status" aria-live="polite" aria-busy="true" className="mt-5 rounded-2xl border-2 border-slate-900 bg-white p-8 text-center font-bold shadow-[3px_3px_0_#161b35]">正在確認會員資格…</div>
-        ) : state === 'error' ? (
-          <div role="alert" className="mt-5 rounded-2xl border border-rose-700 bg-rose-50 p-6 text-center shadow-[3px_3px_0_#161b35]">
-            <p className="font-bold text-rose-800">暫時無法確認帳號狀態</p>
-            {errorMessage && <p className="mt-1 text-xs font-bold text-rose-600">{errorMessage}</p>}
-            <button
-              type="button"
-              onClick={() => { setState('loading'); void refresh().catch((err) => { setErrorMessage(err instanceof Error ? err.message : ''); setState('error'); }); }}
-              className="mt-4 rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-bold"
-            >
-              重新整理
-            </button>
-          </div>
-        ) : (
-          <>
-          <div className="account-main-grid mt-7 grid gap-6 lg:grid-cols-[1.35fr_1fr] lg:items-start">
-            <div className="flex flex-col gap-6">
-            <article className="member-surface account-panel account-membership-panel shrink-0 overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-white shadow-[3px_3px_0_#161b35]">
-              <div className="account-panel-heading p-6 sm:p-7">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="account-panel-icon">
-                      {membership.active ? <BadgeCheck className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}
-                    </div>
-                    <div>
-                      <p className="account-panel-eyebrow">會員資格</p>
-                      <h2 className="mt-0.5 text-lg font-bold text-slate-900">{membership.active ? '會員權益使用中' : '尚未啟用會員'}</h2>
-                    </div>
-                  </div>
-                  {membership.active && <span className="account-valid-badge">資格有效</span>}
-                </div>
-              </div>
-
-              <div className="p-6 sm:p-7">
-                {membership.active ? <>
-                  <p className="account-section-intro">你的會員已啟用。使用期間不顯示網站的 Google 廣告與 Offerwall，也不需重複輸入分析授權碼。</p>
-                  <div className="account-plan-stats mt-5 grid gap-4 sm:grid-cols-2">
-                    <div className="min-w-0 p-4 sm:p-5">
-                      <p>目前方案</p>
-                      <strong>{planName}</strong>
-                    </div>
-                    <div className="min-w-0 p-4 sm:p-5">
-                      <p>免廣告有效期限</p>
-                      <strong>{formatDate(membership.expiresAt)}</strong>
-                      <small>剩餘 {remainingDays} 天</small>
-                    </div>
-                  </div>
-                  {/* Email display / edit section */}
-                  {emailEditMode ? (
-                    <div className="account-email mt-5 rounded-2xl p-4">
-                      <p className="account-email-label">聯絡信箱</p>
-                      <div className="mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3">
-                        <label htmlFor="account-email" className="sr-only">電子信箱</label>
-                        <input
-                          id="account-email"
-                          type="email"
-                          inputMode="email"
-                          autoComplete="email"
-                          placeholder="your@email.com"
-                          value={emailInput}
-                          onChange={(e) => { setEmailInput(e.target.value); setEmailError(''); }}
-                          className={`min-w-0 w-full flex-1 rounded-xl border bg-white px-3 py-2 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-sky-400 ${emailError ? 'border-red-400' : 'border-sky-200'}`}
-                        />
-                        <div className="flex gap-2 sm:shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => void saveEmail()}
-                            disabled={emailSaving}
-                            className="account-email-save flex-1 sm:flex-none rounded-xl px-4 py-2 text-sm font-bold transition disabled:opacity-50"
-                          >
-                            {emailSaving ? '儲存中…' : '儲存'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => { setEmailEditMode(false); setEmailInput(''); setEmailError(''); }}
-                            disabled={emailSaving}
-                            className="flex-1 sm:flex-none rounded-xl border-2 border-slate-900 bg-white px-4 py-2 text-sm font-bold text-slate-500 transition hover:border-slate-400"
-                          >
-                            取消
-                          </button>
-                        </div>
-                      </div>
-                      {emailError && <p role="alert" className="mt-1.5 text-xs font-bold text-red-600">{emailError}</p>}
-                    </div>
-                  ) : membership.contactEmail ? (
-                    <div className="account-email mt-5 flex items-center justify-between gap-3 rounded-2xl px-4 py-3">
-                      <div className="min-w-0">
-                        <p className="account-email-label">聯絡信箱</p>
-                        <p className="mt-0.5 break-all text-sm font-bold text-[#332d50]">{membership.contactEmail}</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => { setEmailEditMode(true); setEmailInput(membership.contactEmail ?? ''); }}
-                        className="shrink-0 rounded-lg border border-[#d8c9e8] bg-white px-2.5 py-1 text-xs font-bold text-[#5b4784] transition hover:border-[#9e8ac3]"
-                      >
-                        編輯
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => { setEmailEditMode(true); setEmailInput(''); }}
-                      className="account-email-add mt-5 flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition"
-                    >
-                      <Mail className="h-4 w-4" />
-                      新增聯絡信箱
-                    </button>
-                  )}
-                  <a href={withBasePath('/membership')} className="account-text-link">查看完整會員權益<ArrowRight className="h-4 w-4" /></a>
-                </> : <>
-                  <p className="account-section-intro">{lineName ? '這個 LINE 帳號尚未啟用會員。選擇方案後，就能直接開始落點分析。' : '先登入 LINE 查詢既有資格；如果還沒有會員，也可以選擇方案啟用。'}</p>
-                  <div className="account-upgrade-benefits">
-                    <div><Ban className="h-5 w-5" /><span>免廣告與 Offerwall</span></div>
-                    <div><Infinity className="h-5 w-5" /><span>無限次落點分析</span></div>
-                  </div>
-                  <a href={withBasePath('/membership')} className="account-upgrade-button"><Sparkles className="h-5 w-5" />查看方案與價格<ArrowRight className="h-4 w-4" /></a>
-                </>}
-              </div>
-            </article>
-
-            <section className="account-panel account-history-panel overflow-hidden rounded-[1.75rem] bg-white">
-              <div className="account-panel-heading flex items-center justify-between gap-4 px-5 py-4">
-                <div className="flex items-center gap-3"><div className="account-panel-icon"><ReceiptText className="h-4 w-4" /></div><div><p className="account-panel-eyebrow">付款與訂單</p><h2 className="mt-0.5 text-lg font-bold">購買紀錄</h2></div></div>
-                <span className="account-history-count">最近 20 筆</span>
-              </div>
-              {purchases.length ? <div className="space-y-4 p-4 sm:p-5">
-                {(isHistoryExpanded ? purchases : purchases.slice(0, 1)).map((purchase) => {
-                  const paid = purchase.status === 'paid';
-                  const statusLabel = purchase.status === 'paid' ? '已付款' : purchase.status === 'pending' ? '處理中' : purchase.status === 'refunded' ? '已退款' : '未完成';
-                  return (
-                    <div key={`${purchase.reference}-${purchase.createdAt}`} className="account-purchase group relative overflow-hidden rounded-2xl bg-white p-4 transition-all sm:p-5">
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3 sm:gap-4">
-                          <div className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl border ${paid ? 'border-emerald-200 bg-emerald-50 text-emerald-600' : purchase.status === 'refunded' ? 'border-amber-200 bg-amber-50 text-amber-600' : 'border-slate-200 bg-slate-100 text-slate-500'}`}>
-                            {paid ? <BadgeCheck className="h-5 w-5 sm:h-6 sm:w-6" /> : purchase.status === 'refunded' ? <RotateCcw className="h-5 w-5 sm:h-6 sm:w-6" /> : <Clock className="h-5 w-5 sm:h-6 sm:w-6" />}
-                          </div>
-                          <div>
-                            <p className="text-sm sm:text-base font-bold text-slate-900">{purchase.plan === 'yearly' ? '年費會員方案' : '月費會員方案'}</p>
-                            <p className="mt-0.5 text-xs sm:text-sm font-bold text-emerald-700">NT$ {purchase.amount}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <span className={`inline-flex items-center justify-center rounded-full border px-2.5 py-1 text-[11px] sm:text-xs font-bold ${paid ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : purchase.status === 'refunded' ? 'border-amber-200 bg-amber-50 text-amber-700' : 'border-slate-200 bg-slate-50 text-slate-600'}`}>{statusLabel}</span>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 grid grid-cols-1 gap-3 rounded-xl border border-slate-100 bg-slate-50 p-3.5 text-xs font-bold text-slate-600 sm:grid-cols-2">
-                        <div>
-                          <p className="mb-1 text-[10px] uppercase tracking-wider text-slate-400">訂單編號</p>
-                          <p className="select-all break-all font-bold text-slate-700">{purchase.reference}</p>
-                        </div>
-                        {paid ? (
-                          <div>
-                            <p className="mb-1 text-[10px] uppercase tracking-wider text-slate-400">付款與效期</p>
-                            <p className="text-slate-700">{formatDate(purchase.paidAt)} <span className="mx-1 text-slate-300">~</span> {formatDate(purchase.expiresAt)}</p>
-                          </div>
-                        ) : (
-                          <div>
-                            <p className="mb-1 text-[10px] uppercase tracking-wider text-slate-400">建立日期</p>
-                            <p className="text-slate-700">{formatDate(purchase.createdAt)}</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-                {purchases.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-300 py-3.5 text-xs font-bold text-slate-600 transition hover:border-slate-400 hover:bg-slate-100"
-                  >
-                    {isHistoryExpanded ? '收起歷史紀錄' : `展開其餘 ${purchases.length - 1} 筆紀錄`}
-                  </button>
-                )}
-              </div> : <div className="px-5 py-8 text-center text-sm font-bold text-slate-500">{lineName ? '目前還沒有購買紀錄，選擇方案後即可在這裡追蹤訂單。' : '登入 LINE 後，這裡會顯示你的會員購買紀錄。'}</div>}
-            </section>
-            </div>
-
-            <div className="flex flex-col gap-6">
-              <aside className="account-panel account-security-panel overflow-hidden rounded-[2rem] bg-white">
-            <div className="account-panel-heading p-6 sm:p-7">
-              <div className="flex items-center gap-3">
-                <div className="account-panel-icon">
-                  <ShieldCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="account-panel-eyebrow">帳號與安全</p>
-                  <h2 className="mt-0.5 text-lg font-bold text-slate-900">LINE 身分確認</h2>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 sm:p-7">
-              <div className="flex flex-col gap-4">
-                <div className="account-line-identity flex items-center gap-4 rounded-2xl p-4">
-                  <div className="account-line-avatar flex h-12 w-12 shrink-0 items-center justify-center rounded-full">
-                    <CircleUserRound className="h-6 w-6" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-slate-400">登入帳號</p>
-                    <p className="mt-1 break-words text-xl font-bold text-slate-900">{lineName || '尚未登入 LINE'}</p>
-                  </div>
-                </div>
-
-                <p className="account-security-note rounded-xl px-4 py-3 text-xs font-medium leading-relaxed">
-                  LINE 僅用於確認與恢復會員資格。登入狀態有效 24 小時；登出後，此裝置會立刻恢復一般使用者顯示。
-                </p>
-
-
-
-                {lineName ? (
-                  <button type="button" onClick={() => void logout()} className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-4 py-3.5 text-sm font-bold text-slate-700 transition hover:border-stone-200 hover:shadow-[5px_5px_0_#161b35]">
-                    <LogOut className="h-4 w-4 text-slate-400" />
-                    登出 LINE
-                  </button>
-                ) : (
-                  <button type="button" onClick={loginWithLine} className="member-line-button"><img src={withBasePath('/brand/line/line-login.png')} width={44} height={44} alt="" aria-hidden="true" /><span>使用 LINE 登入</span></button>
-                )}
-              </div>
-
-              {lineName && (
-                <div className="mt-8 border-t border-dashed border-rose-100 pt-6">
-                  <div className="flex items-center gap-2">
-                    <Trash2 className="h-4 w-4 text-rose-500" />
-                    <h3 className="text-sm font-bold text-rose-700">帳號刪除</h3>
-                  </div>
-                  <p className="mt-2 text-xs font-medium leading-relaxed text-slate-500">
-                    刪除後會移除 LINE 身分連結與此裝置登入狀態；付款交易紀錄會依法保留，但不再與你的 LINE 帳號連結。
-                  </p>
-
-                  {membership.active ? (
-                     <div className="mt-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5">
-                       <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-                       <p className="text-xs font-medium leading-relaxed text-amber-800">免廣告資格仍有效，請於到期後再刪除帳號。</p>
-                     </div>
-                  ) : (
-                    <button type="button" onClick={() => setDeleteDialogOpen(true)} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700 transition hover:border-rose-900 hover:bg-rose-100 hover:text-rose-900">
-                      刪除帳號
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {accountNotice && <p role="status" aria-live="polite" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium leading-5 text-emerald-800">{accountNotice}</p>}
-            </div>
-          </aside>
-
-            </div>
-          </div>
-
-          <section className="account-support-grid mx-auto mt-8 grid gap-5 md:grid-cols-2" aria-label="會員協助與交易保障">
-            <div className="account-support-card p-5 sm:p-8">
-              <div className="flex items-start gap-4">
-                <div className="account-support-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl">
-                  <Mail className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="account-panel-eyebrow">
-                    需要協助嗎
-                  </p>
-                  <h2 className="mt-1 text-xl font-bold sm:text-2xl">
-                    會員協助與交易保障
-                  </h2>
-                  <p className="mt-2 max-w-xl text-sm font-normal leading-6 text-slate-600">
-                    需要協助時，我們在這裡。付款、資格確認或使用上的問題，都可以直接來信聯絡。
-                  </p>
-                </div>
-              </div>
-              <a
-                href="mailto:tyctw.analyze@gmail.com?subject=%E6%9C%83%E5%93%A1%E5%85%8D%E5%BB%A3%E5%91%8A%E5%8D%94%E5%8A%A9"
-                className="account-support-link mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-sm font-bold transition sm:w-auto"
-              >
-                <Mail className="h-4 w-4" />
-                tyctw.analyze@gmail.com
-              </a>
-            </div>
-            <div className="account-support-card p-5 sm:p-8">
-              <p className="account-panel-eyebrow">
-                交易保障
-              </p>
-              <h3 className="mt-1 text-lg font-bold text-slate-800 sm:text-xl">
-                售後與退款說明
-              </h3>
-              <p className="mt-2 text-sm font-normal leading-6 text-slate-600">
-                查看付款異常、取消申請、退款方式與交易爭議的處理原則。
-              </p>
-              <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3">
-                <a
-                  href={withBasePath("/after-sales-service")}
-                  className="account-policy-link group flex flex-col items-center justify-center gap-1.5 rounded-xl bg-white p-2.5 text-center transition sm:flex-row sm:justify-between sm:gap-3 sm:px-4 sm:py-3.5"
-                >
-                  <span className="flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2">
-                    <HeartHandshake className="h-5 w-5 shrink-0 text-[#6e55a1] sm:h-4 sm:w-4" />
-                    <span className="text-xs font-bold text-slate-800 sm:text-sm">售後服務</span>
-                  </span>
-                  <ArrowRight className="hidden h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900 sm:block" />
-                </a>
-                <a
-                  href={withBasePath("/refund-cancellation-policy")}
-                  className="account-policy-link group flex flex-col items-center justify-center gap-1.5 rounded-xl bg-white p-2.5 text-center transition sm:flex-row sm:justify-between sm:gap-3 sm:px-4 sm:py-3.5"
-                >
-                  <span className="flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2">
-                    <ReceiptText className="h-5 w-5 shrink-0 text-[#6e55a1] sm:h-4 sm:w-4" />
-                    <span className="leading-tight text-xs font-bold text-slate-800 sm:text-sm">退款與取消</span>
-                  </span>
-                  <ArrowRight className="hidden h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-900 sm:block" />
-                </a>
-              </div>
-            </div>
-          </section>
-          </>
-        )}
-      </section>
-      {deleteDialogOpen && <div role="presentation" className="fixed inset-0 z-50 grid place-items-center bg-slate-950/45 p-4">
-        <section role="dialog" aria-modal="true" aria-labelledby="delete-account-title" aria-describedby="delete-account-description" className="w-full max-w-md rounded-[1.75rem] border-2 border-slate-900 bg-white p-6 shadow-[3px_3px_0_#161b35] sm:p-7">
-          <div className="grid h-11 w-11 place-items-center rounded-xl border border-rose-800 bg-rose-100 text-rose-800"><Trash2 className="h-5 w-5" /></div>
-          <h2 id="delete-account-title" className="mt-4 text-2xl font-bold">確認刪除帳號？</h2>
-          <p id="delete-account-description" className="mt-2 text-sm font-medium leading-6 text-slate-600">這會移除你的成績紀錄、名下分享報告與協作紀錄，所有相關分享連結將失效，並登出目前帳號。交易紀錄會保留作為必要的付款與帳務資料，但不再與你的 LINE 帳號連結。</p>
-          <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium leading-5 text-amber-800">此操作無法復原；日後如需使用會員服務，需重新登入並重新購買方案。</p>
-          <div className="mt-6 grid gap-2 sm:gap-3 grid-cols-2">
-            <button type="button" onClick={() => void deleteAccount()} disabled={deletingAccount} className="rounded-xl border border-rose-800 bg-rose-700 p-2.5 sm:px-4 sm:py-3 text-sm sm:text-base font-bold text-white shadow-[3px_3px_0_#161b35] transition hover:bg-rose-800 disabled:cursor-not-allowed disabled:opacity-50">{deletingAccount ? '刪除中...' : '確定刪除'}</button>
-            <button type="button" onClick={() => setDeleteDialogOpen(false)} disabled={deletingAccount} className="rounded-xl border-2 border-slate-900 bg-white p-2.5 sm:px-4 sm:py-3 text-sm sm:text-base font-bold transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">保留帳號</button>
-          </div>
+  return <main aria-labelledby="member-account-title" className="account-center"><div className="account-center-shell">
+    <PageBreadcrumb title="我的會員帳號" parent={{ label: '會員方案', href: '/membership' }} />
+    <header className="account-center-hero"><div><p className="account-center-eyebrow"><CircleUserRound size={17} aria-hidden="true" />會員中心</p><h1 id="member-account-title">我的會員帳號</h1><p className="account-center-lead">{signedIn ? `${lineName || 'LINE 會員'}，在這裡查看會員資格、付款紀錄與帳號資料。` : '登入後，集中查看你的會員資格、付款紀錄與帳號資料。'}</p></div><div className="account-center-hero-status" data-active={membership.active}><span className="account-center-status-dot" /><div><small>目前狀態</small><strong>{state === 'loading' ? '正在確認帳號' : state === 'error' ? '需要重新確認' : membership.active ? '會員資格有效' : signedIn ? '已登入 · 尚未啟用會員' : '尚未登入'}</strong>{membership.active && <span>有效至 {formatDate(membership.expiresAt)}</span>}</div></div></header>
+    {state === 'loading' ? <section className="account-center-feedback" role="status" aria-live="polite" aria-busy="true"><RotateCcw size={24} aria-hidden="true" /><h2>正在確認會員資格</h2><p>正在讀取帳號與付款紀錄，請稍候。</p></section>
+    : state === 'error' ? <section className="account-center-feedback account-center-error" role="alert"><ShieldCheck size={26} aria-hidden="true" /><h2>暫時無法確認帳號狀態</h2><p>{errorMessage || '請重新整理；若仍無法確認，可重新使用 LINE 登入。'}</p><div className="account-center-form-actions"><button type="button" className="account-center-primary" onClick={() => { setState('loading'); void refresh().catch((err) => { setErrorMessage(err instanceof Error ? err.message : ''); setState('error'); }); }}>重新整理</button><button type="button" className="account-center-secondary" onClick={loginWithLine}>重新登入 LINE</button></div></section>
+    : <>
+      {!signedIn ? <section className="account-center-guest"><div className="account-center-guest-copy"><span className="account-center-guest-icon"><CircleUserRound size={31} aria-hidden="true" /></span><h2>先登入，找回你的會員資料。</h2><p>使用購買方案時的 LINE 帳號，確認既有資格並查看訂單。尚未加入會員，也可以先了解方案。</p><button type="button" onClick={loginWithLine} className="account-center-line"><img src={withBasePath('/brand/line/line-login.png')} width={44} height={44} alt="" aria-hidden="true" /><span>使用 LINE 登入</span><ArrowRight size={18} aria-hidden="true" /></button><a className="account-center-text-link" href={withBasePath('/membership')}>了解會員方案<ArrowRight size={16} aria-hidden="true" /></a></div><div className="account-center-guest-note"><ShieldCheck size={22} aria-hidden="true" /><h3>登入後可以做什麼？</h3><ul><li>確認方案與免廣告有效期限</li><li>查看最近的購買與付款紀錄</li><li>管理帳號、聯絡資料與分享連結</li></ul><p>LINE 登入狀態有效 24 小時；到期後可重新登入確認資格。</p></div></section>
+      : <div className="account-center-main-grid">
+        <section className="account-center-panel account-center-membership"><div className="account-center-panel-title"><span><Crown size={21} aria-hidden="true" /></span><div><p>MEMBERSHIP</p><h2>會員資格</h2></div><span className="account-center-badge" data-active={membership.active}>{membership.active ? '使用中' : '未啟用'}</span></div>{membership.active ? <><div className="account-center-plan"><div><span>目前方案</span><strong>{planName}</strong></div><div><span>有效期限</span><strong>{formatDate(membership.expiresAt)}</strong><small>剩餘 {remainingDays} 天</small></div></div><p className="account-center-panel-description">有效期間不顯示 Google 廣告與 Offerwall，也不需重複輸入分析授權碼。</p><div className="account-center-benefits"><span><Ban size={17} aria-hidden="true" />免廣告體驗</span><span><Infinity size={18} aria-hidden="true" />無限次落點分析</span></div><a className="account-center-text-link" href={withBasePath('/membership')}>查看完整權益<ArrowRight size={16} aria-hidden="true" /></a></> : <><div className="account-center-inactive"><h3>目前尚未啟用會員方案</h3><p>你已完成 LINE 登入。可查看會員方案，選擇適合的免廣告使用期間。</p></div><div className="account-center-benefits"><span><Ban size={17} aria-hidden="true" />免廣告與 Offerwall</span><span><Infinity size={18} aria-hidden="true" />無限次落點分析</span></div><a className="account-center-primary" href={withBasePath('/membership')}>查看方案與價格<ArrowRight size={17} aria-hidden="true" /></a></>}</section>
+        <section className="account-center-panel"><div className="account-center-panel-title"><span><ShieldCheck size={21} aria-hidden="true" /></span><div><p>ACCOUNT</p><h2>帳號與聯絡資料</h2></div></div><div className="account-center-identity"><span><CircleUserRound size={25} aria-hidden="true" /></span><div><small>登入的 LINE 帳號</small><strong>{lineName || 'LINE 會員'}</strong></div><span className="account-center-connected">已登入</span></div>
+          {membership.active && <div className="account-center-email"><div className="account-center-subheading"><Mail size={18} aria-hidden="true" /><h3>聯絡信箱</h3></div><p>用於會員服務聯繫與付款協助。</p>{emailEditMode ? <form onSubmit={(event) => { event.preventDefault(); void saveEmail(); }}><label htmlFor="account-email">電子信箱</label><input id="account-email" type="email" inputMode="email" autoComplete="email" required placeholder="your@email.com" value={emailInput} onChange={(event) => { setEmailInput(event.target.value); setEmailError(''); }} aria-invalid={Boolean(emailError)} aria-describedby={emailError ? 'account-email-error' : undefined} disabled={emailSaving} />{emailError && <p id="account-email-error" role="alert" className="account-center-field-error">{emailError}</p>}<div className="account-center-form-actions"><button type="submit" className="account-center-primary" disabled={emailSaving}>{emailSaving ? '儲存中…' : '儲存信箱'}</button><button type="button" className="account-center-secondary" disabled={emailSaving} onClick={() => { setEmailEditMode(false); setEmailInput(''); setEmailError(''); }}>取消</button></div></form> : <div className="account-center-email-value"><strong>{membership.contactEmail || '尚未設定聯絡信箱'}</strong><button type="button" className="account-center-secondary" onClick={() => { setEmailEditMode(true); setEmailInput(membership.contactEmail ?? ''); }}>{membership.contactEmail ? '編輯' : '新增信箱'}</button></div>}</div>}
+          <p className="account-center-session-note">登入狀態有效 24 小時。登出後，此裝置會恢復一般使用者顯示。</p><button type="button" className="account-center-secondary account-center-logout" onClick={() => void logout()}><LogOut size={16} aria-hidden="true" />登出 LINE</button>
         </section>
       </div>}
-    </main>
-  );
+      <section className="account-center-tools" aria-labelledby="account-tools-title"><div className="account-center-section-heading"><p>CONTINUE EXPLORING</p><h2 id="account-tools-title">接著使用你的升學工具</h2></div><nav aria-label="會員常用功能"><a href={withBasePath('/')}><Sparkles size={21} aria-hidden="true" /><div><strong>開始落點分析</strong><span>用成績探索候選校科</span></div><ArrowRight size={17} aria-hidden="true" /></a><a href={withBasePath('/score-records')}><History size={21} aria-hidden="true" /><div><strong>我的成績紀錄</strong><span>保存與比較考試成績</span></div><ArrowRight size={17} aria-hidden="true" /></a><a href={withBasePath('/privacy-center')}><ShieldCheck size={21} aria-hidden="true" /><div><strong>個資與分享管理</strong><span>查看或撤銷分享連結</span></div><ArrowRight size={17} aria-hidden="true" /></a></nav></section>
+      {signedIn && <section className="account-center-panel account-center-history"><div className="account-center-panel-title"><span><ReceiptText size={21} aria-hidden="true" /></span><div><p>ORDERS</p><h2>購買紀錄</h2></div><small>最近 20 筆</small></div>{purchases.length ? <><div className="account-center-orders">{(isHistoryExpanded ? purchases : purchases.slice(0, 1)).map((purchase) => { const label = purchase.status === 'paid' ? '已付款' : purchase.status === 'pending' ? '處理中' : purchase.status === 'refunded' ? '已退款' : '未完成'; return <article className="account-center-order" key={`${purchase.reference}-${purchase.createdAt}`}><div className="account-center-order-top"><div><h3>{purchase.plan === 'yearly' ? '年費會員方案' : '月費會員方案'}</h3><p>NT$ {purchase.amount.toLocaleString('zh-TW')}</p></div><span className="account-center-order-status" data-status={purchase.status}>{label}</span></div><dl><div><dt>訂單編號</dt><dd>{purchase.reference}</dd></div><div><dt>{purchase.status === 'paid' ? '付款日期' : '建立日期'}</dt><dd>{formatDate(purchase.status === 'paid' ? purchase.paidAt : purchase.createdAt)}</dd></div>{purchase.status === 'paid' && <div><dt>方案有效至</dt><dd>{formatDate(purchase.expiresAt)}</dd></div>}</dl></article>; })}</div>{purchases.length > 1 && <button type="button" className="account-center-history-toggle" aria-expanded={isHistoryExpanded} onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}>{isHistoryExpanded ? '收起歷史紀錄' : `查看其餘 ${purchases.length - 1} 筆紀錄`}</button>}</> : <div className="account-center-empty"><ReceiptText size={27} aria-hidden="true" /><h3>目前沒有購買紀錄</h3><p>完成購買後，可以在這裡確認訂單與付款狀態。</p></div>}</section>}
+      <section className="account-center-support" aria-label="會員協助"><div><Mail size={24} aria-hidden="true" /><h2>會員或付款需要協助？</h2><p>請提供訂單編號與問題描述，方便我們確認。</p><a className="account-center-text-link" href="mailto:tyctw.analyze@gmail.com?subject=%E6%9C%83%E5%93%A1%E5%8D%94%E5%8A%A9">tyctw.analyze@gmail.com<ArrowRight size={16} aria-hidden="true" /></a></div><nav aria-label="交易與服務說明"><a href={withBasePath('/after-sales-service')}><HeartHandshake size={19} aria-hidden="true" /><span>售後服務</span><ArrowRight size={16} aria-hidden="true" /></a><a href={withBasePath('/refund-cancellation-policy')}><ReceiptText size={19} aria-hidden="true" /><span>退款與取消說明</span><ArrowRight size={16} aria-hidden="true" /></a></nav></section>
+      {signedIn && <details className="account-center-danger"><summary><Trash2 size={17} aria-hidden="true" />帳號刪除</summary><div><p>刪除後會移除成績紀錄、名下分享報告與協作紀錄，相關分享連結將失效。交易紀錄會依法保留，但不再與 LINE 帳號連結。</p>{membership.active ? <p className="account-center-danger-note">會員資格仍有效，請於到期後再刪除帳號。</p> : <button type="button" className="account-center-delete" onClick={() => setDeleteDialogOpen(true)}>刪除我的帳號</button>}</div></details>}
+      {accountNotice && <p role="status" aria-live="polite" className="account-center-notice">{accountNotice}</p>}
+    </>}
+  </div>{deleteDialogOpen && <div className="account-center-dialog-backdrop"><section ref={deleteDialogRef} role="dialog" aria-modal="true" aria-labelledby="delete-account-title" aria-describedby="delete-account-description" className="account-center-dialog"><Trash2 size={28} aria-hidden="true" /><h2 id="delete-account-title">確認刪除帳號？</h2><p id="delete-account-description">這會移除你的成績紀錄、名下分享報告與協作紀錄，所有相關分享連結將失效，並登出目前帳號。交易紀錄會保留作為必要的付款與帳務資料，但不再與你的 LINE 帳號連結。</p><p className="account-center-danger-note">此操作無法復原；日後如需使用會員服務，需重新登入並重新購買方案。</p><div className="account-center-dialog-actions"><button type="button" className="account-center-secondary" autoFocus onClick={() => setDeleteDialogOpen(false)} disabled={deletingAccount}>保留帳號</button><button type="button" className="account-center-delete" onClick={() => void deleteAccount()} disabled={deletingAccount}>{deletingAccount ? '刪除中…' : '確定刪除'}</button></div></section></div>}</main>;
 }
