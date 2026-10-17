@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Calculator, MapPin, BookOpen, ArrowUpRight, Info } from 'lucide-react';
 import { ALL_REGIONS } from './RegionModal';
 import { withBasePath } from '../lib/routes';
+import './disclaimer-modal.css';
 import './region-scoring-modal.css';
 
 interface Props {
@@ -170,7 +171,6 @@ export default function RegionScoringModal({ isOpen, onClose, selectedRegion }: 
   const dialogRef = React.useRef<HTMLDivElement>(null);
   const closeRef = React.useRef<HTMLButtonElement>(null);
   const titleId = React.useId();
-  const descriptionId = React.useId();
   const rows = scoringData?.examDetail?.map(({ level, score }) => {
     const numbers = score.match(/\d+(?:\.\d+)?/g) || [];
     const pointsFirst = score.includes('點 (積分');
@@ -206,15 +206,18 @@ export default function RegionScoringModal({ isOpen, onClose, selectedRegion }: 
       {isOpen && (
         <div className="score-modal-overlay">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="score-modal-backdrop" onClick={onClose} aria-hidden="true" />
-          <motion.div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descriptionId}
+          <motion.div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={titleId}
             onAnimationComplete={() => { if (isOpen && !dialogRef.current?.contains(document.activeElement)) closeRef.current?.focus(); }}
-            initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: 0.98 }} transition={{ duration: 0.2 }} className="score-modal">
-            <header className="score-modal-header">
-              <div className="score-modal-eyebrow"><span><MapPin size={14} aria-hidden="true" />{regionName}</span><span>入學計分指南</span></div>
-              <button ref={closeRef} type="button" onClick={onClose} className="score-modal-close" aria-label="關閉計分方式"><X size={22} /></button>
-              <h2 id={titleId}>超額比序<span>計分方式</span></h2>
-              <p id={descriptionId}>先看懂會考換算，再掌握志願選填的計分規則。</p>
-              <Calculator className="score-modal-decoration" size={112} strokeWidth={1.2} aria-hidden="true" />
+            initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: 0.98 }} transition={{ duration: 0.2 }} className="disclaimer-dialog score-modal">
+            <header className="disclaimer-header score-modal-header">
+              <div className="disclaimer-heading-row">
+                <span className="disclaimer-icon"><Calculator size={23} aria-hidden="true" /></span>
+                <div className="disclaimer-heading-copy">
+                  <p className="disclaimer-kicker score-modal-eyebrow"><MapPin size={13} aria-hidden="true" />{regionName}・入學計分指南</p>
+                  <h2 id={titleId}>超額比序計分方式</h2>
+                </div>
+                <button ref={closeRef} type="button" onClick={onClose} className="disclaimer-close" aria-label="關閉計分方式"><X size={20} aria-hidden="true" /></button>
+              </div>
             </header>
 
             <div className="score-modal-body custom-scrollbar">
