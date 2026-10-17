@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Calculator, MapPin, Award, ArrowUpRight } from 'lucide-react';
+import { X, Calculator, MapPin, BookOpen, ArrowUpRight, Info } from 'lucide-react';
 import { ALL_REGIONS } from './RegionModal';
 import { withBasePath } from '../lib/routes';
+import './region-scoring-modal.css';
 
 interface Props {
   isOpen: boolean;
@@ -163,113 +164,80 @@ export const REGION_SCORING_DATA: Record<string, {
 };
 
 export default function RegionScoringModal({ isOpen, onClose, selectedRegion }: Props) {
-  const regionName = ALL_REGIONS.find(r => r.id === selectedRegion)?.name || '未知區域';
+  const region = ALL_REGIONS.find(r => r.id === selectedRegion);
+  const regionName = region?.name || '未知區域';
   const scoringData = REGION_SCORING_DATA[selectedRegion];
+  const dialogRef = React.useRef<HTMLDivElement>(null);
+  const closeRef = React.useRef<HTMLButtonElement>(null);
+  const titleId = React.useId();
+  const descriptionId = React.useId();
+  const rows = scoringData?.examDetail?.map(({ level, score }) => {
+    const numbers = score.match(/\d+(?:\.\d+)?/g) || [];
+    const pointsFirst = score.includes('點 (積分');
+    return { level, credit: pointsFirst ? numbers[1] : numbers[0], points: numbers.length > 1 ? (pointsFirst ? numbers[0] : numbers[1]) : undefined };
+  });
+  const hasPoints = rows?.some(row => row.points !== undefined);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); onClose(); }
+      if (event.key !== 'Tab') return;
+      const elements = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button, a[href]') || []);
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+      previousFocus?.focus();
+    };
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            onClick={onClose}
-          />
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="relative w-full max-w-2xl bg-slate-50 rounded-[2rem] border-4 border-slate-900 overflow-hidden shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] flex flex-col max-h-[90vh]"
-          >
-            {/* Header */}
-            <div className="p-6 sm:p-8 bg-sky-300 border-b-4 border-slate-900 relative overflow-hidden shrink-0">
-              <div className="absolute right-0 top-0 opacity-10 translate-x-1/4 -translate-y-1/4">
-                <Calculator className="w-48 h-48 text-slate-900" />
-              </div>
-              <div className="flex items-center justify-between relative z-10">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="px-3 py-1 bg-slate-900 text-white font-black text-sm rounded-lg flex items-center gap-1">
-                      <MapPin className="w-4 h-4" /> {regionName}
-                    </div>
-                  </div>
-                  <h2 className="text-3xl font-black text-slate-900 flex items-center gap-2">
-                    <Calculator className="w-8 h-8" /> 超額比序計分方式
-                  </h2>
-                </div>
-                <button 
-                  onClick={onClose} 
-                  className="w-12 h-12 bg-white rounded-2xl border-4 border-slate-900 flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:bg-slate-100 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] transition-all active:translate-y-0 active:shadow-none shrink-0"
-                >
-                  <X className="w-6 h-6 text-slate-900" />
-                </button>
-              </div>
-            </div>
+        <div className="score-modal-overlay">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="score-modal-backdrop" onClick={onClose} aria-hidden="true" />
+          <motion.div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descriptionId}
+            onAnimationComplete={() => { if (isOpen && !dialogRef.current?.contains(document.activeElement)) closeRef.current?.focus(); }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: 0.98 }} transition={{ duration: 0.2 }} className="score-modal">
+            <header className="score-modal-header">
+              <div className="score-modal-eyebrow"><span><MapPin size={14} aria-hidden="true" />{regionName}</span><span>入學計分指南</span></div>
+              <button ref={closeRef} type="button" onClick={onClose} className="score-modal-close" aria-label="關閉計分方式"><X size={22} /></button>
+              <h2 id={titleId}>超額比序<span>計分方式</span></h2>
+              <p id={descriptionId}>先看懂會考換算，再掌握志願選填的計分規則。</p>
+              <Calculator className="score-modal-decoration" size={112} strokeWidth={1.2} aria-hidden="true" />
+            </header>
 
-            {/* Content */}
-            <div className="p-6 sm:p-8 overflow-y-auto custom-scrollbar">
+            <div className="score-modal-body custom-scrollbar">
               {!scoringData ? (
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 bg-slate-200 border-4 border-slate-900 rounded-3xl flex items-center justify-center mx-auto mb-4 rotate-6 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                    <Calculator className="w-10 h-10 text-slate-400" />
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900">尚無此區計分資料</h3>
-                  <p className="text-slate-500 font-bold mt-2">系統即將更新各區最新計分規則</p>
-                </div>
+                <div className="score-modal-empty"><Calculator size={36} aria-hidden="true" /><h3>此區計分資料整理中</h3><p>請先至所屬就學區的官方網站查閱招生簡章。</p></div>
               ) : (
-                <div className="space-y-8">
-                  
-                  <div className="rounded-3xl border-4 border-slate-900 bg-white p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-900 bg-fuchsia-200"><Award className="h-6 w-6" /></div>
-                      <div><h3 className="text-xl font-black text-slate-900">會考成績換算速覽</h3><p className="mt-1 text-sm font-bold leading-6 text-slate-600">這裡只顯示填寫成績時需要的基本換算；志願序、多元表現與完整超額比序請前往規則頁查看。</p></div>
-                    </div>
+                <>
+                  <div className="score-modal-section-heading"><span className="score-modal-section-icon"><Calculator size={20} aria-hidden="true" /></span><div><h3>會考成績換算速覽</h3><p>依單科等級，查找對應{hasPoints ? '積分與積點' : '積分'}。</p></div><span className="score-modal-tag">{regionName}適用</span></div>
+                  <div className="score-modal-grid">
+                    {rows && <div className="score-modal-table-wrap"><table className="score-modal-table"><caption className="sr-only">{regionName}會考單科等級計分換算</caption><thead><tr><th scope="col">等級標示</th><th scope="col">換算積分 <small>分</small></th>{hasPoints && <th scope="col">比序積點 <small>點</small></th>}</tr></thead><tbody>{rows.map(row => <tr key={row.level}><th scope="row"><span className={`score-modal-grade score-modal-grade-${row.level.startsWith('A') || row.level.startsWith('精熟') ? 'a' : row.level.startsWith('B') || row.level.startsWith('基礎') ? 'b' : 'c'}`}>{row.level}</span></th><td>{row.credit}</td>{hasPoints && <td className="score-modal-points">{row.points ?? '—'}</td>}</tr>)}</tbody></table></div>}
+                    <aside className="score-modal-notes">
+                      <div className="score-modal-reading-note"><BookOpen size={20} aria-hidden="true" /><h4>怎麼看這張表？</h4><p>五科成績各自換算後加總；寫作測驗依各區規定採計。</p>{hasPoints && <p><strong>積分</strong>用於計分，<strong>積點</strong>用於進一步比序，請分別核對。</p>}</div>
+                      {scoringData.note && <div className="score-modal-region-note"><h4><Info size={16} aria-hidden="true" />本區計分提醒</h4><p>{scoringData.note}</p></div>}
+                    </aside>
                   </div>
-
-                  {/* Exam Detail if any */}
-                  {scoringData.examDetail && (
-                    <div className="space-y-4">
-                      <h3 className="font-black text-xl text-slate-900 border-b-4 border-slate-900 pb-2 inline-block">會考單科等級計分換算</h3>
-                      <div className="bg-white border-4 border-slate-900 rounded-2xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                        <table className="w-full text-center border-collapse">
-                          <thead>
-                            <tr className="bg-slate-900 text-white">
-                              <th className="py-3 px-4 font-black border-b-4 border-slate-900">等級標示</th>
-                              <th className="py-3 px-4 font-black border-b-4 border-slate-900">換算積分</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {scoringData.examDetail.map((detail, index) => (
-                              <tr key={index} className="border-b-2 border-slate-200 last:border-0 hover:bg-slate-50">
-                                <td className="py-3 px-4 font-black text-indigo-600 font-mono text-lg">{detail.level}</td>
-                                <td className="py-3 px-4 font-bold text-slate-700">{detail.score}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      {scoringData.note && (
-                        <div className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-4 mt-4">
-                          <p className="text-indigo-800 font-bold text-sm">{scoringData.note}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  <a
-                    href={withBasePath(`/scoring-rules/${selectedRegion}`)}
-                    className="flex items-center justify-between gap-4 rounded-2xl border-4 border-slate-900 bg-amber-300 p-5 font-black text-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)]"
-                  >
-                    <span><span className="block text-lg">查看 {regionName} 完整規則</span><span className="mt-1 block text-sm text-slate-700">含各項採計重點、會考換算與官方簡章連結</span></span>
-                    <ArrowUpRight className="h-6 w-6 shrink-0" />
-                  </a>
-
-                </div>
+                  <p className="score-modal-scope"><Info size={15} aria-hidden="true" /><span>本表為會考換算速覽。志願序、多元表現及完整比序，請查看完整規則；正式採計以當年度官方簡章為準。</span></p>
+                </>
               )}
             </div>
-            
+
+            <footer className="score-modal-footer">
+              {scoringData ? <><div><BookOpen size={18} aria-hidden="true" /><span>想了解其他採計項目？<small>志願序・多元表現・官方簡章</small></span></div><a href={withBasePath(`/scoring-rules/${selectedRegion}`)}>查看{regionName}完整規則<ArrowUpRight size={18} aria-hidden="true" /></a></> : <button type="button" onClick={onClose}>返回填寫成績</button>}
+            </footer>
           </motion.div>
         </div>
       )}
