@@ -10,8 +10,9 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { withBasePath } from "../lib/routes";
-import PageNavigation, { pageNavigationAsideClassName } from "./PageNavigation";
+import PageNavigation from "./PageNavigation";
 import PageBreadcrumb from "./PageBreadcrumb";
+import "./support-policy-page.css";
 
 type PolicyKind = "after-sales" | "refund-cancellation";
 type PolicySection = { title: string; body: string[] };
@@ -430,186 +431,76 @@ export default function SupportPolicyPage({ kind }: { kind: PolicyKind }) {
   const title = isRefund ? labels.refund : labels.afterSales;
   const Icon = isRefund ? ShieldCheck : HeartHandshake;
   const sections = isRefund ? refundSections : afterSalesSections;
-  const accent = isRefund
-    ? {
-        hero: "bg-amber-50",
-        panel: "bg-amber-200",
-        text: "text-amber-700",
-        notice: "border-amber-400 bg-amber-50",
-      }
-    : {
-        hero: "bg-indigo-50",
-        panel: "bg-indigo-200",
-        text: "text-indigo-700",
-        notice: "border-sky-400 bg-sky-50",
-      };
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <section className={"border-b-4 border-slate-900 " + accent.hero}>
-        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
-          <PageBreadcrumb title={title} parent={{ label: '會員方案', href: '/membership' }} />
-          <div className="py-12">
-            <div className="inline-flex items-center gap-3 rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 shadow-[4px_4px_0_#0f172a]">
-              <div
-                className={
-                  "flex h-11 w-11 items-center justify-center rounded-xl border-2 border-slate-900 " +
-                  accent.panel
-                }
+    <main className={`support-policy-page ${isRefund ? 'support-policy-refund' : ''}`}>
+      <div className="support-policy-shell">
+        <PageBreadcrumb title={title} parent={{ label: '會員方案', href: '/membership' }} />
+        <header className="support-policy-hero">
+          <div className="support-policy-hero-copy">
+            <p className="support-policy-kicker"><Icon size={18} aria-hidden="true" />MEMBERSHIP SUPPORT</p>
+            <h1>{title}</h1>
+            <p className="support-policy-lead">{labels.notice}</p>
+            <p className="support-policy-meta"><BadgeInfo size={15} aria-hidden="true" /><time dateTime={updatedAt[kind]}>{labels.updated}{updatedAt[kind]}</time></p>
+          </div>
+          <div className="support-policy-emblem" aria-hidden="true"><Icon size={68} strokeWidth={1.2} /></div>
+        </header>
+        <div className="support-policy-layout">
+          <aside className="support-policy-aside">
+            <PageNavigation
+              navClassName="support-policy-nav"
+              itemLayoutClassName="support-policy-nav-items"
+              items={sections.map((section, index) => ({
+                id: "policy-section-" + String(index + 1),
+                label: section.title,
+                className: "support-policy-nav-link",
+              }))}
+            />
+          </aside>
+          <div className="support-policy-content">
+            {sections.map((section, index) => (
+              <article
+                id={"policy-section-" + (index + 1)}
+                key={section.title}
+                className="support-policy-section"
+                aria-labelledby={"policy-heading-" + (index + 1)}
               >
-                <Icon className={"h-6 w-6 " + accent.text} />
+                <div className="support-policy-section-heading">
+                  <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                  <h2 id={"policy-heading-" + (index + 1)}>{section.title}</h2>
+                </div>
+                <div className="support-policy-prose">
+                  {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                </div>
+              </article>
+            ))}
+            <section className="support-policy-contact" aria-labelledby="policy-contact-title">
+              <div className="support-policy-contact-heading">
+                <span className="support-policy-contact-icon" aria-hidden="true"><CreditCard size={24} /></span>
+                <div><p className="support-policy-kicker">MEMBERSHIP DESK</p><h2 id="policy-contact-title">{labels.contact}</h2></div>
               </div>
-              <div>
-                <p className="text-xs font-black tracking-widest text-slate-500">
-                  MEMBERSHIP SUPPORT
-                </p>
-                <p className="text-sm font-black text-slate-700">
-                  {labels.updated}
-                  {updatedAt[kind]}
-                </p>
+              <div className="support-policy-contact-note"><ShieldCheck size={19} aria-hidden="true" /><p>{labels.contactText}</p></div>
+              <div className="support-policy-contact-actions">
+                <a href={"mailto:" + supportEmail} className="support-policy-email">
+                  <Mail size={23} aria-hidden="true" />
+                  <span><small>EMAIL SUPPORT</small><strong>{supportEmail}</strong></span>
+                  <ExternalLink size={18} aria-hidden="true" />
+                </a>
+                <a href={withBasePath("/terms")} className="support-policy-related">
+                  <FileText size={21} aria-hidden="true" />
+                  <span><strong>{labels.terms}</strong><small>會員服務使用原則</small></span>
+                  <ArrowLeft size={17} className="support-policy-arrow" aria-hidden="true" />
+                </a>
+                <a href={withBasePath("/privacy")} className="support-policy-related">
+                  <ShieldCheck size={21} aria-hidden="true" />
+                  <span><strong>{labels.privacy}</strong><small>付款與資料處理說明</small></span>
+                  <ArrowLeft size={17} className="support-policy-arrow" aria-hidden="true" />
+                </a>
               </div>
-            </div>
-            <h1 className="mt-5 text-4xl font-black sm:text-5xl">{title}</h1>
+            </section>
+            <div className="support-policy-legal"><FileText size={19} aria-hidden="true" /><p>{labels.legal}</p></div>
           </div>
         </div>
-      </section>
-      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[240px_1fr] lg:px-8">
-        <aside className={pageNavigationAsideClassName}>
-          <PageNavigation
-            navClassName="rounded-2xl border-4 border-slate-900 bg-white p-4 shadow-[5px_5px_0_#0f172a]"
-            itemLayoutClassName="space-y-2"
-            items={sections.map((section, index) => ({
-              id: "policy-section-" + String(index + 1),
-              label: section.title,
-              className: "block rounded-xl",
-            }))}
-          />
-        </aside>
-        <div className="space-y-5">
-          <section
-            className={
-              "rounded-2xl border-2 p-5 text-sm font-bold leading-7 text-slate-700 " +
-              accent.notice
-            }
-          >
-            <div className="flex gap-2">
-              <BadgeInfo className={"mt-1 h-5 w-5 shrink-0 " + accent.text} />
-              <p>{labels.notice}</p>
-            </div>
-          </section>
-          {sections.map((section, index) => (
-            <article
-              id={"policy-section-" + (index + 1)}
-              key={section.title}
-              className="policy-section-anchor rounded-2xl border-4 border-slate-900 bg-white p-6 shadow-[5px_5px_0_#0f172a] sm:p-8"
-            >
-              <div className="flex gap-3">
-                <span
-                  className={
-                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border-2 border-slate-900 font-black " +
-                    accent.panel
-                  }
-                >
-                  {index + 1}
-                </span>
-                <div>
-                  <h2 className="text-2xl font-black">{section.title}</h2>
-                  <div className="mt-3 space-y-4">
-                    {section.body.map((paragraph) => (
-                      <p
-                        key={paragraph}
-                        className="text-base font-bold leading-8 text-slate-700"
-                      >
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </article>
-          ))}
-          <section className="support-contact-panel relative overflow-hidden rounded-[2rem] border-4 border-slate-900 p-6 text-white shadow-[8px_8px_0_#f59e0b] sm:p-9">
-            <div className="support-contact-orb" />
-            <div className="relative">
-              <div className="flex items-start gap-4">
-                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border-2 border-white/80 bg-amber-300 text-slate-950 shadow-[3px_3px_0_#fff]">
-                  <CreditCard className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="text-xs font-black tracking-[0.24em] text-amber-200">
-                    MEMBERSHIP DESK
-                  </p>
-                  <h2 className="mt-1 text-2xl font-black sm:text-3xl">
-                    {labels.contact}
-                  </h2>
-                </div>
-              </div>
-              <div className="mt-6 rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur-sm">
-                <div className="flex gap-3">
-                  <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
-                  <p className="text-sm font-bold leading-7 text-slate-100">
-                    {labels.contactText}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <a
-                  href={"mailto:" + supportEmail}
-                  className="support-contact-email group sm:col-span-2"
-                >
-                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-950 text-amber-300">
-                    <Mail className="h-5 w-5" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-xs font-black tracking-wider text-slate-500">
-                      EMAIL SUPPORT
-                    </span>
-                    <span className="block truncate text-base font-black text-slate-950">
-                      {supportEmail}
-                    </span>
-                  </span>
-                  <span className="ml-auto grid h-8 w-8 place-items-center rounded-full bg-amber-300 text-slate-950 transition-transform group-hover:translate-x-1">
-                    <ExternalLink className="h-4 w-4" />
-                  </span>
-                </a>
-                <a
-                  href={withBasePath("/terms")}
-                  className="support-contact-link"
-                >
-                  <FileText className="h-5 w-5 text-amber-300" />
-                  <span>
-                    <span className="block text-sm font-black">
-                      {labels.terms}
-                    </span>
-                    <span className="block text-xs font-bold text-slate-300">
-                      會員服務使用原則
-                    </span>
-                  </span>
-                  <ArrowLeft className="ml-auto h-4 w-4 rotate-180 text-slate-400" />
-                </a>
-                <a
-                  href={withBasePath("/privacy")}
-                  className="support-contact-link"
-                >
-                  <ShieldCheck className="h-5 w-5 text-amber-300" />
-                  <span>
-                    <span className="block text-sm font-black">
-                      {labels.privacy}
-                    </span>
-                    <span className="block text-xs font-bold text-slate-300">
-                      付款與資料處理說明
-                    </span>
-                  </span>
-                  <ArrowLeft className="ml-auto h-4 w-4 rotate-180 text-slate-400" />
-                </a>
-              </div>
-            </div>
-          </section>
-          <section className="rounded-2xl border-2 border-slate-300 bg-white p-5 text-sm font-bold leading-7 text-slate-600">
-            <FileText className="mb-2 h-5 w-5 text-slate-700" />
-            {labels.legal}
-          </section>
-        </div>
-      </section>
+      </div>
     </main>
   );
 }
