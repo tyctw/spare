@@ -29,7 +29,7 @@
     "qrcode.react": "^4.2.0",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
-    "vite": "^6.2.3"
+    "vite": "^6.4.4"
   },
   "overrides": {
     "brace-expansion@^1.0.0": "1.1.21",
@@ -47,6 +47,6 @@
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.3"
+    "vite": "^6.4.4"
   }
 }
