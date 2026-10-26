@@ -19,12 +19,12 @@ export default function HeroBanner() {
       aria-labelledby="home-hero-title"
     >
       <picture className="home-hero-art" aria-hidden="true">
-        <source media="(max-width: 900px)" srcSet={heroMobileAvif} type="image/avif" width={896} height={1200} />
-        <source media="(max-width: 900px)" srcSet={heroMobileWebp} type="image/webp" width={896} height={1200} />
-        <source media="(max-width: 900px)" srcSet={heroMobileJpg} type="image/jpeg" width={896} height={1200} />
-        <source srcSet={heroDesktopAvif} type="image/avif" width={1376} height={768} />
-        <source srcSet={heroDesktopWebp} type="image/webp" width={1376} height={768} />
-        <img src={heroDesktopJpg} alt="" width={1376} height={768} decoding="async" fetchPriority="high" />
+        <source media="(max-width: 900px)" srcSet={heroMobileAvif} type="image/avif" width={896} height={520} />
+        <source media="(max-width: 900px)" srcSet={heroMobileWebp} type="image/webp" width={896} height={520} />
+        <source media="(max-width: 900px)" srcSet={heroMobileJpg} type="image/jpeg" width={896} height={520} />
+        <source srcSet={heroDesktopAvif} type="image/avif" width={1414} height={520} />
+        <source srcSet={heroDesktopWebp} type="image/webp" width={1414} height={520} />
+        <img src={heroDesktopJpg} alt="" width={1414} height={520} decoding="async" fetchPriority="high" />
       </picture>
 
       <div className="home-hero-copy">
