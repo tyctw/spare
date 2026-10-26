@@ -53,7 +53,7 @@ const DonationPage: React.FC<DonationPageProps> = ({ onBack }) => {
           <div className="mb-3 flex items-center justify-center gap-2 text-sm font-black text-rose-600"><QrCode className="h-4 w-4" />掃描 QR Code 贊助</div>
           <a href={DONATION_URL} target="_blank" rel="noopener noreferrer" className="inline-block rounded-2xl bg-white p-3 shadow-md transition-transform hover:scale-[1.02]" aria-label="開啟小額贊助頁面">
             {qrCodeUrl ? (
-              <img src={qrCodeUrl} width="220" height="220" alt="前往 Focus Space 小額贊助頁面的 QR Code" className="h-[220px] w-[220px]" />
+              <img src={qrCodeUrl} width="220" height="220" decoding="async" loading="lazy" alt="前往 Focus Space 小額贊助頁面的 QR Code" className="h-[220px] w-[220px]" />
             ) : (
               <span className="flex h-[220px] w-[220px] items-center justify-center rounded-xl bg-slate-50 text-xs font-bold text-slate-400">正在產生 QR Code…</span>
             )}

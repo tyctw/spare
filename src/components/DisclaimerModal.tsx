@@ -82,7 +82,11 @@ export default function DisclaimerModal({ isOpen, onClose }: Props) {
           <div><h3>{title}</h3><p>{text}</p></div>
         </article>)}</div>
         <aside className="disclaimer-line" aria-label="本站 LINE 資訊">
-          <img className="disclaimer-line-icon" src={withBasePath('/brand/line/line-brand-icon.png')} alt="LINE" width="44" height="44" />
+          <picture className="contents">
+            <source srcSet={withBasePath('/brand/line/line-brand-icon.webp')} type="image/webp" />
+            <source srcSet={withBasePath('/brand/line/line-brand-icon.avif')} type="image/avif" />
+            <img className="disclaimer-line-icon" src={withBasePath('/brand/line/line-brand-icon.png')} alt="LINE" width="44" height="44" decoding="async" />
+          </picture>
           <div><strong>想持續掌握升學資訊？</strong><p>加入本站 LINE，查看升學消息與常用功能。</p></div>
           <a href="https://line.me/R/ti/p/@166zozmd" target="_blank" rel="noopener noreferrer" aria-label="加入本站 LINE（另開新分頁）">加入 LINE<ArrowUpRight aria-hidden="true" size={16} /></a>
         </aside>
