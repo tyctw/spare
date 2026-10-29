@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { ArrowRight, Check, Crown } from 'lucide-react';
 import { MEMBERSHIP_STATUS_EVENT, type MembershipStatus } from '../lib/membership';
 import { withBasePath } from '../lib/routes';
 
-export default function MembershipPromo() {
+function MembershipPromo() {
   const [hasActiveMembership, setHasActiveMembership] = useState(false);
 
   useEffect(() => {
@@ -48,3 +48,5 @@ export default function MembershipPromo() {
     </section>
   );
 }
+
+export default memo(MembershipPromo);
