@@ -1,0 +1,13 @@
+/* Same slate-950 ink and 65% alpha as the previous veil. Only the blur is gone,
+   so the dimming stays the same color without a full-screen backdrop-filter. */
+.site-search-overlay {
+  background-color: oklab(0.129 -0.00388322 -0.0418201 / 0.65);
+  backdrop-filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-search-overlay {
+    animation: none;
+    transition: none;
+  }
+}

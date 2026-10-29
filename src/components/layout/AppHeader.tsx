@@ -6,6 +6,7 @@ import { getScheduleAnnouncement } from '../../lib/scheduleAnnouncement';
 import { menuCategories, ThreadsIcon, type MenuCategory, type MenuItem } from './menuData';
 import { categoryOverviewPaths, type CategoryOverviewId } from '../../lib/categoryOverview';
 import NavigationDrawer from './NavigationDrawer';
+import './site-search.css';
 
 type HeaderModalId = 'rating';
 type LabeledMenuItem = MenuItem & { categoryLabel: string };
@@ -299,7 +300,7 @@ const SearchDialog = memo(function SearchDialog({
   };
 
   return createPortal(
-    <div onClick={onClose} onKeyDown={handleGlobalSearchKeyDown} className="fixed inset-0 z-[150] bg-slate-950/65 p-2 backdrop-blur-md sm:p-4" role="dialog" aria-modal="true" aria-label="搜尋全站功能" aria-describedby="global-search-help" ref={globalSearchDialogRef}>
+    <div onClick={onClose} onKeyDown={handleGlobalSearchKeyDown} className="site-search-overlay fixed inset-0 z-[150] p-2 sm:p-4" role="dialog" aria-modal="true" aria-label="搜尋全站功能" aria-describedby="global-search-help" ref={globalSearchDialogRef}>
       <div onClick={(event) => event.stopPropagation()} className="mx-auto w-full max-w-none rounded-[1.65rem] bg-white p-2 sm:p-3">
         <p id="global-search-help" className="sr-only">輸入關鍵字搜尋全站功能。按 Escape 可關閉搜尋視窗。</p>
         <div className="flex items-center gap-3 lg:gap-6">
