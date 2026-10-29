@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { withBasePath } from '../../lib/routes';
@@ -9,7 +10,7 @@ const heroMobileAvif = withBasePath('/images/hero/hero-mobile.avif');
 const heroMobileWebp = withBasePath('/images/hero/hero-mobile.webp');
 const heroMobileJpg = withBasePath('/images/hero/hero-mobile.jpg');
 
-export default function HeroBanner() {
+function HeroBanner() {
   return (
     <motion.section
       initial={{ opacity: 0, y: 18 }}
@@ -49,3 +50,5 @@ export default function HeroBanner() {
     </motion.section>
   );
 }
+
+export default memo(HeroBanner);
