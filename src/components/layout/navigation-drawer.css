@@ -1,0 +1,19 @@
+@keyframes navigation-drawer-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.navigation-drawer-overlay {
+  animation: navigation-drawer-fade 100ms ease-out;
+}
+
+.navigation-drawer-panel {
+  animation: navigation-drawer-fade 140ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navigation-drawer-overlay,
+  .navigation-drawer-panel {
+    animation: none;
+  }
+}

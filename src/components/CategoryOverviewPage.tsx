@@ -1,6 +1,6 @@
 import { ArrowRight, ArrowUpRight, CircleHelp, ExternalLink, Search } from 'lucide-react';
 import PageBreadcrumb from './PageBreadcrumb';
-import { menuCategories, type MenuItem } from './layout/NavigationDrawer';
+import { menuCategories, type MenuItem } from './layout/menuData';
 import { withBasePath } from '../lib/routes';
 import type { CategoryOverviewId } from '../lib/categoryOverview';
 import './category-overview-page.css';
