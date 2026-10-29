@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect, useLayoutEffect } from "react";
+import React, { Suspense, useCallback, useState, useEffect, useLayoutEffect } from "react";
 import { parseLineGuideImport } from "./lib/lineGuide";
 import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import {
@@ -32,22 +32,14 @@ import {
   List,
   QrCode,
   Check,
-  Menu,
   X,
   Filter,
-  Share2,
-  Mail,
-  Link as LinkIcon,
   Target,
   Lightbulb,
   Flame,
   ShieldCheck,
   Layers,
-  Brain,
-  Copyright,
   Database,
-  Instagram,
-  AtSign,
   Languages,
   GraduationCap,
   Presentation,
@@ -73,7 +65,6 @@ import RegionScoringModal, {
 } from "./components/RegionScoringModal";
 // Layout Components
 import AppHeader from "./components/layout/AppHeader";
-import NavigationDrawer from "./components/layout/NavigationDrawer";
 import Footer from "./components/layout/Footer";
 import HeroBanner from "./components/layout/HeroBanner";
 import MembershipPromo from "./components/MembershipPromo";
@@ -397,11 +388,6 @@ export default function App() {
   const [isHollandTestOpen, setIsHollandTestOpen] = useState(false);
   const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [vocationalGroups, setVocationalGroups] = useState<string[]>(["all"]);
-  const [isExternalLinksOpen, setIsExternalLinksOpen] = useState(false);
-  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
-  const [expandedNavCategory, setExpandedNavCategory] = useState<string | null>(
-    "schoolDetails",
-  );
   const [historicalScoreSchool, setHistoricalScoreSchool] = useState<
     any | null
   >(null);
@@ -427,9 +413,9 @@ export default function App() {
   // Comparison
   const [comparisonSchools, setComparisonSchools] =
     useState<any[]>(getComparisonSchools);
-  // Read the restored scroll position on the first render. This prevents the
-  // fixed header from resizing just after the page has painted.
-  const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 50);
+  const openSharePlatform = useCallback(() => {
+    setActiveModal("sharePlatform");
+  }, []);
 
   // Custom Result Filters
   const [resultFilterText, setResultFilterText] = useState("");
@@ -478,17 +464,6 @@ export default function App() {
         setVocationalGroups(recommendedGroups);
       }
     }
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const nextIsScrolled = window.scrollY > 50;
-      setIsScrolled((current) =>
-        current === nextIsScrolled ? current : nextIsScrolled,
-      );
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -854,9 +829,7 @@ export default function App() {
       <div className="home-background-orb absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-sky-300/20 rounded-full blur-[100px] pointer-events-none"></div>
 
       <AppHeader
-        isScrolled={isScrolled}
-        onShareClick={() => setActiveModal("sharePlatform")}
-        onMenuClick={() => setIsNavMenuOpen(true)}
+        onShareClick={openSharePlatform}
         setActiveModal={setActiveModal}
       />
 
@@ -2575,532 +2548,6 @@ export default function App() {
         {activeModal === "rating" && (
           <RatingModal isOpen onClose={() => setActiveModal(null)} />
         )}
-
-        {isNavMenuOpen && (
-          <NavigationDrawer
-            isOpen
-            onClose={() => setIsNavMenuOpen(false)}
-            setActiveModal={setActiveModal}
-          />
-        )}
-
-        {/* Navigation Drawer */}
-        <AnimatePresence>
-          {false && isNavMenuOpen && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsNavMenuOpen(false)}
-                className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100]"
-              />
-              {/* Drawer */}
-              <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="fixed top-0 right-0 h-full w-[380px] max-w-full border-l-4 border-slate-900 bg-slate-50 shadow-[-8px_0px_0px_0px_rgba(15,23,42,0.1)] z-[110] flex flex-col overflow-hidden"
-              >
-                <div className="p-5 bg-amber-400 border-b-4 border-slate-900 flex items-center justify-between shrink-0">
-                  <div className="flex items-center gap-3">
-                    <Menu className="w-6 h-6 text-slate-900" />
-                    <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                      主選單
-                    </h2>
-                  </div>
-                  <button
-                    onClick={() => setIsNavMenuOpen(false)}
-                    className="w-10 h-10 bg-white flex items-center justify-center border-4 border-slate-900 rounded-xl hover:bg-slate-100 transition shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] active:translate-y-1 active:shadow-none"
-                  >
-                    <X className="w-6 h-6 text-slate-900" />
-                  </button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
-                  {/* 學校與科系探索 */}
-                  <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
-                    <button
-                      onClick={() =>
-                        setExpandedNavCategory((prev) =>
-                          prev === "schoolDetails" ? null : "schoolDetails",
-                        )
-                      }
-                      className="w-full flex items-center justify-between p-4 bg-sky-50 outline-none hover:bg-sky-100 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-sky-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                          <Compass className="w-5 h-5 text-sky-700" />
-                        </div>
-                        <span className="font-black text-slate-900 text-lg">
-                          學校與科系探索
-                        </span>
-                      </div>
-                      <ChevronDown
-                        className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === "schoolDetails" ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                    <AnimatePresence>
-                      {expandedNavCategory === "schoolDetails" && (
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: "auto" }}
-                          exit={{ height: 0 }}
-                          className="overflow-hidden border-t-4 border-slate-900 bg-white"
-                        >
-                          <div className="p-3 flex flex-col gap-2">
-                            <button
-                              onClick={() => {
-                                window.location.href = withBasePath("/holland");
-                              }}
-                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="p-1.5 bg-purple-100 border-2 border-slate-900 rounded-lg">
-                                  <Brain className="w-5 h-5 text-purple-600" />
-                                </div>
-                                <span className="font-bold text-slate-900">
-                                  荷倫碼性向測驗
-                                </span>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                            </button>
-                            <button
-                              onClick={() => {
-                                window.location.href = withBasePath(
-                                  "/vocational-encyclopedia",
-                                );
-                              }}
-                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="p-1.5 bg-emerald-100 border-2 border-slate-900 rounded-lg">
-                                  <BookOpen className="w-5 h-5 text-emerald-600" />
-                                </div>
-                                <span className="font-bold text-slate-900">
-                                  職群科系百科
-                                </span>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                            </button>
-                            <button
-                              onClick={() => {
-                                window.location.href =
-                                  withBasePath("/school-types");
-                              }}
-                              className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="p-1.5 bg-sky-100 border-2 border-slate-900 rounded-lg">
-                                  <Building2 className="w-5 h-5 text-sky-600" />
-                                </div>
-                                <span className="font-bold text-slate-900">
-                                  學校類型解析
-                                </span>
-                              </div>
-                              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* 志願選填與落點 */}
-                  <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
-                    <button
-                      onClick={() =>
-                        setExpandedNavCategory((prev) =>
-                          prev === "strategy" ? null : "strategy",
-                        )
-                      }
-                      className="w-full flex items-center justify-between p-4 bg-amber-50 outline-none hover:bg-amber-100 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-amber-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                          <Target className="w-5 h-5 text-amber-700" />
-                        </div>
-                        <span className="font-black text-slate-900 text-lg">
-                          志願選填與落點
-                        </span>
-                      </div>
-                      <ChevronDown
-                        className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === "strategy" ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                    <AnimatePresence>
-                      {expandedNavCategory === "strategy" && (
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: "auto" }}
-                          exit={{ height: 0 }}
-                          className="overflow-hidden border-t-4 border-slate-900 bg-white"
-                        >
-                          <div className="p-3 flex flex-col gap-2">
-                            {[
-                              {
-                                id: "mockVolunteer",
-                                icon: Target,
-                                label: "模擬志願選填",
-                                color: "text-sky-600",
-                                bg: "bg-sky-100",
-                              },
-                              {
-                                id: "strategy",
-                                icon: Target,
-                                label: "志願選填攻略",
-                                color: "text-amber-600",
-                                bg: "bg-amber-100",
-                              },
-                              {
-                                id: "gradeLevel",
-                                icon: Award,
-                                label: "等級對照表",
-                                color: "text-rose-600",
-                                bg: "bg-rose-100",
-                              },
-                              {
-                                id: "historicalStats",
-                                icon: ChartBar,
-                                label: "歷年會考統計",
-                                color: "text-indigo-600",
-                                bg: "bg-indigo-100",
-                              },
-                              {
-                                id: "importantDates",
-                                icon: Map,
-                                label: "重要日程",
-                                color: "text-purple-600",
-                                bg: "bg-purple-100",
-                              },
-                              {
-                                id: "disclaimer",
-                                icon: Shield,
-                                label: "免責聲明",
-                                color: "text-slate-600",
-                                bg: "bg-slate-100",
-                              },
-                            ].map((btn) => (
-                              <button
-                                key={btn.id}
-                                onClick={() => {
-                                  if (
-                                    btn.id === "privacy" ||
-                                    btn.id === "terms" ||
-                                    btn.id === "changelog" ||
-                                    btn.id === "advantages" ||
-                                    btn.id === "instructions" ||
-                                    btn.id === "historicalStats" ||
-                                    btn.id === "gradeLevel" ||
-                                    btn.id === "mockVolunteer" ||
-                                    btn.id === "importantDates" ||
-                                    btn.id === "strategy"
-                                  ) {
-                                    window.location.href = withBasePath(
-                                      btn.id === "historicalStats"
-                                        ? "/historical-stats"
-                                        : btn.id === "gradeLevel"
-                                          ? "/grade-level"
-                                          : btn.id === "mockVolunteer"
-                                            ? "/mock-volunteer"
-                                            : btn.id === "importantDates"
-                                              ? "/important-dates"
-                                              : `/${btn.id}`,
-                                    );
-                                    return;
-                                  }
-                                  setActiveModal(btn.id as any);
-                                  setIsNavMenuOpen(false);
-                                }}
-                                className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div
-                                    className={`p-1.5 rounded-lg border-2 border-slate-900 ${btn.bg}`}
-                                  >
-                                    <btn.icon
-                                      className={`w-5 h-5 ${btn.color}`}
-                                    />
-                                  </div>
-                                  <span className="font-bold text-slate-900">
-                                    {btn.label}
-                                  </span>
-                                </div>
-                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                              </button>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* 系統指南與回饋 */}
-                  <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
-                    <button
-                      onClick={() =>
-                        setExpandedNavCategory((prev) =>
-                          prev === "systemGuide" ? null : "systemGuide",
-                        )
-                      }
-                      className="w-full flex items-center justify-between p-4 bg-indigo-50 outline-none hover:bg-indigo-100 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                          <Sparkles className="w-5 h-5 text-indigo-700" />
-                        </div>
-                        <span className="font-black text-slate-900 text-lg">
-                          系統指南與回饋
-                        </span>
-                      </div>
-                      <ChevronDown
-                        className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === "systemGuide" ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                    <AnimatePresence>
-                      {expandedNavCategory === "systemGuide" && (
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: "auto" }}
-                          exit={{ height: 0 }}
-                          className="overflow-hidden border-t-4 border-slate-900 bg-white"
-                        >
-                          <div className="p-3 flex flex-col gap-2">
-                            {[
-                              {
-                                id: "instructions",
-                                icon: Info,
-                                label: "使用說明",
-                                color: "text-blue-600",
-                                bg: "bg-blue-100",
-                              },
-                              {
-                                id: "advantages",
-                                icon: Sparkles,
-                                label: "系統優點與關於我們",
-                                color: "text-indigo-600",
-                                bg: "bg-indigo-100",
-                              },
-                              {
-                                id: "site-map",
-                                icon: Map,
-                                label: "網站地圖",
-                                color: "text-amber-600",
-                                bg: "bg-amber-100",
-                              },
-                              {
-                                id: "rating",
-                                icon: StarIcon,
-                                label: "評分系統",
-                                color: "text-amber-500",
-                                bg: "bg-amber-100",
-                              },
-                              {
-                                id: "changelog",
-                                icon: History,
-                                label: "更新日誌",
-                                color: "text-slate-500",
-                                bg: "bg-slate-100",
-                              },
-                              {
-                                id: "privacy",
-                                icon: Database,
-                                label: "隱私權政策",
-                                color: "text-emerald-600",
-                                bg: "bg-emerald-100",
-                              },
-                              {
-                                id: "terms",
-                                icon: Shield,
-                                label: "服務條款",
-                                color: "text-slate-600",
-                                bg: "bg-slate-100",
-                              },
-                              {
-                                id: "reportError",
-                                icon: AlertCircle,
-                                label: "錯誤回報",
-                                color: "text-red-500",
-                                bg: "bg-red-100",
-                              },
-                            ].map((btn) => (
-                              <button
-                                key={btn.id}
-                                onClick={() => {
-                                  if (
-                                    btn.id === "privacy" ||
-                                    btn.id === "terms" ||
-                                    btn.id === "changelog" ||
-                                    btn.id === "advantages" ||
-                                    btn.id === "instructions" ||
-                                    btn.id === "site-map"
-                                  ) {
-                                    window.location.href = withBasePath(
-                                      `/${btn.id}`,
-                                    );
-                                    return;
-                                  }
-                                  setActiveModal(btn.id as any);
-                                  setIsNavMenuOpen(false);
-                                }}
-                                className="w-full text-left px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 flex items-center justify-between group active:scale-95 transition-all"
-                              >
-                                <div className="flex items-center gap-3">
-                                  <div
-                                    className={`p-1.5 rounded-lg border-2 border-slate-900 ${btn.bg}`}
-                                  >
-                                    <btn.icon
-                                      className={`w-5 h-5 ${btn.color}`}
-                                    />
-                                  </div>
-                                  <span className="font-bold text-slate-900">
-                                    {btn.label}
-                                  </span>
-                                </div>
-                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                              </button>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* 外部資源 */}
-                  <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] overflow-hidden">
-                    <button
-                      onClick={() =>
-                        setExpandedNavCategory((prev) =>
-                          prev === "externalLinks" ? null : "externalLinks",
-                        )
-                      }
-                      className="w-full flex items-center justify-between p-4 bg-emerald-50 outline-none hover:bg-emerald-100 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-emerald-200 border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                          <LinkIcon className="w-5 h-5 text-emerald-700" />
-                        </div>
-                        <span className="font-black text-slate-900 text-lg">
-                          外部資源與分享
-                        </span>
-                      </div>
-                      <ChevronDown
-                        className={`w-5 h-5 text-slate-900 transition-transform ${expandedNavCategory === "externalLinks" ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                    <AnimatePresence>
-                      {expandedNavCategory === "externalLinks" && (
-                        <motion.div
-                          initial={{ height: 0 }}
-                          animate={{ height: "auto" }}
-                          exit={{ height: 0 }}
-                          className="overflow-hidden border-t-4 border-slate-900 bg-white"
-                        >
-                          <div className="p-3 flex flex-col gap-2">
-                            {[
-                              {
-                                type: "route",
-                                href: "/score-inquiry",
-                                icon: Search,
-                                label: "會考成績查詢",
-                                color: "text-fuchsia-600",
-                                bg: "bg-fuchsia-100",
-                              },
-                              {
-                                type: "link",
-                                href: "https://tyctw.github.io/volunteer/",
-                                icon: ChartBar,
-                                label: "序位查詢",
-                                color: "text-orange-600",
-                                bg: "bg-orange-100",
-                              },
-                              {
-                                type: "link",
-                                href: "https://tyctw.github.io/shared/",
-                                icon: Library,
-                                label: "全國錄取分享",
-                                color: "text-indigo-600",
-                                bg: "bg-indigo-100",
-                              },
-                              {
-                                type: "link",
-                                href: "https://tyctw.github.io/score/",
-                                icon: List,
-                                label: "全國序位分享",
-                                color: "text-emerald-600",
-                                bg: "bg-emerald-100",
-                              },
-                            ].map((link) =>
-                                <a
-                                  key={link.label}
-                                  href={link.type === 'route' ? withBasePath(link.href) : link.href}
-                                  target={link.type === 'link' ? '_blank' : undefined}
-                                  rel={link.type === 'link' ? 'noopener noreferrer' : undefined}
-                                  className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 border-transparent hover:border-slate-900 hover:bg-slate-50 group active:scale-95 transition-all"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <div
-                                      className={`p-1.5 rounded-lg border-2 border-slate-900 ${link.bg}`}
-                                    >
-                                      <link.icon
-                                        className={`w-4 h-4 ${link.color}`}
-                                      />
-                                    </div>
-                                    <span className="font-bold text-slate-900">
-                                      {link.label}
-                                    </span>
-                                  </div>
-                                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 -rotate-45 group-hover:rotate-0 transition-transform" />
-                                </a>,
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  <div className="bg-white rounded-2xl border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] p-4 flex justify-center gap-4">
-                    <a
-                      href="https://www.instagram.com/exam.tw/"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-2 group outline-none"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-pink-50 border-2 border-slate-900 flex items-center justify-center group-hover:bg-pink-100 group-hover:scale-110 active:scale-95 transition-all text-pink-600 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                        <Instagram className="w-5 h-5 group-hover:-rotate-6 transition-transform group-hover:rotate-0" />
-                      </div>
-                      <span className="font-bold text-slate-700 text-sm">
-                        Instagram
-                      </span>
-                    </a>
-                    <div className="w-0.5 h-10 bg-slate-200 rounded-full mx-2"></div>
-                    <a
-                      href="https://www.threads.com/@exam.tw"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-2 group outline-none"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-slate-50 border-2 border-slate-900 flex items-center justify-center group-hover:bg-slate-100 group-hover:scale-110 active:scale-95 transition-all text-slate-700 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] group-hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">
-                        <AtSign className="w-5 h-5 group-hover:rotate-6 transition-transform group-hover:rotate-0" />
-                      </div>
-                      <span className="font-bold text-slate-700 text-sm">
-                        Threads
-                      </span>
-                    </a>
-                  </div>
-                </div>
-                <div className="p-4 bg-slate-900 border-t-4 border-slate-900 text-center">
-                  <p className="text-slate-400 font-bold text-xs flex items-center justify-center gap-1">
-                    <Check className="w-3 h-3 text-emerald-400" />
-                    會考落點分析系統 v6.0
-                  </p>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
 
         {activeModal === "authFail" && (
           <AuthFailModal isOpen onClose={() => setActiveModal(null)} />
