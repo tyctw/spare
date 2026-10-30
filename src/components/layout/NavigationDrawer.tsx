@@ -144,6 +144,30 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
     if (isOpen && !isCompactNavigation) closeDrawer();
   }, [isCompactNavigation, isOpen]);
 
+  // Keep the page behind the drawer still. Without this, touch scrolling that
+  // reaches the end of the menu list scrolls the page underneath, and closing
+  // the drawer (history.go) makes the browser restore the old scroll position
+  // with the site-wide `scroll-behavior: smooth`, i.e. a ~500 ms animated
+  // rewind of the page right after the menu closes.
+  useEffect(() => {
+    const root = document.documentElement;
+    const scrollY = window.scrollY;
+    const previousOverflow = root.style.overflow;
+    root.style.overflow = 'hidden';
+    return () => {
+      root.style.overflow = previousOverflow;
+      // History traversal may restore scroll after this cleanup; make sure it
+      // is never animated and ends where the user left the page.
+      const previousBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = 'auto';
+      if (window.scrollY !== scrollY) window.scrollTo(0, scrollY);
+      window.setTimeout(() => {
+        if (window.scrollY !== scrollY) window.scrollTo(0, scrollY);
+        root.style.scrollBehavior = previousBehavior;
+      }, 250);
+    };
+  }, []);
+
   const normalizedSearch = searchTerm.trim().toLowerCase();
   const filteredCategories = useMemo(() => {
     if (!normalizedSearch) return menuCategories;
@@ -250,7 +274,7 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
             </div>
 
             <div ref={menuScrollRef} className={isCompactNavigation
-              ? 'custom-scrollbar flex-1 space-y-3 overflow-y-auto rounded-t-[2rem] bg-white p-4'
+              ? 'custom-scrollbar flex-1 space-y-3 overflow-y-auto overscroll-contain rounded-t-[2rem] bg-white p-4'
               : 'custom-scrollbar flex-1 space-y-4 overflow-y-auto p-6'}>
               {mobileCategory ? (
                 <section>
