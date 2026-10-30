@@ -132,10 +132,46 @@ function scrollToMembershipCheckout() {
   window.scrollTo({ top: Math.max(0, top), behavior: reduced ? 'instant' : 'smooth' });
 }
 
-function MembershipSupportLinks() {
+const SUPPORT_EMAIL = "tyctw.analyze@gmail.com";
+
+async function copySupportEmail() {
+  try {
+    await navigator.clipboard.writeText(SUPPORT_EMAIL);
+    return true;
+  } catch {
+    try {
+      const area = document.createElement("textarea");
+      area.value = SUPPORT_EMAIL;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.left = "-9999px";
+      document.body.appendChild(area);
+      area.select();
+      const copied = document.execCommand("copy");
+      area.remove();
+      return copied;
+    } catch {
+      return false;
+    }
+  }
+}
+
+function MembershipSupportLinks({ onCopied }: { onCopied: () => void }) {
   return <section className="plans-support" aria-labelledby="membership-support-title">
-    <div><p className="plans-section-kicker">需要一點協助？</p><h2 id="membership-support-title">我們在這裡。</h2><p>會員資格或付款有疑問，請附上訂單編號來信。</p><a href="mailto:tyctw.analyze@gmail.com"><Mail size={16} aria-hidden="true" />tyctw.analyze@gmail.com<ArrowRight size={16} aria-hidden="true" /></a></div>
-    <nav aria-label="會員服務說明"><a href={withBasePath('/after-sales-service')}><HeartHandshake size={19} aria-hidden="true" />售後服務<ArrowRight size={16} aria-hidden="true" /></a><a href={withBasePath('/refund-cancellation-policy')}><ReceiptText size={19} aria-hidden="true" />退款與取消說明<ArrowRight size={16} aria-hidden="true" /></a></nav>
+    <div className="plans-support-copy">
+      <span className="plans-support-mark" aria-hidden="true"><Mail size={22} /></span>
+      <p className="plans-section-kicker">需要一點協助？</p>
+      <h2 id="membership-support-title">我們在這裡。</h2>
+      <p className="plans-support-hint">會員資格或付款有疑問，請附上訂單編號來信。</p>
+      <div className="plans-support-actions">
+        <a className="plans-support-mail" href={`mailto:${SUPPORT_EMAIL}`}><Mail size={16} aria-hidden="true" />{SUPPORT_EMAIL}<ArrowRight size={16} aria-hidden="true" /></a>
+        <button type="button" className="plans-support-copy-button" onClick={() => void copySupportEmail().then((copied) => { if (copied) onCopied(); })}>複製信箱</button>
+      </div>
+    </div>
+    <nav aria-label="會員服務說明">
+      <a href={withBasePath('/after-sales-service')}><HeartHandshake size={19} aria-hidden="true" />售後服務<ArrowRight size={16} aria-hidden="true" /></a>
+      <a href={withBasePath('/refund-cancellation-policy')}><ReceiptText size={19} aria-hidden="true" />退款與取消說明<ArrowRight size={16} aria-hidden="true" /></a>
+    </nav>
   </section>;
 }
 
@@ -175,6 +211,7 @@ export default function MembershipPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState("");
+  const [noticeSerial, setNoticeSerial] = useState(0);
   const [toastTop, setToastTop] = useState(76);
   const toastRef = useRef<HTMLDivElement>(null);
   const [lineName, setLineName] = useState("");
@@ -261,7 +298,7 @@ export default function MembershipPage() {
       node?.removeEventListener("focusin", onFocusIn);
       node?.removeEventListener("focusout", onFocusOut);
     };
-  }, [notice]);
+  }, [notice, noticeSerial]);
 
   const carouselScrolled = () => {
     const carousel = carouselRef.current;
@@ -523,7 +560,7 @@ export default function MembershipPage() {
     { kind: 'devices', title: '換個裝置，資格還在', text: '會員資格綁定 LINE 帳號。在其他裝置登入同一帳號，即可確認資格並繼續使用。' },
   ];
 
-  const noticeTone = notice.includes("成功") ? "success" : "error";
+  const noticeTone = notice.includes("成功") || notice === "已複製" ? "success" : "error";
   return <main id="main-content" className="plans-page" aria-labelledby="membership-title">{notice && <div className="plans-toast-anchor" style={{ top: toastTop }}><div ref={toastRef} className="plans-toast" role="status" aria-live="polite" data-tone={noticeTone}><p>{noticeTone === "error" && <span className="sr-only">需要處理：</span>}{notice}</p><button type="button" onClick={() => setNotice("")} aria-label="關閉通知"><X size={18} aria-hidden="true" /></button></div></div>}<div className="plans-shell">
     <nav className="plans-topbar" aria-label="會員頁導覽"><a className="plans-brand" href={withBasePath('/')}><span>會考</span>落點分析<i aria-hidden="true" /></a><span className="plans-topbar-current">會員方案</span><a className="plans-topbar-account" href={withBasePath('/membership/account')}><UserRound size={16} aria-hidden="true" />會員帳號</a></nav>
     <header className="plans-hero"><div className="plans-hero-copy"><h1 id="membership-title">{isSuccessPage ? '付款確認' : '會員方案'}</h1><p className="plans-lead">選一段適合你的準備時間。</p><div className="plans-payment-mode" aria-label="方案付款方式"><span>一次付款</span><span>到期不續扣</span></div></div></header>
@@ -548,7 +585,6 @@ export default function MembershipPage() {
           <div><dt>會員有效至</dt><dd>{formatDate(membership.expiresAt)}</dd></div>
           <div><dt>啟用日期</dt><dd>{formatDate(membership.activatedAt || undefined)}</dd></div>
         </dl>
-        <p className="plans-pass-lead">{holderName}，歡迎回來。會員使用期間不顯示 Google 廣告與 Offerwall。填妥成績後，即可直接開始分析。</p>
         <div className="plans-pass-actions">
           <a className="plans-primary" href={withBasePath('/')}>開始落點分析<ArrowRight size={17} aria-hidden="true" /></a>
           <a className="plans-secondary" href={withBasePath('/mock-volunteer')}>整理模擬志願序</a>
@@ -624,6 +660,6 @@ export default function MembershipPage() {
     </>}
     {membership !== null && !(isSuccessPage && !membership.active) && <section className="plans-faq" aria-labelledby="membership-faq-title"><header className="plans-lower-heading"><p className="plans-section-kicker">先了解，再決定</p><h2 id="membership-faq-title">購買與使用常見問題。</h2><p>關於付款、會員資格與使用方式，你可能想知道這些。</p></header><div className="plans-faq-list">{membershipFaqs.map((faq, index) => <details key={faq.q}><summary><span className="plans-faq-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><span className="plans-faq-question">{faq.q}</span><span className="plans-faq-toggle"><Plus size={17} strokeWidth={1.5} aria-hidden="true" /></span></summary><div className="plans-faq-answer"><p>{faq.a}</p>{faq.q === '支援哪些付款方式？' && <ul className="plans-payment-methods">{[...paymentMethods.card,...paymentMethods.other].map(method => <li key={method}>{method}</li>)}</ul>}</div></details>)}</div></section>}
 
-    <MembershipSupportLinks />
+    <MembershipSupportLinks onCopied={() => { setNotice("已複製"); setNoticeSerial((value) => value + 1); }} />
   </div></main>;
 }

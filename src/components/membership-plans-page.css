@@ -550,7 +550,6 @@
 .plans-pass-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 20px;margin:18px 0 0;padding-top:16px;border-top:1px solid var(--pass-line)}
 .plans-pass-facts>div{min-width:0}
 .plans-pass-facts dd{margin:4px 0 0;color:var(--pass-ink);font-size:15px;font-weight:800;line-height:1.45;overflow-wrap:anywhere}
-.plans-pass-lead{max-width:68ch;margin:14px 0 0;color:var(--pass-ink);font-size:15px;line-height:1.8}
 .plans-pass-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 .plans-pass-seam{position:relative;z-index:2;height:0}
 .plans-pass-perforation{position:absolute;top:0;left:22px;right:22px;border-top:2px dashed var(--pass-muted);transform:translateY(-1px)}
@@ -643,4 +642,30 @@
 }
 @media(forced-colors:active){
   .plans-step-index,.plans-step-done,.plans-checkout-steps>li[data-complete=true]{background:Canvas;color:CanvasText;border:1px solid CanvasText;forced-color-adjust:auto}
+}
+
+.plans-page .plans-support{position:relative;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,.8fr);align-items:center;gap:28px 40px;max-width:1100px;margin:48px auto 0;padding:28px 32px 28px 40px;border:1px solid var(--plans-border,#d4ddeb);border-radius:22px;background:#fff;box-shadow:0 16px 40px #171e3814}
+.plans-page .plans-support::before{content:"";position:absolute;top:0;bottom:0;left:0;width:8px;background:var(--plans-yellow,#ffda45);border-radius:22px 0 0 22px}
+.plans-support-mark{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--plans-yellow,#ffda45);color:var(--plans-ink,#171e38)}
+.plans-page .plans-support .plans-section-kicker{margin:14px 0 0;color:var(--plans-accent,#6034b8)}
+.plans-page .plans-support h2{margin:6px 0 0;color:var(--plans-ink,#171e38);font-size:clamp(26px,3vw,32px);font-weight:900;letter-spacing:-.03em;line-height:1.3}
+.plans-page .plans-support .plans-support-hint{margin:12px 0 0;padding:10px 12px;border:1px dashed var(--plans-border,#d4ddeb);border-radius:12px;background:#f8fafc;color:var(--plans-ink,#171e38);font-size:14px;font-weight:700;line-height:1.7}
+.plans-support-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px}
+.plans-page .plans-support-mail{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:10px 16px;border-radius:12px;background:var(--plans-ink,#171e38);color:#fff;font-size:15px;font-weight:800;line-height:1.4;text-decoration:none;overflow-wrap:anywhere}
+.plans-page .plans-support-mail:hover{background:var(--plans-accent,#6034b8);color:#fff}
+.plans-support-copy-button{min-height:48px;padding:10px 16px;border:1px solid var(--plans-border,#d4ddeb);border-radius:12px;background:#fff;color:var(--plans-ink,#171e38);font-size:14px;font-weight:800;cursor:pointer}
+.plans-support-copy-button:hover{border-color:var(--plans-accent,#6034b8);color:var(--plans-accent,#6034b8)}
+.plans-page .plans-support nav{display:grid;gap:10px;margin:0}
+.plans-page .plans-support nav a{display:flex;align-items:center;gap:10px;min-height:56px;padding:12px 14px;border:1px solid var(--plans-border,#d4ddeb);border-radius:14px;background:#f8fafc;color:var(--plans-ink,#171e38);font-size:15px;font-weight:800;line-height:1.4;text-decoration:none}
+.plans-page .plans-support nav a svg:first-child{flex:none;color:var(--plans-accent,#6034b8)}
+.plans-page .plans-support nav a svg:last-child{flex:none;margin-left:auto;color:var(--plans-accent,#6034b8)}
+.plans-page .plans-support nav a:hover{border-color:var(--plans-accent,#6034b8);background:#fff}
+@media(max-width:720px){
+  .plans-page .plans-support{grid-template-columns:1fr;gap:18px;margin-top:36px;padding:22px 18px 22px 26px}
+  .plans-support-actions{flex-direction:column;align-items:stretch}
+  .plans-page .plans-support-mail,.plans-support-copy-button{width:100%;justify-content:center}
+}
+@media(forced-colors:active){
+  .plans-page .plans-support,.plans-page .plans-support nav a,.plans-support-copy-button,.plans-support-hint{background:Canvas;color:CanvasText;border:1px solid CanvasText;box-shadow:none;forced-color-adjust:auto}
+  .plans-page .plans-support-mail,.plans-support-mark{background:Canvas;color:CanvasText;border:1px solid CanvasText}
 }
