@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowRight, ArrowUpRight, CalendarDays, ChevronDown, Megaphone, Search, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import { newsArticles } from '../lib/news';
 import './latest-news-page.css';
 
@@ -44,7 +44,7 @@ export default function LatestNewsPage() {
 
   return <main className="news-page">
     <div className="news-shell">
-      <PageBreadcrumb title="最新消息" />
+      <PageTopbar title="最新消息" />
       <header className="news-hero">
         <div><p className="news-eyebrow"><span /> LATEST NEWS</p><h1>掌握網站<br /><span>最新動態。</span></h1><p className="news-intro">升學路上的重要消息，一次整理給你。<br />從會考準備、志願選填到功能更新，讓每一步更有把握。</p></div>
         <div className="news-hero-note"><span className="news-icon"><Megaphone size={28} strokeWidth={1.5} /></span><p>每個階段，都有值得留意的事。</p><span>留意更新，安心準備下一步</span><div className="news-stats"><div><strong>{newsArticles.length.toString().padStart(2, '0')}</strong><span>則消息</span></div><div><strong>{categoryCounts.size}</strong><span>個主題分類</span></div></div></div>

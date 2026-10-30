@@ -1,4 +1,4 @@
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Search, Sparkles, Tags, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
@@ -106,7 +106,7 @@ export default function VocationalEncyclopediaPage() {
 
   return <main className="voc-page">
     <section className="voc-hero"><div className="voc-shell">
-      <PageBreadcrumb title="職群科系百科" />
+      <PageTopbar title="職群科系百科" />
       <div className="voc-hero-grid"><div><p className="voc-kicker"><BookOpen size={17} />技術型高中職群指南</p><h1>職群科系百科</h1><p className="voc-lead">從 15 個職群認識學習內容、常見科別與未來方向。先找到感興趣的群，再比較實際開設的學校與課程。</p><div className="voc-hero-actions"><a href="#explore-groups" className="voc-primary">開始探索職群<ArrowRight size={17} /></a><a href={withBasePath('/departments')} className="voc-departments-link">瀏覽 {departments.length} 個科別<ArrowRight size={17} /></a></div></div>
         <div className="voc-hero-aside"><strong>15 個職群</strong><span>每個職群都有不同的課程、實作方式與科別。</span><p>群別是專業領域分類，不代表每所學校都開設群內所有科別。</p></div>
       </div>

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { withBasePath } from "../lib/routes";
 import PageNavigation from "./PageNavigation";
-import PageBreadcrumb from "./PageBreadcrumb";
+import PageTopbar from "./PageTopbar";
 import "./support-policy-page.css";
 
 type PolicyKind = "after-sales" | "refund-cancellation";
@@ -434,7 +434,7 @@ export default function SupportPolicyPage({ kind }: { kind: PolicyKind }) {
   return (
     <main className={`support-policy-page ${isRefund ? 'support-policy-refund' : ''}`}>
       <div className="support-policy-shell">
-        <PageBreadcrumb title={title} parent={{ label: '會員方案', href: '/membership' }} />
+        <PageTopbar title={title} parent={{ label: '會員方案', href: '/membership' }} />
         <header className="support-policy-hero">
           <div className="support-policy-hero-copy">
             <p className="support-policy-kicker"><Icon size={18} aria-hidden="true" />MEMBERSHIP SUPPORT</p>

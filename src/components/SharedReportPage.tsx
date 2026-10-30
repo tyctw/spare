@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import {
   AlertCircle,
-  ArrowLeft,
   ArrowRight,
   BarChart3,
   CalendarDays,
@@ -29,6 +28,7 @@ import VolunteerVersionHistory from './VolunteerVersionHistory';
 import './shared-report-page.css';
 import type { VolunteerVersion } from '../lib/volunteerVersions';
 import RelatedReading from "./RelatedReading";
+import PageTopbar from "./PageTopbar";
 
 type SharedReport = {
   kind: "analysis" | "volunteer";
@@ -183,10 +183,7 @@ function VolunteerReport({
   return (
     <main className="shared-volunteer-page">
       <div className="shared-volunteer-shell">
-        <nav className="shared-volunteer-nav" aria-label="分享頁導覽">
-          <a href={withBasePath('/')}><ArrowLeft size={17} />返回首頁</a>
-          <span><ShieldCheck size={16} />{canEdit ? '共同編輯連結' : '唯讀分享連結'}</span>
-        </nav>
+        <PageTopbar title={canEdit ? '共同編輯連結' : '唯讀分享連結'} />
 
         <header className="shared-volunteer-hero">
           <div className="shared-volunteer-hero-copy">
@@ -511,13 +508,7 @@ function Layout({
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
       <div className="mx-auto max-w-3xl">
-        <a
-          href={withBasePath("/")}
-          className="inline-flex items-center gap-2 rounded-xl border-[3px] border-slate-900 bg-white px-5 py-3 text-lg font-black text-slate-900 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]"
-        >
-          <ArrowLeft className="h-5 w-5 stroke-[3]" />
-          回到首頁
-        </a>
+        <PageTopbar title={title} />
         <header className="mt-5 rounded-[2rem] border-4 border-slate-900 bg-indigo-600 p-6 text-white shadow-[7px_7px_0px_0px_rgba(15,23,42,1)]">
           <div className="flex items-center gap-2 text-indigo-100">
             <ShieldCheck className="h-5 w-5" />
@@ -549,13 +540,16 @@ function PageState({
   message: string;
 }) {
   return (
-    <main className="grid min-h-screen place-items-center bg-slate-50 p-5 text-center text-slate-900">
-      <div>
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300">
-          {icon}
+    <main className="min-h-screen bg-slate-50 p-5 text-slate-900">
+      <div className="mx-auto max-w-3xl"><PageTopbar title={title} /></div>
+      <div className="grid min-h-[70vh] place-items-center text-center">
+        <div>
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-slate-900 bg-amber-300">
+            {icon}
+          </div>
+          <h1 className="text-2xl font-black">{title}</h1>
+          <p className="mt-2 font-bold text-slate-500">{message}</p>
         </div>
-        <h1 className="text-2xl font-black">{title}</h1>
-        <p className="mt-2 font-bold text-slate-500">{message}</p>
       </div>
     </main>
   );

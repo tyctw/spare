@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Calculator, CheckCircle2, ChevronDown, Database, FileSearch, HeartHandshake, List, Mail, Map, ShieldCheck, Sparkles, Target } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import './advantages-page.css';
 
 const mission = [
@@ -48,7 +48,7 @@ export default function AdvantagesPage() {
   return (
     <main className="about-page">
       <div className="about-shell">
-        <PageBreadcrumb title="系統優點與關於我們" />
+        <PageTopbar title="系統優點與關於我們" />
 
         <header className="about-hero">
           <div>

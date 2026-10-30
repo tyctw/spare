@@ -6,7 +6,7 @@ import {
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
 import { managedLocalEntries } from '../lib/privacyStorage';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import './privacy-center.css';
 
 type Share = {
@@ -132,7 +132,7 @@ export default function PrivacyCenterPage() {
   return (
     <main id="main-content" className="privacy-center-page">
       <div className="privacy-shell">
-        <PageBreadcrumb title="個資與分享管理中心" />
+        <PageTopbar title="個資與分享管理中心" />
 
         <header className="privacy-hero">
           <div className="privacy-hero-copy">

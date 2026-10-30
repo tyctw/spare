@@ -1,6 +1,6 @@
 import { ArrowRight, ArrowUpRight, BookOpen, CalendarDays, ChevronDown, Compass, ExternalLink, ShieldCheck } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import './score-inquiry-page.css';
 
 const officialUrl = 'https://cap.rcpet.edu.tw/';
@@ -11,7 +11,7 @@ const mirrorLinks = [
 
 export default function ScoreInquiryPage() {
   return <main className="score-inquiry-page"><div className="score-inquiry-shell">
-    <PageBreadcrumb title="會考成績查詢" />
+    <PageTopbar title="會考成績查詢" />
 
     <header className="score-inquiry-hero">
       <div className="score-inquiry-hero-copy">

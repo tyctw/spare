@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { ArrowRight, BadgeCheck, CalendarDays, Check, ChevronDown, CreditCard, Crown, EyeOff, HeartHandshake, HelpCircle, KeyRound, LockKeyhole, LogOut, Mail, MessageCircle, Plus, ReceiptText, Sparkles, UserRound, X } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, Check, ChevronDown, CreditCard, Crown, EyeOff, HeartHandshake, HelpCircle, KeyRound, LockKeyhole, LogOut, Mail, MessageCircle, Plus, ReceiptText, Sparkles, X } from "lucide-react";
 import { callBackend } from "../lib/api";
 import { startLineLogin } from "../lib/lineLogin";
 import {
@@ -10,6 +10,7 @@ import {
   membershipPlanNames,
 } from "../lib/membership";
 import { withBasePath } from "../lib/routes";
+import PageTopbar from './PageTopbar';
 import './membership-plans-page.css';
 
 const plans = [
@@ -113,7 +114,7 @@ const PLAN_TAP_SLOP = 12;
 
 function stickyTopOffset() {
   let offset = 0;
-  document.querySelectorAll<HTMLElement>('.plans-topbar, .app-header-root, header').forEach((node) => {
+  document.querySelectorAll<HTMLElement>('.page-topbar, .plans-topbar, .app-header-root, header').forEach((node) => {
     const style = getComputedStyle(node);
     if (style.display === 'none' || style.visibility === 'hidden') return;
     if (style.position !== 'sticky' && style.position !== 'fixed') return;
@@ -246,7 +247,7 @@ export default function MembershipPage() {
 
   useEffect(() => {
     const placeToast = () => {
-      const bar = document.querySelector(".plans-topbar");
+      const bar = document.querySelector(".page-topbar");
       if (!(bar instanceof HTMLElement)) return;
       const top = Number.parseFloat(getComputedStyle(bar).top);
       const pinnedTop = Number.isFinite(top) ? Math.max(0, top) : 0;
@@ -562,7 +563,7 @@ export default function MembershipPage() {
 
   const noticeTone = notice.includes("成功") || notice === "已複製" ? "success" : "error";
   return <main id="main-content" className="plans-page" aria-labelledby="membership-title">{notice && <div className="plans-toast-anchor" style={{ top: toastTop }}><div ref={toastRef} className="plans-toast" role="status" aria-live="polite" data-tone={noticeTone}><p>{noticeTone === "error" && <span className="sr-only">需要處理：</span>}{notice}</p><button type="button" onClick={() => setNotice("")} aria-label="關閉通知"><X size={18} aria-hidden="true" /></button></div></div>}<div className="plans-shell">
-    <nav className="plans-topbar" aria-label="會員頁導覽"><a className="plans-brand" href={withBasePath('/')}><span>會考</span>落點分析<i aria-hidden="true" /></a><span className="plans-topbar-current">會員方案</span><a className="plans-topbar-account" href={withBasePath('/membership/account')}><UserRound size={16} aria-hidden="true" />會員帳號</a></nav>
+    <PageTopbar title={isSuccessPage ? '付款確認' : '會員方案'} />
     <header className="plans-hero"><div className="plans-hero-copy"><h1 id="membership-title">{isSuccessPage ? '付款確認' : '會員方案'}</h1><p className="plans-lead">選一段適合你的準備時間。</p><div className="plans-payment-mode" aria-label="方案付款方式"><span>一次付款</span><span>到期不續扣</span></div></div></header>
     {membership === null ? <section className="plans-feedback" role="status" aria-busy="true"><Crown size={28} aria-hidden="true" /><h2>正在確認會員資格</h2><p>正在讀取目前帳號的使用狀態，請稍候。</p></section>
     : isSuccessPage && !membership.active ? <section className="plans-feedback" aria-labelledby="payment-confirming-title"><span className="plans-feedback-icon"><CreditCard size={28} aria-hidden="true" /></span><p className="plans-eyebrow">付款狀態</p><h2 id="payment-confirming-title">{paymentWaitingExpired ? '尚未確認會員資格' : '正在確認付款結果'}</h2><p role="status" aria-live="polite">{paymentWaitingExpired ? '目前尚未收到資格啟用結果。如果已完成付款，請重新確認或提供訂單編號聯絡我們。請先確認原訂單狀態，再決定是否重新購買。' : '正在等待付款系統回傳與資格更新，確認後會顯示會員有效期限。'}</p><div className="plans-feedback-actions"><button type="button" className="plans-primary" onClick={() => void refresh().catch(() => setNotice('暫時無法確認資格，請稍後再試。'))}>重新確認資格</button><a className="plans-secondary" href={withBasePath('/membership/account')}>查看帳號與訂單</a></div></section>

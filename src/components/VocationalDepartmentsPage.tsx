@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, ChevronRight, Compass, Search, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import { departmentCategories, departmentPath, departments } from '../lib/vocationalDepartments';
 import { groups } from '../lib/vocationalGroups';
 import './vocational-departments-page.css';
@@ -23,7 +23,7 @@ export default function VocationalDepartmentsPage() {
 
   return <main className="departments-page">
     <div className="departments-shell">
-      <PageBreadcrumb title="科別探索" />
+      <PageTopbar title="科別探索" />
       <header className="departments-hero">
         <div><p className="departments-eyebrow"><BookOpen size={17} />技術型高中科別指南</p><h1>從群別，找到<br /><em>想深入的科別。</em></h1><p className="departments-lead">依類別與群別整理 {departments.length} 個科別。先認識各科在學什麼、可能做哪些實作，再打開獨立介紹頁比較學校課程。</p><a href="#department-explorer" className="departments-hero-link">開始找科別<ArrowRight size={17} /></a></div>
         <div className="departments-hero-stats" aria-label="科別總覽統計"><div><strong>6</strong><span>大類別</span></div><div><strong>15</strong><span>個群別</span></div><div><strong>{departments.length}</strong><span>個科別</span></div><p>每所學校開設的科別、課程與設備不同。選填前，請以當年度簡章及學校課程資料確認。</p></div>

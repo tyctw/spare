@@ -25,7 +25,7 @@ import {
   membershipPlanNames,
 } from '../lib/membership';
 import { withBasePath } from '../lib/routes';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import './membership-account-page.css';
 
 type AccountState = 'loading' | 'ready' | 'error';
@@ -225,7 +225,7 @@ export default function MembershipAccountPage() {
   const signedIn = Boolean(lineName) || membership.active;
 
   return <main id="main-content" aria-labelledby="member-account-title" className="account-center"><div className="account-center-shell">
-    <PageBreadcrumb title="我的會員帳號" parent={{ label: '會員方案', href: '/membership' }} />
+    <PageTopbar title="我的會員帳號" parent={{ label: '會員方案', href: '/membership' }} />
     <header className="account-center-hero"><div><p className="account-center-eyebrow"><CircleUserRound size={17} aria-hidden="true" />會員中心</p><h1 id="member-account-title">我的會員帳號</h1><p className="account-center-lead">{signedIn ? `${lineName || 'LINE 會員'}，在這裡查看會員資格、付款紀錄與帳號資料。` : '登入後，集中查看你的會員資格、付款紀錄與帳號資料。'}</p></div><div className="account-center-hero-status" data-active={membership.active}><span className="account-center-status-dot" /><div><small>目前狀態</small><strong>{state === 'loading' ? '正在確認帳號' : state === 'error' ? '需要重新確認' : membership.active ? '會員資格有效' : signedIn ? '已登入 · 尚未啟用會員' : '尚未登入'}</strong></div></div></header>
     {state === 'loading' ? <section className="account-center-feedback" role="status" aria-live="polite" aria-busy="true"><RotateCcw size={24} aria-hidden="true" /><h2>正在確認會員資格</h2><p>正在讀取帳號與付款紀錄，請稍候。</p></section>
     : state === 'error' ? <section className="account-center-feedback account-center-error" role="alert"><ShieldCheck size={26} aria-hidden="true" /><h2>暫時無法確認帳號狀態</h2><p>{errorMessage || '請重新整理；若仍無法確認，可重新使用 LINE 登入。'}</p><div className="account-center-form-actions"><button type="button" className="account-center-primary" onClick={() => { setState('loading'); void refresh().catch((err) => { setErrorMessage(err instanceof Error ? err.message : ''); setState('error'); }); }}>重新整理</button><button type="button" className="account-center-secondary" onClick={loginWithLine}>重新登入 LINE</button></div></section>

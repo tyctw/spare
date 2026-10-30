@@ -1,4 +1,4 @@
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import React, { useMemo, useState } from 'react';
 import { ArrowRight, BarChart3, BookOpen, Building2, Calculator, CalendarDays, CheckCircle2, Compass, Crown, ExternalLink, FileText, GraduationCap, HeartHandshake, HelpCircle, History, LineChart, Map, MapPin, Megaphone, Search, Shield, Sparkles, Target, UserRound } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
@@ -156,7 +156,7 @@ export default function SiteMapPage() {
   const isSearching = searchTerm.trim().length > 0;
 
   return <main className="site-map-page"><div className="site-map-shell">
-    <PageBreadcrumb title="網站地圖" />
+    <PageTopbar title="網站地圖" />
     <header className="site-map-hero"><div><span className="site-map-eyebrow"><Map size={17} aria-hidden="true" />全站功能索引</span><h1>網站地圖</h1><p>從想做的事出發，快速找到落點分析、校科探索、志願規劃與各區資訊。</p></div><div className="site-map-hero-stat"><strong>{totalCount}</strong><span>個功能與資訊頁面</span></div></header>
 
     <section className="site-map-search-panel" aria-label="搜尋網站功能"><label htmlFor="site-map-search">想找什麼功能？</label><div className="site-map-search-row"><Search size={20} aria-hidden="true" /><input id="site-map-search" type="search" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="輸入功能或關鍵字，例如：五專、志願、會員" autoComplete="off" />{isSearching && <button type="button" onClick={() => setSearchTerm('')}>清除</button>}</div><p role="status" aria-live="polite">{isSearching ? `找到 ${count} 個相關頁面` : '也可以從下方分類直接瀏覽全部功能。'}</p></section>

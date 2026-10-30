@@ -1,4 +1,4 @@
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { AlertCircle, ArrowLeft, ArrowRight, Building2, ExternalLink, FilterX, Loader2, MapPin, Search, SlidersHorizontal } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
@@ -83,7 +83,7 @@ export default function SearchPage() {
 
   return <main className="school-search-page">
     <div className="school-search-shell">
-      <PageBreadcrumb title="搜尋學校與科別" />
+      <PageTopbar title="搜尋學校與科別" />
       <header className="school-search-hero"><div><span className="school-search-eyebrow"><Search size={16} aria-hidden="true" />校科資料查詢</span><h1>搜尋學校與科別</h1><p>從校名、科別、群別或地區開始，找到想進一步了解的高中職校科。</p></div><div className="school-search-hero-stat"><span>目前收錄</span><strong>{isLoading ? '—' : schools.length.toLocaleString('zh-TW')}</strong><span>筆校科資料</span></div></header>
 
       <form className="school-search-form" role="search" onSubmit={submitSearch}>
