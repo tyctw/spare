@@ -1,4 +1,5 @@
 import type { MouseEventHandler } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import './page-topbar.css';
 
@@ -8,7 +9,7 @@ export default function PageTopbar({ title, onHomeClick }: {
   onHomeClick?: MouseEventHandler<HTMLAnchorElement>;
 }) {
   return <nav className="page-topbar" aria-label="頁面導覽">
-    <p className="page-topbar-title">{title}</p>
-    <a href={withBasePath('/')} onClick={onHomeClick}>返回首頁</a>
+    <button type="button" className="page-topbar-title" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>{title}<span className="sr-only">，捲動至頁面頂端</span></button>
+    <a href={withBasePath('/')} onClick={onHomeClick}><ArrowLeft size={16} aria-hidden="true" />返回首頁</a>
   </nav>;
 }
