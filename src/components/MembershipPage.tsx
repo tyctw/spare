@@ -548,7 +548,6 @@ export default function MembershipPage() {
           <div><dt>會員有效至</dt><dd>{formatDate(membership.expiresAt)}</dd></div>
           <div><dt>啟用日期</dt><dd>{formatDate(membership.activatedAt || undefined)}</dd></div>
         </dl>
-        <p className="plans-pass-renew">一次付款，不自動續扣</p>
         <p className="plans-pass-lead">{holderName}，歡迎回來。會員使用期間不顯示 Google 廣告與 Offerwall。填妥成績後，即可直接開始分析。</p>
         <div className="plans-pass-actions">
           <a className="plans-primary" href={withBasePath('/')}>開始落點分析<ArrowRight size={17} aria-hidden="true" /></a>
