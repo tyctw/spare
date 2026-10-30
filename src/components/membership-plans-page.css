@@ -550,7 +550,6 @@
 .plans-pass-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 20px;margin:18px 0 0;padding-top:16px;border-top:1px solid var(--pass-line)}
 .plans-pass-facts>div{min-width:0}
 .plans-pass-facts dd{margin:4px 0 0;color:var(--pass-ink);font-size:15px;font-weight:800;line-height:1.45;overflow-wrap:anywhere}
-.plans-pass-renew{display:inline-flex;align-items:center;margin:16px 0 0;padding:7px 12px;border:1px solid var(--pass-line);border-radius:999px;background:var(--pass-yellow);color:var(--pass-ink);font-size:13px;font-weight:800;line-height:1.4}
 .plans-pass-lead{max-width:68ch;margin:14px 0 0;color:var(--pass-ink);font-size:15px;line-height:1.8}
 .plans-pass-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 .plans-pass-seam{position:relative;z-index:2;height:0}
@@ -576,8 +575,8 @@
 }
 @media(forced-colors:active){
   .plans-pass{background:Canvas;box-shadow:none;border:1px solid CanvasText}
-  .plans-pass::before,.plans-pass-days,.plans-pass .plans-active-badge,.plans-pass-renew{background:Canvas;color:CanvasText;forced-color-adjust:none}
-  .plans-pass-days,.plans-pass .plans-active-badge,.plans-pass-renew{border:1px solid CanvasText}
+  .plans-pass::before,.plans-pass-days,.plans-pass .plans-active-badge{background:Canvas;color:CanvasText;forced-color-adjust:none}
+  .plans-pass-days,.plans-pass .plans-active-badge{border:1px solid CanvasText}
   .plans-pass-notch{background:Canvas;border-color:CanvasText}
   .plans-pass-perforation{border-top-color:CanvasText}
   .plans-pass-progress-track{background:Canvas;border:1px solid CanvasText}
