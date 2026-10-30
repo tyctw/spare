@@ -41,12 +41,12 @@
 .page-topbar-title::after {
   content: "";
   display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-left: 4px;
-  border-radius: 50%;
-  background: #6034b8;
-  vertical-align: 0.62em;
+  width: 4px;
+  height: 0.8em;
+  margin-left: 3px;
+  border-radius: 2px;
+  background: #ffda45;
+  vertical-align: 0.15em;
 }
 
 .page-topbar-title:hover { color: #6034b8; }
@@ -98,5 +98,8 @@
     forced-color-adjust: auto;
   }
 
-  .page-topbar-title::after { background: CanvasText; }
+  .page-topbar-title::after {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
 }
