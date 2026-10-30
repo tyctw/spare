@@ -159,7 +159,7 @@ const DesktopNav = memo(function DesktopNav({
   }, []);
   const closeMenuWithDelay = useCallback(() => {
     keepMenuOpen();
-    closeMenuTimer.current = window.setTimeout(() => setActiveMenu(null), 220);
+    closeMenuTimer.current = window.setTimeout(() => setActiveMenu(null), 120);
   }, [keepMenuOpen]);
   menuHoverRef.current.keep = keepMenuOpen;
   menuHoverRef.current.scheduleClose = closeMenuWithDelay;

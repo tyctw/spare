@@ -18,6 +18,8 @@ interface NavigationDrawerProps {
   setActiveModal: (modal: any) => void;
 }
 
+const DRAWER_EXIT_MS = 160;
+
 const isCompactNavigationViewport = () => typeof window !== 'undefined' && (
   window.innerWidth < 1024 || window.matchMedia('(hover: none), (pointer: coarse)').matches
 );
@@ -34,13 +36,37 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
   const hasHistoryEntryRef = useRef(false);
   const isMobileCategoryOpenRef = useRef(false);
   const isClosingRef = useRef(false);
+  const closeTimerRef = useRef<number | undefined>(undefined);
+  const scrollRestorationChangedRef = useRef(false);
+  const previousScrollRestorationRef = useRef<ScrollRestoration>('auto');
+  const [isClosing, setIsClosing] = useState(false);
+
+  // Page scroll restoration is switched to "manual" for the lifetime of the
+  // drawer. Returning to the page entry via history.go() then never makes the
+  // browser re-apply (and, with `scroll-behavior: smooth`, animate) a saved
+  // scroll position. It is switched back once the traversal has finished.
+  const restoreScrollRestoration = (traversalDone = false) => {
+    if (!scrollRestorationChangedRef.current) return;
+    scrollRestorationChangedRef.current = false;
+    if (traversalDone) {
+      if ('scrollRestoration' in window.history) window.history.scrollRestoration = previousScrollRestorationRef.current;
+      return;
+    }
+    const restore = () => {
+      window.removeEventListener('popstate', restore);
+      window.clearTimeout(restoreTimer);
+      if ('scrollRestoration' in window.history) window.history.scrollRestoration = previousScrollRestorationRef.current;
+    };
+    const restoreTimer = window.setTimeout(restore, 1000);
+    window.addEventListener('popstate', restore);
+  };
 
   // On touch devices, make the browser back gesture dismiss the drawer before
   // it leaves the current page. Closing by a UI control removes that temporary
   // history entry as well, so it does not consume an extra back press later.
-  const closeDrawer = () => {
-    if (isClosingRef.current) return;
-    isClosingRef.current = true;
+  // The exit is a short compositor-only fade (opacity/transform); the heavy
+  // work (unmounting the menu, history traversal) runs after it, hidden.
+  const finishClose = () => {
     const historySteps = hasHistoryEntryRef.current
       ? (isMobileCategoryOpenRef.current ? -2 : -1) : 0;
     hasHistoryEntryRef.current = false;
@@ -48,7 +74,19 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
     // A UI close must not depend on asynchronous (and sometimes throttled)
     // history traversal delivering popstate on a mobile browser.
     onClose();
+    restoreScrollRestoration();
     if (historySteps) window.history.go(historySteps);
+  };
+
+  const closeDrawer = () => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finishClose();
+      return;
+    }
+    setIsClosing(true);
+    closeTimerRef.current = window.setTimeout(finishClose, DRAWER_EXIT_MS);
   };
 
   const openMobileCategory = (category: MenuCategory) => {
@@ -92,7 +130,11 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      triggerRef.current?.focus();
+      // The exit animation delays this cleanup, so another surface (e.g. the
+      // search dialog opened from the menu) may already own focus; only
+      // restore it when focus was lost with the removed drawer.
+      const active = document.activeElement;
+      if (!active || active === document.body) triggerRef.current?.focus();
     };
   }, [isOpen, onClose]);
 
@@ -100,6 +142,11 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
     if (!isOpen || !isCompactNavigationViewport()) return;
 
     // StrictMode replays effects; do not add a second entry for this instance.
+    if (!hasHistoryEntryRef.current && 'scrollRestoration' in window.history && !scrollRestorationChangedRef.current) {
+      previousScrollRestorationRef.current = window.history.scrollRestoration;
+      window.history.scrollRestoration = 'manual';
+      scrollRestorationChangedRef.current = true;
+    }
     if (!hasHistoryEntryRef.current) window.history.pushState(
       { ...(window.history.state ?? {}), navigationDrawerOpen: true, navigationDrawerLevel: 'root' },
       '',
@@ -119,6 +166,7 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
 
       hasHistoryEntryRef.current = false;
       isMobileCategoryOpenRef.current = false;
+      restoreScrollRestoration(true);
       onClose();
     };
 
@@ -144,28 +192,45 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
     if (isOpen && !isCompactNavigation) closeDrawer();
   }, [isCompactNavigation, isOpen]);
 
-  // Keep the page behind the drawer still. Without this, touch scrolling that
-  // reaches the end of the menu list scrolls the page underneath, and closing
-  // the drawer (history.go) makes the browser restore the old scroll position
-  // with the site-wide `scroll-behavior: smooth`, i.e. a ~500 ms animated
-  // rewind of the page right after the menu closes.
+  // Keep the page behind the drawer still without touching layout. Toggling
+  // `overflow` on <html> forces a full-page relayout/repaint on open and close
+  // and is ignored by some iOS Safari versions, so block scroll gestures that
+  // would chain out of the menu list instead.
   useEffect(() => {
-    const root = document.documentElement;
-    const scrollY = window.scrollY;
-    const previousOverflow = root.style.overflow;
-    root.style.overflow = 'hidden';
-    return () => {
-      root.style.overflow = previousOverflow;
-      // History traversal may restore scroll after this cleanup; make sure it
-      // is never animated and ends where the user left the page.
-      const previousBehavior = root.style.scrollBehavior;
-      root.style.scrollBehavior = 'auto';
-      if (window.scrollY !== scrollY) window.scrollTo(0, scrollY);
-      window.setTimeout(() => {
-        if (window.scrollY !== scrollY) window.scrollTo(0, scrollY);
-        root.style.scrollBehavior = previousBehavior;
-      }, 250);
+    const panel = drawerRef.current;
+    if (!panel) return;
+    let startY = 0;
+    const canScroll = (target: EventTarget | null, dy: number) => {
+      const list = menuScrollRef.current;
+      if (!list || !(target instanceof Node) || !list.contains(target)) return false;
+      if (list.scrollHeight <= list.clientHeight) return false;
+      const atTop = list.scrollTop <= 0;
+      const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 1;
+      return !((dy > 0 && atTop) || (dy < 0 && atBottom));
     };
+    const onTouchStart = (event: TouchEvent) => { startY = event.touches[0]?.clientY ?? 0; };
+    const onTouchMove = (event: TouchEvent) => {
+      const dy = (event.touches[0]?.clientY ?? 0) - startY;
+      if (!canScroll(event.target, dy)) event.preventDefault();
+    };
+    const onWheel = (event: WheelEvent) => {
+      if (!canScroll(event.target, -event.deltaY)) event.preventDefault();
+    };
+    panel.addEventListener('touchstart', onTouchStart, { passive: true });
+    panel.addEventListener('touchmove', onTouchMove, { passive: false });
+    panel.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      panel.removeEventListener('touchstart', onTouchStart);
+      panel.removeEventListener('touchmove', onTouchMove);
+      panel.removeEventListener('wheel', onWheel);
+    };
+  }, [isCompactNavigation]);
+
+  useEffect(() => () => {
+    window.clearTimeout(closeTimerRef.current);
+    // Unmounted without closeDrawer (e.g. via the popstate path or the host).
+    restoreScrollRestoration();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -184,6 +249,7 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
 
   const runAction = (action: MenuAction) => {
     if (action.type === 'route') {
+      restoreScrollRestoration();
       window.location.href = withBasePath(action.href);
       return;
     }
@@ -224,7 +290,7 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
           <div
             onClick={closeDrawer}
             aria-hidden="true"
-            className="navigation-drawer-overlay fixed inset-0 z-[100] bg-slate-900/40"
+            className={`navigation-drawer-overlay${isClosing ? ' is-closing' : ''} fixed inset-0 z-[100] bg-slate-900/40`}
           />
           <div
             id="main-navigation-drawer"
@@ -235,7 +301,7 @@ function NavigationDrawer({ isOpen, onClose, setActiveModal }: NavigationDrawerP
             ref={drawerRef}
             onKeyDown={handleDrawerKeyDown}
             className={isCompactNavigation
-              ? 'navigation-drawer-panel fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col overflow-hidden bg-slate-900'
+              ? `navigation-drawer-panel${isClosing ? ' is-closing' : ''} fixed inset-0 z-[110] flex h-[100dvh] w-full flex-col overflow-hidden bg-slate-900`
               : `navigation-drawer-panel fixed left-1/2 top-3 z-[110] flex max-h-[calc(100vh-1.5rem)] ${mobileCategory ? 'w-[min(94vw,760px)]' : 'w-[min(94vw,960px)]'} -translate-x-1/2 flex-col overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-slate-50 shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] sm:top-5 sm:max-h-[calc(100vh-2.5rem)]`}
           >
             <div className={isCompactNavigation ? 'flex shrink-0 items-center gap-3 bg-slate-900 px-3 py-4' : 'flex shrink-0 justify-end px-4 pt-4 pb-0'}>

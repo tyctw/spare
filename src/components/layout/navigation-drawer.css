@@ -11,6 +11,24 @@
   animation: navigation-drawer-fade 140ms ease-out;
 }
 
+@keyframes navigation-drawer-exit {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to { opacity: 0; transform: translate3d(0, 12px, 0); }
+}
+
+/* Exit: opacity + transform only, so it runs on the compositor and cannot be
+   delayed by the main-thread work that unmounts the menu afterwards. */
+.navigation-drawer-overlay.is-closing,
+.navigation-drawer-panel.is-closing {
+  animation: navigation-drawer-exit 160ms ease-in forwards;
+  pointer-events: none;
+}
+
+.navigation-drawer-panel {
+  will-change: opacity, transform;
+  touch-action: pan-y;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .navigation-drawer-overlay,
   .navigation-drawer-panel {
