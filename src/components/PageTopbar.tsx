@@ -8,7 +8,7 @@ export default function PageTopbar({ title, onHomeClick }: {
   onHomeClick?: MouseEventHandler<HTMLAnchorElement>;
 }) {
   return <nav className="page-topbar" aria-label="頁面導覽">
-    <p className="page-topbar-title">{title}</p>
+    <button type="button" className="page-topbar-title" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>{title}<span className="sr-only">，捲動至頁面頂端</span></button>
     <a href={withBasePath('/')} onClick={onHomeClick}>返回首頁</a>
   </nav>;
 }
