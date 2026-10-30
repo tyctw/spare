@@ -512,6 +512,71 @@
 .feature-laptop,.feature-phone{border-color:#8ea0d8;background:#171e38;color:var(--plans-yellow)}
 .feature-laptop::after{background:#3d4d86}
 .feature-chat-status>span{background:var(--plans-yellow);box-shadow:0 0 6px #ffda4566}
+
+/* Active membership, drawn as a perforated pass on the site palette. */
+.plans-pass{
+  --pass-ink:var(--plans-ink,#171e38);
+  --pass-purple:var(--plans-accent,#6034b8);
+  --pass-yellow:var(--plans-yellow,#ffda45);
+  --pass-paper:#fff;
+  --pass-page:var(--plans-bg,#f8fafc);
+  --pass-line:var(--plans-border,#d4ddeb);
+  --pass-muted:var(--plans-muted,#617086);
+  position:relative;
+  margin:18px auto 0;
+  border-radius:22px;
+  background:var(--pass-paper);
+  box-shadow:0 16px 40px #171e3814,inset 0 0 0 1px var(--pass-line);
+}
+.plans-pass::before{content:"";position:absolute;z-index:0;top:0;bottom:0;left:0;width:8px;background:var(--pass-yellow);border-radius:22px 0 0 22px}
+.plans-pass-main,.plans-pass .plans-active-footer{position:relative;z-index:1}
+.plans-pass-main{padding:28px 32px 22px 36px}
+.plans-pass-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.plans-pass-kicker{margin:0;color:var(--pass-purple);font-size:13px;font-weight:800;letter-spacing:.14em;line-height:1.4}
+.plans-pass .plans-active-badge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;background:var(--pass-yellow);padding:8px 12px;color:var(--pass-ink);font-size:13px;font-weight:800;line-height:1.4}
+.plans-pass-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-top:18px}
+.plans-pass-plan{min-width:0}
+.plans-pass-plan-label,.plans-pass-duration>span,.plans-pass-holder>span,.plans-pass-facts dt{display:block;color:var(--pass-muted);font-size:13px;font-weight:700;line-height:1.5}
+.plans-pass h2{margin:2px 0 0;color:var(--pass-ink);font-size:clamp(32px,4vw,48px);font-weight:900;letter-spacing:-.04em;line-height:1.15;overflow-wrap:anywhere}
+.plans-pass-duration{display:flex;align-items:baseline;gap:10px;margin:8px 0 0}
+.plans-pass-duration strong{color:var(--pass-purple);font-size:clamp(26px,3vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1.1}
+.plans-pass-days{display:grid;justify-items:center;flex:none;min-width:112px;margin:0;padding:12px 16px 10px;border-radius:16px;background:var(--pass-yellow);color:var(--pass-ink);text-align:center}
+.plans-pass-days>span{font-size:13px;font-weight:800;line-height:1.4}
+.plans-pass-days strong{display:block;margin-top:2px;font-size:clamp(40px,5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.plans-pass-days-unit{margin-left:2px;font-size:.38em;font-weight:800;letter-spacing:0}
+.plans-pass-holder{margin-top:22px;padding:14px 16px;border:1px dashed var(--pass-line);border-radius:14px;background:#fff}
+.plans-pass-holder strong{display:block;margin-top:2px;color:var(--pass-ink);font-size:clamp(22px,2.4vw,28px);font-weight:900;line-height:1.35;overflow-wrap:anywhere}
+.plans-pass-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px;margin:18px 0 0}
+.plans-pass-facts dd{margin:4px 0 0;color:var(--pass-ink);font-size:17px;font-weight:800;line-height:1.5;overflow-wrap:anywhere}
+.plans-pass-renew{display:inline-flex;align-items:center;margin:16px 0 0;padding:7px 12px;border:1px solid var(--pass-line);border-radius:999px;background:var(--pass-yellow);color:var(--pass-ink);font-size:13px;font-weight:800;line-height:1.4}
+.plans-pass-lead{max-width:68ch;margin:14px 0 0;color:var(--pass-ink);font-size:15px;line-height:1.8}
+.plans-pass-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.plans-pass-seam{position:relative;z-index:2;height:0}
+.plans-pass-perforation{position:absolute;top:0;left:22px;right:22px;border-top:2px dashed var(--pass-muted);transform:translateY(-1px)}
+.plans-pass-notch{position:absolute;top:0;width:14px;height:28px;background:var(--pass-page);transform:translateY(-50%)}
+.plans-pass-notch-start{left:0;border:1px solid var(--pass-line);border-left:0;border-radius:0 14px 14px 0}
+.plans-pass-notch-end{right:0;border:1px solid var(--pass-line);border-right:0;border-radius:14px 0 0 14px}
+.plans-pass .plans-active-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0;padding:20px 32px 22px 36px}
+.plans-pass .plans-active-footer a{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--pass-purple);font-size:14px;font-weight:800;line-height:1.4;text-decoration:none}
+.plans-pass .plans-active-footer a:hover{text-decoration:underline;text-underline-offset:4px}
+.plans-pass .plans-active-footer button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 14px;border:1px solid var(--pass-line);border-radius:10px;background:#fff;color:var(--pass-ink);font-size:13px;font-weight:750;cursor:pointer}
+.plans-pass .plans-active-footer button:hover{border-color:var(--pass-purple);color:var(--pass-purple)}
+@media(max-width:720px){
+  .plans-pass-main{padding:22px 18px 18px 24px}
+  .plans-pass-hero,.plans-pass-facts{display:grid;grid-template-columns:1fr;align-items:start}
+  .plans-pass-days{justify-items:start;text-align:left;min-width:0;width:fit-content}
+  .plans-pass-actions{flex-direction:column}
+  .plans-pass-actions a{width:100%}
+  .plans-pass .plans-active-footer{align-items:stretch;flex-direction:column;gap:8px;padding:18px 18px 18px 24px}
+  .plans-pass .plans-active-footer a,.plans-pass .plans-active-footer button{width:100%;justify-content:center}
+}
+@media(forced-colors:active){
+  .plans-pass{background:Canvas;box-shadow:none;border:1px solid CanvasText}
+  .plans-pass::before,.plans-pass-days,.plans-pass .plans-active-badge,.plans-pass-renew{background:Canvas;color:CanvasText;forced-color-adjust:none}
+  .plans-pass-days,.plans-pass .plans-active-badge,.plans-pass-renew{border:1px solid CanvasText}
+  .plans-pass-notch{background:Canvas;border-color:CanvasText}
+  .plans-pass-perforation{border-top-color:CanvasText}
+}
 @media(hover:hover){
 .plans-option:hover{border-color:var(--plans-ink);box-shadow:0 18px 44px #171e3821}
 .plans-option[data-featured=true]:hover{border-color:transparent;background:linear-gradient(#fff,#fff) padding-box,conic-gradient(from var(--membership-orbit),var(--plans-accent) 0%,#6034b840 14%,#171e38e0 30%,#171e38e0 82%,#6034b859 92%,var(--plans-accent) 100%) border-box}

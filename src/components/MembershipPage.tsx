@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { ArrowRight, BadgeCheck, CalendarDays, Check, ChevronDown, CreditCard, Crown, EyeOff, HeartHandshake, HelpCircle, KeyRound, LockKeyhole, LogOut, Mail, MessageCircle, Plus, ReceiptText, Sparkles, UserRound } from "lucide-react";
 import { callBackend } from "../lib/api";
 import { startLineLogin } from "../lib/lineLogin";
@@ -109,6 +109,29 @@ function MembershipFeaturePreview({ kind }: { kind: string }) {
   </div>;
 }
 
+const PLAN_TAP_SLOP = 12;
+
+function stickyTopOffset() {
+  let offset = 0;
+  document.querySelectorAll<HTMLElement>('.plans-topbar, .app-header-root, header').forEach((node) => {
+    const style = getComputedStyle(node);
+    if (style.display === 'none' || style.visibility === 'hidden') return;
+    if (style.position !== 'sticky' && style.position !== 'fixed') return;
+    const top = Number.parseFloat(style.top);
+    const pinnedTop = Number.isFinite(top) ? Math.max(0, top) : 0;
+    offset = Math.max(offset, pinnedTop + node.offsetHeight);
+  });
+  return offset + 12;
+}
+
+function scrollToMembershipCheckout() {
+  const target = document.getElementById('membership-checkout');
+  if (!target) return;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const top = window.scrollY + target.getBoundingClientRect().top - stickyTopOffset();
+  window.scrollTo({ top: Math.max(0, top), behavior: reduced ? 'instant' : 'smooth' });
+}
+
 function MembershipSupportLinks() {
   return <section className="plans-support" aria-labelledby="membership-support-title">
     <div><p className="plans-section-kicker">需要一點協助？</p><h2 id="membership-support-title">我們在這裡。</h2><p>會員資格或付款有疑問，請附上訂單編號來信。</p><a href="mailto:tyctw.analyze@gmail.com"><Mail size={16} aria-hidden="true" />tyctw.analyze@gmail.com<ArrowRight size={16} aria-hidden="true" /></a></div>
@@ -121,6 +144,8 @@ export default function MembershipPage() {
   const [selected, setSelected] = useState<PlanId>("monthly");
   const carouselRef = useRef<HTMLFieldSetElement>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const planPointer = useRef({ x: 0, y: 0, tracking: false, moved: false, scrollLeft: 0 });
+  const checkoutScrollFrame = useRef(0);
   const featureCarouselRef = useRef<HTMLDivElement>(null);
   const [featurePage, setFeaturePage] = useState(0);
   const featureStops = (container: HTMLDivElement) => {
@@ -163,6 +188,46 @@ export default function MembershipPage() {
   const activeDaysLeft = membership?.expiresAt
     ? Math.max(0, Math.ceil((new Date(membership.expiresAt).getTime() - Date.now()) / 86_400_000))
     : null;
+  const holderName = lineName || "LINE 會員";
+  const activePlan = membership?.plan ? plans.find((plan) => plan.id === membership.plan) : undefined;
+  const activePlanName = activePlan?.name ?? (membership?.plan ? membershipPlanNames[membership.plan] : "—");
+  const activePlanDuration = activePlan?.duration;
+  const daysRemaining = activeDaysLeft !== null && Number.isFinite(activeDaysLeft) ? activeDaysLeft : null;
+
+  const carouselScrolled = () => {
+    const carousel = carouselRef.current;
+    return Boolean(carousel && Math.abs(carousel.scrollLeft - planPointer.current.scrollLeft) > 4);
+  };
+
+  const revealCheckout = () => {
+    if (planPointer.current.moved || carouselScrolled()) return;
+    cancelAnimationFrame(checkoutScrollFrame.current);
+    checkoutScrollFrame.current = requestAnimationFrame(() => {
+      if (planPointer.current.moved || carouselScrolled()) return;
+      scrollToMembershipCheckout();
+    });
+  };
+
+  const trackPlanPointer = (event: ReactPointerEvent<HTMLFieldSetElement>) => {
+    if (event.type === 'pointerdown') {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      planPointer.current.tracking = true;
+      planPointer.current.moved = false;
+      planPointer.current.scrollLeft = carouselRef.current?.scrollLeft ?? 0;
+      planPointer.current.x = event.clientX;
+      planPointer.current.y = event.clientY;
+      return;
+    }
+    if (!planPointer.current.tracking) return;
+    if (event.type === 'pointermove') {
+      if (event.pointerType === 'mouse' && event.buttons === 0) return;
+      const dx = event.clientX - planPointer.current.x;
+      const dy = event.clientY - planPointer.current.y;
+      if (Math.hypot(dx, dy) > PLAN_TAP_SLOP) planPointer.current.moved = true;
+      return;
+    }
+    planPointer.current.tracking = false;
+  };
 
   const refresh = async () => {
     const line = await callBackend<{ loggedIn: boolean; name?: string }>({
@@ -224,18 +289,25 @@ export default function MembershipPage() {
     const wheel = (event: WheelEvent) => {
       if (event.ctrlKey || event.shiftKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY) || !event.cancelable) return;
       const unit = event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? carousel.clientWidth : 1;
-      if (advance(event.deltaY * unit)) { event.preventDefault(); settle(); }
+      if (advance(event.deltaY * unit)) { planPointer.current.moved = true; event.preventDefault(); settle(); }
     };
     const start = (event: TouchEvent) => {
       tracking = event.touches.length === 1;
       axis = null;
       if (!tracking) return;
       x = event.touches[0].clientX; y = event.touches[0].clientY;
+      planPointer.current.x = x;
+      planPointer.current.y = y;
+      planPointer.current.scrollLeft = carousel.scrollLeft;
+      planPointer.current.moved = false;
+      planPointer.current.tracking = true;
       clearTimeout(timer);
     };
     const move = (event: TouchEvent) => {
-      if (!tracking || event.touches.length !== 1 || !event.cancelable) return;
+      if (!tracking || event.touches.length !== 1) return;
       const nx = event.touches[0].clientX, ny = event.touches[0].clientY;
+      if (Math.hypot(nx - planPointer.current.x, ny - planPointer.current.y) > PLAN_TAP_SLOP) planPointer.current.moved = true;
+      if (!event.cancelable) return;
       const dx = x - nx, dy = y - ny;
       if (!axis && Math.max(Math.abs(dx), Math.abs(dy)) < 5) return;
       if (!axis) axis = Math.abs(dy) > Math.abs(dx) ? 'y' : 'x';
@@ -388,13 +460,48 @@ export default function MembershipPage() {
     {notice && (membership === null || membership?.active || isSuccessPage) && <p className="plans-notice" role="status" aria-live="polite">{notice}</p>}
     {membership === null ? <section className="plans-feedback" role="status" aria-busy="true"><Crown size={28} aria-hidden="true" /><h2>正在確認會員資格</h2><p>正在讀取目前帳號的使用狀態，請稍候。</p></section>
     : isSuccessPage && !membership.active ? <section className="plans-feedback" aria-labelledby="payment-confirming-title"><span className="plans-feedback-icon"><CreditCard size={28} aria-hidden="true" /></span><p className="plans-eyebrow">付款狀態</p><h2 id="payment-confirming-title">{paymentWaitingExpired ? '尚未確認會員資格' : '正在確認付款結果'}</h2><p role="status" aria-live="polite">{paymentWaitingExpired ? '目前尚未收到資格啟用結果。如果已完成付款，請重新確認或提供訂單編號聯絡我們。請先確認原訂單狀態，再決定是否重新購買。' : '正在等待付款系統回傳與資格更新，確認後會顯示會員有效期限。'}</p><div className="plans-feedback-actions"><button type="button" className="plans-primary" onClick={() => void refresh().catch(() => setNotice('暫時無法確認資格，請稍後再試。'))}>重新確認資格</button><a className="plans-secondary" href={withBasePath('/membership/account')}>查看帳號與訂單</a></div></section>
-    : membership.active ? <>
-      <section className="plans-active"><div><span className="plans-active-badge"><BadgeCheck size={17} aria-hidden="true" />會員資格有效</span><h2>{lineName || 'LINE 會員'}，歡迎回來。</h2><p>會員使用期間不顯示 Google 廣告與 Offerwall。填妥成績後，即可直接開始分析。</p><div className="plans-active-actions"><a className="plans-primary" href={withBasePath('/')}>開始落點分析<ArrowRight size={17} aria-hidden="true" /></a><a className="plans-secondary" href={withBasePath('/mock-volunteer')}>整理模擬志願序</a></div></div><dl><div><dt>目前方案</dt><dd>{membership.plan ? membershipPlanNames[membership.plan] : '—'}</dd></div><div><dt>會員有效至</dt><dd>{formatDate(membership.expiresAt)}{activeDaysLeft !== null && <small>剩餘 {activeDaysLeft} 天</small>}</dd></div><div><dt>啟用日期</dt><dd>{formatDate(membership.activatedAt)}</dd></div></dl></section>
-      <div className="plans-active-footer"><a href={withBasePath('/membership/account')}>查看帳號與購買紀錄<ArrowRight size={16} aria-hidden="true" /></a><button type="button" onClick={() => void logoutFromLine()}><LogOut size={16} aria-hidden="true" />登出 LINE</button></div>
-    </> : <>
+    : membership.active ? <section className="plans-pass" aria-labelledby="membership-pass-title">
+      <div className="plans-pass-main">
+        <div className="plans-pass-topline">
+          <p className="plans-pass-kicker">會員通行票</p>
+          <span className="plans-active-badge"><BadgeCheck size={17} aria-hidden="true" />會員資格有效</span>
+        </div>
+        <div className="plans-pass-hero">
+          <div className="plans-pass-plan">
+            <p className="plans-pass-plan-label">目前方案</p>
+            <h2 id="membership-pass-title">{activePlanName}</h2>
+            {activePlanDuration && <p className="plans-pass-duration"><span>使用期間</span><strong>{activePlanDuration}</strong></p>}
+          </div>
+          {daysRemaining !== null && <p className="plans-pass-days"><span>剩餘天數</span><strong>{daysRemaining}<span className="plans-pass-days-unit">天</span></strong></p>}
+        </div>
+        <div className="plans-pass-holder">
+          <span>持有人</span>
+          <strong>{holderName}</strong>
+        </div>
+        <dl className="plans-pass-facts">
+          <div><dt>會員有效至</dt><dd>{formatDate(membership.expiresAt)}</dd></div>
+          <div><dt>啟用日期</dt><dd>{formatDate(membership.activatedAt || undefined)}</dd></div>
+        </dl>
+        <p className="plans-pass-renew">一次付款，不自動續扣</p>
+        <p className="plans-pass-lead">{holderName}，歡迎回來。會員使用期間不顯示 Google 廣告與 Offerwall。填妥成績後，即可直接開始分析。</p>
+        <div className="plans-pass-actions">
+          <a className="plans-primary" href={withBasePath('/')}>開始落點分析<ArrowRight size={17} aria-hidden="true" /></a>
+          <a className="plans-secondary" href={withBasePath('/mock-volunteer')}>整理模擬志願序</a>
+        </div>
+      </div>
+      <div className="plans-pass-seam" aria-hidden="true">
+        <span className="plans-pass-notch plans-pass-notch-start" />
+        <span className="plans-pass-perforation" />
+        <span className="plans-pass-notch plans-pass-notch-end" />
+      </div>
+      <div className="plans-active-footer">
+        <a href={withBasePath('/membership/account')}>查看帳號與購買紀錄<ArrowRight size={16} aria-hidden="true" /></a>
+        <button type="button" onClick={() => void logoutFromLine()}><LogOut size={16} aria-hidden="true" />登出 LINE</button>
+      </div>
+    </section> : <>
       <form className="plans-purchase" onSubmit={(event) => { event.preventDefault(); if (lineName) void checkout(); }}>
         <section id="membership-plans" className="plans-selection" aria-labelledby="membership-plans-title"><h2 id="membership-plans-title" className="sr-only">選擇會員方案</h2>
-          <fieldset ref={carouselRef} className="plans-options" onScroll={(event) => {
+          <fieldset ref={carouselRef} className="plans-options" onPointerDown={trackPlanPointer} onPointerMove={trackPlanPointer} onPointerUp={trackPlanPointer} onPointerCancel={trackPlanPointer} onKeyDown={() => { planPointer.current.moved = false; planPointer.current.scrollLeft = carouselRef.current?.scrollLeft ?? 0; }} onScroll={(event) => {
             const carousel = event.currentTarget;
             const cards = Array.from(carousel.querySelectorAll<HTMLElement>('.plans-option'));
             if (!cards.length) return;
@@ -403,14 +510,14 @@ export default function MembershipPage() {
             setCarouselIndex(nearest);
           }}><legend className="sr-only">選擇會員方案</legend>{plans.map(plan => {
             const isSelected = selected === plan.id;
-            return <article key={plan.id} className="plans-option" data-selected={isSelected} data-featured={plan.featured} onClick={() => { if (!submitting) setSelected(plan.id); }}>
-              {plan.featured && <span className="plans-option-tag">選填季推薦</span>}<input className="plans-radio" id={`plan-${plan.id}`} type="radio" name="membership-plan" value={plan.id} aria-label={plan.name} checked={isSelected} onChange={() => setSelected(plan.id)} disabled={submitting} />
+            return <article key={plan.id} className="plans-option" data-selected={isSelected} data-featured={plan.featured} onClick={() => { if (submitting) return; setSelected(plan.id); revealCheckout(); }}>
+              {plan.featured && <span className="plans-option-tag">選填季推薦</span>}<input className="plans-radio" id={`plan-${plan.id}`} type="radio" name="membership-plan" value={plan.id} aria-label={plan.name} checked={isSelected} onKeyDown={() => { planPointer.current.moved = false; planPointer.current.scrollLeft = carouselRef.current?.scrollLeft ?? 0; }} onChange={() => { setSelected(plan.id); revealCheckout(); }} disabled={submitting} />
               <h3 className="sr-only">{plan.name}</h3>
               <p className="plans-option-audience">{plan.audience}</p>
               <p className="plans-price"><span>NT$</span>{plan.price}<small>／{plan.duration}</small></p>
               <p className="plans-card-saving">{plan.comparison}</p><p className="plans-price-caption">一次收 NT${plan.price}，效期 {plan.duration}</p><p className="plans-full-access">{plan.daily} · 完整會員權益</p>
               <ul className="plans-option-features"><li>免廣告閱讀校科資訊</li><li>免輸入分析授權碼</li><li>一分改變分析，探索更多可能</li><li>家長共同編輯志願與留言</li><li>志願調整紀錄與版本確認</li><li>LINE 登入，跨裝置確認資格</li></ul>
-              <a href="#membership-checkout" onClick={(event) => { if (submitting) { event.preventDefault(); return; } setSelected(plan.id); }} className="plans-card-cta" aria-disabled={submitting || undefined}>{`選擇 ${plan.duration}`}</a>
+              <a href="#membership-checkout" onClick={(event) => { if (submitting) { event.preventDefault(); return; } if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); setSelected(plan.id); }} className="plans-card-cta" aria-disabled={submitting || undefined}>{`選擇 ${plan.duration}`}</a>
               <span className="plans-selected-note">{isSelected ? '已選擇' : ''}</span>
             </article>;
           })}</fieldset>
