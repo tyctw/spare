@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { ArrowRight, BadgeCheck, CalendarDays, Check, ChevronDown, CreditCard, Crown, EyeOff, HeartHandshake, HelpCircle, KeyRound, LockKeyhole, LogOut, Mail, MessageCircle, Plus, ReceiptText, Sparkles, UserRound } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, Check, ChevronDown, CreditCard, Crown, EyeOff, HeartHandshake, HelpCircle, KeyRound, LockKeyhole, LogOut, Mail, MessageCircle, Plus, ReceiptText, Sparkles, UserRound, X } from "lucide-react";
 import { callBackend } from "../lib/api";
 import { startLineLogin } from "../lib/lineLogin";
 import {
@@ -175,6 +175,8 @@ export default function MembershipPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState("");
+  const [toastTop, setToastTop] = useState(76);
+  const toastRef = useRef<HTMLDivElement>(null);
   const [lineName, setLineName] = useState("");
   const [payerName, setPayerName] = useState("");
   const [payerNameError, setPayerNameError] = useState("");
@@ -191,8 +193,75 @@ export default function MembershipPage() {
   const holderName = lineName || "LINE 會員";
   const activePlan = membership?.plan ? plans.find((plan) => plan.id === membership.plan) : undefined;
   const activePlanName = activePlan?.name ?? (membership?.plan ? membershipPlanNames[membership.plan] : "—");
-  const activePlanDuration = activePlan?.duration;
   const daysRemaining = activeDaysLeft !== null && Number.isFinite(activeDaysLeft) ? activeDaysLeft : null;
+  const passProgress = (() => {
+    if (!membership?.activatedAt || !membership.expiresAt || daysRemaining === null) return null;
+    const start = new Date(membership.activatedAt).getTime();
+    const end = new Date(membership.expiresAt).getTime();
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return null;
+    const now = Date.now();
+    const spanDays = Math.max(1, Math.round((end - start) / 86_400_000));
+    const usedDays = Math.min(spanDays, Math.max(0, Math.floor((Math.min(now, end) - start) / 86_400_000)));
+    const ratio = Math.min(1, Math.max(0, (now - start) / (end - start)));
+    return { usedDays, ratio };
+  })();
+  const payerReady = Boolean(lineName && payerName.trim() && email.trim() && email.includes("@") && !payerNameError && !emailError);
+
+  useEffect(() => {
+    const placeToast = () => {
+      const bar = document.querySelector(".plans-topbar");
+      if (!(bar instanceof HTMLElement)) return;
+      const top = Number.parseFloat(getComputedStyle(bar).top);
+      const pinnedTop = Number.isFinite(top) ? Math.max(0, top) : 0;
+      setToastTop(pinnedTop + bar.offsetHeight + 12);
+    };
+    placeToast();
+    window.addEventListener("resize", placeToast);
+    return () => window.removeEventListener("resize", placeToast);
+  }, []);
+
+  useEffect(() => {
+    if (!notice) return;
+    const node = toastRef.current;
+    let remaining = 3000;
+    let started = Date.now();
+    let paused = false;
+    let hovering = false;
+    let focused = false;
+    let timer = window.setTimeout(() => setNotice(""), remaining);
+    const sync = () => {
+      const shouldPause = hovering || focused;
+      if (shouldPause && !paused) {
+        paused = true;
+        window.clearTimeout(timer);
+        remaining -= Date.now() - started;
+      } else if (!shouldPause && paused) {
+        paused = false;
+        started = Date.now();
+        timer = window.setTimeout(() => setNotice(""), Math.max(0, remaining));
+      }
+    };
+    const onEnter = () => { hovering = true; sync(); };
+    const onLeave = () => { hovering = false; sync(); };
+    const onFocusIn = () => { focused = true; sync(); };
+    const onFocusOut = (event: FocusEvent) => {
+      const next = event.relatedTarget;
+      if (next instanceof Node && node?.contains(next)) return;
+      focused = false;
+      sync();
+    };
+    node?.addEventListener("pointerenter", onEnter);
+    node?.addEventListener("pointerleave", onLeave);
+    node?.addEventListener("focusin", onFocusIn);
+    node?.addEventListener("focusout", onFocusOut);
+    return () => {
+      window.clearTimeout(timer);
+      node?.removeEventListener("pointerenter", onEnter);
+      node?.removeEventListener("pointerleave", onLeave);
+      node?.removeEventListener("focusin", onFocusIn);
+      node?.removeEventListener("focusout", onFocusOut);
+    };
+  }, [notice]);
 
   const carouselScrolled = () => {
     const carousel = carouselRef.current;
@@ -454,10 +523,10 @@ export default function MembershipPage() {
     { kind: 'devices', title: '換個裝置，資格還在', text: '會員資格綁定 LINE 帳號。在其他裝置登入同一帳號，即可確認資格並繼續使用。' },
   ];
 
-  return <main id="main-content" className="plans-page" aria-labelledby="membership-title"><div className="plans-shell">
+  const noticeTone = notice.includes("成功") ? "success" : "error";
+  return <main id="main-content" className="plans-page" aria-labelledby="membership-title">{notice && <div className="plans-toast-anchor" style={{ top: toastTop }}><div ref={toastRef} className="plans-toast" role="status" aria-live="polite" data-tone={noticeTone}><p>{noticeTone === "error" && <span className="sr-only">需要處理：</span>}{notice}</p><button type="button" onClick={() => setNotice("")} aria-label="關閉通知"><X size={18} aria-hidden="true" /></button></div></div>}<div className="plans-shell">
     <nav className="plans-topbar" aria-label="會員頁導覽"><a className="plans-brand" href={withBasePath('/')}><span>會考</span>落點分析<i aria-hidden="true" /></a><span className="plans-topbar-current">會員方案</span><a className="plans-topbar-account" href={withBasePath('/membership/account')}><UserRound size={16} aria-hidden="true" />會員帳號</a></nav>
     <header className="plans-hero"><div className="plans-hero-copy"><h1 id="membership-title">{isSuccessPage ? '付款確認' : '會員方案'}</h1><p className="plans-lead">選一段適合你的準備時間。</p><div className="plans-payment-mode" aria-label="方案付款方式"><span>一次付款</span><span>到期不續扣</span></div></div></header>
-    {notice && (membership === null || membership?.active || isSuccessPage) && <p className="plans-notice" role="status" aria-live="polite">{notice}</p>}
     {membership === null ? <section className="plans-feedback" role="status" aria-busy="true"><Crown size={28} aria-hidden="true" /><h2>正在確認會員資格</h2><p>正在讀取目前帳號的使用狀態，請稍候。</p></section>
     : isSuccessPage && !membership.active ? <section className="plans-feedback" aria-labelledby="payment-confirming-title"><span className="plans-feedback-icon"><CreditCard size={28} aria-hidden="true" /></span><p className="plans-eyebrow">付款狀態</p><h2 id="payment-confirming-title">{paymentWaitingExpired ? '尚未確認會員資格' : '正在確認付款結果'}</h2><p role="status" aria-live="polite">{paymentWaitingExpired ? '目前尚未收到資格啟用結果。如果已完成付款，請重新確認或提供訂單編號聯絡我們。請先確認原訂單狀態，再決定是否重新購買。' : '正在等待付款系統回傳與資格更新，確認後會顯示會員有效期限。'}</p><div className="plans-feedback-actions"><button type="button" className="plans-primary" onClick={() => void refresh().catch(() => setNotice('暫時無法確認資格，請稍後再試。'))}>重新確認資格</button><a className="plans-secondary" href={withBasePath('/membership/account')}>查看帳號與訂單</a></div></section>
     : membership.active ? <section className="plans-pass" aria-labelledby="membership-pass-title">
@@ -467,13 +536,10 @@ export default function MembershipPage() {
           <span className="plans-active-badge"><BadgeCheck size={17} aria-hidden="true" />會員資格有效</span>
         </div>
         <div className="plans-pass-hero">
-          <div className="plans-pass-plan">
-            <p className="plans-pass-plan-label">目前方案</p>
-            <h2 id="membership-pass-title">{activePlanName}</h2>
-            {activePlanDuration && <p className="plans-pass-duration"><span>使用期間</span><strong>{activePlanDuration}</strong></p>}
-          </div>
-          {daysRemaining !== null && <p className="plans-pass-days"><span>剩餘天數</span><strong>{daysRemaining}<span className="plans-pass-days-unit">天</span></strong></p>}
+          <h2 id="membership-pass-title"><span className="sr-only">目前方案</span>{activePlanName}</h2>
+          {daysRemaining !== null && <p className="plans-pass-days"><span>剩餘</span><strong>{daysRemaining} <span className="plans-pass-days-unit">天</span></strong></p>}
         </div>
+        {passProgress && daysRemaining !== null && <div className="plans-pass-progress"><div className="plans-pass-progress-track" aria-hidden="true"><span style={{ width: `${Math.round(passProgress.ratio * 100)}%` }} /></div><p>已使用 {passProgress.usedDays} 天 · 剩餘 {daysRemaining} 天</p></div>}
         <div className="plans-pass-holder">
           <span>持有人</span>
           <strong>{holderName}</strong>
@@ -534,11 +600,23 @@ export default function MembershipPage() {
           const stops = featureStops(container);
           if (stops.length) setFeaturePage(stops.reduce((best, stop, index) => Math.abs(stop - container.scrollLeft) < Math.abs(stops[best] - container.scrollLeft) ? index : best, 0));
         }}>{benefits.map(({kind,title,text}) => <article className="plans-feature-card" key={kind}><MembershipFeaturePreview kind={kind} /><h3>{title}</h3><p>{text}</p></article>)}</div><nav className="plans-carousel-nav plans-feature-nav" aria-label="切換功能介紹"><button type="button" aria-label="上一組功能" onClick={() => showFeaturePage(featurePage - 1)} disabled={featurePage === 0}><ArrowRight className="plans-carousel-back" size={17} aria-hidden="true" /></button><div>{[0, 1, 2].map(index => <button key={index} type="button" aria-label={`第 ${index + 1} 組功能`} aria-current={featurePage === index ? 'true' : undefined} onClick={() => showFeaturePage(index)}><span /></button>)}</div><button type="button" aria-label="下一組功能" onClick={() => showFeaturePage(featurePage + 1)} disabled={featurePage === 2}><ArrowRight size={17} aria-hidden="true" /></button></nav></section>
-        <section id="membership-checkout" className="plans-checkout" aria-labelledby="membership-checkout-title">{notice && <p className="plans-notice" role="status" aria-live="polite">{notice}</p>}<div className="plans-checkout-identity"><p className="plans-section-kicker">開始使用</p><h2 id="membership-checkout-title">選好了，就開始準備。</h2><p className="plans-checkout-intro">登入 LINE，讓會員資格跟著你的帳號。確認訂單後，再前往付款。</p>
-          {lineName ? <div className="plans-login-status"><BadgeCheck size={23} aria-hidden="true" /><div><small>已登入 LINE</small><strong>{lineName}</strong></div><button type="button" onClick={() => void logoutFromLine()} disabled={submitting}>登出</button></div> : <div className="plans-login"><p>用 LINE 登入，讓這份會員資格跟著你。換裝置也能找回。</p><button type="button" onClick={loginWithLine}><picture className="contents"><source srcSet={withBasePath('/brand/line/line-login.webp')} type="image/webp" /><source srcSet={withBasePath('/brand/line/line-login.avif')} type="image/avif" /><img src={withBasePath('/brand/line/line-login.png')} width={40} height={40} alt="" aria-hidden="true" decoding="async" /></picture>使用 LINE 登入<ArrowRight size={17} aria-hidden="true" /></button></div>}
-          {lineName && <div className="plans-payer"><h3>付款人資料</h3><p>用於訂單核對、付款確認與會員服務聯繫。</p><label htmlFor="membership-payer-name">付款人姓名</label><input id="membership-payer-name" type="text" autoComplete="name" maxLength={80} required value={payerName} onChange={event => {setPayerName(event.target.value);setPayerNameError('');}} placeholder="請輸入真實姓名" disabled={submitting} aria-invalid={Boolean(payerNameError)} aria-describedby={payerNameError ? 'membership-name-error' : undefined} />{payerNameError && <p className="plans-field-error" id="membership-name-error" role="alert">{payerNameError}</p>}<label htmlFor="membership-email">付款人電子信箱</label><input id="membership-email" type="email" inputMode="email" autoComplete="email" required value={email} onChange={event => {setEmail(event.target.value);setEmailError('');}} placeholder="your@email.com" disabled={submitting} aria-invalid={Boolean(emailError)} aria-describedby={emailError ? 'membership-email-error' : undefined} />{emailError && <p className="plans-field-error" id="membership-email-error" role="alert">{emailError}</p>}</div>}
-          </div><div className="plans-checkout-summary"><p className="plans-summary-label">你的會員方案</p><dl className="plans-order" aria-live="polite"><div><dt>已選方案</dt><dd>{selectedPlan.name}</dd></div><div><dt>使用期間</dt><dd>{selectedPlan.duration}</dd></div><div><dt>續費方式</dt><dd>不自動續扣</dd></div><div className="plans-order-total"><dt>本次付款</dt><dd><small>NT$</small> {selectedPlan.price}</dd></div></dl>
-          <button type="submit" className="plans-pay" disabled={submitting || !lineName}>{submitting ? '正在建立付款單…' : lineName ? `以 NT$${selectedPlan.price} 購買${selectedPlan.duration}方案` : '登入後即可購買'}<ArrowRight size={18} aria-hidden="true" /></button><p className="plans-payment-note"><LockKeyhole size={16} aria-hidden="true" />付款由綠界科技 ECPay 處理。實際可選方式以付款頁面為準。</p></div>
+        <section id="membership-checkout" className="plans-checkout" aria-labelledby="membership-checkout-title">
+          <header className="plans-checkout-heading"><p className="plans-section-kicker">開始使用</p><h2 id="membership-checkout-title">選好了，就開始準備。</h2><p className="plans-checkout-intro">登入 LINE，讓會員資格跟著你的帳號。確認訂單後，再前往付款。</p></header>
+          <ol className="plans-checkout-steps">
+            <li data-complete={lineName ? "true" : "false"}>
+              <div className="plans-step-head"><span className="plans-step-index" aria-hidden="true">{lineName ? <Check size={16} /> : "1"}</span><div><p>步驟 1</p><h3>LINE 登入</h3></div>{lineName && <span className="plans-step-done">已完成</span>}</div>
+              {lineName ? <div className="plans-login-status"><BadgeCheck size={23} aria-hidden="true" /><div><small>已登入 LINE</small><strong>{lineName}</strong></div><button type="button" onClick={() => void logoutFromLine()} disabled={submitting}>登出</button></div> : <div className="plans-login"><p>用 LINE 登入，讓這份會員資格跟著你。換裝置也能找回。</p><button type="button" onClick={loginWithLine}><picture className="contents"><source srcSet={withBasePath('/brand/line/line-login.webp')} type="image/webp" /><source srcSet={withBasePath('/brand/line/line-login.avif')} type="image/avif" /><img src={withBasePath('/brand/line/line-login.png')} width={40} height={40} alt="" aria-hidden="true" decoding="async" /></picture>使用 LINE 登入<ArrowRight size={17} aria-hidden="true" /></button></div>}
+            </li>
+            <li data-complete={payerReady ? "true" : "false"}>
+              <div className="plans-step-head"><span className="plans-step-index" aria-hidden="true">{payerReady ? <Check size={16} /> : "2"}</span><div><p>步驟 2</p><h3>付款人資料</h3></div>{payerReady && <span className="plans-step-done">已完成</span>}</div>
+              {lineName ? <div className="plans-payer"><p>用於訂單核對、付款確認與會員服務聯繫。</p><label htmlFor="membership-payer-name">付款人姓名</label><input id="membership-payer-name" type="text" autoComplete="name" maxLength={80} required value={payerName} onChange={event => {setPayerName(event.target.value);setPayerNameError('');}} placeholder="請輸入真實姓名" disabled={submitting} aria-invalid={Boolean(payerNameError)} aria-describedby={payerNameError ? 'membership-name-error' : undefined} />{payerNameError && <p className="plans-field-error" id="membership-name-error" role="alert">{payerNameError}</p>}<label htmlFor="membership-email">付款人電子信箱</label><input id="membership-email" type="email" inputMode="email" autoComplete="email" required value={email} onChange={event => {setEmail(event.target.value);setEmailError('');}} placeholder="your@email.com" disabled={submitting} aria-invalid={Boolean(emailError)} aria-describedby={emailError ? 'membership-email-error' : undefined} />{emailError && <p className="plans-field-error" id="membership-email-error" role="alert">{emailError}</p>}</div> : <p className="plans-step-wait">請先使用 LINE 登入，再填寫付款人資料。</p>}
+            </li>
+            <li>
+              <div className="plans-step-head"><span className="plans-step-index" aria-hidden="true">3</span><div><p>步驟 3</p><h3>確認付款</h3></div></div>
+              <div className="plans-checkout-summary"><p className="plans-summary-label">你的會員方案</p><dl className="plans-order" aria-live="polite"><div><dt>已選方案</dt><dd>{selectedPlan.name}</dd></div><div><dt>使用期間</dt><dd>{selectedPlan.duration}</dd></div><div><dt>續費方式</dt><dd>不自動續扣</dd></div><div className="plans-order-total"><dt>本次付款</dt><dd><small>NT$</small> {selectedPlan.price}</dd></div></dl>
+              <button type="submit" className="plans-pay" disabled={submitting || !lineName}>{submitting ? '正在建立付款單…' : lineName ? `以 NT$${selectedPlan.price} 購買${selectedPlan.duration}方案` : '登入後即可購買'}<ArrowRight size={18} aria-hidden="true" /></button><p className="plans-payment-note"><LockKeyhole size={16} aria-hidden="true" />付款由綠界科技 ECPay 處理。實際可選方式以付款頁面為準。</p></div>
+            </li>
+          </ol>
         </section>
 
 

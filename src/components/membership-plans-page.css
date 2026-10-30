@@ -534,20 +534,22 @@
 .plans-pass-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .plans-pass-kicker{margin:0;color:var(--pass-purple);font-size:13px;font-weight:800;letter-spacing:.14em;line-height:1.4}
 .plans-pass .plans-active-badge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;background:var(--pass-yellow);padding:8px 12px;color:var(--pass-ink);font-size:13px;font-weight:800;line-height:1.4}
-.plans-pass-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-top:18px}
-.plans-pass-plan{min-width:0}
-.plans-pass-plan-label,.plans-pass-duration>span,.plans-pass-holder>span,.plans-pass-facts dt{display:block;color:var(--pass-muted);font-size:13px;font-weight:700;line-height:1.5}
-.plans-pass h2{margin:2px 0 0;color:var(--pass-ink);font-size:clamp(32px,4vw,48px);font-weight:900;letter-spacing:-.04em;line-height:1.15;overflow-wrap:anywhere}
-.plans-pass-duration{display:flex;align-items:baseline;gap:10px;margin:8px 0 0}
-.plans-pass-duration strong{color:var(--pass-purple);font-size:clamp(26px,3vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1.1}
-.plans-pass-days{display:grid;justify-items:center;flex:none;min-width:112px;margin:0;padding:12px 16px 10px;border-radius:16px;background:var(--pass-yellow);color:var(--pass-ink);text-align:center}
-.plans-pass-days>span{font-size:13px;font-weight:800;line-height:1.4}
-.plans-pass-days strong{display:block;margin-top:2px;font-size:clamp(40px,5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
-.plans-pass-days-unit{margin-left:2px;font-size:.38em;font-weight:800;letter-spacing:0}
+.plans-pass-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:18px}
+.plans-pass-holder>span,.plans-pass-facts dt{display:block;color:var(--pass-muted);font-size:13px;font-weight:700;line-height:1.5}
+.plans-pass h2{min-width:0;margin:0;color:var(--pass-ink);font-size:clamp(30px,4vw,48px);font-weight:900;letter-spacing:-.04em;line-height:1.15;overflow-wrap:anywhere}
+.plans-pass-days{flex:none;margin:0;padding:10px 14px 8px;border-radius:16px;background:var(--pass-yellow);color:var(--pass-ink);text-align:right}
+.plans-pass-days>span{display:block;color:var(--pass-ink);font-size:13px;font-weight:800;line-height:1.4}
+.plans-pass-days strong{display:block;margin-top:2px;font-size:clamp(36px,5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.plans-pass-days-unit{font-size:.42em;font-weight:800;letter-spacing:0}
+.plans-pass-progress{margin-top:16px}
+.plans-pass-progress-track{height:6px;overflow:hidden;border-radius:999px;background:#e7edf5}
+.plans-pass-progress-track>span{display:block;height:100%;border-radius:inherit;background:var(--pass-purple)}
+.plans-pass-progress p{margin:8px 0 0;color:var(--pass-ink);font-size:13px;font-weight:700;line-height:1.5}
 .plans-pass-holder{margin-top:22px;padding:14px 16px;border:1px dashed var(--pass-line);border-radius:14px;background:#fff}
 .plans-pass-holder strong{display:block;margin-top:2px;color:var(--pass-ink);font-size:clamp(22px,2.4vw,28px);font-weight:900;line-height:1.35;overflow-wrap:anywhere}
-.plans-pass-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px;margin:18px 0 0}
-.plans-pass-facts dd{margin:4px 0 0;color:var(--pass-ink);font-size:17px;font-weight:800;line-height:1.5;overflow-wrap:anywhere}
+.plans-pass-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 20px;margin:18px 0 0;padding-top:16px;border-top:1px solid var(--pass-line)}
+.plans-pass-facts>div{min-width:0}
+.plans-pass-facts dd{margin:4px 0 0;color:var(--pass-ink);font-size:15px;font-weight:800;line-height:1.45;overflow-wrap:anywhere}
 .plans-pass-renew{display:inline-flex;align-items:center;margin:16px 0 0;padding:7px 12px;border:1px solid var(--pass-line);border-radius:999px;background:var(--pass-yellow);color:var(--pass-ink);font-size:13px;font-weight:800;line-height:1.4}
 .plans-pass-lead{max-width:68ch;margin:14px 0 0;color:var(--pass-ink);font-size:15px;line-height:1.8}
 .plans-pass-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
@@ -563,8 +565,10 @@
 .plans-pass .plans-active-footer button:hover{border-color:var(--pass-purple);color:var(--pass-purple)}
 @media(max-width:720px){
   .plans-pass-main{padding:22px 18px 18px 24px}
-  .plans-pass-hero,.plans-pass-facts{display:grid;grid-template-columns:1fr;align-items:start}
-  .plans-pass-days{justify-items:start;text-align:left;min-width:0;width:fit-content}
+  .plans-pass h2{font-size:28px}
+  .plans-pass-days strong{font-size:34px}
+  .plans-pass-facts{gap:12px 14px}
+  .plans-pass-facts dd{font-size:14px}
   .plans-pass-actions{flex-direction:column}
   .plans-pass-actions a{width:100%}
   .plans-pass .plans-active-footer{align-items:stretch;flex-direction:column;gap:8px;padding:18px 18px 18px 24px}
@@ -576,9 +580,68 @@
   .plans-pass-days,.plans-pass .plans-active-badge,.plans-pass-renew{border:1px solid CanvasText}
   .plans-pass-notch{background:Canvas;border-color:CanvasText}
   .plans-pass-perforation{border-top-color:CanvasText}
+  .plans-pass-progress-track{background:Canvas;border:1px solid CanvasText}
+  .plans-pass-progress-track>span{background:CanvasText}
 }
 @media(hover:hover){
 .plans-option:hover{border-color:var(--plans-ink);box-shadow:0 18px 44px #171e3821}
 .plans-option[data-featured=true]:hover{border-color:transparent;background:linear-gradient(#fff,#fff) padding-box,conic-gradient(from var(--membership-orbit),var(--plans-accent) 0%,#6034b840 14%,#171e38e0 30%,#171e38e0 82%,#6034b859 92%,var(--plans-accent) 100%) border-box}
 .plans-option:hover .plans-card-cta{background:var(--plans-ink);color:#fff;box-shadow:0 6px 18px #171e381f}
+}
+
+.plans-toast-anchor{position:fixed;z-index:80;left:0;right:0;display:flex;justify-content:center;padding:0 16px;pointer-events:none}
+.plans-toast{position:relative;display:flex;align-items:flex-start;gap:8px;width:min(420px,100%);padding:14px 8px 14px 16px;border:1px solid var(--plans-border,#d4ddeb);border-left:4px solid var(--plans-yellow,#ffda45);border-radius:14px;background:#fff;color:var(--plans-ink,#171e38);box-shadow:0 16px 40px #171e3824;pointer-events:auto;animation:plans-toast-in .28s ease}
+.plans-toast[data-tone=error]{border-left-color:#9f1239}
+.plans-toast p{flex:1;margin:8px 0;font-size:15px;font-weight:700;line-height:1.6}
+.plans-toast button{display:grid;place-items:center;flex:none;width:44px;height:44px;border:0;border-radius:10px;background:transparent;color:var(--plans-ink,#171e38);cursor:pointer}
+.plans-toast button:hover{background:#f4f7fb}
+@keyframes plans-toast-in{from{opacity:0;translate:0 -8px}to{opacity:1;translate:0 0}}
+@media(min-width:768px){.plans-toast-anchor{justify-content:flex-end;padding:0 24px}}
+@media(prefers-reduced-motion:reduce){.plans-toast{animation:none}}
+@media(forced-colors:active){.plans-toast{background:Canvas;color:CanvasText;border:1px solid CanvasText;box-shadow:none;forced-color-adjust:auto}}
+
+.plans-page .plans-checkout{display:block;padding:28px 32px 32px}
+.plans-page .plans-checkout-heading{max-width:640px}
+.plans-page .plans-checkout-heading h2{margin:8px 0 10px;color:var(--plans-ink,#171e38);font-size:clamp(26px,3vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1.3}
+.plans-page .plans-checkout-intro{max-width:46ch;margin:0;color:var(--plans-ink,#171e38);font-size:15px;line-height:1.7}
+.plans-checkout-steps{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:16px 28px;margin:22px 0 0;padding:0;list-style:none}
+.plans-checkout-steps>li:nth-child(1),.plans-checkout-steps>li:nth-child(2){grid-column:1}
+.plans-checkout-steps>li:nth-child(3){grid-column:2;grid-row:1 / span 2;align-self:start}
+.plans-checkout-steps>li{min-width:0;padding:18px;border:1px solid var(--plans-border,#d4ddeb);border-radius:16px;background:#fff}
+.plans-checkout-steps>li[data-complete=true]{border-color:#c9b6ee;background:#fbfaff}
+.plans-step-head{display:flex;align-items:center;gap:12px}
+.plans-step-head>div{min-width:0}
+.plans-step-head p{margin:0;color:var(--plans-accent,#6034b8);font-size:12px;font-weight:800;letter-spacing:.06em;line-height:1.4}
+.plans-step-head h3{margin:2px 0 0;color:var(--plans-ink,#171e38);font-size:18px;font-weight:900;line-height:1.4}
+.plans-step-index{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:50%;background:var(--plans-ink,#171e38);color:#fff;font-size:14px;font-weight:800}
+.plans-checkout-steps>li[data-complete=true] .plans-step-index{background:var(--plans-yellow,#ffda45);color:var(--plans-ink,#171e38)}
+.plans-step-done{margin-left:auto;padding:4px 10px;border-radius:999px;background:var(--plans-yellow,#ffda45);color:var(--plans-ink,#171e38);font-size:12px;font-weight:800;line-height:1.5;white-space:nowrap}
+.plans-step-wait{margin:14px 0 0;color:var(--plans-ink,#171e38);font-size:14px;line-height:1.7}
+.plans-page .plans-checkout .plans-login,.plans-page .plans-checkout .plans-login-status,.plans-page .plans-checkout .plans-payer{margin-top:14px}
+.plans-page .plans-checkout .plans-payer{padding-top:0;border-top:0}
+.plans-page .plans-checkout .plans-payer>p,.plans-page .plans-checkout .plans-login>p{color:var(--plans-ink,#171e38);font-size:14px;line-height:1.7}
+.plans-page .plans-checkout .plans-payer label{color:var(--plans-ink,#171e38);font-size:14px;font-weight:800}
+.plans-page .plans-checkout .plans-payer input{border:1px solid var(--plans-border,#d4ddeb);border-radius:10px;background:#fff;color:var(--plans-ink,#171e38);font-size:16px}
+.plans-page .plans-checkout .plans-payer input:focus-visible{border-color:var(--plans-accent,#6034b8);outline:3px solid #6034b8;outline-offset:2px}
+.plans-page .plans-checkout .plans-payer input[aria-invalid=true]{border-color:#9f1239;background:#fff7f8}
+.plans-page .plans-checkout .plans-field-error{margin:6px 0 0;color:#9f1239!important;font-size:14px;font-weight:700;line-height:1.5}
+.plans-page .plans-checkout .plans-checkout-summary{margin-top:16px;padding:4px 0 0;border:0;border-radius:0;background:transparent}
+.plans-page .plans-checkout .plans-summary-label{color:var(--plans-ink,#171e38);font-size:13px;font-weight:800;letter-spacing:.04em}
+.plans-page .plans-checkout .plans-order{gap:0;margin:12px 0 0;padding:0;border:1px solid var(--plans-border,#d4ddeb);border-radius:12px;background:#f8fafc;overflow:hidden}
+.plans-page .plans-checkout .plans-order>div{padding:12px 14px;border-bottom:1px dashed var(--plans-border,#d4ddeb)}
+.plans-page .plans-checkout .plans-order dt{color:#3d4b63;font-size:13px;font-weight:700}
+.plans-page .plans-checkout .plans-order dd{color:var(--plans-ink,#171e38);font-size:15px;font-weight:800}
+.plans-page .plans-checkout .plans-order>.plans-order-total{margin:0;padding:14px;border:0;border-bottom:0;background:#fff}
+.plans-page .plans-checkout .plans-order-total dt{color:var(--plans-ink,#171e38);font-size:14px}
+.plans-page .plans-checkout .plans-order-total dd{color:var(--plans-ink,#171e38);font-size:clamp(32px,4vw,40px);font-weight:900;letter-spacing:-.03em;line-height:1}
+.plans-page .plans-checkout .plans-pay{min-height:52px;margin-top:16px;border-radius:12px;background:var(--plans-ink,#171e38);font-size:16px}
+.plans-page .plans-checkout .plans-pay:hover{background:var(--plans-accent,#6034b8)}
+.plans-page .plans-checkout .plans-payment-note{color:#3d4b63;font-size:13px;line-height:1.7}
+@media(max-width:800px){
+  .plans-page .plans-checkout{padding:22px 18px 24px}
+  .plans-checkout-steps{grid-template-columns:1fr}
+  .plans-checkout-steps>li:nth-child(1),.plans-checkout-steps>li:nth-child(2),.plans-checkout-steps>li:nth-child(3){grid-column:auto;grid-row:auto}
+}
+@media(forced-colors:active){
+  .plans-step-index,.plans-step-done,.plans-checkout-steps>li[data-complete=true]{background:Canvas;color:CanvasText;border:1px solid CanvasText;forced-color-adjust:auto}
 }
