@@ -43,6 +43,7 @@
   flex: none;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   min-width: 112px;
   min-height: 40px;
   padding: 7px 16px;
@@ -54,6 +55,8 @@
   line-height: 1.4;
   text-decoration: none;
 }
+
+.page-topbar a svg { flex: none; }
 
 .page-topbar a:hover { background: #6034b8; }
 .page-topbar a:active { background: #4e2896; }
@@ -67,7 +70,7 @@
 @media (max-width: 560px) {
   .page-topbar { gap: 10px; padding: 6px 6px 6px 14px; }
   .page-topbar-title { font-size: 14px; }
-  .page-topbar a { min-width: 96px; padding: 7px 12px; font-size: 13px; }
+  .page-topbar a { min-width: 108px; padding: 7px 12px; font-size: 13px; }
 }
 
 @media (forced-colors: active) {
