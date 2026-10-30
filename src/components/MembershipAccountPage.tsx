@@ -21,6 +21,8 @@ import {
   consumeLineLoginCodeFromFragment,
   getMembershipStatus,
   type MembershipStatus,
+  type MembershipPlan,
+  membershipPlanNames,
 } from '../lib/membership';
 import { withBasePath } from '../lib/routes';
 import PageBreadcrumb from './PageBreadcrumb';
@@ -29,7 +31,7 @@ import './membership-account-page.css';
 type AccountState = 'loading' | 'ready' | 'error';
 type MembershipPurchase = {
   reference: string;
-  plan: 'monthly' | 'yearly';
+  plan: MembershipPlan;
   amount: number;
   status: 'pending' | 'paid' | 'failed' | 'refunded';
   paidAt?: string;
@@ -218,7 +220,7 @@ export default function MembershipAccountPage() {
     }
   };
 
-  const planName = membership.plan === 'yearly' ? '365 天方案' : '30 天方案';
+  const planName = membership.plan ? membershipPlanNames[membership.plan] : '—';
   const remainingDays = membership.expiresAt ? Math.max(0, Math.ceil((new Date(membership.expiresAt).getTime() - Date.now()) / 86_400_000)) : 0;
   const signedIn = Boolean(lineName) || membership.active;
 
@@ -252,7 +254,7 @@ export default function MembershipAccountPage() {
         </section>
       </div></>}
 
-      {signedIn && <section id="account-orders" className="account-center-panel account-center-history"><div className="account-center-panel-title"><span><ReceiptText size={21} aria-hidden="true" /></span><div><p>交易與付款狀態</p><h2>購買紀錄</h2></div><small>最近 20 筆</small></div>{purchases.length ? <><div className="account-center-orders">{(isHistoryExpanded ? purchases : purchases.slice(0, 1)).map((purchase) => { const label = purchase.status === 'paid' ? '已付款' : purchase.status === 'pending' ? '處理中' : purchase.status === 'refunded' ? '已退款' : '未完成'; return <article className="account-center-order" key={`${purchase.reference}-${purchase.createdAt}`}><div className="account-center-order-top"><div><h3>{purchase.plan === 'yearly' ? '365 天會員方案' : '30 天會員方案'}</h3><p>NT$ {purchase.amount.toLocaleString('zh-TW')}</p></div><span className="account-center-order-status" data-status={purchase.status}>{label}</span></div><dl><div><dt>訂單編號</dt><dd>{purchase.reference}</dd></div><div><dt>{purchase.status === 'paid' ? '付款日期' : '建立日期'}</dt><dd>{formatDate(purchase.status === 'paid' ? purchase.paidAt : purchase.createdAt)}</dd></div>{purchase.status === 'paid' && <div><dt>方案有效至</dt><dd>{formatDate(purchase.expiresAt)}</dd></div>}</dl></article>; })}</div>{purchases.length > 1 && <button type="button" className="account-center-history-toggle" aria-expanded={isHistoryExpanded} onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}>{isHistoryExpanded ? '收起歷史紀錄' : `查看其餘 ${purchases.length - 1} 筆紀錄`}</button>}</> : <div className="account-center-empty"><ReceiptText size={27} aria-hidden="true" /><h3>目前沒有購買紀錄</h3><p>完成購買後，可以在這裡確認訂單與付款狀態。</p></div>}</section>}
+      {signedIn && <section id="account-orders" className="account-center-panel account-center-history"><div className="account-center-panel-title"><span><ReceiptText size={21} aria-hidden="true" /></span><div><p>交易與付款狀態</p><h2>購買紀錄</h2></div><small>最近 20 筆</small></div>{purchases.length ? <><div className="account-center-orders">{(isHistoryExpanded ? purchases : purchases.slice(0, 1)).map((purchase) => { const label = purchase.status === 'paid' ? '已付款' : purchase.status === 'pending' ? '處理中' : purchase.status === 'refunded' ? '已退款' : '未完成'; return <article className="account-center-order" key={`${purchase.reference}-${purchase.createdAt}`}><div className="account-center-order-top"><div><h3>{membershipPlanNames[purchase.plan]}</h3><p>NT$ {purchase.amount.toLocaleString('zh-TW')}</p></div><span className="account-center-order-status" data-status={purchase.status}>{label}</span></div><dl><div><dt>訂單編號</dt><dd>{purchase.reference}</dd></div><div><dt>{purchase.status === 'paid' ? '付款日期' : '建立日期'}</dt><dd>{formatDate(purchase.status === 'paid' ? purchase.paidAt : purchase.createdAt)}</dd></div>{purchase.status === 'paid' && <div><dt>方案有效至</dt><dd>{formatDate(purchase.expiresAt)}</dd></div>}</dl></article>; })}</div>{purchases.length > 1 && <button type="button" className="account-center-history-toggle" aria-expanded={isHistoryExpanded} onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}>{isHistoryExpanded ? '收起歷史紀錄' : `查看其餘 ${purchases.length - 1} 筆紀錄`}</button>}</> : <div className="account-center-empty"><ReceiptText size={27} aria-hidden="true" /><h3>目前沒有購買紀錄</h3><p>完成購買後，可以在這裡確認訂單與付款狀態。</p></div>}</section>}
       <section className="account-center-tools" aria-labelledby="account-tools-title"><div className="account-center-section-heading"><p>常用入口</p><h2 id="account-tools-title">繼續規劃升學方向</h2></div><nav aria-label="會員常用功能"><a href={withBasePath('/')}><Sparkles size={21} aria-hidden="true" /><div><strong>開始落點分析</strong><span>用成績探索候選校科</span></div><ArrowRight size={17} aria-hidden="true" /></a><a href={withBasePath('/score-records')}><History size={21} aria-hidden="true" /><div><strong>我的成績紀錄</strong><span>保存與比較考試成績</span></div><ArrowRight size={17} aria-hidden="true" /></a><a href={withBasePath('/privacy-center')}><ShieldCheck size={21} aria-hidden="true" /><div><strong>個資與分享管理</strong><span>查看或撤銷分享連結</span></div><ArrowRight size={17} aria-hidden="true" /></a></nav></section>
       <section className="account-center-support" aria-label="會員協助"><div><Mail size={24} aria-hidden="true" /><h2>會員或付款需要協助？</h2><p>請提供訂單編號與問題描述，方便我們確認。</p><a className="account-center-text-link" href="mailto:tyctw.analyze@gmail.com?subject=%E6%9C%83%E5%93%A1%E5%8D%94%E5%8A%A9">tyctw.analyze@gmail.com<ArrowRight size={16} aria-hidden="true" /></a></div><nav aria-label="交易與服務說明"><a href={withBasePath('/after-sales-service')}><HeartHandshake size={19} aria-hidden="true" /><span>售後服務</span><ArrowRight size={16} aria-hidden="true" /></a><a href={withBasePath('/refund-cancellation-policy')}><ReceiptText size={19} aria-hidden="true" /><span>退款與取消說明</span><ArrowRight size={16} aria-hidden="true" /></a></nav></section>
       {signedIn && <details className="account-center-danger"><summary><Trash2 size={17} aria-hidden="true" />帳號刪除</summary><div><p>刪除後會移除成績紀錄、名下分享報告與協作紀錄，相關分享連結將失效。交易紀錄會依法保留，但不再與 LINE 帳號連結。</p>{membership.active ? <p className="account-center-danger-note">會員資格仍有效，請於到期後再刪除帳號。</p> : <button type="button" className="account-center-delete" onClick={() => setDeleteDialogOpen(true)}>刪除我的帳號</button>}</div></details>}

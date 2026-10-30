@@ -7,6 +7,7 @@ import {
   consumeLineLoginCodeFromFragment,
   getMembershipStatus,
   type MembershipStatus,
+  membershipPlanNames,
 } from "../lib/membership";
 import { withBasePath } from "../lib/routes";
 import PageBreadcrumb from "./PageBreadcrumb";
@@ -19,8 +20,21 @@ const plans = [
     price: 49,
     duration: "30 天",
     comparison: "完整權益，先用 30 天體驗",
-    accent: "sky",
+    tag: "輕鬆開始",
+    value: "30 天享有完整會員權益",
+    detail: "適合短期使用，或先體驗會員功能。",
     featured: false,
+  },
+  {
+    id: "quarterly",
+    name: "90 天方案",
+    price: 129,
+    duration: "90 天",
+    comparison: "比購買 3 次 30 天方案省 NT$18",
+    tag: "選填季推薦",
+    value: "從會考準備到志願選填",
+    detail: "90 天完整權益，一次付款 NT$129。",
+    featured: true,
   },
   {
     id: "yearly",
@@ -28,8 +42,10 @@ const plans = [
     price: 399,
     duration: "365 天",
     comparison: "比購買 12 次 30 天方案省 NT$189",
-    accent: "emerald",
-    featured: true,
+    tag: "長期規劃更划算",
+    value: "平均每天約 NT$1.1",
+    detail: "NT$399 ÷ 365 天換算；一次付款 NT$399。",
+    featured: false,
   },
 ] as const;
 type PlanId = (typeof plans)[number]["id"];
@@ -37,8 +53,8 @@ type PlanId = (typeof plans)[number]["id"];
 
 const membershipFaqs = [
   {
-    q: '30 天與 365 天方案有什麼差別？',
-    a: '30 天方案 NT$49；365 天方案 NT$399。權益相同，差別是使用期間。購買 365 天方案比購買 12 次 30 天方案省 NT$189。兩種方案均為一次付款，到期不自動續扣。',
+    q: '30 天、90 天與 365 天方案有什麼差別？',
+    a: '30 天方案 NT$49；90 天方案 NT$129；365 天方案 NT$399。三種方案權益相同，差別是使用期間。90 天方案比購買 3 次 30 天方案省 NT$18；365 天方案比購買 12 次 30 天方案省 NT$189。均為一次付款，到期不自動續扣。',
   },
   {
     q: '付款後何時生效？',
@@ -46,7 +62,7 @@ const membershipFaqs = [
   },
   {
     q: '到期後會自動扣款嗎？',
-    a: '不會。兩種方案均為一次性付款，期間結束後不會自動續費或扣款，無需手動取消。若要繼續使用，可再選擇方案購買。',
+    a: '不會。三種方案均為一次性付款，期間結束後不會自動續費或扣款，無需手動取消。若要繼續使用，可再選擇方案購買。',
   },
   {
     q: '可以在多台裝置使用嗎？',
@@ -268,7 +284,7 @@ export default function MembershipPage() {
     {membership === null ? <section className="plans-feedback" role="status" aria-busy="true"><Crown size={28} aria-hidden="true" /><h2>正在確認會員資格</h2><p>正在讀取目前帳號的使用狀態，請稍候。</p></section>
     : isSuccessPage && !membership.active ? <section className="plans-feedback" aria-labelledby="payment-confirming-title"><span className="plans-feedback-icon"><CreditCard size={28} aria-hidden="true" /></span><p className="plans-eyebrow">付款狀態</p><h2 id="payment-confirming-title">{paymentWaitingExpired ? '尚未確認會員資格' : '正在確認付款結果'}</h2><p role="status" aria-live="polite">{paymentWaitingExpired ? '目前尚未收到資格啟用結果。如果已完成付款，請重新確認或提供訂單編號聯絡我們。請先確認原訂單狀態，再決定是否重新購買。' : '正在等待付款系統回傳與資格更新，確認後會顯示會員有效期限。'}</p><div className="plans-feedback-actions"><button type="button" className="plans-primary" onClick={() => void refresh().catch(() => setNotice('暫時無法確認資格，請稍後再試。'))}>重新確認資格</button><a className="plans-secondary" href={withBasePath('/membership/account')}>查看帳號與訂單</a></div></section>
     : membership.active ? <>
-      <section className="plans-active"><div><span className="plans-active-badge"><BadgeCheck size={17} aria-hidden="true" />會員資格有效</span><h2>{lineName || 'LINE 會員'}，歡迎回來。</h2><p>會員使用期間不顯示 Google 廣告與 Offerwall。填妥成績後，即可直接開始分析。</p><div className="plans-active-actions"><a className="plans-primary" href={withBasePath('/')}>開始落點分析<ArrowRight size={17} aria-hidden="true" /></a><a className="plans-secondary" href={withBasePath('/mock-volunteer')}>整理模擬志願序</a></div></div><dl><div><dt>目前方案</dt><dd>{membership.plan === 'yearly' ? '365 天方案' : '30 天方案'}</dd></div><div><dt>會員有效至</dt><dd>{formatDate(membership.expiresAt)}{activeDaysLeft !== null && <small>剩餘 {activeDaysLeft} 天</small>}</dd></div><div><dt>啟用日期</dt><dd>{formatDate(membership.activatedAt)}</dd></div></dl></section>
+      <section className="plans-active"><div><span className="plans-active-badge"><BadgeCheck size={17} aria-hidden="true" />會員資格有效</span><h2>{lineName || 'LINE 會員'}，歡迎回來。</h2><p>會員使用期間不顯示 Google 廣告與 Offerwall。填妥成績後，即可直接開始分析。</p><div className="plans-active-actions"><a className="plans-primary" href={withBasePath('/')}>開始落點分析<ArrowRight size={17} aria-hidden="true" /></a><a className="plans-secondary" href={withBasePath('/mock-volunteer')}>整理模擬志願序</a></div></div><dl><div><dt>目前方案</dt><dd>{membership.plan ? membershipPlanNames[membership.plan] : '—'}</dd></div><div><dt>會員有效至</dt><dd>{formatDate(membership.expiresAt)}{activeDaysLeft !== null && <small>剩餘 {activeDaysLeft} 天</small>}</dd></div><div><dt>啟用日期</dt><dd>{formatDate(membership.activatedAt)}</dd></div></dl></section>
       <div className="plans-active-footer"><a href={withBasePath('/membership/account')}>查看帳號與購買紀錄<ArrowRight size={16} aria-hidden="true" /></a><button type="button" onClick={() => void logoutFromLine()}><LogOut size={16} aria-hidden="true" />登出 LINE</button></div>
     </> : <>
       <section className="plans-intro-strip" aria-label="購買與使用重點">{[
@@ -277,13 +293,13 @@ export default function MembershipPage() {
         { icon: UserRound, title: 'LINE 登入找回資格', description: '換裝置也能登入同一帳號使用。' },
       ].map(({ icon: Icon, title, description }) => <div className="plans-assurance" key={title}><span className="plans-assurance-icon"><Icon size={21} aria-hidden="true" /></span><div><h2>{title}</h2><p>{description}</p></div></div>)}</section>
       <form className="plans-purchase" onSubmit={(event) => { event.preventDefault(); if (lineName) void checkout(); }}>
-        <section id="membership-plans" className="plans-selection" aria-labelledby="membership-plans-title"><div className="plans-section-heading"><span className="plans-step">01</span><div><h2 id="membership-plans-title">選一段適合你的規劃時間</h2><p>30 天先體驗，365 天持續規劃。兩種方案都享有完整會員權益。</p></div></div>
+        <section id="membership-plans" className="plans-selection" aria-labelledby="membership-plans-title"><div className="plans-section-heading"><span className="plans-step">01</span><div><h2 id="membership-plans-title">選一段適合你的規劃時間</h2><p>30 天先體驗，90 天準備選填，365 天持續規劃。三種方案都享有完整會員權益。</p></div></div>
           <fieldset className="plans-options"><legend className="sr-only">選擇會員方案</legend>{plans.map(plan => {
             const isSelected = selected === plan.id;
             return <label key={plan.id} className="plans-option" data-selected={isSelected} data-featured={plan.featured}>
-              <div className="plans-option-top"><span className="plans-option-tag">{plan.featured ? '長期規劃更划算' : '輕鬆開始'}</span><input type="radio" name="membership-plan" value={plan.id} aria-label={plan.name} checked={isSelected} onChange={() => setSelected(plan.id)} disabled={submitting} /></div>
+              <div className="plans-option-top"><span className="plans-option-tag">{plan.tag}</span><input type="radio" name="membership-plan" value={plan.id} aria-label={plan.name} checked={isSelected} onChange={() => setSelected(plan.id)} disabled={submitting} /></div>
               <h3>{plan.name}</h3><p className="plans-price"><span>NT$</span>{plan.price}</p><p className="plans-price-caption">一次付款 · 使用 {plan.duration}</p>
-              <div className="plans-option-value">{plan.featured ? <><strong>平均每天約 NT$1.1</strong><small>NT$399 ÷ 365 天換算；一次付款 NT$399。</small></> : <><strong>30 天享有完整會員權益</strong><small>適合本次選填，或先體驗會員功能。</small></>}</div>
+              <div className="plans-option-value"><strong>{plan.value}</strong><small>{plan.detail}</small></div>
               <div className="plans-option-bottom"><p>{plan.comparison}</p><span className="plans-option-select">{isSelected ? '已選擇此方案' : `選擇${plan.duration}方案`}<ArrowRight size={16} aria-hidden="true" /></span></div>
             </label>;
           })}</fieldset>

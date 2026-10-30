@@ -158,7 +158,7 @@ export const menuCategories: MenuCategory[] = [
     bg: 'bg-violet-100',
     accent: 'border-violet-500',
     items: [
-      { id: 'membership', label: '會員免廣告', description: '查看方案並用 LINE 安全確認資格', keywords: '會員 免廣告 LINE 付款 月費 年費 方案', icon: Crown, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/membership' } },
+      { id: 'membership', label: '會員免廣告', description: '查看方案並用 LINE 安全確認資格', keywords: '會員 免廣告 LINE 付款 月費 季費 年費 30天 90天 365天 方案', icon: Crown, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/membership' } },
       { id: 'privacyCenter', label: '個資與分享管理中心', description: '查看分享期限、撤銷連結與管理資料', keywords: '個資 隱私 分享 期限 撤銷 刪除 資料', icon: ShieldCheck, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/privacy-center' } },
       { id: 'membershipAccount', label: '我的會員帳號', description: '查看方案、到期日與登入狀態', keywords: '會員 帳號 到期 日 LINE 登入 資格', icon: UserCircle, color: 'text-violet-600', bg: 'bg-violet-100', action: { type: 'route', href: '/membership/account' } },
     ],

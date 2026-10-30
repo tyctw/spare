@@ -318,6 +318,7 @@ const createMerchantTradeNo = () => `SP${Date.now()}${crypto.getRandomValues(new
 const createMembershipTradeNo = () => `MB${Date.now()}${crypto.getRandomValues(new Uint16Array(1))[0].toString(36).toUpperCase()}`.slice(0, 20);
 const membershipPlans = {
   monthly: { amount: 49, days: 30, itemName: '免廣告月費會員' },
+  quarterly: { amount: 129, days: 90, itemName: '90 天免廣告會員' },
   yearly: { amount: 399, days: 365, itemName: '免廣告年費會員' },
 } as const;
 
@@ -1410,7 +1411,7 @@ async function handleAction(payload: Record<string, any>, request: Request, resp
     case 'createMembershipPayment': {
       const planId = String(payload.plan || '') as keyof typeof membershipPlans;
       const plan = membershipPlans[planId];
-      if (!plan) throw new Error('Invalid membership plan.');
+      if (!Object.hasOwn(membershipPlans, planId)) throw new Error('Invalid membership plan.');
       const lineSession = await getLineLoginSession(lineSessionTokenFromCookie(request));
       if (!lineSession) throw new Error('LINE login is required before purchasing membership.');
 

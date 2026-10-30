@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, BookOpen, CalendarDays, Compass, GraduationCap, LineChart, ListChecks, Map, Target } from 'lucide-react';
+import { ArrowRight, BookOpen, CalendarDays, Compass, GraduationCap, LineChart, ListChecks, Map, Target } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import './related-reading.css';
 
@@ -9,6 +9,7 @@ type Recommendation = {
   href: string;
   icon: React.ElementType;
   tone: string;
+  question?: string;
 };
 
 const recommendations: Record<string, Recommendation[]> = {
@@ -83,9 +84,9 @@ const fallback: Recommendation[] = [
 
 export default function RelatedReading({ path }: { path: string }) {
   const scoringRuleRecommendations: Recommendation[] = [
-    { title: '會考成績等級', description: '先釐清 A、B、C、標示與寫作級分，才能正確閱讀各區換算方式。', href: '/grade-level', icon: BookOpen, tone: 'bg-rose-100 text-rose-800' },
-    { title: '填志願策略', description: '把區域規則轉成實際志願排序，避開不必要的志願序扣分。', href: '/strategy', icon: Target, tone: 'bg-orange-100 text-orange-800' },
-    { title: '模擬志願序', description: '用清單試排校科與志願順序，再回頭核對你所在考區的規則。', href: '/mock-volunteer', icon: ListChecks, tone: 'bg-amber-100 text-amber-800' },
+    { title: '會考成績等級', question: '成績標示怎麼看？', description: '先釐清 A、B、C、標示與寫作級分，才能正確閱讀各區換算方式。', href: '/grade-level', icon: BookOpen, tone: 'bg-rose-100 text-rose-800' },
+    { title: '填志願策略', question: '志願怎麼排更有把握？', description: '把區域規則轉成實際志願排序，避開不必要的志願序扣分。', href: '/strategy', icon: Target, tone: 'bg-orange-100 text-orange-800' },
+    { title: '模擬志願序', question: '想先試排一次？', description: '用清單試排校科與志願順序，再回頭核對你所在考區的規則。', href: '/mock-volunteer', icon: ListChecks, tone: 'bg-amber-100 text-amber-800' },
   ];
   const areaRecommendations: Recommendation[] = [
     { title: '開始落點分析', description: '輸入會考成績與就學區，查看推薦校科與落點區間。', href: '/', icon: Compass, tone: 'bg-indigo-100 text-indigo-800' },
@@ -97,19 +98,23 @@ export default function RelatedReading({ path }: { path: string }) {
     <div className="related-reading__shell">
       <div className="related-reading__intro">
         <div className="related-reading__intro-copy">
-          <div className="related-reading__eyebrow"><Compass size={17} aria-hidden="true" /><span>接著探索</span><span className="related-reading__count">{items.length} 個推薦方向</span></div>
-          <h2 id="related-reading-title">下一步，<span>讓選擇更有把握。</span></h2>
-          <p>挑一個現在最想釐清的問題，從下面的內容繼續看。每多了解一點，就更接近適合自己的方向。</p>
+          <div className="related-reading__eyebrow"><Compass size={17} aria-hidden="true" /><span>接著探索</span></div>
+          <h2 id="related-reading-title">下一步，<br /><span>讓選擇更有把握。</span></h2>
+          <p>從現在最想釐清的問題開始。<br />多了解一點，就更接近適合自己的方向。</p>
+          <span className="related-reading__count">{String(items.length).padStart(2, '0')} 個推薦方向 <ArrowRight size={16} aria-hidden="true" /></span>
         </div>
-        <div className="related-reading__spotlight" aria-hidden="true"><span>YOUR NEXT STEP</span><strong>{String(items.length).padStart(2, '0')}</strong><span>個值得繼續看的方向</span><ArrowUpRight size={27} /></div>
       </div>
-      <div className={`related-reading__grid${items.length === 4 ? ' related-reading__grid--four' : ''}`}>
+      <div className="related-reading__grid">
         {items.map((item, index) => {
           const Icon = item.icon;
           return <a key={item.href} href={withBasePath(item.href)} className="related-reading__card">
-            <div className="related-reading__card-top"><span className="related-reading__number">推薦 {String(index + 1).padStart(2, '0')}</span><span className={`related-reading__icon ${item.tone}`}><Icon size={25} aria-hidden="true" /></span></div>
-            <div className="related-reading__card-copy"><h3>{item.title}</h3><p>{item.description}</p></div>
-            <span className="related-reading__card-link">前往了解 <span><ArrowUpRight size={18} aria-hidden="true" /></span></span>
+            <span className="related-reading__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <span className={`related-reading__icon ${item.tone}`}><Icon size={23} aria-hidden="true" /></span>
+            <div className="related-reading__card-copy">
+              {item.question && <span className="related-reading__question">{item.question}</span>}
+              <h3>{item.title}</h3><p>{item.description}</p>
+            </div>
+            <span className="related-reading__card-link"><span>前往了解</span><ArrowRight size={19} aria-hidden="true" /></span>
           </a>;
         })}
       </div>

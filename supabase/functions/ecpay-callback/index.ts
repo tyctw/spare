@@ -189,7 +189,7 @@ Deno.serve(async (request) => {
         const resendApiKey = Deno.env.get('RESEND_API_KEY');
         const resendFrom = Deno.env.get('RESEND_FROM_EMAIL') || '會考落點分析 <no-reply@send.twexam.cc>';
         if (resendApiKey) {
-          const planName = membershipPayment.plan === 'yearly' ? '年費免廣告會員' : '月費免廣告會員';
+          const planName = membershipPayment.plan === 'quarterly' ? '90 天免廣告會員' : membershipPayment.plan === 'yearly' ? '年費免廣告會員' : '月費免廣告會員';
           const expireDateStr = new Intl.DateTimeFormat('zh-TW', { dateStyle: 'long' }).format(expiresAt || paidAt);
           const payerName = escapeHtml(membershipPayment.payer_name?.trim() || '使用者');
           

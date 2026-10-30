@@ -1,11 +1,19 @@
 import { callBackend } from './api';
 
+export type MembershipPlan = 'monthly' | 'quarterly' | 'yearly';
+
+export const membershipPlanNames: Record<MembershipPlan, string> = {
+  monthly: '30 天方案',
+  quarterly: '90 天方案',
+  yearly: '365 天方案',
+};
+
 let lineLoginExchangePromise: Promise<boolean> | null = null;
 let membershipStatusRequest: Promise<MembershipStatus> | null = null;
 
 export type MembershipStatus = {
   active: boolean;
-  plan?: 'monthly' | 'yearly';
+  plan?: MembershipPlan;
   expiresAt?: string;
   activatedAt?: string | null;
   contactEmail?: string | null;

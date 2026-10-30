@@ -13,14 +13,14 @@
 .plans-assurance-icon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:11px;background:#f3eef9;color:#8764ac}
 .plans-assurance h2{margin:0;color:#544568;font-size:15px;font-weight:800;line-height:1.5}
 .plans-assurance p{margin-top:5px;color:#847b91;font-size:13px;line-height:1.7}
-.plans-purchase{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start;gap:24px}
+.plans-purchase{display:grid;grid-template-columns:1fr;align-items:start;gap:24px}
 .plans-selection,.plans-checkout{min-width:0;background:#fff;border:1px solid #e1e1eb;border-radius:19px;padding:27px}
 .plans-section-heading{display:flex;align-items:center;gap:12px}
 .plans-section-heading>svg{flex:none;color:#8061ab}
 .plans-step{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:11px;background:#eee8f8;color:#79579f;font-size:13px;font-weight:850}
 .plans-section-heading h2{font-size:22px;font-weight:850;line-height:1.4}
 .plans-section-heading p{margin-top:5px;color:#7b8597;font-size:14px;line-height:1.7}
-.plans-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0 0;border:0;padding:0}
+.plans-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0 0;border:0;padding:0}
 .plans-option{display:flex;flex-direction:column;min-width:0;border:1px solid #dcdce8;border-radius:15px;padding:21px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
 .plans-option:hover{border-color:#b19aca;background:#fcfaff}
 .plans-option[data-selected=true]{border-color:#8761b0;background:#f8f4fe;box-shadow:inset 0 0 0 1px #8761b0}
