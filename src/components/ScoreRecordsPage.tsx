@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import {
   ArrowLeft,
   BookOpen,
@@ -150,7 +150,7 @@ export default function ScoreRecordsPage() {
   return (
     <main className="score-records-page min-h-screen text-slate-900">
       <div className="score-records-shell">
-        <PageBreadcrumb title="我的成績紀錄" />
+        <PageTopbar title="我的成績紀錄" />
         <header className="score-records-hero">
           <div className="score-records-hero-copy">
             <span className="score-eyebrow"><ClipboardPlus size={17} /> 個人學習儀表板</span>

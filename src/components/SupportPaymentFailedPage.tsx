@@ -1,15 +1,16 @@
-import { ArrowLeft, CircleAlert, Heart, Mail, RefreshCcw, ShieldCheck } from 'lucide-react';
+import { CircleAlert, Heart, Mail, RefreshCcw, ShieldCheck } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
+import PageTopbar from './PageTopbar';
 
 const supportEmail = 'tyctw.analyze@gmail.com';
 
 export default function SupportPaymentFailedPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f7f8fc] text-slate-900">
+    <main className="min-h-screen bg-[#f7f8fc] text-slate-900">
+      <div className="mx-auto max-w-4xl px-4 pt-4 sm:px-6 lg:px-8"><PageTopbar title="這筆付款尚未完成" /></div>
       <section className="relative overflow-hidden border-b-4 border-slate-900 bg-[#eef3ff]">
         <div aria-hidden="true" className="absolute -left-20 top-0 h-64 w-64 rounded-full bg-rose-200/70 blur-3xl" />
         <div aria-hidden="true" className="absolute -right-16 bottom-0 h-72 w-72 rounded-full bg-indigo-200/70 blur-3xl" />
-        <div className="relative mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8"><a href={withBasePath('/')} className="inline-flex items-center gap-3 rounded-2xl border-4 border-slate-900 bg-white px-5 py-3 text-base font-black text-slate-800 shadow-[5px_5px_0_#0f172a] transition hover:-translate-y-0.5 hover:text-indigo-700 active:translate-y-0 active:shadow-none"><ArrowLeft className="h-5 w-5" />回到首頁</a></div>
       </section>
 
       <section className="relative mx-auto -mt-2 max-w-4xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">

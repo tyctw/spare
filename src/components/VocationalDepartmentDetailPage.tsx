@@ -5,7 +5,7 @@ import { departmentProfiles } from '../lib/departmentProfiles';
 import { departmentDeepDives } from '../lib/departmentDeepDives';
 import { groups } from '../lib/vocationalGroups';
 import MobileContentsNav from './MobileContentsNav';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import './vocational-departments-page.css';
 
 export default function VocationalDepartmentDetailPage({ department }: { department?: Department }) {
@@ -27,7 +27,7 @@ export default function VocationalDepartmentDetailPage({ department }: { departm
   };
 
   return <main className="departments-page department-detail-page"><div className="departments-shell">
-    <PageBreadcrumb title={`${department.group} · ${department.name}`} parent={{ label: '科別總覽', href: '/departments' }} />
+    <PageTopbar title={`${department.group} · ${department.name}`} parent={{ label: '科別總覽', href: '/departments' }} />
     <header className="department-detail-hero"><div><p className="departments-eyebrow"><BookOpen size={17} />{department.category} · {department.group}</p><h1>{department.name}</h1><p className="department-detail-lead">{department.intro}</p><div className="department-detail-actions"><a href={searchHref} className="department-detail-primary">查詢開設學校<ArrowUpRight size={17} /></a><a href={withBasePath('/departments')} className="department-detail-secondary">瀏覽全部科別<ArrowRight size={17} /></a></div></div><div className="department-detail-hero-note"><span>先抓住重點</span><strong>{department.practice}</strong><p>同名科別在不同學校，實際課程與設備仍可能不同。</p></div></header>
 
     <div className="department-detail-layout"><div className="department-detail-main">

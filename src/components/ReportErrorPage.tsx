@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import {
   AlertCircle,
-  ArrowLeft,
   ArrowRight,
   Check,
   CheckCircle2,
@@ -16,6 +15,7 @@ import {
 } from 'lucide-react';
 import { callBackend } from '../lib/api';
 import { withBasePath } from '../lib/routes';
+import PageTopbar from './PageTopbar';
 
 const reportTypes = [
   { value: 'school_data', label: '學校與科別資料', description: '校名、科別、招生資訊或內容有誤' },
@@ -74,9 +74,7 @@ export default function ReportErrorPage() {
     return (
       <main className="min-h-screen bg-[#f5f7fc] px-4 py-8 text-slate-900 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-3xl">
-          <a href={withBasePath('/')} className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-slate-600 underline-offset-4 hover:text-indigo-700 hover:underline">
-            <ArrowLeft size={17} aria-hidden="true" />返回首頁
-          </a>
+          <PageTopbar title="問題回報" />
           <section className="mt-8 overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(41,53,92,0.08)]">
             <div className="border-b border-slate-100 bg-gradient-to-br from-emerald-50 via-white to-indigo-50 px-6 py-9 sm:px-10 sm:py-12">
               <span className="inline-grid h-14 w-14 place-items-center rounded-2xl bg-emerald-100 text-emerald-700"><CheckCircle2 size={30} aria-hidden="true" /></span>
@@ -113,9 +111,7 @@ export default function ReportErrorPage() {
   return (
     <main className="min-h-screen bg-[#f5f7fc] pb-16 text-slate-900">
       <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 sm:pt-10">
-        <a href={withBasePath('/')} className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-slate-600 underline-offset-4 hover:text-indigo-700 hover:underline">
-          <ArrowLeft size={17} aria-hidden="true" />返回首頁
-        </a>
+        <PageTopbar title="問題回報" />
 
         <header className="relative mt-5 overflow-hidden rounded-[28px] border border-indigo-100 bg-gradient-to-br from-[#eef1ff] via-white to-[#fff9eb] px-6 py-9 sm:px-10 sm:py-12">
           <div className="relative z-10 max-w-3xl">

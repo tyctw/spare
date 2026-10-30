@@ -1,4 +1,4 @@
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, Compass, GraduationCap, HelpCircle, Route } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import './general-comprehensive-high-school-page.css';
@@ -35,7 +35,7 @@ export default function GeneralComprehensiveHighSchoolPage() {
     <main className="school-path-page">
       <section className="school-path-hero">
         <div className="school-path-shell">
-          <PageBreadcrumb title="普通科與綜合高中" />
+          <PageTopbar title="普通科與綜合高中" />
           <div className="school-path-hero-grid">
             <div>
               <p className="school-path-kicker"><GraduationCap size={17} />升學路線比較</p>

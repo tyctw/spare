@@ -1,4 +1,4 @@
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -123,7 +123,7 @@ export default function SchoolTypesPage() {
     <main className="school-types-page">
       <section className="school-types-hero">
         <div className="school-types-shell">
-          <PageBreadcrumb title="學校類型解析" />
+          <PageTopbar title="學校類型解析" />
           <div className="school-types-hero-grid">
             <div>
               <p className="school-types-kicker"><Building2 size={16} />升學路線指南</p>

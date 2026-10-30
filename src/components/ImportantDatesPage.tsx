@@ -1,4 +1,4 @@
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import { useState } from 'react';
 import {
   ArrowRight,
@@ -51,7 +51,7 @@ export default function ImportantDatesPage() {
   return (
     <main className="min-h-screen bg-[#f7f8fc] pb-16 text-slate-900">
       <div className="mx-auto max-w-6xl px-4 pt-7 sm:px-6 sm:pt-9">
-        <PageBreadcrumb title="重要日程" />
+        <PageTopbar title="重要日程" />
 
         <header className="relative mt-4 overflow-hidden rounded-[28px] bg-[#283468] px-6 py-9 text-white sm:px-10 sm:py-12">
           <div className="relative z-10 max-w-3xl">

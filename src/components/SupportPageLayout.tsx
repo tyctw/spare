@@ -1,4 +1,4 @@
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import {
   ArrowLeft,
   ArrowRight,
@@ -53,7 +53,7 @@ export default function SupportPageLayout({
   return <main className="support-page">
     <section className="support-hero">
       <div className="support-container">
-        <PageBreadcrumb title="小額支持" />
+        <PageTopbar title="小額支持" />
         <div className="support-hero-grid">
           <div className="support-hero-copy">
             <span className="support-eyebrow"><Heart size={16} /> 小額支持</span>

@@ -1,5 +1,5 @@
 import { AREA_DATA, getAreaBySlug } from '../lib/areaData';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import React from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, Building2, Calculator, Compass, ExternalLink, GraduationCap, HelpCircle, LineChart, ListChecks, MapPin, Search, Sparkles, Target } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
@@ -30,7 +30,7 @@ export default function AreaPage({ slug }: { slug: string }) {
     {/* Hero */}
     <section className="border-b-4 border-slate-900 bg-indigo-50">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        <PageBreadcrumb title={`${area.name}會考落點分析`} />
+        <PageTopbar title={`${area.name}會考落點分析`} />
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border-2 border-slate-900 bg-white px-3 py-1 text-sm font-black"><MapPin className="h-4 w-4 text-rose-600" />{area.cities}</div>

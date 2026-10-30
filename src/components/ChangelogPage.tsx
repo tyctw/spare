@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight, BadgeCheck, BookOpenCheck, CalendarDays, History, Rocket, ShieldCheck, Sparkles, Wrench } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import PageNavigation from './PageNavigation';
 import './changelog-page.css';
 
@@ -102,7 +102,7 @@ const latestRelease = releases[0];
 export default function ChangelogPage() {
   return <main className="changelog-page">
     <div className="changelog-shell">
-      <PageBreadcrumb title="系統更新日誌" />
+      <PageTopbar title="系統更新日誌" />
 
       <header className="changelog-hero">
         <div className="changelog-hero-copy">

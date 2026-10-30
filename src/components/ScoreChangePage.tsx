@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import {
   ArrowDown, ArrowLeft, ArrowRight, ArrowUp, BookOpenCheck, Check,
   Crown, Lightbulb, Loader2, LockKeyhole, RotateCcw, TrendingUp,
@@ -97,7 +97,7 @@ export default function ScoreChangePage() {
     <main className="min-h-screen bg-[#f7f8fc] px-4 py-6 text-slate-900 sm:px-6 sm:py-9">
       <div className="mx-auto max-w-[1280px]">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <PageBreadcrumb title="一分改變分析" parent={{ label: '分析結果', href: '/results' }} />
+          <PageTopbar title="一分改變分析" parent={{ label: '分析結果', href: '/results' }} />
           <span className="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-2 text-xs font-bold text-indigo-800">
             <Crown className="h-4 w-4" aria-hidden="true" />會員專屬工具
           </span>

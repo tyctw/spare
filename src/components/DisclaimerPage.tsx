@@ -1,6 +1,6 @@
 import { AlertTriangle, ArrowLeft, ArrowRight, BookOpenCheck, CheckCircle2, ChevronRight, ClipboardCheck, Database, ExternalLink, FileWarning, Scale, ShieldAlert, UserCheck } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import MobileContentsNav from './MobileContentsNav';
 import './disclaimer-page.css';
 
@@ -20,7 +20,7 @@ function SectionTitle({ number, label, title, description }: { number: string; l
 
 export default function DisclaimerPage() {
   return <main className="disclaimer-page-new"><div className="disclaimer-shell">
-    <PageBreadcrumb title="免責聲明" />
+    <PageTopbar title="免責聲明" />
     <header className="disclaimer-hero"><div className="disclaimer-hero-copy"><p className="disclaimer-kicker"><Scale size={17} />IMPORTANT NOTICE</p><h1>免責聲明<span>使用前，請了解資訊的適用範圍。</span></h1><p>本網站是民間開發的升學資訊與規劃工具，協助整理會考成績、校科資料與志願選項；不是政府機關、招生委員會、學校或正式報名、分發系統。</p><time dateTime="2026-08-26">最後更新：2026 年 8 月 26 日</time></div><div className="disclaimer-hero-mark" aria-hidden="true"><ShieldAlert size={67} strokeWidth={1.2} /><span>READ BEFORE USE</span></div></header>
     <div className="disclaimer-principle"><div className="disclaimer-principle-icon"><ShieldAlert size={24} /></div><div><p>最重要的原則</p><strong>資格、名額、比序、時程與錄取結果，一律以當學年度官方簡章及公告為準。</strong></div><a href="#official">查看官方資訊提醒<ArrowRight size={16} /></a></div>
     <div className="disclaimer-layout"><aside className="disclaimer-aside"><nav aria-label="頁面導覽"><p>本頁內容</p>{navigation.map((item) => <a href={`#${item.id}`} key={item.id}><span>{item.number}</span>{item.title}</a>)}</nav><MobileContentsNav items={navigation.map(({ id, title, number }) => ({ id, label: title, number }))} /><div className="disclaimer-aside-note"><BookOpenCheck size={21} /><p>送出正式志願前，請再次查閱當年度官方簡章。</p></div></aside>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, ChevronRight, Database, Mail, Search, Shield, X } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import MobileContentsNav from './MobileContentsNav';
 import './terms-page.css';
 
@@ -425,7 +425,7 @@ function LegalDocumentLayout({ kind }: { kind: LegalPageKind }) {
   const alternateLabel = isPrivacy ? '查看服務條款' : '查看隱私權政策';
 
   return <main className={`terms-page ${isPrivacy ? 'privacy-page' : ''}`}><div className="terms-shell">
-    <PageBreadcrumb title={page.title} />
+    <PageTopbar title={page.title} />
     <header className="terms-hero"><div><p className="terms-kicker">{isPrivacy ? <Database size={16} /> : <Shield size={16} />}{page.eyebrow}</p><h1>{page.title}</h1><p className="terms-hero-description">{page.description}</p><div className="terms-meta"><span><BookOpen size={15} />共 {sections.length} 節</span><time dateTime={updatedDates[kind]}>最後更新：{updatedDates[kind]}</time></div></div><div className="terms-hero-aside"><span>閱讀提示</span><p>{isPrivacy ? '想了解資料保存、刪除及個人資料權利，可先查看第 13 至 16 節。' : '依主題查找你需要的條款，付款與會員權益請特別留意第 11 至 16 節。'}</p></div></header>
     <div className="terms-search-panel"><label className="terms-search"><Search size={20} /><span className="sr-only">{searchLabel}</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={isPrivacy ? '搜尋政策，例如：分享、保存、刪除帳號' : '搜尋條款，例如：退款、分享、LINE 登入'} />{query && <button type="button" onClick={() => setQuery('')} aria-label="清除搜尋"><X size={18} /></button>}</label><span role="status">{normalizedQuery ? `找到 ${resultCount} 節相關內容` : '快速查找章節內容'}</span></div>
     <div className="terms-layout"><aside className="terms-aside"><nav aria-label="主題導覽"><p>{isPrivacy ? '政策目錄' : '條款目錄'}</p>{visibleGroups.map((group) => <a key={group.id} href={`#${group.id}`}><span>{group.range}</span>{group.title}</a>)}</nav><MobileContentsNav items={visibleGroups.map(({ id, title, range }) => ({ id, label: title, number: range }))} /><div className="terms-aside-note">{isPrivacy ? <Database size={20} /> : <Shield size={20} />}<p>{isPrivacy ? '如需查詢、更正或刪除資料，可依政策說明聯絡本網站營運者。' : '請保留交易時適用的條款版本，並留意當次方案內容。'}</p></div></aside>

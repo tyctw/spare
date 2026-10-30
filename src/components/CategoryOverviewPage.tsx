@@ -1,5 +1,5 @@
 import { ArrowRight, ArrowUpRight, CircleHelp, ExternalLink, Search } from 'lucide-react';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import { menuCategories, type MenuItem } from './layout/menuData';
 import { withBasePath } from '../lib/routes';
 import type { CategoryOverviewId } from '../lib/categoryOverview';
@@ -110,7 +110,7 @@ export default function CategoryOverviewPage({ categoryId }: { categoryId: Categ
   const featured = getItem(page.featuredId)!;
 
   return <main className="category-overview-page" data-category={categoryId}>
-    <div className="category-overview-shell"><PageBreadcrumb title={page.title} /></div>
+    <div className="category-overview-shell"><PageTopbar title={page.title} /></div>
     <header className="category-overview-hero"><div className="category-overview-shell category-overview-hero-grid">
       <div className="category-overview-hero-copy"><p className="category-overview-eyebrow">探索指南 <span>/</span> {page.eyebrow}</p><h1>{page.title}</h1><p className="category-overview-lead">{page.intro}</p><a className="category-overview-start" href={actionHref(featured)}>{page.featuredLabel}<ArrowRight size={18} aria-hidden="true" /></a></div>
       <div className="category-overview-sequence"><span>建議怎麼開始</span><ol>{page.steps.map((step, index) => <li key={step}><b>{String(index + 1).padStart(2, '0')}</b><span>{step}</span></li>)}</ol></div>

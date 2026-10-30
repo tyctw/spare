@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { withBasePath } from '../lib/routes';
 import { buildLifeDiscussionHtml } from '../lib/lifeDiscussionPrint';
-import PageBreadcrumb from './PageBreadcrumb';
+import PageTopbar from './PageTopbar';
 import './life-feasibility-page.css';
 
 type Candidate = {
@@ -81,7 +81,7 @@ export default function LifeFeasibilityPage() {
   return (
     <main id="main-content" className="life-page">
       <div className="life-shell">
-        <PageBreadcrumb title="生活條件比較單" parent={{ label: '學校類型解析', href: '/school-types' }} />
+        <PageTopbar title="生活條件比較單" parent={{ label: '學校類型解析', href: '/school-types' }} />
 
         <header className="life-hero">
           <div className="life-hero-copy">
