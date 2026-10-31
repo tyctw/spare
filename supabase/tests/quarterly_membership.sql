@@ -37,6 +37,11 @@ begin
   if exists (select 1 from public.membership_payments where merchant_trade_no = 'test-quarter-failed' and (expires_at is not null or status <> 'failed')) then
     raise exception 'Failed payment must not grant membership';
   end if;
+  perform public.settle_membership_payment('test-quarter-failed', 'test-ecpay-failed-paid', 'Credit', '{}', paid, 'paid');
+  select expires_at into actual from public.membership_payments where merchant_trade_no = 'test-quarter-failed';
+  if actual <> paid + interval '90 days' then raise exception 'Verified success must settle a non-final failure'; end if;
+  select count(*) into callbacks from public.settle_membership_payment('test-quarter-failed', 'test-ecpay-failed-paid', 'Credit', '{}', paid, 'paid');
+  if callbacks <> 0 then raise exception 'Recovered membership must not extend on a duplicate success'; end if;
 
   insert into public.membership_payments (merchant_trade_no, plan, amount, line_user_id)
   values ('test-quarter-month', 'monthly', 49, 'test-quarter-month-user'), ('test-quarter-year', 'yearly', 399, 'test-quarter-year-user');

@@ -158,6 +158,18 @@ const json = (request: Request, body: unknown, status = 200, extraHeaders: Heade
     headers: { ...corsHeaders(request), 'Content-Type': 'application/json; charset=utf-8', ...extraHeaders },
   });
 
+class ActionError extends Error {
+  status: number;
+  code: string;
+
+  constructor(status: number, code: string, message: string) {
+    super(message);
+    this.name = 'ActionError';
+    this.status = status;
+    this.code = code;
+  }
+}
+
 const inappropriateContentPatterns = [
   /幹/,
   /靠北/,
@@ -569,6 +581,18 @@ function background(task: PromiseLike<unknown>) {
 
 const IPV4_ADDRESS_PATTERN = /^(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
 const IPV6_ADDRESS_PATTERN = /^[0-9a-f:]+$/i;
+
+function readJwtPayload(token: string): { aud?: unknown; exp?: unknown; sub?: unknown } {
+  try {
+    const segment = token.split('.')[1] || '';
+    const base64 = segment.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    const parsed = JSON.parse(atob(padded));
+    return parsed && typeof parsed === 'object' ? parsed as { aud?: unknown; exp?: unknown; sub?: unknown } : {};
+  } catch {
+    return {};
+  }
+}
 
 function clientAddress(request: Request) {
   // This function is deployed behind Supabase's Cloudflare edge, which sets
@@ -1596,7 +1620,7 @@ async function handleAction(payload: Record<string, any>, request: Request, resp
     case 'redeemLiffIdToken': {
       const idToken = String(payload.idToken || '').trim();
       if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(idToken) || idToken.length > 4096) {
-        throw new Error('Invalid LIFF ID token.');
+        throw new ActionError(401, 'LIFF_TOKEN_INVALID', 'LINE 登入憑證無效，請重新登入。');
       }
       const channelId = Deno.env.get('LINE_CHANNEL_ID')?.trim();
       if (!channelId) throw new Error('LINE LIFF login is unavailable.');
@@ -1605,9 +1629,33 @@ async function handleAction(payload: Record<string, any>, request: Request, resp
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id_token: idToken, client_id: channelId }),
       });
-      if (!verifyResponse.ok) throw new Error('LIFF login verification failed.');
-      const profile = await verifyResponse.json() as { sub?: string; name?: string; picture?: string };
-      if (!profile.sub || !/^[A-Za-z0-9_-]{10,100}$/.test(profile.sub)) throw new Error('LIFF profile is invalid.');
+      if (!verifyResponse.ok) throw new ActionError(401, 'LIFF_TOKEN_INVALID', 'LINE 登入憑證無效或已過期，請重新登入。');
+      const profile = await verifyResponse.json() as { sub?: string; name?: string; picture?: string; aud?: string; exp?: number };
+      const tokenClaims = readJwtPayload(idToken);
+      const expiresAtMs = typeof profile.exp === 'number' ? profile.exp * 1000 : Number.NaN;
+      // LINE's verify endpoint checks the signature. Require its aud/exp to
+      // match the token body, the channel, and a still-valid expiry. A 60s
+      // skew only covers clock drift; the replay row outlives that window.
+      if (!profile.sub || !/^[A-Za-z0-9_-]{10,100}$/.test(profile.sub)
+        || profile.aud !== channelId
+        || tokenClaims.aud !== channelId
+        || tokenClaims.sub !== profile.sub
+        || tokenClaims.exp !== profile.exp
+        || !Number.isFinite(expiresAtMs)
+        || expiresAtMs + 60_000 <= Date.now()) {
+        throw new ActionError(401, 'LIFF_TOKEN_INVALID', 'LINE 登入憑證無效或已過期，請重新登入。');
+      }
+      const tokenHash = await sha256(idToken);
+      const replayUntil = new Date(Math.max(expiresAtMs, Date.now() + 2 * 60 * 1000)).toISOString();
+      await supabase.from('liff_id_token_replay').delete().lt('expires_at', new Date().toISOString());
+      const { error: replayError } = await supabase.from('liff_id_token_replay').insert({
+        token_hash: tokenHash,
+        expires_at: replayUntil,
+      });
+      if (replayError?.code === '23505') {
+        throw new ActionError(401, 'LIFF_TOKEN_REUSED', '這個登入憑證已使用過，請重新登入。');
+      }
+      if (replayError) throw replayError;
       const { data: session, error } = await supabase.from('line_login_sessions').insert({
         line_user_id: profile.sub,
         cookie_only: true,
@@ -1674,7 +1722,6 @@ async function handleAction(payload: Record<string, any>, request: Request, resp
     case 'createSharedReport': {
       const kind = String(payload.kind || '');
       const report = payload.payload;
-      const requestedPermanentLink = kind === 'volunteer' && payload.persistent === true;
       const requestedCollaboration = kind === 'volunteer' && payload.collaboration === true;
       const requestedExpiryDays = Number(payload.expiresInDays || 5);
       if (kind !== 'analysis' && kind !== 'volunteer') throw new Error('Invalid shared report type.');
@@ -1691,15 +1738,17 @@ async function handleAction(payload: Record<string, any>, request: Request, resp
       const encodedPayload = JSON.stringify(report);
       if (encodedPayload.length > 150_000) throw new Error('Shared report is too large.');
 
-      // Only an active member may create a no-expiry volunteer-list link.
-      // Do not trust the client flag: membership is checked again here, where
-      // the HttpOnly LINE session cookie is available.
+      // Every share has a finite expiry. Non-members can only create a 5-day
+      // link. Longer durations and collaboration are membership features and
+      // must be decided here, not from the client flag alone.
       if (!Number.isInteger(requestedExpiryDays) || ![5, 7, 30, 90].includes(requestedExpiryDays)) throw new Error('分享期限設定不正確。');
       const sharingSession = await getLineLoginSession(lineSessionTokenFromCookie(request));
-      if ((requestedPermanentLink || requestedCollaboration) && !await activeMembershipForRequest(request)) {
-        throw new Error('An active membership is required for collaboration and permanent sharing links.');
+      if ((requestedExpiryDays !== 5 || requestedCollaboration) && !await activeMembershipForRequest(request)) {
+        throw new ActionError(403, 'MEMBERSHIP_REQUIRED', '7、30、90 天分享與協作連結需要有效的會員資格。');
       }
-      if (requestedCollaboration && !sharingSession) throw new Error('請先登入建立協作分享。');
+      if (requestedCollaboration && !sharingSession) {
+        throw new ActionError(403, 'MEMBERSHIP_REQUIRED', '請先登入並具備有效會員資格，才能建立協作連結。');
+      }
 
       const expiresAt = new Date(Date.now() + requestedExpiryDays * 24 * 60 * 60 * 1000).toISOString();
       const sharedReport = {
@@ -2275,6 +2324,14 @@ Deno.serve(async (request) => {
       error,
     });
 
+    if (error instanceof ActionError) {
+      return json(request, {
+        error: error.code,
+        code: error.code,
+        message: error.message,
+        requestId,
+      }, error.status, { 'Cache-Control': 'no-store' });
+    }
     const isInvalidRequest = error instanceof Error && error.message === 'Invalid JSON request body.';
     const collaborationErrors: Record<string, { message: string; status: number }> = {
       COLLABORATION_NOT_READY: { message: '共編版本服務尚未完成更新，請聯絡管理員套用志願版本資料庫更新並部署後端。', status: 503 },
