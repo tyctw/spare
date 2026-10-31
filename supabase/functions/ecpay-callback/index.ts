@@ -139,11 +139,15 @@ Deno.serve(async (request) => {
       
       const rtnCode = fields.RtnCode;
       const isPaid = rtnCode === '1';
-      const isWaitingPayment = rtnCode === '2' || rtnCode === '10100073';
-      
+      // Documented unpaid-but-issued codes are 2 (ATM) and 10100073 (CVS/barcode).
+      // Every other non-success code is recorded and left recoverable: ECPay can
+      // still send RtnCode 1 for the same MerchantTradeNo, and that must settle.
       if (fields.SimulatePaid === '1') return new Response('1|OK', { headers: textHeaders });
-      
-      if (isWaitingPayment) {
+
+      if (!isPaid) {
+        if (membershipPayment.status === 'paid' || membershipPayment.status === 'refunded') {
+          return new Response('1|OK', { headers: textHeaders });
+        }
         const { error: updateError } = await supabase
           .from('membership_payments')
           .update({
@@ -153,17 +157,16 @@ Deno.serve(async (request) => {
             updated_at: new Date().toISOString(),
           })
           .eq('merchant_trade_no', merchantTradeNo)
-          .eq('status', 'pending');
+          .in('status', ['pending', 'failed']);
         if (updateError) throw updateError;
         return new Response('1|OK', { headers: textHeaders });
       }
 
-      const targetStatus = isPaid ? 'paid' : 'failed';
-      if (membershipPayment.status !== 'pending' && membershipPayment.ecpay_trade_no === tradeNo) {
+      if (membershipPayment.status === 'paid' && membershipPayment.ecpay_trade_no === tradeNo) {
         return new Response('1|OK', { headers: textHeaders });
       }
-      if (membershipPayment.status !== 'pending') {
-        console.error('Status not pending', { status: membershipPayment.status, merchantTradeNo });
+      if (membershipPayment.status !== 'pending' && membershipPayment.status !== 'failed') {
+        console.error('Membership payment cannot accept a success notification', { status: membershipPayment.status, merchantTradeNo });
         return new Response('0|Error', { status: 409, headers: textHeaders });
       }
 
@@ -174,13 +177,21 @@ Deno.serve(async (request) => {
         p_payment_type: fields.PaymentType || null,
         p_callback_payload: fields,
         p_paid_at: paidAt.toISOString(),
-        p_target_status: targetStatus,
+        p_target_status: 'paid',
       });
       if (updateError) throw updateError;
       const updated = Array.isArray(settlement) ? settlement[0] : settlement;
-      if (!updated || updated.status !== targetStatus || updated.ecpay_trade_no !== tradeNo) {
-        console.error('Update failed, row might have changed', { merchantTradeNo });
-        return new Response('0|Error', { status: 409, headers: textHeaders });
+      if (!updated || updated.status !== 'paid' || updated.ecpay_trade_no !== tradeNo) {
+        const { data: currentPayment, error: currentPaymentError } = await supabase
+          .from('membership_payments')
+          .select('status, ecpay_trade_no, expires_at')
+          .eq('merchant_trade_no', merchantTradeNo)
+          .maybeSingle();
+        if (currentPaymentError || currentPayment?.status !== 'paid' || currentPayment.ecpay_trade_no !== tradeNo) {
+          console.error('Update failed, row might have changed', { merchantTradeNo });
+          return new Response('0|Error', { status: 409, headers: textHeaders });
+        }
+        return new Response('1|OK', { headers: textHeaders });
       }
       const expiresAt = updated.expires_at ? new Date(updated.expires_at) : null;
       
@@ -351,11 +362,12 @@ Deno.serve(async (request) => {
 
     const rtnCode = fields.RtnCode;
     const isPaid = rtnCode === '1';
-    const isWaitingPayment = rtnCode === '2' || rtnCode === '10100073';
-    const targetStatus = isPaid ? 'paid' : 'failed';
     if (fields.SimulatePaid === '1') return new Response('1|OK', { headers: textHeaders });
-    
-    if (isWaitingPayment) {
+
+    if (!isPaid) {
+      if (payment.status === 'paid' || payment.status === 'refunded') {
+        return new Response('1|OK', { headers: textHeaders });
+      }
       const { error: updateError } = await supabase
         .from('support_payments')
         .update({
@@ -365,29 +377,29 @@ Deno.serve(async (request) => {
           updated_at: new Date().toISOString(),
         })
         .eq('merchant_trade_no', merchantTradeNo)
-        .eq('status', 'pending');
+        .in('status', ['pending', 'failed']);
       if (updateError) throw updateError;
       return new Response('1|OK', { headers: textHeaders });
     }
 
-    if (payment.status !== 'pending' && payment.ecpay_trade_no === tradeNo) return new Response('1|OK', { headers: textHeaders });
-    if (payment.status !== 'pending') {
-      console.error('Support status not pending', { status: payment.status, merchantTradeNo });
+    if (payment.status === 'paid' && payment.ecpay_trade_no === tradeNo) return new Response('1|OK', { headers: textHeaders });
+    if (payment.status !== 'pending' && payment.status !== 'failed') {
+      console.error('Support payment cannot accept a success notification', { status: payment.status, merchantTradeNo });
       return new Response('0|Error', { status: 409, headers: textHeaders });
     }
 
     const { data: updatedPayment, error } = await supabase
       .from('support_payments')
       .update({
-        status: targetStatus,
+        status: 'paid',
         ecpay_trade_no: tradeNo,
         payment_type: fields.PaymentType || null,
-        paid_at: isPaid ? new Date().toISOString() : null,
+        paid_at: new Date().toISOString(),
         callback_payload: fields,
         updated_at: new Date().toISOString(),
       })
       .eq('merchant_trade_no', merchantTradeNo)
-      .eq('status', 'pending')
+      .in('status', ['pending', 'failed'])
       .select('status, ecpay_trade_no')
       .maybeSingle();
     if (error) throw error;
@@ -398,7 +410,7 @@ Deno.serve(async (request) => {
         .select('status, ecpay_trade_no')
         .eq('merchant_trade_no', merchantTradeNo)
         .maybeSingle();
-      if (currentPaymentError || currentPayment?.status !== targetStatus || currentPayment.ecpay_trade_no !== tradeNo) {
+      if (currentPaymentError || currentPayment?.status !== 'paid' || currentPayment.ecpay_trade_no !== tradeNo) {
         console.error('Support update failed, row might have changed', { merchantTradeNo, currentPayment });
         return new Response('0|Error', { status: 409, headers: textHeaders });
       }

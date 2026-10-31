@@ -20,6 +20,34 @@ function codedError(code: string, status: number, requestId?: string) {
   return new Response(code, { status, headers: { ...privateHeaders, ...(requestId ? { 'X-Request-Id': requestId } : {}) } });
 }
 
+const IPV4_ADDRESS_PATTERN = /^(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
+const IPV6_ADDRESS_PATTERN = /^[0-9a-f:]+$/i;
+const LINE_LOGIN_START_LIMIT = { windowSeconds: 600, maxRequests: 10 };
+
+function clientAddress(request: Request) {
+  // Supabase's edge sets CF-Connecting-IP. Ignore caller-supplied forwarding
+  // headers so each request cannot invent a new rate-limit bucket.
+  const address = request.headers.get('cf-connecting-ip')?.trim() || '';
+  if (IPV4_ADDRESS_PATTERN.test(address) || (address.includes(':') && IPV6_ADDRESS_PATTERN.test(address))) return address;
+  return 'unavailable-client-address';
+}
+
+async function sha256Hex(value: string) {
+  const digest = await crypto.subtle.digest('SHA-256', encoder.encode(value));
+  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function allowLoginStart(request: Request) {
+  const { data, error } = await supabase.rpc('consume_api_rate_limit', {
+    requested_client_key: await sha256Hex(clientAddress(request)),
+    requested_action: 'line_login_start',
+    requested_window_seconds: LINE_LOGIN_START_LIMIT.windowSeconds,
+    requested_max_requests: LINE_LOGIN_START_LIMIT.maxRequests,
+  });
+  if (error) throw error;
+  return data === true;
+}
+
 Deno.serve(async (request) => {
   if (request.method !== 'GET') return codedError('METHOD_NOT_ALLOWED', 405);
   try {
@@ -35,6 +63,7 @@ Deno.serve(async (request) => {
       const verifier = `${randomToken()}${randomToken()}`.replace(/-/g, '');
       const browserChallenge = url.searchParams.get('browserChallenge')?.trim() || '';
       if (!/^[A-Za-z0-9_-]{43}$/.test(browserChallenge)) return codedError('LINE_LOGIN_REQUEST_INVALID', 400);
+      if (!await allowLoginStart(request)) return codedError('TOO_MANY_REQUESTS', 429);
       const returnPath = safeReturnPath(url.searchParams.get('returnTo'));
 
       // The URL carries only an opaque transaction ID. Both the LINE PKCE

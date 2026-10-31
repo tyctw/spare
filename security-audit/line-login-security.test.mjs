@@ -11,7 +11,11 @@ const hash = async v => Buffer.from(await webcrypto.subtle.digest('SHA-256', new
 const verifier = 'A'.repeat(43);
 function database() {
   const tables = { line_login_transactions: [], line_login_sessions: [], line_login_exchange_codes: [] };
-  return { tables, from(name) {
+  let rateLimitAllowed = true;
+  return { tables, allowRateLimit(value) { rateLimitAllowed = value; }, rpc(name) {
+    if (name !== 'consume_api_rate_limit') return Promise.resolve({ data: null, error: { message: 'unexpected rpc' } });
+    return Promise.resolve({ data: rateLimitAllowed, error: null });
+  }, from(name) {
     let operation, values;
     const predicates = [];
     const q = {
@@ -119,6 +123,16 @@ test('opaque state, server PKCE, callback contains code only; stolen URLs cannot
   await assert.rejects(redeem(s.db, { code, browserVerifier: verifier }));
   assert.equal((await s.call(callback)).status, 400);
   assert.equal(s.calls(), 2);
+});
+
+test('login start is rejected before a transaction row is stored when the IP limit is exceeded', async () => {
+  const s = server();
+  s.db.allowRateLimit(false);
+  const response = await s.call(`https://api.invalid/functions/v1/line-login?browserChallenge=${await hash(verifier)}&returnTo=/membership`);
+  assert.equal(response.status, 429);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  assert.equal(s.db.tables.line_login_transactions.length, 0);
+  assert.equal(s.calls(), 0);
 });
 
 test('tampered, expired and legacy state are rejected before LINE requests', async () => {
