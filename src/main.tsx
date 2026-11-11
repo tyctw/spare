@@ -1,7 +1,6 @@
 import VocationalComparePage from './components/VocationalComparePage';
 import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { GraduationCap, Lightbulb } from 'lucide-react';
 import './index.css';
 import './page-loading.css';
 import { getCurrentRoutePath, withBasePath } from './lib/routes.ts';
@@ -59,23 +58,32 @@ const AreaPage = lazy(() => import('./components/AreaPage.tsx'));
 
 function PageLoading() {
   return (
-    <div className="page-loading" role="status" aria-live="polite" aria-label="正在準備頁面">
-      <section className="page-loading-content">
-        <div className="page-loading-heading">
-          <span className="page-loading-emblem" aria-hidden="true"><GraduationCap size={25} strokeWidth={1.8} /></span>
-          <p className="page-loading-kicker">116 學年度會考落點分析</p>
+    <div className="page-loading" role="status">
+      <span className="sr-only">正在載入頁面，請稍候。</span>
+      <div className="page-loading-shell" aria-hidden="true">
+        <div className="page-loading-nav">
+          <div className="page-loading-brand">
+            <div className="page-loading-block page-loading-logo" />
+            <div className="page-loading-block page-loading-name" />
+          </div>
+          <div className="page-loading-block page-loading-menu" />
         </div>
-        <h1>正在準備頁面</h1>
-        <p className="page-loading-description">正在整理升學資訊，請稍候片刻。</p>
-        <div className="page-loading-details">
-          <div className="page-loading-progress-label"><span>載入內容中</span><span>請稍候</span></div>
-          <div className="page-loading-progress" aria-hidden="true"><span /></div>
-          <div className="page-loading-tip">
-            <Lightbulb size={18} aria-hidden="true" />
-            <p><strong>選填志願小提醒</strong><span>先把志願分成挑戰、適中與安全三個層級。</span></p>
+        <div className="page-loading-content">
+          <div className="page-loading-panel page-loading-intro">
+            <div className="page-loading-block page-loading-title" />
+            <div className="page-loading-block page-loading-line" />
+          </div>
+          <div className="page-loading-cards">
+            {[1, 2, 3].map((card) => (
+              <div key={card} className="page-loading-panel page-loading-card">
+                <div className="page-loading-block page-loading-label" />
+                <div className="page-loading-block page-loading-line" />
+                <div className="page-loading-block page-loading-line-short" />
+              </div>
+            ))}
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
